@@ -63,6 +63,7 @@ export default function UploadManual() {
       'manufacturer',
       'model',
       'type',
+      'country',
     ]
     const missingFields = requiredFields.filter(
       field => !formData[field].trim()
@@ -83,7 +84,7 @@ export default function UploadManual() {
       manufacturer: formData.manufacturer.trim(),
       model: formData.model.trim(),
       type: formData.type.trim(),
-      country: formData.country.trim() || 'Unknown',
+      country: formData.country.trim(),
       location: formData.location.trim() || undefined,
       height: formData.height.trim()
         ? Number(formData.height.trim())
@@ -224,24 +225,25 @@ export default function UploadManual() {
                 <option value='Hybrid'>Hybrid</option>
               </Styled.Select>
             </Styled.FormGroup>
+
+            <Styled.FormGroup>
+              <Styled.Label htmlFor='country'>Country *</Styled.Label>
+              <Styled.Input
+                type='text'
+                id='country'
+                name='country'
+                value={formData.country || ''}
+                onChange={handleInputChange}
+                placeholder='e.g. United Kingdom'
+                required
+              />
+            </Styled.FormGroup>
           </Styled.FormSection>
 
           <Styled.FormSection>
             <h3>Optional Information</h3>
 
             <Styled.FormRow>
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='country'>Country</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='country'
-                  name='country'
-                  value={formData.country || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. United Kingdom'
-                />
-              </Styled.FormGroup>
-
               <Styled.FormGroup>
                 <Styled.Label htmlFor='location'>Location</Styled.Label>
                 <Styled.Input

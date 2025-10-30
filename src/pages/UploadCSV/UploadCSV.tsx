@@ -26,12 +26,23 @@ export default function UploadCSV() {
 
       try {
         const content = await file.text()
-        const data = await processUploadedFile(file, content)
-        setUploadedData(data)
+        const newData = await processUploadedFile(file, content)
 
-        const coasterCount = data.coasters?.length || 0
+        // Combine with existing data
+        const existingCoasters = uploadedData?.coasters || []
+        const combinedData = {
+          coasters: [...existingCoasters, ...newData.coasters],
+          uploadedAt: newData.uploadedAt,
+          filename: uploadedData?.filename
+            ? `${uploadedData.filename}, ${newData.filename}`
+            : newData.filename,
+        }
+        setUploadedData(combinedData)
+
+        const newCoasterCount = newData.coasters?.length || 0
+        const totalCount = combinedData.coasters?.length || 0
         setSuccess(
-          `Successfully processed CSV file! Found ${coasterCount} coasters.`
+          `Successfully processed CSV file! Added ${newCoasterCount} new coasters. You now have ${totalCount} coasters total.`
         )
       } catch (err) {
         setError(

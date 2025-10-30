@@ -108,18 +108,16 @@ export const TableHeader = styled.div`
   display: grid;
   grid-template-columns:
     minmax(200px, 2fr)
+    minmax(150px, 1.5fr)
     minmax(150px, 1fr)
     minmax(120px, 1fr)
-    minmax(150px, 1fr)
-    minmax(80px, 1fr)
-    minmax(80px, 1fr)
     minmax(100px, 1fr)
     minmax(100px, 1fr);
   background-color: ${colours.veryLightGrey};
   border-bottom: 1px solid ${colours.borderGrey};
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 100px;
   }
 `
 
@@ -132,7 +130,9 @@ export const HeaderCell = styled.div`
   letter-spacing: 0.5px;
 
   @media (max-width: ${breakpoints.tablet}) {
-    &:nth-child(n + 4) {
+    &:nth-child(3),
+    &:nth-child(4),
+    &:nth-child(5) {
       display: none;
     }
   }
@@ -144,11 +144,9 @@ export const TableRow = styled.div`
   display: grid;
   grid-template-columns:
     minmax(200px, 2fr)
+    minmax(150px, 1.5fr)
     minmax(150px, 1fr)
     minmax(120px, 1fr)
-    minmax(150px, 1fr)
-    minmax(80px, 1fr)
-    minmax(80px, 1fr)
     minmax(100px, 1fr)
     minmax(100px, 1fr);
   border-bottom: 1px solid ${colours.borderGrey};
@@ -163,7 +161,7 @@ export const TableRow = styled.div`
   }
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 100px;
   }
 `
 
@@ -174,7 +172,9 @@ export const TableCell = styled.div`
   align-self: center;
 
   @media (max-width: ${breakpoints.tablet}) {
-    &:nth-child(n + 4) {
+    &:nth-child(3),
+    &:nth-child(4),
+    &:nth-child(5) {
       display: none;
     }
   }
@@ -221,4 +221,37 @@ export const CoasterCount = styled.div`
   color: ${colours.mutedGrey};
   font-style: italic;
   padding: ${spacing.medium};
+`
+
+export const RemoveButton = styled.button`
+  background-color: ${colours.red};
+  color: ${colours.white};
+  border: none;
+  padding: ${spacing.tiny} ${spacing.small};
+  border-radius: ${spacing.tiny};
+  font-size: ${fonts.small};
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: fit-content;
+
+  &:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: 2px solid ${colours.red};
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: ${breakpoints.tablet}) {
+    font-size: ${fonts.small};
+    padding: ${spacing.tiny};
+  }
 `

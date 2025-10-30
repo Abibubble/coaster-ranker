@@ -98,7 +98,7 @@ export default function Download() {
         setDownloadStatus(`${format.toUpperCase()} downloaded successfully!`)
         setTimeout(() => setDownloadStatus(null), 3000)
       }
-    } catch (error) {
+    } catch {
       setDownloadStatus(`Error generating ${format.toUpperCase()} file`)
       setTimeout(() => setDownloadStatus(null), 3000)
     }

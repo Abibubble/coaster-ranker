@@ -1,15 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, MainContent, Title } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './ViewCoasters.styled'
 
 export default function ViewCoasters() {
-  const { uploadedData } = useData()
+  const { uploadedData, setUploadedData } = useData()
+  const [statusMessage, setStatusMessage] = useState<string>('')
   const coasters = uploadedData?.coasters || []
 
-  const formatValue = (value: string | number | undefined | null): string => {
-    if (value === undefined || value === null) return '-'
-    return String(value)
+  const handleRemoveCoaster = (coasterId: string) => {
+    if (!uploadedData) return
+
+    const coasterToRemove = uploadedData.coasters.find(c => c.id === coasterId)
+    const coasterName = coasterToRemove ? coasterToRemove.name : 'this coaster'
+
+    const confirmRemove = window.confirm(
+      `Are you sure you want to remove "${coasterName}" from your collection? This action cannot be undone.`
+    )
+    if (!confirmRemove) return
+
+    const updatedCoasters = uploadedData.coasters.filter(
+      coaster => coaster.id !== coasterId
+    )
+
+    setUploadedData({
+      ...uploadedData,
+      coasters: updatedCoasters,
+    })
+
+    // Announce removal to screen readers
+    setStatusMessage(`${coasterName} has been removed from your collection.`)
+    setTimeout(() => setStatusMessage(''), 3000)
   }
 
   if (coasters.length === 0) {
@@ -36,6 +57,22 @@ export default function ViewCoasters() {
     <MainContent>
       <Title>Your Coasters</Title>
 
+      {statusMessage && (
+        <div
+          role='status'
+          aria-live='polite'
+          style={{
+            position: 'absolute',
+            left: '-10000px',
+            width: '1px',
+            height: '1px',
+            overflow: 'hidden',
+          }}
+        >
+          {statusMessage}
+        </div>
+      )}
+
       <Card>
         <Styled.CoastersSummary>
           <h2>Your Collection</h2>
@@ -57,41 +94,37 @@ export default function ViewCoasters() {
           <Styled.ActionButton href='/rank'>Start Ranking</Styled.ActionButton>
         </Styled.ActionsBar>
 
-        <Styled.CoastersTable>
-          <Styled.TableHeader>
-            <Styled.HeaderCell>Name</Styled.HeaderCell>
-            <Styled.HeaderCell>Park</Styled.HeaderCell>
-            <Styled.HeaderCell>Country</Styled.HeaderCell>
-            <Styled.HeaderCell>Manufacturer</Styled.HeaderCell>
-            <Styled.HeaderCell>Type</Styled.HeaderCell>
-            <Styled.HeaderCell>Year</Styled.HeaderCell>
-            <Styled.HeaderCell>Height</Styled.HeaderCell>
-            <Styled.HeaderCell>Speed</Styled.HeaderCell>
+        <Styled.CoastersTable role='table' aria-label='Coaster collection data'>
+          <Styled.TableHeader role='row'>
+            <Styled.HeaderCell role='columnheader'>Name</Styled.HeaderCell>
+            <Styled.HeaderCell role='columnheader'>Park</Styled.HeaderCell>
+            <Styled.HeaderCell role='columnheader'>
+              Manufacturer
+            </Styled.HeaderCell>
+            <Styled.HeaderCell role='columnheader'>Model</Styled.HeaderCell>
+            <Styled.HeaderCell role='columnheader'>Type</Styled.HeaderCell>
+            <Styled.HeaderCell role='columnheader'>Actions</Styled.HeaderCell>
           </Styled.TableHeader>
 
-          <Styled.TableBody>
+          <Styled.TableBody role='rowgroup'>
             {coasters.map(coaster => (
-              <Styled.TableRow key={coaster.id}>
-                <Styled.TableCell>
+              <Styled.TableRow key={coaster.id} role='row'>
+                <Styled.TableCell role='cell'>
                   <Styled.CoasterName>{coaster.name}</Styled.CoasterName>
-                  <Styled.CoasterModel>
-                    {coaster.manufacturer} - {coaster.model}
-                  </Styled.CoasterModel>
                 </Styled.TableCell>
-                <Styled.TableCell>{coaster.park}</Styled.TableCell>
-                <Styled.TableCell>{coaster.country}</Styled.TableCell>
-                <Styled.TableCell>{coaster.manufacturer}</Styled.TableCell>
-                <Styled.TableCell>
-                  <Styled.TypeBadge $type={coaster.type}>
-                    {coaster.type}
-                  </Styled.TypeBadge>
+                <Styled.TableCell role='cell'>{coaster.park}</Styled.TableCell>
+                <Styled.TableCell role='cell'>
+                  {coaster.manufacturer}
                 </Styled.TableCell>
-                <Styled.TableCell>{formatValue(coaster.year)}</Styled.TableCell>
-                <Styled.TableCell>
-                  {coaster.height ? `${coaster.height}m` : '-'}
-                </Styled.TableCell>
-                <Styled.TableCell>
-                  {coaster.speed ? `${coaster.speed} km/h` : '-'}
+                <Styled.TableCell role='cell'>{coaster.model}</Styled.TableCell>
+                <Styled.TableCell role='cell'>{coaster.type}</Styled.TableCell>
+                <Styled.TableCell role='cell'>
+                  <Styled.RemoveButton
+                    onClick={() => handleRemoveCoaster(coaster.id)}
+                    aria-label={`Remove ${coaster.name} from collection`}
+                  >
+                    Remove
+                  </Styled.RemoveButton>
                 </Styled.TableCell>
               </Styled.TableRow>
             ))}

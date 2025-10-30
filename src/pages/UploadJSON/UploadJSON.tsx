@@ -24,12 +24,23 @@ export default function UploadJSON() {
       const fakeFile = new File([jsonString], filename, {
         type: 'application/json',
       })
-      const data = await processUploadedFile(fakeFile, jsonString)
-      setUploadedData(data)
+      const newData = await processUploadedFile(fakeFile, jsonString)
 
-      const coasterCount = data.coasters?.length || 0
+      // Combine with existing data
+      const existingCoasters = uploadedData?.coasters || []
+      const combinedData = {
+        coasters: [...existingCoasters, ...newData.coasters],
+        uploadedAt: newData.uploadedAt,
+        filename: uploadedData?.filename
+          ? `${uploadedData.filename}, ${newData.filename}`
+          : newData.filename,
+      }
+      setUploadedData(combinedData)
+
+      const newCoasterCount = newData.coasters?.length || 0
+      const totalCount = combinedData.coasters?.length || 0
       setSuccess(
-        `Successfully processed JSON data! Found ${coasterCount} coasters.`
+        `Successfully processed JSON data! Added ${newCoasterCount} new coasters. You now have ${totalCount} coasters total.`
       )
       setJsonInput('')
     } catch (err) {

@@ -249,8 +249,7 @@ function Rank() {
                       {currentPair[0].name}
                     </Styled.CoasterName>
                     <Styled.CoasterPark>
-                      {currentPair[0].park}
-                      {currentPair[0].country && ` (${currentPair[0].country})`}
+                      {currentPair[0].park} ({currentPair[0].country})
                     </Styled.CoasterPark>
                     <Styled.CoasterDetails>
                       <p>
@@ -286,8 +285,7 @@ function Rank() {
                       {currentPair[1].name}
                     </Styled.CoasterName>
                     <Styled.CoasterPark>
-                      {currentPair[1].park}
-                      {currentPair[1].country && ` (${currentPair[1].country})`}
+                      {currentPair[1].park} ({currentPair[1].country})
                     </Styled.CoasterPark>
                     <Styled.CoasterDetails>
                       <p>
@@ -346,8 +344,8 @@ function Rank() {
           <ul>
             {coasters.slice(0, 10).map((coaster, _index) => (
               <li key={coaster.id}>
-                <strong>{coaster.name}</strong> at {coaster.park}
-                {coaster.country && ` (${coaster.country})`}
+                <strong>{coaster.name}</strong> at {coaster.park} (
+                {coaster.country})
                 <span
                   aria-label={`Manufacturer: ${coaster.manufacturer}, Model: ${coaster.model}, Type: ${coaster.type}`}
                 >
