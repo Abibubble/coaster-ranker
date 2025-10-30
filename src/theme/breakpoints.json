@@ -1,0 +1,9 @@
+{
+  "mobileSmall": "360px",
+  "mobileMedium": "400px",
+  "mobileLarge": "480px",
+  "tablet": "640px",
+  "tabletLarge": "768px",
+  "desktop": "1024px",
+  "desktopLarge": "1200px"
+}

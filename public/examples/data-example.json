@@ -1,0 +1,44 @@
+[
+  {
+    "id": "smiler",
+    "name": "The Smiler",
+    "park": "Alton Towers",
+    "country": "United Kingdom",
+    "location": "Staffordshire",
+    "height": 30,
+    "speed": 85,
+    "inversions": 14,
+    "year": 2013,
+    "manufacturer": "Gerstlauer",
+    "model": "Euro-Fighter",
+    "type": "Steel"
+  },
+  {
+    "id": "nemesis",
+    "name": "Nemesis",
+    "park": "Alton Towers",
+    "country": "United Kingdom",
+    "location": "Staffordshire",
+    "height": 13,
+    "speed": 81,
+    "inversions": 4,
+    "year": 1994,
+    "manufacturer": "Bolliger & Mabillard",
+    "model": "Inverted",
+    "type": "Steel"
+  },
+  {
+    "id": "taron",
+    "name": "Taron",
+    "park": "Phantasialand",
+    "country": "Germany",
+    "location": "Brühl",
+    "height": 30,
+    "speed": 117,
+    "inversions": 0,
+    "year": 2016,
+    "manufacturer": "Intamin",
+    "model": "Multi-Launch",
+    "type": "Steel"
+  }
+]
