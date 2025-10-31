@@ -1,0 +1,6 @@
+{
+  "light": "0 2px 4px rgba(0, 0, 0, 0.05)",
+  "medium": "0 4px 8px rgba(0, 0, 0, 0.1)",
+  "heavy": "0 8px 16px rgba(0, 0, 0, 0.15)",
+  "focus": "0 0 0 3px rgba(0, 123, 255, 0.25)"
+}

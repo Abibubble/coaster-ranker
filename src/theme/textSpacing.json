@@ -1,0 +1,11 @@
+{
+  "micro": "0.0625rem",
+  "mini": "0.125rem",
+  "fine": "0.25rem",
+  "tiny": "0.5rem",
+  "small": "1rem",
+  "medium": "1.5rem",
+  "large": "3rem",
+  "huge": "4.5rem",
+  "giant": "6rem"
+}

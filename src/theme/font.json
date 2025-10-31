@@ -1,7 +1,7 @@
 {
-  "title": "56px",
-  "huge": "48px",
-  "large": "24px",
-  "body": "16px",
-  "small": "14px"
+  "title": "3.5rem",
+  "huge": "3rem",
+  "large": "1.5rem",
+  "body": "1rem",
+  "small": "0.875rem"
 }

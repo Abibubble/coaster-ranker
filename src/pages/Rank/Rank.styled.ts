@@ -1,43 +1,51 @@
 import styled from 'styled-components'
+import {
+  colours,
+  spacing,
+  breakpoints,
+  textSpacing,
+  fonts,
+  shadows,
+} from '../../theme'
 
 export const RankingContainer = styled.div`
-  margin-top: 2rem;
+  margin-top: ${spacing.large};
 `
 
 export const ComparisonArea = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: ${spacing.medium};
   justify-content: center;
-  margin: 2rem 0;
+  margin: ${spacing.large} 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${breakpoints.tabletLarge}) {
     flex-direction: column;
-    gap: 1rem;
+    gap: ${spacing.small};
   }
 `
 
 export const CoasterCard = styled.button`
   flex: 1;
   max-width: 300px;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
+  padding: ${spacing.medium};
+  background: ${colours.paleGrey};
+  border: ${spacing.mini} solid ${colours.softGrey};
+  border-radius: ${spacing.small};
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
 
   &:hover {
-    background: #e9ecef;
-    border-color: #007bff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: ${colours.softGrey};
+    border-color: ${colours.blue};
+    transform: translateY(-${spacing.mini});
+    box-shadow: 0 ${spacing.fine} ${spacing.small} ${colours.shadowLight};
   }
 
   &:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    border-color: ${colours.blue};
+    box-shadow: 0 0 0 ${spacing.fine} rgba(0, 123, 255, 0.25);
   }
 
   &:active {
@@ -46,25 +54,25 @@ export const CoasterCard = styled.button`
 `
 
 export const CoasterName = styled.h3`
-  margin: 0 0 0.5rem 0;
-  color: #333;
-  font-size: 1.25rem;
+  margin: 0 0 ${spacing.tiny} 0;
+  color: ${colours.darkGrey};
+  font-size: ${fonts.large};
   font-weight: 600;
 `
 
 export const CoasterPark = styled.p`
-  margin: 0 0 0.75rem 0;
-  color: #666;
+  margin: 0 0 ${spacing.small} 0;
+  color: ${colours.mediumGrey};
   font-weight: 500;
 `
 
 export const CoasterDetails = styled.div`
-  margin-top: 0.75rem;
-  font-size: 0.9rem;
-  color: #777;
+  margin-top: ${spacing.small};
+  font-size: ${fonts.small};
+  color: ${colours.textGrey};
 
   p {
-    margin: 0.25rem 0;
+    margin: ${spacing.fine} 0;
   }
 `
 
@@ -72,71 +80,285 @@ export const VersusText = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: ${fonts.large};
   font-weight: bold;
-  color: #666;
-  margin: 0 1rem;
+  color: ${colours.mediumGrey};
+  margin: 0 ${spacing.small};
 
-  @media (max-width: 768px) {
-    margin: 0.5rem 0;
-    font-size: 1.25rem;
+  @media (max-width: ${breakpoints.tabletLarge}) {
+    margin: ${spacing.tiny} 0;
+    font-size: ${fonts.large};
   }
 `
 
 export const ProgressInfo = styled.div`
   text-align: center;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: #f0f8ff;
-  border-radius: 8px;
-  border-left: 4px solid #007bff;
+  margin-bottom: ${spacing.medium};
+  padding: ${spacing.small};
+  background: ${colours.veryLightBlue};
+  border-radius: ${spacing.tiny};
 
   h4 {
-    margin: 0 0 0.5rem 0;
-    color: #333;
+    margin: 0 0 ${spacing.tiny} 0;
+    color: ${colours.darkGrey};
   }
 
   p {
     margin: 0;
-    color: #666;
-    font-size: 0.9rem;
+    color: ${colours.mediumGrey};
+    font-size: ${fonts.small};
   }
+`
+
+export const ComparisonProgress = styled.div`
+  text-align: center;
+  margin-bottom: ${textSpacing.large};
+  padding: ${textSpacing.medium};
+  background: linear-gradient(
+    135deg,
+    ${colours.paleGrey} 0%,
+    ${colours.softGrey} 100%
+  );
+  border-radius: ${spacing.small};
+  border: ${spacing.micro} solid ${colours.borderGrey};
+  box-shadow: ${shadows.light};
+`
+
+export const ProgressTitle = styled.h4`
+  margin: 0 0 ${textSpacing.small} 0;
+  color: ${colours.navyBlue};
+  font-size: ${fonts.large};
+  font-weight: 600;
+`
+
+export const ProgressStats = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: ${textSpacing.small};
+  margin-bottom: ${textSpacing.small};
+  flex-wrap: wrap;
+`
+
+export const ProgressStat = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${textSpacing.tiny};
+`
+
+export const ProgressNumber = styled.span`
+  font-size: ${fonts.large};
+  font-weight: bold;
+  color: ${colours.lightBlue};
+  line-height: 1;
+`
+
+export const ProgressLabel = styled.span`
+  font-size: ${fonts.small};
+  color: ${colours.mutedGrey};
+  margin-top: ${textSpacing.fine};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`
+
+export const ProgressBarContainer = styled.div`
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  background: ${colours.softGrey};
+  border-radius: ${spacing.tiny};
+  height: ${spacing.tiny};
+  overflow: hidden;
+  position: relative;
+`
+
+export const ProgressBar = styled.div<{ progress: number }>`
+  width: ${props => props.progress}%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    ${colours.lightBlue} 0%,
+    ${colours.darkerBlue} 100%
+  );
+  border-radius: ${spacing.tiny};
+  transition: width 0.3s ease;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 100%
+    );
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+`
+
+export const ProgressPercentage = styled.div`
+  margin-top: ${textSpacing.tiny};
+  font-size: ${fonts.small};
+  color: ${colours.slateGrey};
+  font-weight: 500;
 `
 
 export const RankingComplete = styled.div`
   text-align: center;
-  padding: 2rem;
-  background: #d4edda;
-  border-radius: 8px;
-  border-left: 4px solid #28a745;
+  padding: ${textSpacing.large};
+  background: ${colours.successBg};
+  border-radius: ${spacing.tiny};
+  border-left: ${spacing.fine} solid ${colours.lightGreen};
 
   h3 {
-    margin: 0 0 1rem 0;
-    color: #155724;
+    margin: 0 0 ${textSpacing.small} 0;
+    color: ${colours.successGreen};
   }
 
   p {
-    margin: 0 0 1rem 0;
-    color: #155724;
+    margin: 0 0 ${textSpacing.small} 0;
+    color: ${colours.successGreen};
   }
 `
 
 export const RestartButton = styled.button`
-  padding: 0.5rem 1rem;
-  background: #007bff;
-  color: white;
+  padding: ${textSpacing.tiny} ${textSpacing.small};
+  background: ${colours.lightBlue};
+  color: ${colours.white};
   border: none;
-  border-radius: 6px;
+  border-radius: ${spacing.tiny};
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: #0056b3;
+    background: ${colours.darkerBlue};
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 ${spacing.fine} rgba(0, 123, 255, 0.25);
   }
+`
+
+export const RankingModeCard = styled.button`
+  display: block;
+  width: 100%;
+  padding: ${textSpacing.medium};
+  margin: ${textSpacing.small} 0;
+  background: ${colours.paleGrey};
+  border: ${spacing.mini} solid ${colours.softGrey};
+  border-radius: ${spacing.small};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+
+  &:hover {
+    background: ${colours.softGrey};
+    border-color: ${colours.lightBlue};
+    transform: translateY(-2px);
+    box-shadow: ${shadows.medium};
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${colours.lightBlue};
+    box-shadow: 0 0 0 ${spacing.fine} rgba(0, 123, 255, 0.25);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  h4 {
+    margin: 0 0 ${textSpacing.tiny} 0;
+    color: ${colours.darkGrey};
+    font-size: ${fonts.large};
+    font-weight: 600;
+  }
+
+  p {
+    margin: ${textSpacing.tiny} 0;
+    color: ${colours.mediumGrey};
+    line-height: 1.4;
+  }
+`
+
+export const BoldText = styled.span`
+  font-weight: bold;
+`
+
+export const ItalicText = styled.span`
+  font-style: italic;
+`
+
+export const UploadSummary = styled.div`
+  margin-bottom: ${textSpacing.medium};
+`
+
+export const CoasterList = styled.div`
+  margin: ${textSpacing.medium} 0;
+
+  ul {
+    list-style-type: decimal;
+    padding-left: ${textSpacing.medium};
+  }
+
+  li {
+    margin-bottom: ${textSpacing.tiny};
+    line-height: 1.4;
+  }
+`
+
+export const RankingInstructions = styled.div`
+  margin-top: ${textSpacing.large};
+  padding: ${textSpacing.small};
+  background: ${colours.paleGrey};
+  border-radius: ${spacing.tiny};
+
+  p {
+    margin: 0;
+    color: ${colours.mediumGrey};
+    font-style: italic;
+  }
+`
+
+export const HierarchicalFallbackNotice = styled.div`
+  margin-top: ${textSpacing.small};
+  padding: ${textSpacing.small};
+  background: ${colours.warningBg};
+  border-radius: ${spacing.tiny};
+  border-left: ${spacing.fine} solid ${colours.yellow};
+`
+
+export const FallbackTitle = styled.p`
+  margin: 0;
+  font-weight: bold;
+  color: ${colours.warningYellow};
+`
+
+export const FallbackDescription = styled.p`
+  margin: ${textSpacing.tiny} 0 0 0;
+  font-size: ${fonts.small};
+  color: ${colours.warningYellow};
+`
+
+export const PreparingContainer = styled.div`
+  text-align: center;
+  padding: ${textSpacing.large};
 `

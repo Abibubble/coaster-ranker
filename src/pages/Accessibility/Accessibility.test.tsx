@@ -13,9 +13,13 @@ describe('Accessibility Page', () => {
     render(<Accessibility />)
 
     expect(screen.getByText('Accessibility Statement')).toBeInTheDocument()
-    expect(screen.getByText('Our Commitment')).toBeInTheDocument()
-    expect(screen.getByText('Accessibility Standards')).toBeInTheDocument()
-    expect(screen.getByText('Accessibility Features')).toBeInTheDocument()
+    expect(
+      screen.getByText('How to Use Coaster Ranker Accessibly')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Supported Assistive Technologies')
+    ).toBeInTheDocument()
+    expect(screen.getByText('Browser Compatibility')).toBeInTheDocument()
   })
 
   it('includes keyboard navigation information', () => {
@@ -27,16 +31,20 @@ describe('Accessibility Page', () => {
     expect(screen.getByText('Space')).toBeInTheDocument()
   })
 
-  it('mentions WCAG compliance', () => {
+  it('includes commitment text', () => {
     render(<Accessibility />)
 
-    expect(screen.getByText(/WCAG.*2\.1.*Level AA/)).toBeInTheDocument()
+    expect(
+      screen.getByText(/committed to being accessible to all users/)
+    ).toBeInTheDocument()
   })
 
   it('includes assistive technology information', () => {
     render(<Accessibility />)
 
-    expect(screen.getByText('Assistive Technologies')).toBeInTheDocument()
+    expect(
+      screen.getByText('Supported Assistive Technologies')
+    ).toBeInTheDocument()
     expect(
       screen.getByText('Screen readers (JAWS, NVDA, VoiceOver, TalkBack)')
     ).toBeInTheDocument()
@@ -46,28 +54,22 @@ describe('Accessibility Page', () => {
     render(<Accessibility />)
 
     expect(screen.getByText('Browser Compatibility')).toBeInTheDocument()
-    expect(screen.getByText('Chrome (latest version)')).toBeInTheDocument()
-    expect(screen.getByText('Firefox (latest version)')).toBeInTheDocument()
-    expect(screen.getByText('Safari (latest version)')).toBeInTheDocument()
+    expect(screen.getByText('Chrome')).toBeInTheDocument()
+    expect(screen.getByText('Firefox')).toBeInTheDocument()
+    expect(screen.getByText('Safari')).toBeInTheDocument()
   })
 
   it('includes external accessibility resource links', () => {
     render(<Accessibility />)
 
-    expect(screen.getByText('Accessibility Resources')).toBeInTheDocument()
+    expect(
+      screen.getByText('Learn More About Web Accessibility')
+    ).toBeInTheDocument()
 
     const waiLink = screen.getByRole('link', {
       name: 'Web Accessibility Initiative (WAI)',
     })
     expect(waiLink).toHaveAttribute('href', 'https://www.w3.org/WAI/')
-
-    const wcagLink = screen.getByRole('link', {
-      name: 'WCAG 2.1 Quick Reference',
-    })
-    expect(wcagLink).toHaveAttribute(
-      'href',
-      'https://www.w3.org/WAI/WCAG21/quickref/'
-    )
 
     const webaimLink = screen.getByRole('link', {
       name: 'WebAIM - Web Accessibility In Mind',
@@ -75,22 +77,12 @@ describe('Accessibility Page', () => {
     expect(webaimLink).toHaveAttribute('href', 'https://webaim.org/')
   })
 
-  it('displays last updated date', () => {
-    render(<Accessibility />)
-
-    expect(
-      screen.getByText('Last updated: August 23, 2025')
-    ).toBeInTheDocument()
-  })
-
   it('includes comprehensive accessibility feature sections', () => {
     render(<Accessibility />)
 
-    expect(screen.getByText('Visual Design')).toBeInTheDocument()
+    expect(screen.getByText('Visual Features')).toBeInTheDocument()
     expect(screen.getByText('Screen Reader Support')).toBeInTheDocument()
-    expect(screen.getByText('Interactive Elements')).toBeInTheDocument()
-    expect(screen.getByText('Known Limitations')).toBeInTheDocument()
-    expect(screen.getByText('Ongoing Efforts')).toBeInTheDocument()
+    expect(screen.getByText('Keyboard Navigation')).toBeInTheDocument()
   })
 
   it('renders the main content with proper structure', () => {

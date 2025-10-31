@@ -38,8 +38,8 @@ export const HeaderTop = styled.div`
     }
 
     &:focus {
-      outline: 2px solid ${colours.blue};
-      outline-offset: 2px;
+      outline: ${spacing.mini} solid ${colours.blue};
+      outline-offset: ${spacing.mini};
     }
 
     p {
@@ -58,12 +58,12 @@ export const HeaderTop = styled.div`
 export const BurgerButton = styled.button`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: ${spacing.fine};
   background: none;
   border: none;
   cursor: pointer;
   padding: ${spacing.tiny};
-  border-radius: 4px;
+  border-radius: ${spacing.fine};
   transition: background-color 0.2s ease;
 
   &:hover {
@@ -71,8 +71,8 @@ export const BurgerButton = styled.button`
   }
 
   &:focus {
-    outline: 2px solid ${colours.blue};
-    outline-offset: 2px;
+    outline: ${spacing.mini} solid ${colours.blue};
+    outline-offset: ${spacing.mini};
   }
 
   @media (min-width: ${breakpoints.tabletLarge}) {
@@ -194,7 +194,7 @@ export const NavLinks = styled.ul`
       &:focus {
         background-color: ${colours.darkGrey};
         text-decoration: underline;
-        border-radius: 4px;
+        border-radius: ${spacing.fine};
       }
     }
   }

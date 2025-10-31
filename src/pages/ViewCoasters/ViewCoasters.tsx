@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Card, MainContent, Title } from '../../components'
+import { Card, MainContent, Title, ViewLink } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './ViewCoasters.styled'
 
@@ -77,7 +77,8 @@ export default function ViewCoasters() {
         <Styled.CoastersSummary>
           <h2>Your Collection</h2>
           <p>
-            You have <strong>{coasters.length}</strong> coaster
+            You have <Styled.BoldText>{coasters.length}</Styled.BoldText>{' '}
+            coaster
             {coasters.length === 1 ? '' : 's'} in your collection.
           </p>
           {uploadedData?.uploadedAt && (
@@ -88,10 +89,8 @@ export default function ViewCoasters() {
         </Styled.CoastersSummary>
 
         <Styled.ActionsBar>
-          <Styled.ActionButton href='/upload'>
-            Add More Coasters
-          </Styled.ActionButton>
-          <Styled.ActionButton href='/rank'>Start Ranking</Styled.ActionButton>
+          <ViewLink href='/upload'>Add More Coasters</ViewLink>
+          <ViewLink href='/rank'>Start Ranking</ViewLink>
         </Styled.ActionsBar>
 
         <Styled.CoastersTable role='table' aria-label='Coaster collection data'>

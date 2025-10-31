@@ -1,25 +1,26 @@
 import styled from 'styled-components'
+import { colours, spacing, textSpacing, fonts, shadows } from '../../theme'
 
 export const CenteredCount = styled.p`
   text-align: center;
 `
 
 export const DownloadContent = styled.div`
-  padding: 1.5rem;
+  padding: ${spacing.medium};
 `
 
 export const Section = styled.div`
-  margin-bottom: 2rem;
+  margin-bottom: ${spacing.large};
 
   h2,
   h3 {
-    margin-bottom: 0.5rem;
-    color: #333;
+    margin-bottom: ${spacing.tiny};
+    color: ${colours.darkGrey};
   }
 
   p {
-    margin-bottom: 0.5rem;
-    color: #666;
+    margin-bottom: ${spacing.tiny};
+    color: ${colours.mediumGrey};
   }
 `
 
@@ -27,24 +28,24 @@ export const DownloadButton = styled.button`
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  background: #f8f9fa;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
+  padding: ${spacing.medium};
+  margin-bottom: ${spacing.small};
+  background: ${colours.paleGrey};
+  border: ${spacing.mini} solid ${colours.softGrey};
+  border-radius: ${spacing.tiny};
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: #e9ecef;
-    border-color: #007bff;
-    transform: translateY(-1px);
+    background: ${colours.softGrey};
+    border-color: ${colours.blue};
+    transform: translateY(-${spacing.micro});
   }
 
   &:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    border-color: ${colours.blue};
+    box-shadow: 0 0 0 ${spacing.fine} rgba(0, 123, 255, 0.25);
   }
 
   &:active {
@@ -53,8 +54,8 @@ export const DownloadButton = styled.button`
 `
 
 export const FileIcon = styled.span`
-  font-size: 2rem;
-  margin-right: 1rem;
+  font-size: ${fonts.huge};
+  margin-right: ${textSpacing.small};
   flex-shrink: 0;
 `
 
@@ -64,76 +65,80 @@ export const ButtonContent = styled.div`
 `
 
 export const ButtonTitle = styled.h4`
-  margin: 0 0 0.25rem 0;
-  color: #333;
-  font-size: 1.1rem;
+  margin: 0 0 ${textSpacing.fine} 0;
+  color: ${colours.darkGrey};
+  font-size: ${fonts.large};
   font-weight: 600;
 `
 
 export const ButtonDescription = styled.p`
   margin: 0;
-  color: #666;
-  font-size: 0.9rem;
+  color: ${colours.mediumGrey};
+  font-size: ${fonts.small};
   line-height: 1.4;
 `
 
 export const StatusMessage = styled.div<{ $isSuccess: boolean }>`
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  border-radius: 6px;
+  padding: ${spacing.small};
+  margin-bottom: ${spacing.medium};
+  border-radius: ${spacing.tiny};
   font-weight: 500;
   text-align: center;
 
-  background: ${props => (props.$isSuccess ? '#d4edda' : '#f8d7da')};
-  color: ${props => (props.$isSuccess ? '#155724' : '#721c24')};
-  border: 1px solid ${props => (props.$isSuccess ? '#c3e6cb' : '#f5c6cb')};
+  background: ${props =>
+    props.$isSuccess ? colours.successBgLight : colours.errorBg};
+  color: ${props =>
+    props.$isSuccess ? colours.successGreen : colours.errorText};
+  border: ${spacing.micro} solid
+    ${props =>
+      props.$isSuccess ? colours.successBorderLight : colours.errorBorder};
 `
 
 export const InfoSection = styled.div`
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 6px;
+  margin-bottom: ${spacing.large};
+  padding: ${spacing.small};
+  background: ${colours.paleGrey};
+  border-radius: ${spacing.tiny};
   text-align: center;
 
   p {
     margin: 0;
-    color: #666;
-    font-size: 0.9rem;
+    color: ${colours.mediumGrey};
+    font-size: ${fonts.small};
   }
 `
 
 export const BackLink = styled.a`
   display: inline-flex;
   align-items: center;
-  color: #007bff;
+  color: ${colours.lightBlue};
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
 
   &:hover {
-    color: #0056b3;
+    color: ${colours.darkerBlue};
     text-decoration: underline;
   }
 
   &:focus {
-    outline: 2px solid #007bff;
-    outline-offset: 2px;
+    outline: ${spacing.mini} solid ${colours.lightBlue};
+    outline-offset: ${spacing.mini};
   }
 `
 
 export const EmptyState = styled.div`
   text-align: center;
-  padding: 3rem 1.5rem;
+  padding: ${textSpacing.large} ${textSpacing.medium};
 
   h2 {
-    margin-bottom: 1rem;
-    color: #333;
+    margin-bottom: ${textSpacing.small};
+    color: ${colours.darkGrey};
   }
 
   p {
-    margin-bottom: 2rem;
-    color: #666;
+    margin-bottom: ${textSpacing.large};
+    color: ${colours.mediumGrey};
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
@@ -143,20 +148,24 @@ export const EmptyState = styled.div`
 
 export const UploadLink = styled.a`
   display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background: #007bff;
-  color: white;
+  padding: ${textSpacing.tiny} ${textSpacing.medium};
+  background: ${colours.lightBlue};
+  color: ${colours.white};
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: ${spacing.tiny};
   font-weight: 500;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: #0056b3;
+    background: ${colours.darkerBlue};
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    box-shadow: ${shadows.focus};
   }
+`
+
+export const BoldText = styled.span`
+  font-weight: bold;
 `

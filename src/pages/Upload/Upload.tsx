@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, MainContent, Title } from '../../components'
+import { Card, MainContent, Title, ViewLink } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './Upload.styled'
 
@@ -24,11 +24,10 @@ function Upload() {
           </p>
           {coasterCount > 0 && (
             <Styled.CurrentDataInfo>
-              You currently have <strong>{coasterCount} coasters</strong> in
-              your collection.{' '}
-              <Styled.ViewLink href='/view-coasters'>
-                View all coasters
-              </Styled.ViewLink>
+              You currently have{' '}
+              <Styled.BoldText>{coasterCount} coasters</Styled.BoldText> in your
+              collection.{' '}
+              <ViewLink href='/view-coasters'>View all coasters</ViewLink>
             </Styled.CurrentDataInfo>
           )}
         </Styled.Instructions>

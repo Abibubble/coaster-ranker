@@ -37,8 +37,8 @@ export const UploadLink = styled(Link)`
   }
 
   &:focus {
-    outline: 2px solid ${colours.blue};
-    outline-offset: 2px;
+    outline: ${spacing.mini} solid ${colours.blue};
+    outline-offset: ${spacing.mini};
   }
 `
 
@@ -72,28 +72,6 @@ export const ActionsBar = styled.div`
 
   @media (max-width: ${breakpoints.mobileLarge}) {
     flex-direction: column;
-  }
-`
-
-export const ActionButton = styled(Link)`
-  display: inline-block;
-  background-color: ${colours.white};
-  color: ${colours.blue};
-  border: 2px solid ${colours.blue};
-  padding: ${spacing.small} ${spacing.medium};
-  border-radius: ${spacing.tiny};
-  text-decoration: none;
-  font-weight: bold;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${colours.blue};
-    color: ${colours.white};
-  }
-
-  &:focus {
-    outline: 2px solid ${colours.blue};
-    outline-offset: 2px;
   }
 `
 
@@ -242,8 +220,8 @@ export const RemoveButton = styled.button`
   }
 
   &:focus {
-    outline: 2px solid ${colours.red};
-    outline-offset: 2px;
+    outline: ${spacing.mini} solid ${colours.red};
+    outline-offset: ${spacing.mini};
   }
 
   &:active {
@@ -254,4 +232,8 @@ export const RemoveButton = styled.button`
     font-size: ${fonts.small};
     padding: ${spacing.tiny};
   }
+`
+
+export const BoldText = styled.span`
+  font-weight: bold;
 `

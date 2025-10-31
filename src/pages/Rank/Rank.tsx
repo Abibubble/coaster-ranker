@@ -1,11 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import { Card, MainContent, Title } from '../../components'
+import React, { useState, useEffect, useCallback } from 'react'
+import {
+  Card,
+  MainContent,
+  Title,
+  ProgressInfo,
+  CoasterComparison,
+  RankingControls,
+  RankingComplete,
+  GroupRanking,
+} from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
+import {
+  RankingMode,
+  generateComparisons,
+  determineOptimalRankingMode,
+  formatCountry,
+  getComparisonKey,
+} from '../../utils/rankingUtils'
 import * as Styled from './Rank.styled'
+
+type RankingPhase = 'auto-ranking' | 'individual-fallback' | 'complete'
 
 function Rank() {
   const { uploadedData, setUploadedData } = useData()
+  const [rankingMode, setRankingMode] = useState<RankingMode>('individual')
+  const [rankingPhase, setRankingPhase] = useState<RankingPhase>('auto-ranking')
   const [currentPair, setCurrentPair] = useState<[Coaster, Coaster] | null>(
     null
   )
@@ -13,31 +33,165 @@ function Rank() {
     [Coaster, Coaster][]
   >([])
   const [isRankingComplete, setIsRankingComplete] = useState(false)
-  const [completedComparisons, setCompletedComparisons] = useState(0)
   const [totalComparisons, setTotalComparisons] = useState(0)
   const [rankings, setRankings] = useState<Map<string, number>>(new Map())
   const [rankedCoasters, setRankedCoasters] = useState<Coaster[]>([])
+  const [lastComparison, setLastComparison] = useState<{
+    pair: [Coaster, Coaster]
+    chosenCoaster: Coaster
+    comparisonKey: string
+  } | null>(null)
+  const [hierarchicalResults, setHierarchicalResults] = useState<{
+    attemptedMode: 'park' | 'model' | null
+    failed: boolean
+  }>({ attemptedMode: null, failed: false })
 
-  console.log('Rank component state:', {
-    hasUploadedData: !!uploadedData,
-    coastersCount: uploadedData?.coasters.length || 0,
-    isRankingComplete,
-    currentPair: currentPair
-      ? `${currentPair[0].name} vs ${currentPair[1].name}`
-      : null,
-    completedComparisons,
-    totalComparisons,
-  })
+  // Handle group ranking completion
+  const handleGroupRankingComplete = useCallback(
+    (rankedCoasters: Coaster[]) => {
+      if (!uploadedData) return
 
-  // Generate all possible pairs for comparison
-  const generateComparisons = (coasters: Coaster[]): [Coaster, Coaster][] => {
-    const pairs: [Coaster, Coaster][] = []
-    for (let i = 0; i < coasters.length - 1; i++) {
-      for (let j = i + 1; j < coasters.length; j++) {
-        pairs.push([coasters[i], coasters[j]])
+      // Update the data context with new sequential IDs
+      const rerankedCoasters = rankedCoasters.map((coaster, index) => ({
+        ...coaster,
+        id: `${index + 1}`.padStart(3, '0'), // 001, 002, 003, etc.
+        isNewCoaster: false, // Mark all coasters as no longer new
+      }))
+
+      // Create updated ranking metadata
+      const updatedRankingMetadata = {
+        completedComparisons: new Set<string>(),
+        totalWins: new Map<string, number>(),
+        isRanked: true,
+      }
+
+      setUploadedData({
+        ...uploadedData,
+        coasters: rerankedCoasters,
+        rankingMetadata: updatedRankingMetadata,
+      })
+
+      setIsRankingComplete(true)
+      setRankedCoasters(rankedCoasters)
+    },
+    [uploadedData, setUploadedData]
+  )
+
+  // Initialize individual ranking
+  const initializeIndividualRanking = useCallback(() => {
+    if (!uploadedData) return
+
+    // Get completed comparisons from ranking metadata
+    const completedComparisons =
+      uploadedData.rankingMetadata?.completedComparisons || new Set<string>()
+    const comparisons = generateComparisons(
+      uploadedData.coasters,
+      completedComparisons
+    )
+
+    // Calculate total possible comparisons for progress tracking
+    const totalPossibleComparisons = Math.floor(
+      (uploadedData.coasters.length * (uploadedData.coasters.length - 1)) / 2
+    )
+
+    setRemainingComparisons(comparisons)
+    setCurrentPair(comparisons[0] || null)
+    setTotalComparisons(totalPossibleComparisons)
+    setLastComparison(null) // Clear any previous undo state
+
+    // Initialize rankings map with existing wins or zeros
+    const initialRankings = new Map<string, number>()
+    uploadedData.coasters.forEach(coaster => {
+      const existingWins =
+        coaster.wins ||
+        uploadedData.rankingMetadata?.totalWins.get(coaster.id) ||
+        0
+      initialRankings.set(coaster.id, existingWins)
+    })
+    setRankings(initialRankings)
+  }, [uploadedData])
+
+  // Handle hierarchical ranking failure - fallback to individual ranking
+  const handleHierarchicalFallback = useCallback(
+    (attemptedMode: 'park' | 'model') => {
+      setHierarchicalResults({ attemptedMode, failed: true })
+      setRankingMode('individual')
+      setRankingPhase('individual-fallback')
+
+      // Initialize individual ranking
+      initializeIndividualRanking()
+    },
+    [initializeIndividualRanking]
+  )
+
+  const resetRanking = () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to reset all rankings? This will permanently delete all your ranking progress and you will need to start over from the beginning.'
+    )
+
+    if (confirmed) {
+      setRankingPhase('auto-ranking')
+      setIsRankingComplete(false)
+      setCurrentPair(null)
+      setRemainingComparisons([])
+      setTotalComparisons(0)
+      setRankings(new Map())
+      setRankedCoasters([])
+      setLastComparison(null)
+      setHierarchicalResults({ attemptedMode: null, failed: false })
+
+      // Clear ranking metadata from uploaded data
+      if (uploadedData) {
+        setUploadedData({
+          ...uploadedData,
+          rankingMetadata: {
+            completedComparisons: new Set<string>(),
+            totalWins: new Map<string, number>(),
+            isRanked: false,
+          },
+        })
       }
     }
-    return pairs
+  }
+
+  const undoLastChoice = () => {
+    if (!lastComparison || !uploadedData) {
+      return
+    }
+
+    // Restore the previous comparison state
+    const { pair, chosenCoaster, comparisonKey } = lastComparison
+
+    // Decrement wins for the previously chosen coaster
+    const newRankings = new Map(rankings)
+    const currentWins = newRankings.get(chosenCoaster.id) || 0
+    newRankings.set(chosenCoaster.id, Math.max(0, currentWins - 1))
+    setRankings(newRankings)
+
+    // Remove the comparison from completed comparisons
+    const currentCompletedComparisons =
+      uploadedData.rankingMetadata?.completedComparisons || new Set<string>()
+    const updatedCompletedComparisons = new Set(currentCompletedComparisons)
+    updatedCompletedComparisons.delete(comparisonKey)
+
+    // Add the pair back to remaining comparisons at the beginning
+    const updatedRemainingComparisons = [pair, ...remainingComparisons]
+    setRemainingComparisons(updatedRemainingComparisons)
+    setCurrentPair(pair)
+
+    // Update the data context
+    const progressData = {
+      ...uploadedData,
+      rankingMetadata: {
+        completedComparisons: updatedCompletedComparisons,
+        totalWins: new Map(newRankings),
+        isRanked: false,
+      },
+    }
+    setUploadedData(progressData)
+
+    // Clear the last comparison since we've undone it
+    setLastComparison(null)
   }
 
   // Initialize ranking when coasters are available
@@ -45,33 +199,40 @@ function Rank() {
     if (
       uploadedData &&
       uploadedData.coasters.length >= 2 &&
-      !isRankingComplete
+      !isRankingComplete &&
+      rankingPhase === 'auto-ranking'
     ) {
-      console.log(
-        'Initializing ranking with',
-        uploadedData.coasters.length,
-        'coasters'
-      )
-      const comparisons = generateComparisons(uploadedData.coasters)
-      setRemainingComparisons(comparisons)
-      setCurrentPair(comparisons[0] || null)
-      setTotalComparisons(comparisons.length)
-      setCompletedComparisons(0)
+      // Automatically determine the best ranking mode
+      const optimalMode = determineOptimalRankingMode(uploadedData.coasters)
+      setRankingMode(optimalMode)
 
-      // Initialize rankings map with wins count
-      const initialRankings = new Map<string, number>()
-      uploadedData.coasters.forEach(coaster => {
-        initialRankings.set(coaster.id, 0)
-      })
-      setRankings(initialRankings)
+      if (optimalMode === 'individual') {
+        // Start individual ranking immediately
+        setRankingPhase('individual-fallback')
+        initializeIndividualRanking()
+      }
+      // For park/model modes, the GroupRanking component will handle initialization
     }
-  }, [uploadedData, isRankingComplete])
+  }, [
+    uploadedData,
+    isRankingComplete,
+    rankingPhase,
+    initializeIndividualRanking,
+  ])
 
   // Handle coaster selection (user picks their favorite)
   const handleCoasterChoice = (chosenCoaster: Coaster) => {
     if (!currentPair || !uploadedData) return
 
-    console.log(`User chose: ${chosenCoaster.name}`)
+    // Create comparison key (ensure consistent ordering)
+    const comparisonKey = getComparisonKey(currentPair[0], currentPair[1])
+
+    // Store the last comparison for undo functionality
+    setLastComparison({
+      pair: currentPair,
+      chosenCoaster,
+      comparisonKey,
+    })
 
     // Update rankings - increment wins for chosen coaster
     const newRankings = new Map(rankings)
@@ -79,16 +240,31 @@ function Rank() {
     newRankings.set(chosenCoaster.id, currentWins + 1)
     setRankings(newRankings)
 
+    // Update completed comparisons
+    const currentCompletedComparisons =
+      uploadedData.rankingMetadata?.completedComparisons || new Set<string>()
+    const updatedCompletedComparisons = new Set(currentCompletedComparisons)
+    updatedCompletedComparisons.add(comparisonKey)
+
+    // Save progress immediately to localStorage
+    const progressData = {
+      ...uploadedData,
+      rankingMetadata: {
+        completedComparisons: updatedCompletedComparisons,
+        totalWins: new Map(newRankings),
+        isRanked: false, // Still in progress
+      },
+    }
+    setUploadedData(progressData)
+
     // Move to next comparison
     const nextComparisons = remainingComparisons.slice(1)
     setRemainingComparisons(nextComparisons)
-    setCompletedComparisons(prev => prev + 1)
 
     if (nextComparisons.length > 0) {
       setCurrentPair(nextComparisons[0])
     } else {
       // Ranking complete
-      console.log('All comparisons complete! Setting completion state...')
 
       // Sort coasters by number of wins (descending), then by original ID
       const sortedCoasters = [...uploadedData.coasters].sort((a, b) => {
@@ -100,11 +276,6 @@ function Rank() {
         }
         return a.id.localeCompare(b.id) // Tie-breaker
       })
-
-      console.log(
-        'Ranked coasters:',
-        sortedCoasters.map(c => `${c.name} (${newRankings.get(c.id)} wins)`)
-      )
 
       // Store the ranked coasters for display
       setRankedCoasters(sortedCoasters)
@@ -118,38 +289,23 @@ function Rank() {
         const rerankedCoasters = sortedCoasters.map((coaster, index) => ({
           ...coaster,
           id: `${index + 1}`.padStart(3, '0'), // 001, 002, 003, etc.
+          wins: newRankings.get(coaster.id) || 0, // Store wins in coaster data
+          isNewCoaster: false, // Mark all coasters as no longer new
         }))
+
+        // Create updated ranking metadata
+        const updatedRankingMetadata = {
+          completedComparisons: new Set<string>(), // Reset for next time
+          totalWins: new Map(newRankings), // Save current wins
+          isRanked: true,
+        }
 
         setUploadedData({
           ...uploadedData,
           coasters: rerankedCoasters,
+          rankingMetadata: updatedRankingMetadata,
         })
-
-        console.log('Data updated with new IDs')
       }, 500) // Longer delay to ensure completion screen is visible
-    }
-  }
-
-  // Restart ranking
-  const restartRanking = () => {
-    console.log('Restarting ranking...')
-    if (uploadedData && uploadedData.coasters.length >= 2) {
-      const comparisons = generateComparisons(uploadedData.coasters)
-      setRemainingComparisons(comparisons)
-      setCurrentPair(comparisons[0] || null)
-      setCompletedComparisons(0)
-      setTotalComparisons(comparisons.length)
-      setIsRankingComplete(false)
-      setRankedCoasters([])
-
-      // Reset rankings
-      const initialRankings = new Map<string, number>()
-      uploadedData.coasters.forEach(coaster => {
-        initialRankings.set(coaster.id, 0)
-      })
-      setRankings(initialRankings)
-
-      console.log('Ranking restarted')
     }
   }
 
@@ -175,144 +331,82 @@ function Rank() {
 
   // Show ranking interface if 2+ coasters
   if (coasters.length >= 2) {
+    // Show GroupRanking for hierarchical modes
+    if (
+      (rankingMode === 'park' || rankingMode === 'model') &&
+      rankingPhase === 'auto-ranking'
+    ) {
+      return (
+        <MainContent>
+          <Title>Rank Your Coasters</Title>
+
+          <Card>
+            <GroupRanking
+              coasters={coasters}
+              groupBy={rankingMode}
+              onRankingComplete={handleGroupRankingComplete}
+              onHierarchicalFallback={handleHierarchicalFallback}
+            />
+          </Card>
+        </MainContent>
+      )
+    }
+
+    // Show individual ranking interface (either as primary or fallback)
     return (
       <MainContent>
         <Title>Rank Your Coasters</Title>
 
         <Card>
-          <h2>Coaster Ranking</h2>
-          <div aria-label='Upload summary'>
-            <p>
-              <strong>File:</strong> {filename}
-            </p>
-            <p>
-              <strong>Uploaded:</strong> {uploadedAt.toLocaleDateString()} at{' '}
-              {uploadedAt.toLocaleTimeString()}
-            </p>
-            <p>
-              <strong>Total Coasters:</strong> {coasters.length}
-            </p>
-          </div>
+          {hierarchicalResults.failed && (
+            <Styled.HierarchicalFallbackNotice>
+              <Styled.FallbackTitle>
+                Switched to Individual Ranking
+              </Styled.FallbackTitle>
+              <Styled.FallbackDescription>
+                {hierarchicalResults.attemptedMode === 'park'
+                  ? 'Park-based'
+                  : 'Manufacturer & Model-based'}{' '}
+                ranking didn't work well for your collection, so we've switched
+                to comparing each coaster individually for the most accurate
+                results.
+              </Styled.FallbackDescription>
+            </Styled.HierarchicalFallbackNotice>
+          )}
 
           <Styled.RankingContainer>
             {isRankingComplete ? (
-              <Styled.RankingComplete>
-                <h3>Ranking Complete!</h3>
-                <p>
-                  Your coasters have been ranked based on your preferences!
-                  Here's your final ranking:
-                </p>
-                <div style={{ margin: '1.5rem 0', textAlign: 'left' }}>
-                  <ol>
-                    {rankedCoasters.slice(0, 5).map((coaster, _index) => (
-                      <li key={coaster.id} style={{ marginBottom: '0.5rem' }}>
-                        <strong>{coaster.name}</strong> at {coaster.park}
-                      </li>
-                    ))}
-                    {rankedCoasters.length > 5 && (
-                      <li style={{ fontStyle: 'italic', color: '#666' }}>
-                        ...and {rankedCoasters.length - 5} more
-                      </li>
-                    )}
-                  </ol>
-                </div>
-                <p
-                  style={{
-                    fontSize: '0.9rem',
-                    color: '#666',
-                    marginBottom: '1rem',
-                  }}
-                >
-                  This ranking order will be used when you download your coaster
-                  collection.
-                </p>
-                <Styled.RestartButton onClick={restartRanking}>
-                  Rank Again
-                </Styled.RestartButton>
-              </Styled.RankingComplete>
+              <RankingComplete
+                rankedCoasters={rankedCoasters}
+                onRankAgain={resetRanking}
+              />
             ) : currentPair ? (
               <>
-                <Styled.ProgressInfo>
-                  <h4>Which coaster do you prefer?</h4>
-                  <p>
-                    Progress: {completedComparisons} of {totalComparisons}{' '}
-                    comparisons
-                  </p>
-                </Styled.ProgressInfo>
+                <ProgressInfo
+                  remainingComparisons={remainingComparisons.length}
+                  totalComparisons={totalComparisons}
+                  showProgressBar={true}
+                />
 
-                <Styled.ComparisonArea>
-                  <Styled.CoasterCard
-                    onClick={() => handleCoasterChoice(currentPair[0])}
-                    aria-label={`Choose ${currentPair[0].name} as your favorite`}
-                  >
-                    <Styled.CoasterName>
-                      {currentPair[0].name}
-                    </Styled.CoasterName>
-                    <Styled.CoasterPark>
-                      {currentPair[0].park} ({currentPair[0].country})
-                    </Styled.CoasterPark>
-                    <Styled.CoasterDetails>
-                      <p>
-                        <strong>Manufacturer:</strong>{' '}
-                        {currentPair[0].manufacturer}
-                      </p>
-                      <p>
-                        <strong>Model:</strong> {currentPair[0].model}
-                      </p>
-                      <p>
-                        <strong>Type:</strong> {currentPair[0].type}
-                      </p>
-                      {currentPair[0].height && (
-                        <p>
-                          <strong>Height:</strong> {currentPair[0].height}m
-                        </p>
-                      )}
-                      {currentPair[0].speed && (
-                        <p>
-                          <strong>Speed:</strong> {currentPair[0].speed} km/h
-                        </p>
-                      )}
-                    </Styled.CoasterDetails>
-                  </Styled.CoasterCard>
+                <CoasterComparison
+                  coaster1={currentPair[0]}
+                  coaster2={currentPair[1]}
+                  onChoose1={() => handleCoasterChoice(currentPair[0])}
+                  onChoose2={() => handleCoasterChoice(currentPair[1])}
+                />
 
-                  <Styled.VersusText>VS</Styled.VersusText>
-
-                  <Styled.CoasterCard
-                    onClick={() => handleCoasterChoice(currentPair[1])}
-                    aria-label={`Choose ${currentPair[1].name} as your favorite`}
-                  >
-                    <Styled.CoasterName>
-                      {currentPair[1].name}
-                    </Styled.CoasterName>
-                    <Styled.CoasterPark>
-                      {currentPair[1].park} ({currentPair[1].country})
-                    </Styled.CoasterPark>
-                    <Styled.CoasterDetails>
-                      <p>
-                        <strong>Manufacturer:</strong>{' '}
-                        {currentPair[1].manufacturer}
-                      </p>
-                      <p>
-                        <strong>Model:</strong> {currentPair[1].model}
-                      </p>
-                      <p>
-                        <strong>Type:</strong> {currentPair[1].type}
-                      </p>
-                      {currentPair[1].height && (
-                        <p>
-                          <strong>Height:</strong> {currentPair[1].height}m
-                        </p>
-                      )}
-                      {currentPair[1].speed && (
-                        <p>
-                          <strong>Speed:</strong> {currentPair[1].speed} km/h
-                        </p>
-                      )}
-                    </Styled.CoasterDetails>
-                  </Styled.CoasterCard>
-                </Styled.ComparisonArea>
+                <RankingControls
+                  onUndo={undoLastChoice}
+                  onReset={resetRanking}
+                  canUndo={!!lastComparison}
+                />
               </>
-            ) : null}
+            ) : (
+              <Styled.PreparingContainer>
+                <p>Preparing comparisons...</p>
+                <RankingControls onReset={resetRanking} />
+              </Styled.PreparingContainer>
+            )}
           </Styled.RankingContainer>
         </Card>
       </MainContent>
@@ -326,63 +420,65 @@ function Rank() {
 
       <Card>
         <h2>Your Coaster Collection</h2>
-        <div aria-label='Upload summary'>
+        <Styled.UploadSummary aria-label='Upload summary'>
           <p>
-            <strong>File:</strong> {filename}
+            <Styled.BoldText>File:</Styled.BoldText> {filename}
           </p>
           <p>
-            <strong>Uploaded:</strong> {uploadedAt.toLocaleDateString()} at{' '}
+            <Styled.BoldText>Uploaded:</Styled.BoldText>{' '}
+            {uploadedAt.toLocaleDateString()} at{' '}
             {uploadedAt.toLocaleTimeString()}
           </p>
           <p>
-            <strong>Total Coasters:</strong> {coasters.length}
+            <Styled.BoldText>Total Coasters:</Styled.BoldText> {coasters.length}
           </p>
-        </div>
+        </Styled.UploadSummary>
 
         <h3>Coasters Ready for Ranking</h3>
-        <div role='region' aria-label='Coaster list'>
+        <Styled.CoasterList role='region' aria-label='Coaster list'>
           <ul>
             {coasters.slice(0, 10).map((coaster, _index) => (
               <li key={coaster.id}>
-                <strong>{coaster.name}</strong> at {coaster.park} (
-                {coaster.country})
+                <Styled.BoldText>{coaster.name}</Styled.BoldText> at{' '}
+                {coaster.park}
+                {formatCountry(coaster.country)}
                 <span
                   aria-label={`Manufacturer: ${coaster.manufacturer}, Model: ${coaster.model}, Type: ${coaster.type}`}
                 >
                   {' '}
-                  — {coaster.manufacturer} {coaster.model} ({coaster.type})
+                  - {coaster.manufacturer} {coaster.model} ({coaster.type})
                 </span>
               </li>
             ))}
             {coasters.length > 10 && (
               <li>
-                <em>
+                <Styled.ItalicText>
                   ...and {coasters.length - 10} more coaster
                   {coasters.length - 10 === 1 ? '' : 's'}
-                </em>
+                </Styled.ItalicText>
               </li>
             )}
           </ul>
-        </div>
+        </Styled.CoasterList>
 
         {coasters.length > 0 && (
-          <div style={{ marginTop: '2rem' }}>
+          <Styled.RankingInstructions>
             {coasters.length >= 2 ? (
               <p>
-                <em>
+                <Styled.ItalicText>
                   Ranking functionality is available! You can start ranking your{' '}
                   {coasters.length} coasters.
-                </em>
+                </Styled.ItalicText>
               </p>
             ) : (
               <p>
-                <em>
+                <Styled.ItalicText>
                   Upload at least one more coaster to start ranking. You need a
                   minimum of 2 coasters to compare and rank.
-                </em>
+                </Styled.ItalicText>
               </p>
             )}
-          </div>
+          </Styled.RankingInstructions>
         )}
       </Card>
     </MainContent>

@@ -119,7 +119,7 @@ function Accessibility() {
         </Styled.Section>
 
         <Styled.Paragraph>
-          <em>Last updated: October 30, 2025</em>
+          <Styled.ItalicText>Last updated: October 30, 2025</Styled.ItalicText>
         </Styled.Paragraph>
       </Styled.PageContent>
     </MainContent>

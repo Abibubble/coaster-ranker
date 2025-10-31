@@ -155,8 +155,8 @@ export const FileInfo = styled.p`
 `
 
 export const ErrorMessage = styled.div`
-  background-color: #fee;
-  border: ${spacing.micro} solid #fcc;
+  background-color: ${colours.lightRed};
+  border: ${spacing.micro} solid ${colours.redBorder};
   border-radius: ${spacing.fine};
   padding: ${spacing.small};
   margin-top: ${spacing.small};
@@ -173,8 +173,8 @@ export const ErrorIcon = styled.span`
 `
 
 export const SuccessMessage = styled.div`
-  background-color: #efe;
-  border: ${spacing.micro} solid #cfc;
+  background-color: ${colours.lightGreenBg};
+  border: ${spacing.micro} solid ${colours.greenBorder};
   border-radius: ${spacing.fine};
   padding: ${spacing.small};
   margin-top: ${spacing.small};
@@ -221,18 +221,7 @@ export const CurrentDataInfo = styled.div`
   }
 `
 
-export const ViewLink = styled(Link)`
-  color: ${colours.blue};
-  text-decoration: none;
+export const BoldText = styled.span`
   font-weight: bold;
-  margin-left: ${spacing.tiny};
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus {
-    outline: 2px solid ${colours.blue};
-    outline-offset: 2px;
-  }
+  color: ${colours.blue};
 `

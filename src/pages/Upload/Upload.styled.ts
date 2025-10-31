@@ -1,6 +1,5 @@
 import styled from 'styled-components'
-import { Link } from '../../components'
-import { colours, spacing, fonts } from '../../theme'
+import { colours, spacing, fonts, shadows } from '../../theme'
 
 export const Instructions = styled.div`
   margin-bottom: ${spacing.large};
@@ -131,7 +130,7 @@ export const JsonTextarea = styled.textarea`
   &:focus {
     outline: none;
     border-color: ${colours.blue};
-    box-shadow: 0 0 0 3px ${colours.shadowLight};
+    box-shadow: ${shadows.focus};
   }
 
   &:disabled {
@@ -364,8 +363,8 @@ export const ExampleLinks = styled.div`
 `
 
 export const ErrorMessage = styled.div`
-  background-color: #fee;
-  border: ${spacing.micro} solid #fcc;
+  background-color: ${colours.lightRed};
+  border: ${spacing.micro} solid ${colours.redBorder};
   border-radius: ${spacing.fine};
   padding: ${spacing.small};
   margin-top: ${spacing.small};
@@ -382,8 +381,8 @@ export const ErrorIcon = styled.span`
 `
 
 export const SuccessMessage = styled.div`
-  background-color: #efe;
-  border: ${spacing.micro} solid #cfc;
+  background-color: ${colours.lightGreenBg};
+  border: ${spacing.micro} solid ${colours.greenBorder};
   border-radius: ${spacing.fine};
   padding: ${spacing.small};
   margin-top: ${spacing.small};
@@ -399,18 +398,7 @@ export const SuccessIcon = styled.span`
   color: ${colours.green};
 `
 
-export const ViewLink = styled(Link)`
-  color: ${colours.blue};
-  text-decoration: none;
+export const BoldText = styled.span`
   font-weight: bold;
-  margin-left: ${spacing.tiny};
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus {
-    outline: 2px solid ${colours.blue};
-    outline-offset: 2px;
-  }
+  color: ${colours.blue};
 `

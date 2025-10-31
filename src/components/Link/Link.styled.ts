@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours } from '../../theme'
+import { colours, spacing } from '../../theme'
 
 interface StyledLinkProps {
   $dark?: boolean
@@ -22,8 +22,8 @@ export const Link = styled.a<StyledLinkProps>`
 
   &:focus {
     text-decoration: underline;
-    outline: 2px solid ${colours.blue};
-    outline-offset: 2px;
+    outline: ${spacing.mini} solid ${colours.blue};
+    outline-offset: ${spacing.mini};
   }
 
   &:visited {

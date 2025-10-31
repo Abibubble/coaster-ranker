@@ -1,15 +1,149 @@
 import React, { useState } from 'react'
-import { Card, CodeBlock, MainContent, Title } from '../../components'
+import {
+  Card,
+  CodeBlock,
+  MainContent,
+  Title,
+  DuplicateResolver,
+  ViewLink,
+} from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { processUploadedFile } from '../../utils/fileParser'
+import {
+  detectDuplicates,
+  DuplicateMatch,
+} from '../../utils/duplicateDetection'
+import type { DuplicateResolution } from '../../components/DuplicateResolver'
+import { Coaster } from '../../types/data'
 import * as Styled from './UploadCSV.styled'
 
 export default function UploadCSV() {
   const { uploadedData, setUploadedData, isLoading, setIsLoading } = useData()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [duplicates, setDuplicates] = useState<DuplicateMatch[]>([])
+  const [pendingCoasters, setPendingCoasters] = useState<Coaster[]>([])
+  const [pendingFilename, setPendingFilename] = useState<string>('')
+  const [showDuplicateResolver, setShowDuplicateResolver] = useState(false)
 
   const existingCoasterCount = uploadedData?.coasters?.length || 0
+
+  const finalizeCombinedData = (newCoasters: Coaster[], filename: string) => {
+    const existingCoasters = uploadedData?.coasters || []
+
+    // Mark new coasters
+    const markedNewCoasters = newCoasters.map(coaster => ({
+      ...coaster,
+      isNewCoaster: true,
+      wins: 0,
+    }))
+
+    const combinedData = {
+      coasters: [...existingCoasters, ...markedNewCoasters],
+      uploadedAt: new Date(),
+      filename: uploadedData?.filename
+        ? `${uploadedData.filename}, ${filename}`
+        : filename,
+      rankingMetadata: uploadedData?.rankingMetadata || {
+        completedComparisons: new Set<string>(),
+        totalWins: new Map<string, number>(),
+        isRanked: false,
+      },
+    }
+
+    setUploadedData(combinedData)
+
+    const newCoasterCount = newCoasters.length
+    const totalCount = combinedData.coasters.length
+    setSuccess(
+      `Successfully processed CSV file! Added ${newCoasterCount} new coasters. You now have ${totalCount} coasters total.`
+    )
+  }
+
+  const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
+    if (!pendingCoasters.length) return
+
+    const existingCoasters = uploadedData?.coasters || []
+    let updatedCoasters = [...existingCoasters]
+    let coastersToAdd: Coaster[] = []
+
+    // Build a map of which coasters to process
+    const coastersToProcess = new Set(pendingCoasters)
+
+    // Process each resolution
+    resolutions.forEach((resolution, index) => {
+      const duplicate = duplicates[index]
+
+      switch (resolution.action) {
+        case 'keep-existing':
+          // Remove the new coaster from processing
+          coastersToProcess.delete(duplicate.newCoaster)
+          break
+        case 'keep-new':
+          // Remove existing coaster and mark new one for addition
+          updatedCoasters = updatedCoasters.filter(
+            c => c.id !== duplicate.existingCoaster.id
+          )
+          if (coastersToProcess.has(duplicate.newCoaster)) {
+            coastersToAdd.push(duplicate.newCoaster)
+            coastersToProcess.delete(duplicate.newCoaster)
+          }
+          break
+        case 'keep-both':
+          // Mark new coaster for addition
+          if (coastersToProcess.has(duplicate.newCoaster)) {
+            coastersToAdd.push(duplicate.newCoaster)
+            coastersToProcess.delete(duplicate.newCoaster)
+          }
+          break
+      }
+    })
+
+    // Add any remaining coasters that weren't involved in duplicates
+    coastersToAdd.push(...Array.from(coastersToProcess))
+
+    // Mark all new coasters
+    const markedNewCoasters = coastersToAdd.map(coaster => ({
+      ...coaster,
+      isNewCoaster: true,
+      wins: 0,
+    }))
+
+    const combinedData = {
+      coasters: [...updatedCoasters, ...markedNewCoasters],
+      uploadedAt: new Date(),
+      filename: uploadedData?.filename
+        ? `${uploadedData.filename}, ${pendingFilename}`
+        : pendingFilename,
+      rankingMetadata: uploadedData?.rankingMetadata || {
+        completedComparisons: new Set<string>(),
+        totalWins: new Map<string, number>(),
+        isRanked: false,
+      },
+    }
+
+    setUploadedData(combinedData)
+
+    const addedCount = markedNewCoasters.length
+    const totalCount = combinedData.coasters.length
+    setSuccess(
+      `Successfully processed CSV file! Added ${addedCount} new coasters. You now have ${totalCount} coasters total.`
+    )
+
+    // Reset states
+    setShowDuplicateResolver(false)
+    setDuplicates([])
+    setPendingCoasters([])
+    setPendingFilename('')
+  }
+
+  const handleDuplicateCancel = () => {
+    setShowDuplicateResolver(false)
+    setDuplicates([])
+    setPendingCoasters([])
+    setPendingFilename('')
+    setError('Upload cancelled due to potential duplicates.')
+  }
 
   const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -28,22 +162,21 @@ export default function UploadCSV() {
         const content = await file.text()
         const newData = await processUploadedFile(file, content)
 
-        // Combine with existing data
+        // Check for duplicates
         const existingCoasters = uploadedData?.coasters || []
-        const combinedData = {
-          coasters: [...existingCoasters, ...newData.coasters],
-          uploadedAt: newData.uploadedAt,
-          filename: uploadedData?.filename
-            ? `${uploadedData.filename}, ${newData.filename}`
-            : newData.filename,
-        }
-        setUploadedData(combinedData)
-
-        const newCoasterCount = newData.coasters?.length || 0
-        const totalCount = combinedData.coasters?.length || 0
-        setSuccess(
-          `Successfully processed CSV file! Added ${newCoasterCount} new coasters. You now have ${totalCount} coasters total.`
+        const duplicateCheck = detectDuplicates(
+          existingCoasters,
+          newData.coasters
         )
+
+        if (duplicateCheck.hasDuplicates) {
+          setDuplicates(duplicateCheck.duplicates)
+          setPendingCoasters(newData.coasters)
+          setPendingFilename(newData.filename)
+          setShowDuplicateResolver(true)
+        } else {
+          finalizeCombinedData(newData.coasters, newData.filename)
+        }
       } catch (err) {
         setError(
           `Error processing CSV: ${
@@ -70,11 +203,9 @@ export default function UploadCSV() {
           {existingCoasterCount > 0 && (
             <Styled.CurrentDataInfo>
               You currently have{' '}
-              <strong>{existingCoasterCount} coasters</strong> in your
-              collection.{' '}
-              <Styled.ViewLink href='/view-coasters'>
-                View all coasters
-              </Styled.ViewLink>
+              <Styled.BoldText>{existingCoasterCount} coasters</Styled.BoldText>{' '}
+              in your collection.{' '}
+              <ViewLink href='/view-coasters'>View all coasters</ViewLink>
             </Styled.CurrentDataInfo>
           )}
         </Styled.Instructions>
@@ -84,19 +215,19 @@ export default function UploadCSV() {
           <h3>Required Fields:</h3>
           <ul>
             <li>
-              <strong>name:</strong> Coaster name
+              <Styled.BoldText>name:</Styled.BoldText> Coaster name
             </li>
             <li>
-              <strong>park:</strong> Theme park
+              <Styled.BoldText>park:</Styled.BoldText> Theme park
             </li>
             <li>
-              <strong>manufacturer:</strong> Builder company
+              <Styled.BoldText>manufacturer:</Styled.BoldText> Builder company
             </li>
             <li>
-              <strong>model:</strong> Model name
+              <Styled.BoldText>model:</Styled.BoldText> Model name
             </li>
             <li>
-              <strong>type:</strong> Steel/Wood/Hybrid
+              <Styled.BoldText>type:</Styled.BoldText> Steel/Wood/Hybrid
             </li>
           </ul>
         </Styled.RequiredFields>
@@ -135,6 +266,15 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,United Kingdom,2006`}
             row.
           </Styled.FileInfo>
         </Styled.FileSection>
+
+        {/* Duplicate Resolution */}
+        {showDuplicateResolver && duplicates.length > 0 && (
+          <DuplicateResolver
+            duplicates={duplicates}
+            onResolve={handleDuplicateResolution}
+            onCancel={handleDuplicateCancel}
+          />
+        )}
 
         {/* Status Messages */}
         {error && (

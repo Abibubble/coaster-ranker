@@ -21,6 +21,31 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         if (parsedData.uploadedAt) {
           parsedData.uploadedAt = new Date(parsedData.uploadedAt)
         }
+
+        // Convert ranking metadata back to proper types
+        if (parsedData.rankingMetadata) {
+          const metadata = parsedData.rankingMetadata
+
+          // Convert completedComparisons array back to Set
+          if (
+            metadata.completedComparisons &&
+            Array.isArray(metadata.completedComparisons)
+          ) {
+            metadata.completedComparisons = new Set(
+              metadata.completedComparisons
+            )
+          } else {
+            metadata.completedComparisons = new Set<string>()
+          }
+
+          // Convert totalWins array back to Map
+          if (metadata.totalWins && Array.isArray(metadata.totalWins)) {
+            metadata.totalWins = new Map(metadata.totalWins)
+          } else {
+            metadata.totalWins = new Map<string, number>()
+          }
+        }
+
         setUploadedDataState(parsedData)
       }
     } catch (error) {
@@ -36,7 +61,21 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
     try {
       if (data) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+        // Prepare data for JSON serialization
+        const dataToSave = JSON.parse(
+          JSON.stringify(data, (key, value) => {
+            // Custom serialization for Set and Map
+            if (key === 'completedComparisons' && value instanceof Set) {
+              return Array.from(value)
+            }
+            if (key === 'totalWins' && value instanceof Map) {
+              return Array.from(value.entries())
+            }
+            return value
+          })
+        )
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave))
       } else {
         localStorage.removeItem(STORAGE_KEY)
       }

@@ -77,3 +77,7 @@ export const KeyboardShortcut = styled.code`
   font-weight: 500;
   display: inline-block;
 `
+
+export const ItalicText = styled.span`
+  font-style: italic;
+`

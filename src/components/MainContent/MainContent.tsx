@@ -7,7 +7,7 @@ export type MainContentProps = {
 
 export default function MainContent({ children }: MainContentProps) {
   return (
-    <Styled.ContentContainer id='main-content' tabIndex={-1}>
+    <Styled.ContentContainer id='main-content'>
       {children}
     </Styled.ContentContainer>
   )

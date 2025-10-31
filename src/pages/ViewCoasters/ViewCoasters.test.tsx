@@ -1,10 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
+import { vi } from 'vitest'
 import { DataProvider } from '../../contexts/DataContext'
 import ViewCoasters from './ViewCoasters'
 
 // Mock the styled components to avoid import issues in tests
-jest.mock('./ViewCoasters.styled', () => ({
+vi.mock('./ViewCoasters.styled', () => ({
   EmptyState: 'div',
   UploadLink: 'a',
   CoastersSummary: 'div',

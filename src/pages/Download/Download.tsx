@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Card, MainContent, Title } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
+import { colours } from '../../theme'
 import * as Styled from './Download.styled'
 
 export default function Download() {
@@ -133,14 +134,15 @@ export default function Download() {
           <Styled.Section>
             <h2>Your Coaster Collection</h2>
             <p>
-              You have <strong>{coasters.length}</strong> coaster
+              You have <Styled.BoldText>{coasters.length}</Styled.BoldText>{' '}
+              coaster
               {coasters.length === 1 ? '' : 's'} in your collection.
             </p>
             {uploadedData?.uploadedAt && (
               <p
                 style={{
                   fontSize: '0.9rem',
-                  color: '#888',
+                  color: colours.lightTextGrey,
                   fontStyle: 'italic',
                 }}
               >
