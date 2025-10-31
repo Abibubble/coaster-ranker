@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import {
+  BackLink,
   Card,
   CodeBlock,
+  DuplicateResolver,
   MainContent,
   Title,
-  DuplicateResolver,
   ViewLink,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
@@ -145,48 +146,52 @@ export default function UploadCSV() {
     setError('Upload cancelled due to potential duplicates.')
   }
 
-  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
+  const handleFileInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isLoading) {
+      event.preventDefault()
+      return
+    }
 
-      if (!file.name.toLowerCase().endsWith('.csv')) {
-        setError('Please select a CSV file.')
-        return
-      }
+    const file = event.target.files?.[0]
+    if (!file) return
 
-      setIsLoading(true)
-      setError(null)
-      setSuccess(null)
+    setError('')
+    setSuccess('')
+    setIsLoading(true)
 
+    const reader = new FileReader()
+    reader.onload = async e => {
       try {
-        const content = await file.text()
-        const newData = await processUploadedFile(file, content)
+        const csvContent = e.target?.result as string
+        const result = await processUploadedFile(file, csvContent)
 
-        // Check for duplicates
         const existingCoasters = uploadedData?.coasters || []
-        const duplicateCheck = detectDuplicates(
+        const detectedDuplicates = detectDuplicates(
           existingCoasters,
-          newData.coasters
+          result.coasters
         )
 
-        if (duplicateCheck.hasDuplicates) {
-          setDuplicates(duplicateCheck.duplicates)
-          setPendingCoasters(newData.coasters)
-          setPendingFilename(newData.filename)
+        if (detectedDuplicates.duplicates.length > 0) {
+          setDuplicates(detectedDuplicates.duplicates)
+          setPendingCoasters(result.coasters)
+          setPendingFilename(file.name)
           setShowDuplicateResolver(true)
         } else {
-          finalizeCombinedData(newData.coasters, newData.filename)
+          finalizeCombinedData(result.coasters, file.name)
         }
       } catch (err) {
-        setError(
-          `Error processing CSV: ${
-            err instanceof Error ? err.message : 'Unknown error'
-          }`
-        )
+        setError(err instanceof Error ? err.message : 'Failed to process file')
       } finally {
         setIsLoading(false)
       }
     }
+
+    reader.onerror = () => {
+      setError('Failed to read file')
+      setIsLoading(false)
+    }
+
+    reader.readAsText(file)
   }
 
   return (
@@ -255,15 +260,25 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,United Kingdom,2006`}
               id='csv-file-upload'
               accept='.csv,text/csv'
               onChange={handleFileInput}
-              disabled={isLoading}
+              aria-describedby='file-status'
             />
-            <Styled.FileLabel htmlFor='csv-file-upload' $disabled={isLoading}>
-              {isLoading ? 'Processing...' : 'Choose CSV File'}
+            <Styled.FileLabel
+              htmlFor='csv-file-upload'
+              $isLoading={isLoading}
+              tabIndex={0}
+              onKeyDown={e => {
+                if ((e.key === 'Enter' || e.key === ' ') && isLoading) {
+                  e.preventDefault()
+                }
+              }}
+            >
+              {isLoading ? 'Processing File...' : 'Choose CSV File'}
             </Styled.FileLabel>
           </Styled.FileInputWrapper>
-          <Styled.FileInfo>
-            Only CSV files are accepted. File should have headers in the first
-            row.
+          <Styled.FileInfo id='file-status'>
+            {isLoading
+              ? 'Please wait while your file is being processed...'
+              : 'Only CSV files are accepted. File should have headers in the first row.'}
           </Styled.FileInfo>
         </Styled.FileSection>
 
@@ -291,9 +306,7 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,United Kingdom,2006`}
           </Styled.SuccessMessage>
         )}
 
-        <Styled.BackLink href='/upload'>
-          ← Back to Upload Options
-        </Styled.BackLink>
+        <BackLink href='/upload'>Back to Upload Options</BackLink>
       </Card>
     </MainContent>
   )

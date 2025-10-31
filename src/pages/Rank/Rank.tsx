@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Card,
-  MainContent,
-  Title,
-  ProgressInfo,
   CoasterComparison,
-  RankingControls,
-  RankingComplete,
   GroupRanking,
+  MainContent,
+  ProgressInfo,
+  RankingComplete,
+  RankingControls,
+  Title,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
 import {
-  RankingMode,
-  generateComparisons,
   determineOptimalRankingMode,
   formatCountry,
+  generateComparisons,
   getComparisonKey,
+  RankingMode,
 } from '../../utils/rankingUtils'
 import * as Styled from './Rank.styled'
 

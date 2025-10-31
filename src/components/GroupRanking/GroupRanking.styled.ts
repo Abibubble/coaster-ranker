@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import {
+  breakpoints,
+  colours,
   fonts,
+  shadows,
   spacing,
   textSpacing,
-  colours,
-  breakpoints,
-  shadows,
 } from '../../theme'
 
 export const BoldText = styled.span`
@@ -154,8 +154,8 @@ export const ProgressBarContainer = styled.div`
   position: relative;
 `
 
-export const ProgressBar = styled.div<{ progress: number }>`
-  width: ${props => props.progress}%;
+export const ProgressBar = styled.div<{ $progress: number }>`
+  width: ${props => props.$progress}%;
   height: 100%;
   background: linear-gradient(
     90deg,

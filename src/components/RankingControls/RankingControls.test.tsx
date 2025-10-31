@@ -4,9 +4,9 @@ import { vi } from 'vitest'
 import RankingControls from './RankingControls'
 
 const defaultProps = {
-  onUndo: vi.fn(),
   onReset: vi.fn(),
   canUndo: true,
+  onUndo: vi.fn(),
 }
 
 describe('RankingControls', () => {

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { spacing, colours } from '../../theme'
+import { colours, spacing } from '../../theme'
 
 export const FooterContainer = styled.footer`
   background-color: ${colours.black};

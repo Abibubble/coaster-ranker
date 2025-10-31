@@ -1,9 +1,9 @@
-import { spacing, fonts, textSpacing } from '../../theme'
+import { breakpoints, colours, fonts, spacing, textSpacing } from '../../theme'
 import styled from 'styled-components'
 
 export const DuplicateContainer = styled.div`
-  background: #fff3cd;
-  border: ${spacing.micro} solid #ffc107;
+  background: ${colours.warningBg};
+  border: ${spacing.micro} solid ${colours.yellow};
   border-radius: ${spacing.tiny};
   padding: ${textSpacing.small};
   margin: ${textSpacing.small} 0;
@@ -18,25 +18,25 @@ export const DuplicateHeader = styled.div`
 `
 
 export const DuplicateTitle = styled.h3`
-  color: #856404;
+  color: ${colours.warningYellow};
   margin: 0 0 ${textSpacing.tiny} 0;
   font-size: ${fonts.large};
 `
 
 export const DuplicateDescription = styled.p`
-  color: #856404;
+  color: ${colours.warningYellow};
   margin: 0;
   font-size: ${fonts.small};
 `
 
 export const DuplicateItem = styled.div`
-  background: #ffffff;
-  border: ${spacing.micro} solid #ffc107;
+  background: ${colours.white};
+  border: ${spacing.micro} solid ${colours.yellow};
   border-radius: ${spacing.tiny};
   padding: ${textSpacing.small};
   margin: ${textSpacing.small} 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${breakpoints.tabletLarge}) {
     padding: ${textSpacing.tiny};
     margin: ${textSpacing.tiny} 0;
   }
@@ -49,15 +49,15 @@ export const CoasterComparison = styled.div`
   align-items: start;
   margin: ${textSpacing.small} 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${breakpoints.tabletLarge}) {
     grid-template-columns: 1fr;
     gap: ${textSpacing.tiny};
   }
 `
 
 export const CoasterCard = styled.div`
-  background: #f8f9fa;
-  border: ${spacing.micro} solid #dee2e6;
+  background: ${colours.paleGrey};
+  border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.fine};
   padding: ${textSpacing.small};
 `
@@ -65,12 +65,12 @@ export const CoasterCard = styled.div`
 export const CoasterTitle = styled.h4`
   margin: 0 0 ${textSpacing.tiny} 0;
   font-size: ${fonts.body};
-  color: #333;
+  color: ${colours.darkGrey};
 `
 
 export const CoasterDetails = styled.div`
   font-size: ${fonts.small};
-  color: #666;
+  color: ${colours.mediumGrey};
 
   p {
     margin: ${textSpacing.fine} 0;
@@ -82,41 +82,41 @@ export const VersusText = styled.div`
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  color: #856404;
+  color: ${colours.warningYellow};
 
-  @media (max-width: 768px) {
+  @media (max-width: ${breakpoints.tabletLarge}) {
     display: none;
   }
 `
 
 export const MatchInfo = styled.div`
-  background: #e7f3ff;
-  border: ${spacing.micro} solid #007bff;
+  background: ${colours.veryLightBlue};
+  border: ${spacing.micro} solid ${colours.lightBlue};
   border-radius: ${spacing.fine};
   padding: ${textSpacing.tiny};
   margin: ${textSpacing.small} 0;
   font-size: ${fonts.small};
 
   strong {
-    color: #0056b3;
+    color: ${colours.darkerBlue};
   }
 `
 
 export const ButtonGroup = styled.div`
   display: flex;
   gap: ${textSpacing.tiny};
-  margin-top: 1rem;
+  margin-top: ${textSpacing.medium};
   flex-wrap: wrap;
 `
 
 export const DuplicateButton = styled.button<{
   variant: 'existing' | 'new' | 'both'
 }>`
-  padding: 0.5rem 1rem;
+  padding: ${spacing.tiny} ${spacing.small};
   border: none;
-  border-radius: 4px;
+  border-radius: ${spacing.fine};
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: ${fonts.small};
   font-weight: 500;
   transition: all 0.2s ease;
 
@@ -124,26 +124,26 @@ export const DuplicateButton = styled.button<{
     switch (props.variant) {
       case 'existing':
         return `
-          background: #dc3545;
-          color: white;
+          background: ${colours.red};
+          color: ${colours.white};
           &:hover {
-            background: #c82333;
+            background: ${colours.darkRed};
           }
         `
       case 'new':
         return `
-          background: #28a745;
-          color: white;
+          background: ${colours.lightGreen};
+          color: ${colours.white};
           &:hover {
-            background: #218838;
+            background: ${colours.green};
           }
         `
       case 'both':
         return `
-          background: #007bff;
-          color: white;
+          background: ${colours.lightBlue};
+          color: ${colours.white};
           &:hover {
-            background: #0056b3;
+            background: ${colours.darkerBlue};
           }
         `
     }
@@ -152,34 +152,50 @@ export const DuplicateButton = styled.button<{
 
 export const ActionButtons = styled.div`
   display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: ${textSpacing.medium};
+  margin-top: ${textSpacing.large};
   flex-wrap: wrap;
+  align-items: center;
+`
+
+export const ProgressInfo = styled.div`
+  background: ${colours.veryLightBlue};
+  border: ${spacing.micro} solid ${colours.lightBlue};
+  border-radius: ${spacing.fine};
+  padding: ${textSpacing.tiny};
+  font-size: ${fonts.small};
+  color: ${colours.darkerBlue};
+  flex: 1;
+  min-width: ${breakpoints.mobileMedium};
 `
 
 export const ActionButton = styled.button<{ primary?: boolean }>`
-  padding: 0.75rem 1.5rem;
+  padding: ${spacing.small} ${spacing.medium};
   border: none;
-  border-radius: 4px;
+  border-radius: ${spacing.fine};
   cursor: pointer;
-  font-size: 1rem;
+  font-size: ${fonts.body};
   font-weight: 500;
   transition: all 0.2s ease;
 
   ${props =>
     props.primary
       ? `
-    background: #007bff;
-    color: white;
+    background: ${colours.lightBlue};
+    color: ${colours.white};
     &:hover {
-      background: #0056b3;
+      background: ${colours.darkerBlue};
+      transform: translateY(-1px);
+    }
+    &:active {
+      transform: translateY(0);
     }
   `
       : `
-    background: #6c757d;
-    color: white;
+    background: ${colours.mutedGrey};
+    color: ${colours.white};
     &:hover {
-      background: #5a6268;
+      background: ${colours.slateGrey};
     }
   `}
 `

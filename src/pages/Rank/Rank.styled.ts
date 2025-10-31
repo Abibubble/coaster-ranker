@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import {
-  colours,
-  spacing,
   breakpoints,
-  textSpacing,
+  colours,
   fonts,
   shadows,
+  spacing,
+  textSpacing,
 } from '../../theme'
 
 export const RankingContainer = styled.div`
@@ -54,14 +54,14 @@ export const CoasterCard = styled.button`
 `
 
 export const CoasterName = styled.h3`
-  margin: 0 0 ${spacing.tiny} 0;
+  margin: 0 0 ${spacing.tiny};
   color: ${colours.darkGrey};
   font-size: ${fonts.large};
   font-weight: 600;
 `
 
 export const CoasterPark = styled.p`
-  margin: 0 0 ${spacing.small} 0;
+  margin: 0 0 ${spacing.small};
   color: ${colours.mediumGrey};
   font-weight: 500;
 `
@@ -99,7 +99,7 @@ export const ProgressInfo = styled.div`
   border-radius: ${spacing.tiny};
 
   h4 {
-    margin: 0 0 ${spacing.tiny} 0;
+    margin: 0 0 ${spacing.tiny};
     color: ${colours.darkGrey};
   }
 
@@ -125,7 +125,7 @@ export const ComparisonProgress = styled.div`
 `
 
 export const ProgressTitle = styled.h4`
-  margin: 0 0 ${textSpacing.small} 0;
+  margin: 0 0 ${textSpacing.small};
   color: ${colours.navyBlue};
   font-size: ${fonts.large};
   font-weight: 600;
@@ -226,12 +226,12 @@ export const RankingComplete = styled.div`
   border-left: ${spacing.fine} solid ${colours.lightGreen};
 
   h3 {
-    margin: 0 0 ${textSpacing.small} 0;
+    margin: 0 0 ${textSpacing.small};
     color: ${colours.successGreen};
   }
 
   p {
-    margin: 0 0 ${textSpacing.small} 0;
+    margin: 0 0 ${textSpacing.small};
     color: ${colours.successGreen};
   }
 `
@@ -286,7 +286,7 @@ export const RankingModeCard = styled.button`
   }
 
   h4 {
-    margin: 0 0 ${textSpacing.tiny} 0;
+    margin: 0 0 ${textSpacing.tiny};
     color: ${colours.darkGrey};
     font-size: ${fonts.large};
     font-weight: 600;
@@ -353,7 +353,7 @@ export const FallbackTitle = styled.p`
 `
 
 export const FallbackDescription = styled.p`
-  margin: ${textSpacing.tiny} 0 0 0;
+  margin: ${textSpacing.tiny} 0 0;
   font-size: ${fonts.small};
   color: ${colours.warningYellow};
 `

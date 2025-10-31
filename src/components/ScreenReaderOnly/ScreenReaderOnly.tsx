@@ -5,14 +5,14 @@ import * as Styled from './ScreenReaderOnly.styled'
 export type ScreenReaderOnlyProps<
   GElementType extends ElementType = ElementType
 > = ComponentPropsWithRef<GElementType> & {
-  as?: GElementType
   children: ReactNode
+  as?: GElementType
   id?: string
 }
 
 export default function ScreenReaderOnly({
-  as = 'span',
   children,
+  as = 'span',
   id,
 }: ScreenReaderOnlyProps) {
   return (

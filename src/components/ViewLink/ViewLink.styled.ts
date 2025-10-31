@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, fonts } from '../../theme'
+import { colours, fonts, spacing } from '../../theme'
 
 export const ViewLink = styled.a`
   display: inline-block;

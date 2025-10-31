@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, fonts, shadows } from '../../theme'
+import { colours, fonts, shadows, spacing } from '../../theme'
 
 export const Instructions = styled.div`
   margin-bottom: ${spacing.large};
@@ -38,8 +38,6 @@ export const UploadOptions = styled.div`
   margin: ${spacing.large} 0;
 `
 
-export const UploadOption = styled.div``
-
 export const UploadButton = styled.div`
   display: block;
   text-decoration: none;
@@ -65,7 +63,7 @@ export const UploadButton = styled.div`
 
   h3 {
     color: ${colours.charcoal};
-    margin: ${spacing.small} 0 ${spacing.tiny} 0;
+    margin: ${spacing.small} 0 ${spacing.tiny};
     font-size: ${fonts.body};
   }
 
@@ -86,7 +84,7 @@ export const UploadIcon = styled.div`
   border-radius: ${spacing.fine};
   margin-bottom: ${spacing.small};
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: ${spacing.micro};
   pointer-events: none;
 `
 
@@ -325,7 +323,7 @@ export const ExampleFiles = styled.div`
 
   h4 {
     color: ${colours.charcoal};
-    margin: ${spacing.small} 0 ${spacing.tiny} 0;
+    margin: ${spacing.small} 0 ${spacing.tiny};
     font-size: ${fonts.body};
   }
 

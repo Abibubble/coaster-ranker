@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, textSpacing, fonts, shadows } from '../../theme'
+import { colours, fonts, shadows, spacing, textSpacing } from '../../theme'
 
 export const CenteredCount = styled.p`
   text-align: center;
@@ -168,4 +168,11 @@ export const UploadLink = styled.a`
 
 export const BoldText = styled.span`
   font-weight: bold;
+`
+
+export const LastUpdatedText = styled.p`
+  font-size: ${fonts.small};
+  color: ${colours.lightTextGrey};
+  font-style: italic;
+  margin: ${textSpacing.tiny} 0;
 `

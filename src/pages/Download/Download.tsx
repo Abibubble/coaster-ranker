@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Card, MainContent, Title } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
-import { colours } from '../../theme'
 import * as Styled from './Download.styled'
 
 export default function Download() {
@@ -139,15 +138,9 @@ export default function Download() {
               {coasters.length === 1 ? '' : 's'} in your collection.
             </p>
             {uploadedData?.uploadedAt && (
-              <p
-                style={{
-                  fontSize: '0.9rem',
-                  color: colours.lightTextGrey,
-                  fontStyle: 'italic',
-                }}
-              >
+              <Styled.LastUpdatedText>
                 Last updated: {uploadedData.uploadedAt.toLocaleDateString()}
-              </p>
+              </Styled.LastUpdatedText>
             )}
           </Styled.Section>
 
@@ -199,7 +192,7 @@ export default function Download() {
           </Styled.InfoSection>
 
           <Styled.BackLink href='/view-coasters'>
-            ← Back to View Coasters
+            Back to View Coasters
           </Styled.BackLink>
         </Styled.DownloadContent>
       </Card>

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing } from '../../theme'
+import { colours, fonts, spacing } from '../../theme'
 
 export const ControlsContainer = styled.div`
   display: flex;
@@ -8,26 +8,30 @@ export const ControlsContainer = styled.div`
   margin: ${spacing.small} 0;
 `
 
-export const UndoButton = styled.button<{ disabled?: boolean }>`
+export const UndoButton = styled.button<{ $canUndo?: boolean }>`
   padding: ${spacing.tiny} ${spacing.small};
-  background: ${props => (props.disabled ? colours.mutedGrey : colours.yellow)};
-  color: ${props => (props.disabled ? colours.white : colours.charcoal)};
+  background: ${props =>
+    !props.$canUndo ? colours.slateGrey : colours.yellow};
+  color: ${props => (!props.$canUndo ? colours.white : colours.black)};
   border: none;
   border-radius: ${spacing.tiny};
-  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+  cursor: ${props => (!props.$canUndo ? 'not-allowed' : 'pointer')};
   font-weight: 500;
   transition: background-color 0.2s ease;
-  opacity: ${props => (props.disabled ? 0.6 : 1)};
+  opacity: 1;
 
   &:hover {
     background: ${props =>
-      props.disabled ? colours.mutedGrey : colours.darkerYellow};
+      !props.$canUndo ? colours.mutedGrey : colours.darkerYellow};
   }
+`
 
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 ${spacing.fine} rgba(255, 193, 7, 0.25);
-  }
+export const HelpText = styled.span`
+  display: block;
+  font-size: ${fonts.small};
+  font-weight: normal;
+  margin-top: ${spacing.fine};
+  color: ${colours.white};
 `
 
 export const ResetButton = styled.button`

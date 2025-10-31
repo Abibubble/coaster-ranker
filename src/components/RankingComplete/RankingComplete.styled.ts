@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, fonts } from '../../theme'
+import { colours, fonts, spacing } from '../../theme'
 
 export const BoldText = styled.span`
   font-weight: bold;

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Card, MainContent, Title, ViewLink } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './Upload.styled'
@@ -33,7 +32,7 @@ function Upload() {
         </Styled.Instructions>
 
         <Styled.UploadOptions>
-          <Styled.UploadOption>
+          <div>
             <Styled.UploadButton
               onClick={() => handleNavigation('/upload-csv')}
               onKeyDown={e => {
@@ -47,9 +46,9 @@ function Upload() {
               <h3>Upload CSV File</h3>
               <p>Import coaster data from a CSV spreadsheet file</p>
             </Styled.UploadButton>
-          </Styled.UploadOption>
+          </div>
 
-          <Styled.UploadOption>
+          <div>
             <Styled.UploadButton
               onClick={() => handleNavigation('/upload-json')}
               onKeyDown={e => {
@@ -63,9 +62,9 @@ function Upload() {
               <h3>Upload JSON Data</h3>
               <p>Paste JSON data or upload a JSON file</p>
             </Styled.UploadButton>
-          </Styled.UploadOption>
+          </div>
 
-          <Styled.UploadOption>
+          <div>
             <Styled.UploadButton
               onClick={() => handleNavigation('/upload-manual')}
               onKeyDown={e => {
@@ -79,7 +78,7 @@ function Upload() {
               <h3>Enter Manually</h3>
               <p>Add coasters one at a time using a form</p>
             </Styled.UploadButton>
-          </Styled.UploadOption>
+          </div>
         </Styled.UploadOptions>
       </Card>
     </MainContent>

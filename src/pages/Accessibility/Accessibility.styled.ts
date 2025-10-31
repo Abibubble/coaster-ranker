@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { spacing, fonts, colours, breakpoints } from '../../theme'
+import { breakpoints, colours, fonts, spacing } from '../../theme'
 
 export const PageContent = styled.div`
   padding: 0 ${spacing.medium};

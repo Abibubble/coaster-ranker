@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Link } from '../../components'
-import { colours, spacing, fonts, breakpoints } from '../../theme'
+import { breakpoints, colours, fonts, spacing } from '../../theme'
 
 export const EmptyState = styled.div`
   text-align: center;
@@ -78,7 +78,7 @@ export const ActionsBar = styled.div`
 export const CoastersTable = styled.div`
   overflow-x: auto;
   margin-bottom: ${spacing.medium};
-  border: 1px solid ${colours.borderGrey};
+  border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.tiny};
 `
 
@@ -92,7 +92,7 @@ export const TableHeader = styled.div`
     minmax(100px, 1fr)
     minmax(100px, 1fr);
   background-color: ${colours.veryLightGrey};
-  border-bottom: 1px solid ${colours.borderGrey};
+  border-bottom: ${spacing.micro} solid ${colours.borderGrey};
 
   @media (max-width: ${breakpoints.tablet}) {
     grid-template-columns: 1fr 1fr 100px;
@@ -127,7 +127,7 @@ export const TableRow = styled.div`
     minmax(120px, 1fr)
     minmax(100px, 1fr)
     minmax(100px, 1fr);
-  border-bottom: 1px solid ${colours.borderGrey};
+  border-bottom: ${spacing.micro} solid ${colours.borderGrey};
   transition: background-color 0.2s ease;
 
   &:hover {
@@ -215,7 +215,7 @@ export const RemoveButton = styled.button`
   min-width: fit-content;
 
   &:hover {
-    background-color: #c82333;
+    background-color: ${colours.darkRed};
     transform: translateY(-1px);
   }
 

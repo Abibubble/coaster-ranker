@@ -3,16 +3,16 @@ import * as Styled from './ProgressInfo.styled'
 
 interface ProgressInfoProps {
   remainingComparisons: number
-  totalComparisons?: number
-  title?: string
   showProgressBar?: boolean
+  title?: string
+  totalComparisons?: number
 }
 
 export default function ProgressInfo({
   remainingComparisons,
-  totalComparisons,
-  title = 'Which coaster do you prefer?',
   showProgressBar = false,
+  title = 'Which coaster do you prefer?',
+  totalComparisons,
 }: ProgressInfoProps) {
   const progress = totalComparisons
     ? Math.round(

@@ -6,8 +6,8 @@ import {
 import * as Styled from './DuplicateResolver.styled'
 
 export interface DuplicateResolution {
-  duplicateIndex: number
   action: 'keep-existing' | 'keep-new' | 'keep-both'
+  duplicateIndex: number
 }
 
 interface DuplicateResolverProps {
@@ -26,13 +26,24 @@ export default function DuplicateResolver({
   >(new Map())
 
   const handleResolution = (
-    duplicateIndex: number,
-    action: DuplicateResolution['action']
+    action: DuplicateResolution['action'],
+    duplicateIndex: number
   ) => {
     setResolutions(prev => new Map(prev.set(duplicateIndex, action)))
   }
 
   const handleConfirm = () => {
+    if (!canConfirm) {
+      // Provide feedback to user about what's missing
+      const missingCount = duplicates.length - resolutions.size
+      alert(
+        `Please choose an action for ${missingCount} more duplicate${
+          missingCount !== 1 ? 's' : ''
+        } before confirming.`
+      )
+      return
+    }
+
     const resolvedDuplicates = duplicates.map((_, index) => ({
       duplicateIndex: index,
       action: resolutions.get(index) || 'keep-both',
@@ -41,6 +52,7 @@ export default function DuplicateResolver({
   }
 
   const canConfirm = duplicates.every((_, index) => resolutions.has(index))
+  const missingChoices = duplicates.length - resolutions.size
 
   return (
     <Styled.DuplicateContainer>
@@ -133,8 +145,7 @@ export default function DuplicateResolver({
 
           <Styled.ButtonGroup>
             <Styled.DuplicateButton
-              variant='existing'
-              onClick={() => handleResolution(index, 'keep-existing')}
+              onClick={() => handleResolution('keep-existing', index)}
               style={{
                 opacity: resolutions.get(index) === 'keep-existing' ? 1 : 0.7,
                 fontWeight:
@@ -142,28 +153,29 @@ export default function DuplicateResolver({
                     ? 'bold'
                     : 'normal',
               }}
+              variant='existing'
             >
               Keep Existing Only
             </Styled.DuplicateButton>
             <Styled.DuplicateButton
-              variant='new'
-              onClick={() => handleResolution(index, 'keep-new')}
+              onClick={() => handleResolution('keep-new', index)}
               style={{
                 opacity: resolutions.get(index) === 'keep-new' ? 1 : 0.7,
                 fontWeight:
                   resolutions.get(index) === 'keep-new' ? 'bold' : 'normal',
               }}
+              variant='new'
             >
               Keep New Only
             </Styled.DuplicateButton>
             <Styled.DuplicateButton
-              variant='both'
-              onClick={() => handleResolution(index, 'keep-both')}
+              onClick={() => handleResolution('keep-both', index)}
               style={{
                 opacity: resolutions.get(index) === 'keep-both' ? 1 : 0.7,
                 fontWeight:
                   resolutions.get(index) === 'keep-both' ? 'bold' : 'normal',
               }}
+              variant='both'
             >
               Keep Both (Different Experiences)
             </Styled.DuplicateButton>
@@ -173,14 +185,18 @@ export default function DuplicateResolver({
 
       <Styled.ActionButtons>
         <Styled.ActionButton
-          primary
+          aria-describedby={!canConfirm ? 'confirm-help-text' : undefined}
           onClick={handleConfirm}
-          disabled={!canConfirm}
+          primary
         >
-          {canConfirm
-            ? 'Confirm Choices'
-            : `Choose Action for ${duplicates.length - resolutions.size} More`}
+          {canConfirm ? 'Confirm Choices' : 'Confirm Choices'}
         </Styled.ActionButton>
+        {!canConfirm && (
+          <Styled.ProgressInfo id='confirm-help-text'>
+            Please choose an action for {missingChoices} more duplicate
+            {missingChoices !== 1 ? 's' : ''}
+          </Styled.ProgressInfo>
+        )}
         <Styled.ActionButton onClick={onCancel}>
           Cancel Upload
         </Styled.ActionButton>

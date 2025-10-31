@@ -1,1 +1,3 @@
-export { default as ViewCoasters } from './ViewCoasters'
+import ViewCoasters from './ViewCoasters'
+
+export { ViewCoasters }

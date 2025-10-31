@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { fonts, colours, spacing } from '../../theme'
+import { breakpoints, colours, fonts, spacing } from '../../theme'
 
 export const Subtitle = styled.h2`
   margin: 0;
@@ -9,7 +9,7 @@ export const Subtitle = styled.h2`
 
   font-size: ${fonts.body};
 
-  @media (min-width: 768px) {
+  @media (min-width: ${breakpoints.tabletLarge}) {
     font-size: ${fonts.large};
   }
 `
@@ -24,18 +24,18 @@ export const CollageContainer = styled.div`
   padding: ${spacing.small} ${spacing.tiny};
   min-height: 220px;
 
-  @media (min-width: 768px) {
+  @media (min-width: ${breakpoints.tabletLarge}) {
     padding: ${spacing.medium} ${spacing.small};
     min-height: 420px;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: ${breakpoints.desktop}) {
     padding: ${spacing.large} ${spacing.medium};
     min-height: 720px;
     max-width: 1100px;
   }
 
-  @media (max-width: 320px) {
+  @media (max-width: ${breakpoints.mobileSmall}) {
     padding: ${spacing.tiny};
     min-height: 210px;
   }

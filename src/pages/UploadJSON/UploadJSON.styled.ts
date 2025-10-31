@@ -1,6 +1,5 @@
 import styled from 'styled-components'
-import { Link } from '../../components'
-import { colours, spacing, fonts, shadows } from '../../theme'
+import { colours, fonts, shadows, spacing } from '../../theme'
 
 export const Instructions = styled.div`
   margin-bottom: ${spacing.large};
@@ -278,23 +277,6 @@ export const SuccessIcon = styled.span`
   font-size: ${fonts.small};
   font-weight: bold;
   color: ${colours.green};
-`
-
-export const BackLink = styled(Link)`
-  display: inline-block;
-  margin-top: ${spacing.large};
-  color: ${colours.blue};
-  text-decoration: none;
-  font-size: ${fonts.small};
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus {
-    outline: ${spacing.mini} solid ${colours.blue};
-    outline-offset: ${spacing.mini};
-  }
 `
 
 export const CurrentDataInfo = styled.div`

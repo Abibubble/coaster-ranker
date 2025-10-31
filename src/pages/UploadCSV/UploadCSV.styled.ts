@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { Link } from '../../components'
 import { colours, spacing, fonts } from '../../theme'
 
 export const Instructions = styled.div`
@@ -124,26 +123,60 @@ export const FileInput = styled.input`
   display: none;
 `
 
-export const FileLabel = styled.label<{ $disabled?: boolean }>`
+export const FileLabel = styled.label<{ $isLoading?: boolean }>`
   display: inline-block;
-  background-color: ${(props: { $disabled?: boolean }) =>
-    props.$disabled ? colours.lightGrey : colours.blue};
+  background-color: ${(props: { $isLoading?: boolean }) =>
+    props.$isLoading ? colours.lightGrey : colours.blue};
   color: ${colours.white};
   padding: ${spacing.small} ${spacing.large};
   border-radius: ${spacing.fine};
   font-size: ${fonts.body};
-  cursor: ${(props: { $disabled?: boolean }) =>
-    props.$disabled ? 'not-allowed' : 'pointer'};
-  transition: background-color 0.3s ease;
+  cursor: ${(props: { $isLoading?: boolean }) =>
+    props.$isLoading ? 'wait' : 'pointer'};
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  ${(props: { $isLoading?: boolean }) =>
+    props.$isLoading &&
+    `
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+  `}
 
   &:hover {
-    background-color: ${(props: { $disabled?: boolean }) =>
-      props.$disabled ? colours.lightGrey : colours.darkBlue};
+    background-color: ${(props: { $isLoading?: boolean }) =>
+      props.$isLoading ? colours.lightGrey : colours.darkBlue};
+    transform: ${(props: { $isLoading?: boolean }) =>
+      props.$isLoading ? 'none' : 'translateY(-1px)'};
   }
 
   &:focus {
     outline: ${spacing.mini} solid ${colours.blue};
     outline-offset: ${spacing.mini};
+  }
+
+  &:active {
+    transform: ${(props: { $isLoading?: boolean }) =>
+      props.$isLoading ? 'none' : 'translateY(0)'};
   }
 `
 
@@ -188,23 +221,6 @@ export const SuccessIcon = styled.span`
   font-size: ${fonts.small};
   font-weight: bold;
   color: ${colours.green};
-`
-
-export const BackLink = styled(Link)`
-  display: inline-block;
-  margin-top: ${spacing.large};
-  color: ${colours.blue};
-  text-decoration: none;
-  font-size: ${fonts.small};
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus {
-    outline: ${spacing.mini} solid ${colours.blue};
-    outline-offset: ${spacing.mini};
-  }
 `
 
 export const CurrentDataInfo = styled.div`

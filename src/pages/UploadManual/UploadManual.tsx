@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import {
+  BackLink,
   Card,
+  DuplicateResolver,
   MainContent,
   Title,
-  DuplicateResolver,
   ViewLink,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
@@ -456,9 +457,7 @@ export default function UploadManual() {
           </Styled.SuccessMessage>
         )}
 
-        <Styled.BackLink href='/upload'>
-          ← Back to Upload Options
-        </Styled.BackLink>
+        <BackLink href='/upload'>Back to Upload Options</BackLink>
       </Card>
     </MainContent>
   )

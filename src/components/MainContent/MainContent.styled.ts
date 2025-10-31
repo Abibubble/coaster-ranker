@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, breakpoints } from '../../theme'
+import { breakpoints, colours, spacing } from '../../theme'
 
 export const ContentContainer = styled.section`
   margin: 0 auto;

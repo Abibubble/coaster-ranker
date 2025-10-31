@@ -1,4 +1,3 @@
-import React from 'react'
 import { Coaster } from '../../types/data'
 import { formatCountry } from '../../utils/rankingUtils'
 import * as Styled from '../../pages/Rank/Rank.styled'
@@ -19,8 +18,8 @@ export default function CoasterComparison({
   return (
     <Styled.ComparisonArea>
       <Styled.CoasterCard
-        onClick={onChoose1}
         aria-label={`Choose ${coaster1.name} as your favorite`}
+        onClick={onChoose1}
       >
         <Styled.CoasterName>{coaster1.name}</Styled.CoasterName>
         <Styled.CoasterPark>
@@ -54,8 +53,8 @@ export default function CoasterComparison({
       <Styled.VersusText>VS</Styled.VersusText>
 
       <Styled.CoasterCard
-        onClick={onChoose2}
         aria-label={`Choose ${coaster2.name} as your favorite`}
+        onClick={onChoose2}
       >
         <Styled.CoasterName>{coaster2.name}</Styled.CoasterName>
         <Styled.CoasterPark>

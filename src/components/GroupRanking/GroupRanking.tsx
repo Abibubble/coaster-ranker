@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Coaster } from '../../types/data'
 import { ProgressInfo } from '../../components'
 import * as Styled from './GroupRanking.styled'
@@ -430,7 +430,7 @@ function SimpleCoasterRanking({
             return (
               <>
                 <Styled.ProgressBarContainer>
-                  <Styled.ProgressBar progress={progress} />
+                  <Styled.ProgressBar $progress={progress} />
                 </Styled.ProgressBarContainer>
                 <Styled.ProgressPercentage>
                   {progress}% Complete

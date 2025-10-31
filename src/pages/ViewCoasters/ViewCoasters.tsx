@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Card, MainContent, Title, ViewLink } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './ViewCoasters.styled'

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { spacing, colours, breakpoints } from '../../theme'
+import { breakpoints, colours, spacing } from '../../theme'
 
 export const HeaderContainer = styled.header`
   background-color: ${colours.black};
@@ -81,8 +81,8 @@ export const BurgerButton = styled.button`
 `
 
 export const BurgerLine = styled.div<{ $isOpen: boolean }>`
-  width: 25px;
-  height: 3px;
+  width: ${spacing.medium};
+  height: ${spacing.fine};
   background-color: ${colours.white};
   transition: all 0.3s ease;
   transform-origin: center;
@@ -107,7 +107,7 @@ export const NavContainer = styled.nav<{ $isOpen: boolean }>`
 
   @media (max-width: ${parseInt(breakpoints.tabletLarge) - 1}px) {
     display: ${props => (props.$isOpen ? 'block' : 'none')};
-    border-top: 1px solid ${colours.darkGrey};
+    border-top: ${spacing.micro} solid ${colours.darkGrey};
   }
 
   @media (min-width: ${breakpoints.tabletLarge}) {
@@ -150,7 +150,7 @@ export const NavLinks = styled.ul`
     gap: 0;
 
     li:not(:last-child) {
-      border-bottom: 1px solid ${colours.darkGrey};
+      border-bottom: ${spacing.micro} solid ${colours.darkGrey};
     }
   }
 
@@ -160,11 +160,11 @@ export const NavLinks = styled.ul`
     grid-template-columns: repeat(2, 1fr);
 
     li {
-      border-bottom: 1px solid ${colours.darkGrey};
+      border-bottom: ${spacing.micro} solid ${colours.darkGrey};
     }
 
     li:nth-child(odd) {
-      border-right: 1px solid ${colours.darkGrey};
+      border-right: ${spacing.micro} solid ${colours.darkGrey};
     }
   }
 

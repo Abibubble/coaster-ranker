@@ -1,4 +1,5 @@
 export { Card } from './Card'
+export { BackLink } from './BackLink'
 export { CodeBlock } from './CodeBlock'
 export { CoasterComparison } from './CoasterComparison'
 export { DuplicateResolver } from './DuplicateResolver'

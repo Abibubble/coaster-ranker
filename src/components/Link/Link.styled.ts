@@ -2,9 +2,9 @@ import styled from 'styled-components'
 import { colours, spacing } from '../../theme'
 
 interface StyledLinkProps {
-  $dark?: boolean
-  $center?: boolean
   $bold?: boolean
+  $center?: boolean
+  $dark?: boolean
   $fontSize?: string
 }
 
