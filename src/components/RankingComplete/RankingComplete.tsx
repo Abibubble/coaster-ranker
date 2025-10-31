@@ -20,15 +20,15 @@ export default function RankingComplete({
       </p>
       <LocalStyled.ResultsList>
         <ol>
-          {rankedCoasters.slice(0, 5).map((coaster, _index) => (
+          {rankedCoasters.slice(0, 10).map((coaster, _index) => (
             <li key={coaster.id}>
               <LocalStyled.BoldText>{coaster.name}</LocalStyled.BoldText> at{' '}
               {coaster.park}
             </li>
           ))}
-          {rankedCoasters.length > 5 && (
+          {rankedCoasters.length > 10 && (
             <LocalStyled.MoreCoastersText>
-              ...and {rankedCoasters.length - 5} more
+              ...and {rankedCoasters.length - 10} more
             </LocalStyled.MoreCoastersText>
           )}
         </ol>

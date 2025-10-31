@@ -38,13 +38,11 @@ export default function UploadJSON() {
     isPreRanked: boolean = false
   ) => {
     const existingCoasters = uploadedData?.coasters || []
-    const uploadId = Date.now().toString() // Unique identifier for this upload batch
+    const uploadId = Date.now().toString()
 
-    // Mark new coasters with pre-ranking information
     const markedNewCoasters = newCoasters.map((coaster, index) => ({
       ...coaster,
       isNewCoaster: true,
-      wins: 0,
       ...(isPreRanked && {
         originalRankPosition: index,
         isPreRanked: true,
@@ -62,8 +60,6 @@ export default function UploadJSON() {
         completedComparisons:
           uploadedData?.rankingMetadata?.completedComparisons ||
           new Set<string>(),
-        totalWins:
-          uploadedData?.rankingMetadata?.totalWins || new Map<string, number>(),
         rankedCoasters:
           uploadedData?.rankingMetadata?.rankedCoasters ||
           [...existingCoasters, ...markedNewCoasters].map(c => c.id),
@@ -102,10 +98,28 @@ export default function UploadJSON() {
       })
       const newData = await processUploadedFile(fakeFile, jsonString)
 
-      // Store pending coasters and show pre-ranking question
       setPendingCoasters(newData.coasters)
       setPendingFilename(newData.filename)
-      setShowPreRankingQuestion(true)
+
+      if (newData.coasters.length === 1) {
+        const existingCoasters = uploadedData?.coasters || []
+        const detectedDuplicates = detectDuplicates(
+          existingCoasters,
+          newData.coasters
+        )
+
+        if (detectedDuplicates.duplicates.length > 0) {
+          setDuplicates(detectedDuplicates.duplicates)
+          setShowDuplicateResolver(true)
+          sessionStorage.setItem('pendingPreRanked', 'false')
+        } else {
+          finalizeCombinedData(newData.coasters, newData.filename, false)
+          setPendingCoasters([])
+          setPendingFilename('')
+        }
+      } else {
+        setShowPreRankingQuestion(true)
+      }
     } catch (err) {
       setError(
         `Error processing JSON: ${
@@ -198,7 +212,6 @@ export default function UploadJSON() {
     const markedNewCoasters = coastersToAdd.map((coaster, index) => ({
       ...coaster,
       isNewCoaster: true,
-      wins: 0,
       ...(isPreRanked && {
         originalRankPosition: index,
         isPreRanked: true,
@@ -216,8 +229,6 @@ export default function UploadJSON() {
         completedComparisons:
           uploadedData?.rankingMetadata?.completedComparisons ||
           new Set<string>(),
-        totalWins:
-          uploadedData?.rankingMetadata?.totalWins || new Map<string, number>(),
         rankedCoasters:
           uploadedData?.rankingMetadata?.rankedCoasters ||
           [...updatedCoasters, ...markedNewCoasters].map(c => c.id),
@@ -433,7 +444,11 @@ export default function UploadJSON() {
       {showPreRankingQuestion && (
         <PreRankingQuestion
           coasterCount={pendingCoasters.length}
+          existingCoasterCount={existingCoasterCount}
           filename={pendingFilename}
+          hasExistingRankedData={
+            uploadedData?.rankingMetadata?.isRanked || false
+          }
           onAnswer={handlePreRankingAnswer}
           onCancel={handlePreRankingCancel}
         />

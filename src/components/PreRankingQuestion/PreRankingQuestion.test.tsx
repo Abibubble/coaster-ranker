@@ -82,4 +82,47 @@ describe('PreRankingQuestion', () => {
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })
+
+  it('renders warning message when existing ranked data is present', () => {
+    render(
+      <PreRankingQuestion
+        onAnswer={mockOnAnswer}
+        onCancel={mockOnCancel}
+        coasterCount={3}
+        filename='new-coasters.csv'
+        hasExistingRankedData={true}
+        existingCoasterCount={10}
+      />
+    )
+
+    expect(screen.getByText('Adding to existing ranking')).toBeInTheDocument()
+    expect(
+      screen.getByText(/You already have 10 ranked coasters/)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Continue with upload' })
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', {
+        name: 'Yes, these coasters are already ranked in order',
+      })
+    ).not.toBeInTheDocument()
+  })
+
+  it('calls onAnswer with false when Continue Upload is clicked for existing ranked data', () => {
+    render(
+      <PreRankingQuestion
+        onAnswer={mockOnAnswer}
+        onCancel={mockOnCancel}
+        coasterCount={2}
+        hasExistingRankedData={true}
+        existingCoasterCount={5}
+      />
+    )
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Continue with upload' })
+    )
+    expect(mockOnAnswer).toHaveBeenCalledWith(false)
+  })
 })

@@ -37,13 +37,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           } else {
             metadata.completedComparisons = new Set<string>()
           }
-
-          // Convert totalWins array back to Map
-          if (metadata.totalWins && Array.isArray(metadata.totalWins)) {
-            metadata.totalWins = new Map(metadata.totalWins)
-          } else {
-            metadata.totalWins = new Map<string, number>()
-          }
         }
 
         setUploadedDataState(parsedData)
@@ -67,9 +60,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
             // Custom serialization for Set and Map
             if (key === 'completedComparisons' && value instanceof Set) {
               return Array.from(value)
-            }
-            if (key === 'totalWins' && value instanceof Map) {
-              return Array.from(value.entries())
             }
             return value
           })

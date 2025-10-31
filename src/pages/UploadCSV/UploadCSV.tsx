@@ -36,13 +36,11 @@ export default function UploadCSV() {
     isPreRanked: boolean = false
   ) => {
     const existingCoasters = uploadedData?.coasters || []
-    const uploadId = Date.now().toString() // Unique identifier for this upload batch
+    const uploadId = Date.now().toString()
 
-    // Mark new coasters with pre-ranking information
     const markedNewCoasters = newCoasters.map((coaster, index) => ({
       ...coaster,
       isNewCoaster: true,
-      wins: 0,
       ...(isPreRanked && {
         originalRankPosition: index,
         isPreRanked: true,
@@ -51,7 +49,6 @@ export default function UploadCSV() {
 
     const existingRankingMetadata = uploadedData?.rankingMetadata || {
       completedComparisons: new Set<string>(),
-      totalWins: new Map<string, number>(),
       rankedCoasters: [],
       isRanked: false,
     }
@@ -98,18 +95,15 @@ export default function UploadCSV() {
   const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
     if (!pendingCoasters.length) return
 
-    // Get the pre-ranking decision from session storage
     const isPreRanked = sessionStorage.getItem('pendingPreRanked') === 'true'
-    sessionStorage.removeItem('pendingPreRanked') // Clean up
+    sessionStorage.removeItem('pendingPreRanked')
 
     const existingCoasters = uploadedData?.coasters || []
     let updatedCoasters = [...existingCoasters]
     let coastersToAdd: Coaster[] = []
 
-    // Build a map of which coasters to process
     const coastersToProcess = new Set(pendingCoasters)
 
-    // Process each resolution
     resolutions.forEach((resolution, index) => {
       const duplicate = duplicates[index]
 
@@ -146,7 +140,6 @@ export default function UploadCSV() {
     const markedNewCoasters = coastersToAdd.map(coaster => ({
       ...coaster,
       isNewCoaster: true,
-      wins: 0,
       ...(isPreRanked && {
         originalRankPosition: pendingCoasters.indexOf(coaster),
         isPreRanked: true,
@@ -155,7 +148,6 @@ export default function UploadCSV() {
 
     const existingRankingMetadata = uploadedData?.rankingMetadata || {
       completedComparisons: new Set<string>(),
-      totalWins: new Map<string, number>(),
       rankedCoasters: [],
       isRanked: false,
     }
@@ -262,10 +254,32 @@ export default function UploadCSV() {
         const csvContent = e.target?.result as string
         const result = await processUploadedFile(file, csvContent)
 
-        // Store pending coasters and show pre-ranking question
+        // Store pending coasters
         setPendingCoasters(result.coasters)
         setPendingFilename(file.name)
-        setShowPreRankingQuestion(true)
+
+        // If only one coaster, skip pre-ranking question and proceed directly
+        if (result.coasters.length === 1) {
+          const existingCoasters = uploadedData?.coasters || []
+          const detectedDuplicates = detectDuplicates(
+            existingCoasters,
+            result.coasters
+          )
+
+          if (detectedDuplicates.duplicates.length > 0) {
+            setDuplicates(detectedDuplicates.duplicates)
+            setShowDuplicateResolver(true)
+            // Single coaster is never pre-ranked
+            sessionStorage.setItem('pendingPreRanked', 'false')
+          } else {
+            finalizeCombinedData(result.coasters, file.name, false)
+            setPendingCoasters([])
+            setPendingFilename('')
+          }
+        } else {
+          // Multiple coasters - show pre-ranking question or warning
+          setShowPreRankingQuestion(true)
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to process file')
       } finally {
@@ -400,7 +414,11 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,United Kingdom`}
       {showPreRankingQuestion && (
         <PreRankingQuestion
           coasterCount={pendingCoasters.length}
+          existingCoasterCount={existingCoasterCount}
           filename={pendingFilename}
+          hasExistingRankedData={
+            uploadedData?.rankingMetadata?.isRanked || false
+          }
           onAnswer={handlePreRankingAnswer}
           onCancel={handlePreRankingCancel}
         />

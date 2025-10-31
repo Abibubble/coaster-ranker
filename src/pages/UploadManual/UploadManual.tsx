@@ -64,7 +64,6 @@ export default function UploadManual() {
       filename: uploadedData?.filename || 'manual-entry',
       rankingMetadata: uploadedData?.rankingMetadata || {
         completedComparisons: new Set<string>(),
-        totalWins: new Map<string, number>(),
         rankedCoasters: [],
         isRanked: false,
       },
@@ -118,7 +117,6 @@ export default function UploadManual() {
       type: formData.type.trim(),
       country: formData.country.trim(),
       isNewCoaster: true,
-      wins: 0,
     }
 
     // Check for duplicates
@@ -183,7 +181,6 @@ export default function UploadManual() {
       filename: uploadedData?.filename || 'manual-entry',
       rankingMetadata: uploadedData?.rankingMetadata || {
         completedComparisons: new Set<string>(),
-        totalWins: new Map<string, number>(),
         rankedCoasters: [],
         isRanked: false,
       },
