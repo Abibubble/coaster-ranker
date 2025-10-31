@@ -230,18 +230,6 @@ export default function GroupRanking({
                 <Styled.BoldText>Type:</Styled.BoldText>{' '}
                 {currentComparison.higherGroupLowest.type}
               </p>
-              {currentComparison.higherGroupLowest.height && (
-                <p>
-                  <Styled.BoldText>Height:</Styled.BoldText>{' '}
-                  {currentComparison.higherGroupLowest.height}m
-                </p>
-              )}
-              {currentComparison.higherGroupLowest.speed && (
-                <p>
-                  <Styled.BoldText>Speed:</Styled.BoldText>{' '}
-                  {currentComparison.higherGroupLowest.speed} km/h
-                </p>
-              )}
             </Styled.CoasterDetails>
           </Styled.CoasterCard>
 
@@ -275,18 +263,6 @@ export default function GroupRanking({
                 <Styled.BoldText>Type:</Styled.BoldText>{' '}
                 {currentComparison.lowerGroupHighest.type}
               </p>
-              {currentComparison.lowerGroupHighest.height && (
-                <p>
-                  <Styled.BoldText>Height:</Styled.BoldText>{' '}
-                  {currentComparison.lowerGroupHighest.height}m
-                </p>
-              )}
-              {currentComparison.lowerGroupHighest.speed && (
-                <p>
-                  <Styled.BoldText>Speed:</Styled.BoldText>{' '}
-                  {currentComparison.lowerGroupHighest.speed} km/h
-                </p>
-              )}
             </Styled.CoasterDetails>
           </Styled.CoasterCard>
         </Styled.ComparisonArea>
@@ -464,18 +440,6 @@ function SimpleCoasterRanking({
             <p>
               <Styled.BoldText>Type:</Styled.BoldText> {currentPair[0].type}
             </p>
-            {currentPair[0].height && (
-              <p>
-                <Styled.BoldText>Height:</Styled.BoldText>{' '}
-                {currentPair[0].height}m
-              </p>
-            )}
-            {currentPair[0].speed && (
-              <p>
-                <Styled.BoldText>Speed:</Styled.BoldText> {currentPair[0].speed}{' '}
-                km/h
-              </p>
-            )}
           </Styled.CoasterDetails>
         </Styled.CoasterCard>
 
@@ -503,18 +467,6 @@ function SimpleCoasterRanking({
             <p>
               <Styled.BoldText>Type:</Styled.BoldText> {currentPair[1].type}
             </p>
-            {currentPair[1].height && (
-              <p>
-                <Styled.BoldText>Height:</Styled.BoldText>{' '}
-                {currentPair[1].height}m
-              </p>
-            )}
-            {currentPair[1].speed && (
-              <p>
-                <Styled.BoldText>Speed:</Styled.BoldText> {currentPair[1].speed}{' '}
-                km/h
-              </p>
-            )}
           </Styled.CoasterDetails>
         </Styled.CoasterCard>
       </Styled.ComparisonArea>

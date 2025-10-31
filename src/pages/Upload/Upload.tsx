@@ -1,4 +1,4 @@
-import { Card, MainContent, Title, ViewLink } from '../../components'
+import { MainContent, Title, ViewLink } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './Upload.styled'
 
@@ -14,7 +14,7 @@ function Upload() {
     <MainContent>
       <Title>Upload Your Coaster Data</Title>
 
-      <Card>
+      <section>
         <Styled.Instructions>
           <h2>Choose Your Upload Method</h2>
           <p>
@@ -80,7 +80,7 @@ function Upload() {
             </Styled.UploadButton>
           </div>
         </Styled.UploadOptions>
-      </Card>
+      </section>
     </MainContent>
   )
 }

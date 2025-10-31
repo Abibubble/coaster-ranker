@@ -32,7 +32,7 @@ export const BoldText = styled.span`
 
 export const ProgressBarContainer = styled.div`
   width: 100%;
-  background-color: ${colours.progressBarBg};
+  background-color: ${colours.borderGrey};
   border-radius: ${spacing.tiny};
   margin: ${textSpacing.small} 0 0 0;
   height: ${spacing.tiny};

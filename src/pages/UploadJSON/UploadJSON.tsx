@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import {
   BackLink,
-  Card,
   CodeBlock,
   DuplicateResolver,
   MainContent,
+  PreRankingQuestion,
+  ScreenReaderOnly,
   Title,
   ViewLink,
 } from '../../components'
@@ -27,17 +28,27 @@ export default function UploadJSON() {
   const [pendingCoasters, setPendingCoasters] = useState<Coaster[]>([])
   const [pendingFilename, setPendingFilename] = useState<string>('')
   const [showDuplicateResolver, setShowDuplicateResolver] = useState(false)
+  const [showPreRankingQuestion, setShowPreRankingQuestion] = useState(false)
 
   const existingCoasterCount = uploadedData?.coasters?.length || 0
 
-  const finalizeCombinedData = (newCoasters: Coaster[], filename: string) => {
+  const finalizeCombinedData = (
+    newCoasters: Coaster[],
+    filename: string,
+    isPreRanked: boolean = false
+  ) => {
     const existingCoasters = uploadedData?.coasters || []
+    const uploadId = Date.now().toString() // Unique identifier for this upload batch
 
-    // Mark new coasters
-    const markedNewCoasters = newCoasters.map(coaster => ({
+    // Mark new coasters with pre-ranking information
+    const markedNewCoasters = newCoasters.map((coaster, index) => ({
       ...coaster,
       isNewCoaster: true,
       wins: 0,
+      ...(isPreRanked && {
+        originalRankPosition: index,
+        isPreRanked: true,
+      }),
     }))
 
     const combinedData = {
@@ -46,10 +57,24 @@ export default function UploadJSON() {
       filename: uploadedData?.filename
         ? `${uploadedData.filename}, ${filename}`
         : filename,
-      rankingMetadata: uploadedData?.rankingMetadata || {
-        completedComparisons: new Set<string>(),
-        totalWins: new Map<string, number>(),
-        isRanked: false,
+      rankingMetadata: {
+        ...uploadedData?.rankingMetadata,
+        completedComparisons:
+          uploadedData?.rankingMetadata?.completedComparisons ||
+          new Set<string>(),
+        totalWins:
+          uploadedData?.rankingMetadata?.totalWins || new Map<string, number>(),
+        rankedCoasters:
+          uploadedData?.rankingMetadata?.rankedCoasters ||
+          [...existingCoasters, ...markedNewCoasters].map(c => c.id),
+        isRanked: uploadedData?.rankingMetadata?.isRanked || false,
+        ...(isPreRanked && {
+          hasPreRankedCoasters: true,
+          preRankedGroups: [
+            ...(uploadedData?.rankingMetadata?.preRankedGroups || []),
+            uploadId,
+          ],
+        }),
       },
     }
 
@@ -77,21 +102,10 @@ export default function UploadJSON() {
       })
       const newData = await processUploadedFile(fakeFile, jsonString)
 
-      // Check for duplicates
-      const existingCoasters = uploadedData?.coasters || []
-      const duplicateCheck = detectDuplicates(
-        existingCoasters,
-        newData.coasters
-      )
-
-      if (duplicateCheck.hasDuplicates) {
-        setDuplicates(duplicateCheck.duplicates)
-        setPendingCoasters(newData.coasters)
-        setPendingFilename(newData.filename)
-        setShowDuplicateResolver(true)
-      } else {
-        finalizeCombinedData(newData.coasters, newData.filename)
-      }
+      // Store pending coasters and show pre-ranking question
+      setPendingCoasters(newData.coasters)
+      setPendingFilename(newData.filename)
+      setShowPreRankingQuestion(true)
     } catch (err) {
       setError(
         `Error processing JSON: ${
@@ -101,6 +115,36 @@ export default function UploadJSON() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handlePreRankingAnswer = (isPreRanked: boolean) => {
+    setShowPreRankingQuestion(false)
+
+    if (pendingCoasters.length > 0) {
+      const existingCoasters = uploadedData?.coasters || []
+      const detectedDuplicates = detectDuplicates(
+        existingCoasters,
+        pendingCoasters
+      )
+
+      if (detectedDuplicates.duplicates.length > 0) {
+        setDuplicates(detectedDuplicates.duplicates)
+        setShowDuplicateResolver(true)
+        // Store the pre-ranking decision for later use
+        sessionStorage.setItem('pendingPreRanked', isPreRanked.toString())
+      } else {
+        finalizeCombinedData(pendingCoasters, pendingFilename, isPreRanked)
+        setPendingCoasters([])
+        setPendingFilename('')
+      }
+    }
+  }
+
+  const handlePreRankingCancel = () => {
+    setShowPreRankingQuestion(false)
+    setPendingCoasters([])
+    setPendingFilename('')
+    setError('Upload cancelled by user.')
   }
 
   const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
@@ -145,11 +189,20 @@ export default function UploadJSON() {
     // Add any remaining coasters that weren't involved in duplicates
     coastersToAdd.push(...Array.from(coastersToProcess))
 
-    // Mark all new coasters
-    const markedNewCoasters = coastersToAdd.map(coaster => ({
+    // Get the stored pre-ranking decision
+    const isPreRanked = sessionStorage.getItem('pendingPreRanked') === 'true'
+    sessionStorage.removeItem('pendingPreRanked') // Clean up
+
+    // Mark all new coasters with pre-ranking information
+    const uploadId = Date.now().toString()
+    const markedNewCoasters = coastersToAdd.map((coaster, index) => ({
       ...coaster,
       isNewCoaster: true,
       wins: 0,
+      ...(isPreRanked && {
+        originalRankPosition: index,
+        isPreRanked: true,
+      }),
     }))
 
     const combinedData = {
@@ -158,10 +211,24 @@ export default function UploadJSON() {
       filename: uploadedData?.filename
         ? `${uploadedData.filename}, ${pendingFilename}`
         : pendingFilename,
-      rankingMetadata: uploadedData?.rankingMetadata || {
-        completedComparisons: new Set<string>(),
-        totalWins: new Map<string, number>(),
-        isRanked: false,
+      rankingMetadata: {
+        ...uploadedData?.rankingMetadata,
+        completedComparisons:
+          uploadedData?.rankingMetadata?.completedComparisons ||
+          new Set<string>(),
+        totalWins:
+          uploadedData?.rankingMetadata?.totalWins || new Map<string, number>(),
+        rankedCoasters:
+          uploadedData?.rankingMetadata?.rankedCoasters ||
+          [...updatedCoasters, ...markedNewCoasters].map(c => c.id),
+        isRanked: uploadedData?.rankingMetadata?.isRanked || false,
+        ...(isPreRanked && {
+          hasPreRankedCoasters: true,
+          preRankedGroups: [
+            ...(uploadedData?.rankingMetadata?.preRankedGroups || []),
+            uploadId,
+          ],
+        }),
       },
     }
 
@@ -189,7 +256,7 @@ export default function UploadJSON() {
     setError('Upload cancelled due to potential duplicates.')
   }
 
-  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInput = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
 
@@ -207,7 +274,7 @@ export default function UploadJSON() {
     }
   }
 
-  const handleJsonSubmit = (e: React.FormEvent) => {
+  const handleJsonSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (jsonInput.trim()) {
       processJsonData(jsonInput.trim())
@@ -218,7 +285,7 @@ export default function UploadJSON() {
     <MainContent>
       <Title>Upload JSON Data</Title>
 
-      <Card>
+      <section>
         <Styled.Instructions>
           <h2>Import JSON Data</h2>
           <p>
@@ -270,8 +337,7 @@ export default function UploadJSON() {
     "manufacturer": "Gerstlauer",
     "model": "Euro-Fighter",
     "type": "Steel",
-    "country": "United Kingdom",
-    "year": 2013
+    "country": "United Kingdom"
   },
   {
     "name": "Nemesis",
@@ -279,8 +345,7 @@ export default function UploadJSON() {
     "manufacturer": "Bolliger & Mabillard",
     "model": "Inverted Coaster",
     "type": "Steel",
-    "country": "United Kingdom",
-    "year": 1994
+    "country": "United Kingdom"
   }
 ]`}
             </CodeBlock>
@@ -291,13 +356,13 @@ export default function UploadJSON() {
         <Styled.JsonSection>
           <h3>Paste JSON Data</h3>
           <form onSubmit={handleJsonSubmit}>
-            <label htmlFor='json-textarea' className='sr-only'>
+            <ScreenReaderOnly as='label' htmlFor='json-textarea'>
               JSON data input area
-            </label>
+            </ScreenReaderOnly>
             <Styled.JsonTextarea
               id='json-textarea'
               value={jsonInput}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                 setJsonInput(e.target.value)
               }
               placeholder='Paste your JSON data here...'
@@ -362,7 +427,17 @@ export default function UploadJSON() {
         )}
 
         <BackLink href='/upload'>Back to Upload Options</BackLink>
-      </Card>
+      </section>
+
+      {/* Pre-ranking Question Modal */}
+      {showPreRankingQuestion && (
+        <PreRankingQuestion
+          coasterCount={pendingCoasters.length}
+          filename={pendingFilename}
+          onAnswer={handlePreRankingAnswer}
+          onCancel={handlePreRankingCancel}
+        />
+      )}
     </MainContent>
   )
 }

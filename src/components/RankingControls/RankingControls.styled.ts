@@ -22,7 +22,7 @@ export const UndoButton = styled.button<{ $canUndo?: boolean }>`
 
   &:hover {
     background: ${props =>
-      !props.$canUndo ? colours.mutedGrey : colours.darkerYellow};
+      !props.$canUndo ? colours.mutedGrey : colours.orange};
   }
 `
 

@@ -86,12 +86,11 @@ export const StatusMessage = styled.div<{ $isSuccess: boolean }>`
   text-align: center;
 
   background: ${props =>
-    props.$isSuccess ? colours.successBgLight : colours.errorBg};
+    props.$isSuccess ? colours.successBg : colours.errorBg};
   color: ${props =>
     props.$isSuccess ? colours.successGreen : colours.errorText};
   border: ${spacing.micro} solid
-    ${props =>
-      props.$isSuccess ? colours.successBorderLight : colours.errorBorder};
+    ${props => (props.$isSuccess ? colours.greenBorder : colours.errorBorder)};
 `
 
 export const InfoSection = styled.div`
@@ -172,7 +171,7 @@ export const BoldText = styled.span`
 
 export const LastUpdatedText = styled.p`
   font-size: ${fonts.small};
-  color: ${colours.lightTextGrey};
+  color: ${colours.textGrey};
   font-style: italic;
   margin: ${textSpacing.tiny} 0;
 `

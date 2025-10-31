@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import {
   BackLink,
-  Card,
   DuplicateResolver,
   MainContent,
   Title,
@@ -23,11 +22,6 @@ interface CoasterFormData {
   model: string
   type: string
   country: string
-  location: string
-  height: string
-  speed: string
-  inversions: string
-  year: string
 }
 
 export default function UploadManual() {
@@ -45,11 +39,6 @@ export default function UploadManual() {
     model: '',
     type: '',
     country: '',
-    location: '',
-    height: '',
-    speed: '',
-    inversions: '',
-    year: '',
   })
 
   const handleInputChange = (
@@ -76,6 +65,7 @@ export default function UploadManual() {
       rankingMetadata: uploadedData?.rankingMetadata || {
         completedComparisons: new Set<string>(),
         totalWins: new Map<string, number>(),
+        rankedCoasters: [],
         isRanked: false,
       },
     }
@@ -91,11 +81,6 @@ export default function UploadManual() {
       model: '',
       type: '',
       country: '',
-      location: '',
-      height: '',
-      speed: '',
-      inversions: '',
-      year: '',
     })
   }
 
@@ -131,16 +116,7 @@ export default function UploadManual() {
       manufacturer: formData.manufacturer.trim(),
       model: formData.model.trim(),
       type: formData.type.trim(),
-      country: formData.country.trim() || '',
-      location: formData.location.trim() || undefined,
-      height: formData.height.trim()
-        ? Number(formData.height.trim())
-        : undefined,
-      speed: formData.speed.trim() ? Number(formData.speed.trim()) : undefined,
-      inversions: formData.inversions.trim()
-        ? Number(formData.inversions.trim())
-        : undefined,
-      year: formData.year.trim() ? Number(formData.year.trim()) : undefined,
+      country: formData.country.trim(),
       isNewCoaster: true,
       wins: 0,
     }
@@ -208,6 +184,7 @@ export default function UploadManual() {
       rankingMetadata: uploadedData?.rankingMetadata || {
         completedComparisons: new Set<string>(),
         totalWins: new Map<string, number>(),
+        rankedCoasters: [],
         isRanked: false,
       },
     }
@@ -228,11 +205,6 @@ export default function UploadManual() {
       model: '',
       type: '',
       country: '',
-      location: '',
-      height: '',
-      speed: '',
-      inversions: '',
-      year: '',
     })
   }
 
@@ -249,7 +221,7 @@ export default function UploadManual() {
     <MainContent>
       <Title>Add Coaster Manually</Title>
 
-      <Card>
+      <section>
         <Styled.Instructions>
           <h2>Enter Coaster Details</h2>
           <p>
@@ -354,78 +326,9 @@ export default function UploadManual() {
                 value={formData.country || ''}
                 onChange={handleInputChange}
                 placeholder='e.g. United Kingdom'
+                required
               />
             </Styled.FormGroup>
-          </Styled.FormSection>
-
-          <Styled.FormSection>
-            <h3>Optional Information</h3>
-
-            <Styled.FormRow>
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='location'>Location</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='location'
-                  name='location'
-                  value={formData.location || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. Staffordshire'
-                />
-              </Styled.FormGroup>
-            </Styled.FormRow>
-
-            <Styled.FormRow>
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='height'>Height</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='height'
-                  name='height'
-                  value={formData.height || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. 30m or 98ft'
-                />
-              </Styled.FormGroup>
-
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='speed'>Speed</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='speed'
-                  name='speed'
-                  value={formData.speed || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. 85 km/h or 53 mph'
-                />
-              </Styled.FormGroup>
-            </Styled.FormRow>
-
-            <Styled.FormRow>
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='inversions'>Inversions</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='inversions'
-                  name='inversions'
-                  value={formData.inversions || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. 14'
-                />
-              </Styled.FormGroup>
-
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='year'>Year Opened</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='year'
-                  name='year'
-                  value={formData.year || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. 2013'
-                />
-              </Styled.FormGroup>
-            </Styled.FormRow>
           </Styled.FormSection>
 
           <Styled.SubmitButton type='submit'>
@@ -458,7 +361,7 @@ export default function UploadManual() {
         )}
 
         <BackLink href='/upload'>Back to Upload Options</BackLink>
-      </Card>
+      </section>
     </MainContent>
   )
 }

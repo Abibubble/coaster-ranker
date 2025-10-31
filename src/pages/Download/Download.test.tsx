@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { vi } from 'vitest'
 import Download from './Download'
 import { DataProvider } from '../../contexts/DataContext'
 

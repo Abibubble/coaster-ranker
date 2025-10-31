@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithRef, ElementType, ReactNode } from 'react'
+import { ComponentPropsWithRef, ElementType, ReactNode } from 'react'
 
 import * as Styled from './ScreenReaderOnly.styled'
 

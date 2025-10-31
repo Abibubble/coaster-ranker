@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, MainContent, Title } from '../../components'
+import { MainContent, Title } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
 import * as Styled from './Download.styled'
@@ -22,11 +22,6 @@ export default function Download() {
       'manufacturer',
       'model',
       'type',
-      'location',
-      'height',
-      'speed',
-      'inversions',
-      'year',
     ]
 
     // Create CSV content
@@ -108,7 +103,7 @@ export default function Download() {
     return (
       <MainContent>
         <Title>Download Your Collection</Title>
-        <Card>
+        <section>
           <Styled.EmptyState>
             <h2>No Coasters Yet</h2>
             <p>
@@ -119,7 +114,7 @@ export default function Download() {
               Upload Coasters
             </Styled.UploadLink>
           </Styled.EmptyState>
-        </Card>
+        </section>
       </MainContent>
     )
   }
@@ -128,7 +123,7 @@ export default function Download() {
     <MainContent>
       <Title>Download Your Collection</Title>
 
-      <Card>
+      <section>
         <Styled.DownloadContent>
           <Styled.Section>
             <h2>Your Coaster Collection</h2>
@@ -195,7 +190,7 @@ export default function Download() {
             Back to View Coasters
           </Styled.BackLink>
         </Styled.DownloadContent>
-      </Card>
+      </section>
     </MainContent>
   )
 }

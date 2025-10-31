@@ -10,11 +10,6 @@ interface RawCoasterData {
   manufacturer?: string
   model?: string
   type?: string
-  location?: string
-  height?: string
-  speed?: string
-  inversions?: string
-  year?: string
 }
 
 export function parseCSV(csvText: string): RawCoasterData[] {
@@ -88,20 +83,18 @@ export function validateCoasterData(data: RawCoasterData[]): Coaster[] {
     if (!item.type) {
       throw new Error(`Row ${index + 1}: Type is required`)
     }
+    if (!item.country) {
+      throw new Error(`Row ${index + 1}: Country is required`)
+    }
 
     return {
       id: item.id || `coaster_${index}`,
       name: item.name,
       park: item.park,
-      country: item.country || '',
+      country: item.country,
       manufacturer: item.manufacturer,
       model: item.model,
       type: item.type,
-      location: item.location || '',
-      height: item.height ? parseFloat(item.height) : undefined,
-      speed: item.speed ? parseFloat(item.speed) : undefined,
-      inversions: item.inversions ? parseInt(item.inversions) : undefined,
-      year: item.year ? parseInt(item.year) : undefined,
     }
   })
 }

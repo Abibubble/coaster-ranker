@@ -1,4 +1,3 @@
-import React from 'react'
 import { Coaster } from '../../types/data'
 import * as Styled from '../../pages/Rank/Rank.styled'
 import * as LocalStyled from './RankingComplete.styled'

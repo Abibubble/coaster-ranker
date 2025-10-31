@@ -1,8 +1,8 @@
 import * as Styled from './MainContent.styled'
-import React from 'react'
+import { ReactNode } from 'react'
 
 export type MainContentProps = {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function MainContent({ children }: MainContentProps) {

@@ -2,7 +2,7 @@ import { breakpoints, colours, fonts, spacing, textSpacing } from '../../theme'
 import styled from 'styled-components'
 
 export const DuplicateContainer = styled.div`
-  background: ${colours.warningBg};
+  background: ${colours.successBg};
   border: ${spacing.micro} solid ${colours.yellow};
   border-radius: ${spacing.tiny};
   padding: ${textSpacing.small};

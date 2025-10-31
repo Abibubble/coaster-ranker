@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, MainContent, Title, ViewLink } from '../../components'
+import { MainContent, Title, ViewLink } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './ViewCoasters.styled'
 
@@ -37,7 +37,7 @@ export default function ViewCoasters() {
     return (
       <MainContent>
         <Title>Your Coasters</Title>
-        <Card>
+        <section>
           <Styled.EmptyState>
             <h2>No Coasters Yet</h2>
             <p>
@@ -48,7 +48,7 @@ export default function ViewCoasters() {
               Go to Upload Page
             </Styled.UploadLink>
           </Styled.EmptyState>
-        </Card>
+        </section>
       </MainContent>
     )
   }
@@ -73,7 +73,7 @@ export default function ViewCoasters() {
         </div>
       )}
 
-      <Card>
+      <section>
         <Styled.CoastersSummary>
           <h2>Your Collection</h2>
           <p>
@@ -133,7 +133,7 @@ export default function ViewCoasters() {
         <Styled.CoasterCount>
           Showing {coasters.length} coaster{coasters.length === 1 ? '' : 's'}
         </Styled.CoasterCount>
-      </Card>
+      </section>
     </MainContent>
   )
 }

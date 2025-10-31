@@ -6,8 +6,8 @@ import { Coaster } from '../../types/data'
 const defaultProps = {
   coasters: [],
   groupBy: 'park' as const,
-  onRankingComplete: (rankedCoasters: Coaster[]) => {},
-  onHierarchicalFallback: (attemptedMode: 'park' | 'model') => {},
+  onRankingComplete: (_rankedCoasters: Coaster[]) => {},
+  onHierarchicalFallback: (_attemptedMode: 'park' | 'model') => {},
 }
 
 describe('GroupRanking', () => {

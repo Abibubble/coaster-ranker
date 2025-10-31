@@ -6,7 +6,7 @@ import { DuplicateResolution } from './DuplicateResolver'
 const defaultProps = {
   duplicates: [],
   onCancel: () => {},
-  onResolve: (resolutions: DuplicateResolution[]) => {},
+  onResolve: (_resolutions: DuplicateResolution[]) => {},
 }
 
 describe('DuplicateResolver', () => {

@@ -37,16 +37,6 @@ export default function CoasterComparison({
           <p>
             <Styled.BoldText>Type:</Styled.BoldText> {coaster1.type}
           </p>
-          {coaster1.height && (
-            <p>
-              <Styled.BoldText>Height:</Styled.BoldText> {coaster1.height}m
-            </p>
-          )}
-          {coaster1.speed && (
-            <p>
-              <Styled.BoldText>Speed:</Styled.BoldText> {coaster1.speed} km/h
-            </p>
-          )}
         </Styled.CoasterDetails>
       </Styled.CoasterCard>
 
@@ -72,16 +62,6 @@ export default function CoasterComparison({
           <p>
             <Styled.BoldText>Type:</Styled.BoldText> {coaster2.type}
           </p>
-          {coaster2.height && (
-            <p>
-              <Styled.BoldText>Height:</Styled.BoldText> {coaster2.height}m
-            </p>
-          )}
-          {coaster2.speed && (
-            <p>
-              <Styled.BoldText>Speed:</Styled.BoldText> {coaster2.speed} km/h
-            </p>
-          )}
         </Styled.CoasterDetails>
       </Styled.CoasterCard>
     </Styled.ComparisonArea>

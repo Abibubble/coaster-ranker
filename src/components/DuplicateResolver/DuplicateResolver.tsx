@@ -99,12 +99,6 @@ export default function DuplicateResolver({
                   <Styled.BoldText>Country:</Styled.BoldText>{' '}
                   {duplicate.existingCoaster.country || 'Not specified'}
                 </p>
-                {duplicate.existingCoaster.year && (
-                  <p>
-                    <Styled.BoldText>Year:</Styled.BoldText>{' '}
-                    {duplicate.existingCoaster.year}
-                  </p>
-                )}
               </Styled.CoasterDetails>
             </Styled.CoasterCard>
 
@@ -133,12 +127,6 @@ export default function DuplicateResolver({
                   <Styled.BoldText>Country:</Styled.BoldText>{' '}
                   {duplicate.newCoaster.country || 'Not specified'}
                 </p>
-                {duplicate.newCoaster.year && (
-                  <p>
-                    <Styled.BoldText>Year:</Styled.BoldText>{' '}
-                    {duplicate.newCoaster.year}
-                  </p>
-                )}
               </Styled.CoasterDetails>
             </Styled.CoasterCard>
           </Styled.CoasterComparison>
