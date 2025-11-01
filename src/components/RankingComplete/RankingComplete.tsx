@@ -36,12 +36,31 @@ export default function RankingComplete({
 
   const currentRankedCoasters = getCurrentRankedCoasters()
 
-  // Update coastersOrder when context data changes
+  // Initialize coastersOrder on mount only
   useEffect(() => {
-    if (!isEditing) {
-      setCoastersOrder(currentRankedCoasters)
+    setCoastersOrder([...rankedCoasters])
+  }, [rankedCoasters])
+
+  // Update coastersOrder when we're not editing and the context data changes significantly
+  useEffect(() => {
+    if (
+      !isEditing &&
+      uploadedData?.rankingMetadata?.isRanked &&
+      uploadedData.coasters
+    ) {
+      const contextCoasters = uploadedData.coasters
+        .filter(coaster => coaster.rankPosition !== undefined)
+        .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0))
+
+      if (contextCoasters.length > 0) {
+        setCoastersOrder([...contextCoasters])
+      }
     }
-  }, [currentRankedCoasters, isEditing])
+  }, [
+    uploadedData?.rankingMetadata?.isRanked,
+    uploadedData?.coasters,
+    isEditing,
+  ])
 
   const handleEditClick = () => {
     setIsEditing(true)

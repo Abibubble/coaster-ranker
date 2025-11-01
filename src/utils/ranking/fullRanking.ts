@@ -1,5 +1,5 @@
 import { Coaster } from '../../types/data'
-import { updateRankingPositions } from './rankingUtils'
+import { updateRankingPositionsWithBinarySearch } from './rankingUtils'
 
 /**
  * Build a complete ranking from comparison results using a topological sort approach
@@ -82,7 +82,13 @@ export const updateRankingByStrategy = (
     // For full ranking, rebuild the entire ranking from all comparison results
     return buildRankingFromComparisons(coasters, comparisonResults)
   } else {
-    // For positional ranking, use sequential insertion
-    return updateRankingPositions(currentRanking, winnerId, loserId)
+    // For positional ranking, use true binary search insertion
+    return updateRankingPositionsWithBinarySearch(
+      currentRanking,
+      winnerId,
+      loserId,
+      comparisonResults,
+      coasters
+    )
   }
 }

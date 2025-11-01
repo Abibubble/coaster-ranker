@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { vi } from 'vitest'
 import RankingComplete from './RankingComplete'

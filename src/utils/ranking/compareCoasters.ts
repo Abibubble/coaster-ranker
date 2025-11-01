@@ -195,18 +195,53 @@ export function compareCoasters(
           unrankedCoasters.map(c => c.id)
         )
 
+        // Only move to next coaster when current coaster has been properly positioned
+        // Check if current coaster needs more comparisons for proper binary search
+        const alreadyRanked = finalRankedCoasters
+          .map(id => uploadedData.coasters.find(c => c.id === id))
+          .filter(c => c !== undefined) as Coaster[]
+
+        // Simple check: has this coaster been compared to enough ranked coasters?
+        // For true binary search, we need log2(n) comparisons where n is number of ranked coasters
+        const minComparisonsNeeded =
+          alreadyRanked.length > 0
+            ? Math.ceil(Math.log2(alreadyRanked.length + 1))
+            : 0
+        const actualComparisons = alreadyRanked.filter(rankedCoaster => {
+          const comparisonKey =
+            currentRankingCoaster.id < rankedCoaster.id
+              ? `${currentRankingCoaster.id}-${rankedCoaster.id}`
+              : `${rankedCoaster.id}-${currentRankingCoaster.id}`
+          return updatedComparisonResults.has(comparisonKey)
+        }).length
+
+        const hasEnoughComparisons =
+          actualComparisons >= minComparisonsNeeded ||
+          alreadyRanked.length === 0
+
+        console.log(`🔍 BINARY SEARCH CHECK for ${currentRankingCoaster.name}:`)
+        console.log(`  Already ranked coasters: ${alreadyRanked.length}`)
+        console.log(`  Min comparisons needed: ${minComparisonsNeeded}`)
+        console.log(`  Actual comparisons: ${actualComparisons}`)
+        console.log(`  Has enough comparisons: ${hasEnoughComparisons}`)
+
         updatedCoasters = uploadedData.coasters.map(coaster => {
           if (coaster.id === currentRankingCoaster.id) {
+            // Only complete ranking if we have enough comparisons
             return {
               ...coaster,
-              isCurrentlyRanking: false,
-              rankPosition: finalRankedCoasters.indexOf(coaster.id) + 1,
+              isCurrentlyRanking: !hasEnoughComparisons,
+              rankPosition: hasEnoughComparisons
+                ? finalRankedCoasters.indexOf(coaster.id) + 1
+                : undefined,
             }
           } else if (coaster.isCurrentlyRanking) {
             return { ...coaster, isCurrentlyRanking: false }
           } else if (
+            hasEnoughComparisons && // Only start next coaster if current one is done
             unrankedCoasters.length > 0 &&
-            coaster.id === unrankedCoasters[0].id
+            coaster.id === unrankedCoasters[0].id &&
+            !finalRankedCoasters.includes(coaster.id) // Don't mark as ranking if already ranked
           ) {
             return { ...coaster, isCurrentlyRanking: true }
           } else if (finalRankedCoasters.includes(coaster.id)) {

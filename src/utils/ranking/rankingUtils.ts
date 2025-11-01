@@ -249,87 +249,121 @@ export const initializePositionalRanking = (
 }
 
 /**
- * Update ranking positions after a comparison result for sequential insertion
- * This handles the binary search insertion process
+ * Update ranking positions after a comparison result for true binary search insertion
+ * This replaces the old updateRankingPositions function with proper binary search logic
  */
-export const updateRankingPositions = (
+export const updateRankingPositionsWithBinarySearch = (
   rankedCoasters: string[],
   winnerId: string,
-  loserId: string
+  loserId: string,
+  comparisonResults: Map<string, string>,
+  allCoasters: Coaster[]
 ): string[] => {
-  console.log(`🔧 RANKING UPDATE: ${winnerId} beats ${loserId}`)
+  console.log(`🔧 BINARY SEARCH UPDATE: ${winnerId} beats ${loserId}`)
   console.log('  Current ranking:', rankedCoasters)
 
-  const newRanking = [...rankedCoasters]
+  // Find which coaster is the new one being inserted
+  const winnerInRanking = rankedCoasters.includes(winnerId)
+  const loserInRanking = rankedCoasters.includes(loserId)
 
-  // Special case: if ranking is empty, establish the first two positions
-  if (newRanking.length === 0) {
-    console.log('  Empty ranking - establishing first two positions')
-    const result = [winnerId, loserId] // Winner first, loser second
-    console.log('  New ranking:', result)
-    return result
+  // Case 1: Both are already ranked - just verify order is correct
+  if (winnerInRanking && loserInRanking) {
+    const winnerIndex = rankedCoasters.indexOf(winnerId)
+    const loserIndex = rankedCoasters.indexOf(loserId)
+
+    if (winnerIndex < loserIndex) {
+      // Already in correct order
+      console.log('  Both ranked, order correct - no change')
+      return rankedCoasters
+    } else {
+      // Need to reorder - move winner before loser
+      const newRanking = [...rankedCoasters]
+      newRanking.splice(winnerIndex, 1) // Remove winner
+      const newLoserIndex = newRanking.indexOf(loserId)
+      newRanking.splice(newLoserIndex, 0, winnerId) // Insert winner before loser
+      console.log('  Reordered to fix position:', newRanking)
+      return newRanking
+    }
   }
 
-  // Find current positions
-  const winnerIndex = newRanking.indexOf(winnerId)
-  const loserIndex = newRanking.indexOf(loserId)
+  // Case 2: Winner is new, use binary search to find insertion position
+  if (!winnerInRanking && loserInRanking) {
+    const winnerCoaster = allCoasters.find(c => c.id === winnerId)
+    const rankedCoasterObjects = rankedCoasters
+      .map(id => allCoasters.find(c => c.id === id))
+      .filter(c => c !== undefined) as Coaster[]
 
-  console.log(`  Winner index: ${winnerIndex}, Loser index: ${loserIndex}`)
+    if (winnerCoaster) {
+      const insertPosition = calculateTrueBinarySearchPosition(
+        winnerCoaster,
+        rankedCoasterObjects,
+        comparisonResults
+      )
 
-  // If either coaster is not in the ranking yet, this might be an insertion case
-  if (winnerIndex === -1 && loserIndex === -1) {
-    // Both are new - this shouldn't happen in normal sequential insertion
-    console.log('  Both coasters are new - no change')
-    return newRanking
+      if (insertPosition === -1) {
+        // Binary search not complete yet, DON'T change ranking - wait for more comparisons
+        console.log(
+          `  Binary search incomplete for ${winnerId} - waiting for more comparisons`
+        )
+        return rankedCoasters
+      }
+
+      const newRanking = [...rankedCoasters]
+      newRanking.splice(insertPosition, 0, winnerId)
+      console.log(
+        `  Binary search insertion: ${winnerId} at position ${
+          insertPosition + 1
+        }`
+      )
+      console.log('  New ranking:', newRanking)
+      return newRanking
+    }
   }
 
-  if (winnerIndex === -1) {
-    // Winner is new, loser is in ranking - insert winner before loser
-    const newLoserIndex = newRanking.indexOf(loserId)
-    console.log(
-      `  Inserting winner ${winnerId} before loser at position ${newLoserIndex}`
-    )
-    newRanking.splice(newLoserIndex, 0, winnerId)
-    console.log('  New ranking:', newRanking)
-    return newRanking
+  // Case 3: Loser is new, insert after winner using binary search
+  if (winnerInRanking && !loserInRanking) {
+    const loserCoaster = allCoasters.find(c => c.id === loserId)
+    const rankedCoasterObjects = rankedCoasters
+      .map(id => allCoasters.find(c => c.id === id))
+      .filter(c => c !== undefined) as Coaster[]
+
+    if (loserCoaster) {
+      const insertPosition = calculateTrueBinarySearchPosition(
+        loserCoaster,
+        rankedCoasterObjects,
+        comparisonResults
+      )
+
+      if (insertPosition === -1) {
+        // Binary search not complete yet, DON'T change ranking - wait for more comparisons
+        console.log(
+          `  Binary search incomplete for ${loserId} - waiting for more comparisons`
+        )
+        return rankedCoasters
+      }
+
+      // Since it lost, make sure it's at least after the winner
+      const winnerIndex = rankedCoasters.indexOf(winnerId)
+      const finalPosition = Math.max(insertPosition, winnerIndex + 1)
+
+      const newRanking = [...rankedCoasters]
+      newRanking.splice(finalPosition, 0, loserId)
+      console.log(
+        `  Binary search insertion: ${loserId} at position ${finalPosition + 1}`
+      )
+      console.log('  New ranking:', newRanking)
+      return newRanking
+    }
   }
 
-  if (loserIndex === -1) {
-    // Loser is new, winner is in ranking - insert loser after winner
-    const newWinnerIndex = newRanking.indexOf(winnerId)
-    console.log(
-      `  Inserting loser ${loserId} after winner at position ${
-        newWinnerIndex + 1
-      }`
-    )
-    newRanking.splice(newWinnerIndex + 1, 0, loserId)
-    console.log('  New ranking:', newRanking)
-    return newRanking
+  // Case 4: Neither is ranked yet (first comparison)
+  if (!winnerInRanking && !loserInRanking) {
+    console.log('  First comparison - establishing initial order')
+    return [winnerId, loserId]
   }
 
-  // Both coasters are already in ranking - reorder if needed
-  // If winner is already ranked higher (lower index), no change needed
-  if (winnerIndex < loserIndex) {
-    console.log('  Winner already ranked higher - no change needed')
-    return newRanking
-  }
-
-  console.log(
-    `  Moving winner from position ${winnerIndex} to before loser at position ${loserIndex}`
-  )
-
-  // Move winner to just above loser
-  // Remove winner from current position
-  newRanking.splice(winnerIndex, 1)
-
-  // Find new position of loser (it may have shifted due to removal)
-  const newLoserIndex = newRanking.indexOf(loserId)
-
-  // Insert winner just before loser
-  newRanking.splice(newLoserIndex, 0, winnerId)
-
-  console.log('  New ranking:', newRanking)
-  return newRanking
+  console.log('  No changes needed')
+  return rankedCoasters
 }
 
 /**
@@ -356,7 +390,7 @@ export const insertCoasterIntoRanking = (
 }
 
 /**
- * Calculate the insertion position for a new coaster using binary search
+ * Calculate the insertion position for a new coaster using true binary search
  * This will be used with real-time comparison results during ranking
  */
 export const calculateInsertionPosition = (
@@ -368,38 +402,22 @@ export const calculateInsertionPosition = (
     return 0 // First position
   }
 
-  const getComparisonKey = (c1: Coaster, c2: Coaster) => {
-    return c1.id < c2.id ? `${c1.id}-${c2.id}` : `${c2.id}-${c1.id}`
-  }
-
-  // Binary search to find the correct insertion position
-  let left = 0
-  let right = rankedCoasters.length
-
-  while (left < right) {
-    const mid = Math.floor((left + right) / 2)
-    const midCoaster = rankedCoasters[mid]
-    const comparisonKey = getComparisonKey(newCoaster, midCoaster)
-    const winner = comparisonResults.get(comparisonKey)
-
-    if (winner === newCoaster.id) {
-      // New coaster beat the mid coaster, insert in upper half
-      right = mid
-    } else if (winner === midCoaster.id) {
-      // Mid coaster beat new coaster, insert in lower half
-      left = mid + 1
-    } else {
-      // No comparison result yet - we need this comparison
-      return -1 // Signal that we need more comparisons
-    }
-  }
-
-  return left
+  // Use the true binary search position calculation
+  const position = calculateTrueBinarySearchPosition(
+    newCoaster,
+    rankedCoasters,
+    comparisonResults
+  )
+  console.log(
+    `🎯 INSERTION POSITION: ${newCoaster.name} should be inserted at position ${
+      position + 1
+    }`
+  )
+  return position
 }
 
 /**
- * Determine if a coaster has enough comparison results to be inserted
- * For binary search, we need specific comparisons to determine position
+ * Determine if a coaster has enough comparison results to be inserted using true binary search
  */
 export const isCoasterReadyForInsertion = (
   newCoaster: Coaster,
@@ -410,13 +428,16 @@ export const isCoasterReadyForInsertion = (
     return true // First coaster is always ready
   }
 
-  // Try to calculate insertion position - if it returns -1, we need more comparisons
-  const insertionPosition = calculateInsertionPosition(
+  // Check if true binary search is complete
+  const isComplete = isTrueBinarySearchComplete(
     newCoaster,
     rankedCoasters,
     comparisonResults
   )
-  return insertionPosition !== -1
+  console.log(
+    `🎯 INSERTION READINESS: ${newCoaster.name} ready = ${isComplete}`
+  )
+  return isComplete
 }
 
 /**
@@ -507,7 +528,7 @@ export const generatePositionalComparisons = (
 
       if (alreadyRanked.length > 0) {
         // Use binary search to find where this coaster should be inserted
-        const nextTarget = getNextBinarySearchTarget(
+        const nextTarget = getNextTrueBinarySearchComparison(
           nextCoasterToRank,
           alreadyRanked,
           comparisonResults || new Map()
@@ -536,7 +557,7 @@ export const generatePositionalComparisons = (
   }
 
   // Generate binary search comparisons for the current coaster
-  const nextTarget = getNextBinarySearchTarget(
+  const nextTarget = getNextTrueBinarySearchComparison(
     currentRankingCoaster,
     alreadyRanked,
     comparisonResults || new Map()
@@ -546,7 +567,14 @@ export const generatePositionalComparisons = (
     const comparisonKey = getComparisonKey(currentRankingCoaster, nextTarget)
     if (!completedComparisons.has(comparisonKey)) {
       pairs.push([currentRankingCoaster, nextTarget])
+      console.log(
+        `🎯 TRUE BINARY SEARCH: Generated comparison ${currentRankingCoaster.name} vs ${nextTarget.name}`
+      )
     }
+  } else {
+    console.log(
+      `✅ TRUE BINARY SEARCH: Complete for ${currentRankingCoaster.name}`
+    )
   }
 
   console.log('🔧 GENERATE POSITIONAL COMPARISONS END')
@@ -563,10 +591,12 @@ export const generatePositionalComparisons = (
  * Get binary search targets for inserting a coaster into an existing ranking
  */
 /**
- * Get the next comparison target for binary search insertion
- * This implements true binary search by simulating the algorithm and finding the next needed comparison
+ * Generate the next binary search comparison for true binary search insertion
+ * This implements proper binary search: start at middle, then halve the search space
+ * until only one position remains. This function returns the next coaster that needs
+ * to be compared to find the exact insertion position.
  */
-export const getNextBinarySearchTarget = (
+export const getNextTrueBinarySearchComparison = (
   newCoaster: Coaster,
   rankedCoasters: Coaster[],
   comparisonResults: Map<string, string>
@@ -579,7 +609,83 @@ export const getNextBinarySearchTarget = (
     return c1.id < c2.id ? `${c1.id}-${c2.id}` : `${c2.id}-${c1.id}`
   }
 
-  // Simulate binary search to find the next comparison needed
+  // True binary search: maintain search bounds and halve them each iteration
+  let left = 0
+  let right = rankedCoasters.length
+
+  console.log(
+    `🔍 BINARY SEARCH for ${newCoaster.name} among ${rankedCoasters.length} ranked coasters`
+  )
+
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2)
+    const midCoaster = rankedCoasters[mid]
+    const comparisonKey = getComparisonKey(newCoaster, midCoaster)
+    const winner = comparisonResults.get(comparisonKey)
+
+    console.log(
+      `  Checking range [${left}, ${right}), mid=${mid}, comparing against ${midCoaster.name}`
+    )
+
+    if (winner === undefined) {
+      // This is the comparison we need - this implements the halving logic
+      console.log(
+        `🎯 BINARY SEARCH: Need comparison between ${newCoaster.name} and ${midCoaster.name}`
+      )
+      console.log(
+        `   Position range: ${
+          left + 1
+        } to ${right} (comparing against position ${mid + 1})`
+      )
+      return midCoaster
+    }
+
+    if (winner === newCoaster.id) {
+      // New coaster won - search upper half (better positions)
+      console.log(
+        `✅ ${newCoaster.name} beat ${midCoaster.name} (pos ${
+          mid + 1
+        }) - searching positions ${left + 1} to ${mid}`
+      )
+      right = mid
+    } else {
+      // Mid coaster won - search lower half (worse positions)
+      console.log(
+        `❌ ${midCoaster.name} (pos ${mid + 1}) beat ${
+          newCoaster.name
+        } - searching positions ${mid + 2} to ${right}`
+      )
+      left = mid + 1
+    }
+  }
+
+  // Binary search complete - we found the exact position
+  console.log(
+    `🎯 BINARY SEARCH COMPLETE: ${
+      newCoaster.name
+    } should be inserted at position ${left + 1}`
+  )
+  return null
+}
+
+/**
+ * Calculate the exact insertion position using completed binary search results
+ * This returns the 0-based index where the coaster should be inserted
+ * Returns -1 if not enough comparison data is available yet
+ */
+export const calculateTrueBinarySearchPosition = (
+  newCoaster: Coaster,
+  rankedCoasters: Coaster[],
+  comparisonResults: Map<string, string>
+): number => {
+  if (rankedCoasters.length === 0) {
+    return 0
+  }
+
+  const getComparisonKey = (c1: Coaster, c2: Coaster) => {
+    return c1.id < c2.id ? `${c1.id}-${c2.id}` : `${c2.id}-${c1.id}`
+  }
+
   let left = 0
   let right = rankedCoasters.length
 
@@ -590,21 +696,56 @@ export const getNextBinarySearchTarget = (
     const winner = comparisonResults.get(comparisonKey)
 
     if (winner === undefined) {
-      // This is the comparison we need!
-      return midCoaster
+      // Not enough comparison data yet - return -1 to indicate incomplete
+      console.log(
+        `⚠️ INCOMPLETE BINARY SEARCH: Missing comparison ${newCoaster.name} vs ${midCoaster.name}`
+      )
+      return -1
     }
 
     if (winner === newCoaster.id) {
-      // New coaster beat the mid coaster, search upper half
+      // New coaster won - insert in upper half
+      console.log(
+        `✅ ${newCoaster.name} beat ${midCoaster.name} (pos ${
+          mid + 1
+        }) - searching upper positions`
+      )
       right = mid
     } else {
-      // Mid coaster beat new coaster, search lower half
+      // Mid coaster won - insert in lower half
+      console.log(
+        `❌ ${midCoaster.name} (pos ${mid + 1}) beat ${
+          newCoaster.name
+        } - searching lower positions`
+      )
       left = mid + 1
     }
   }
 
-  // All needed comparisons have been completed
-  return null
+  console.log(
+    `🎯 BINARY SEARCH POSITION: ${newCoaster.name} should be at position ${
+      left + 1
+    }`
+  )
+  return left
+}
+
+/**
+ * Check if binary search is complete for a coaster
+ * True binary search needs specific comparisons to determine exact position
+ */
+export const isTrueBinarySearchComplete = (
+  newCoaster: Coaster,
+  rankedCoasters: Coaster[],
+  comparisonResults: Map<string, string>
+): boolean => {
+  // Try to get the next comparison - if it returns null, search is complete
+  const nextComparison = getNextTrueBinarySearchComparison(
+    newCoaster,
+    rankedCoasters,
+    comparisonResults
+  )
+  return nextComparison === null
 }
 
 export const getBinarySearchTargetsForInsertion = (
