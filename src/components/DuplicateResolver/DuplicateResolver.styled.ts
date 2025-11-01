@@ -169,7 +169,9 @@ export const ProgressInfo = styled.div`
   min-width: ${breakpoints.mobileMedium};
 `
 
-export const ActionButton = styled.button<{ primary?: boolean }>`
+export const ActionButton = styled.button.withConfig({
+  shouldForwardProp: prop => prop !== 'primary',
+})<{ primary?: boolean }>`
   padding: ${spacing.small} ${spacing.medium};
   border: none;
   border-radius: ${spacing.fine};
