@@ -19,17 +19,6 @@ export default function Download() {
   // Check if ranking data exists - either in individual coasters or in ranking metadata
   const hasRankingData = hasRankingDataForExport(uploadedData)
 
-  // Debug: Log ranking data availability (remove this in production)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔍 Download Debug:', {
-      hasRankingData,
-      coastersWithRankPosition: coasters.filter(
-        c => c.rankPosition !== undefined && c.rankPosition > 0
-      ).length,
-      rankingMetadata: uploadedData?.rankingMetadata,
-    })
-  }
-
   const generateFilename = (
     basename: string,
     format: 'csv' | 'json'

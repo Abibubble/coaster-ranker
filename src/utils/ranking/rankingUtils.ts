@@ -259,9 +259,6 @@ export const updateRankingPositionsWithBinarySearch = (
   comparisonResults: Map<string, string>,
   allCoasters: Coaster[]
 ): string[] => {
-  console.log(`🔧 BINARY SEARCH UPDATE: ${winnerId} beats ${loserId}`)
-  console.log('  Current ranking:', rankedCoasters)
-
   // Find which coaster is the new one being inserted
   const winnerInRanking = rankedCoasters.includes(winnerId)
   const loserInRanking = rankedCoasters.includes(loserId)
@@ -273,7 +270,6 @@ export const updateRankingPositionsWithBinarySearch = (
 
     if (winnerIndex < loserIndex) {
       // Already in correct order
-      console.log('  Both ranked, order correct - no change')
       return rankedCoasters
     } else {
       // Need to reorder - move winner before loser
@@ -281,7 +277,6 @@ export const updateRankingPositionsWithBinarySearch = (
       newRanking.splice(winnerIndex, 1) // Remove winner
       const newLoserIndex = newRanking.indexOf(loserId)
       newRanking.splice(newLoserIndex, 0, winnerId) // Insert winner before loser
-      console.log('  Reordered to fix position:', newRanking)
       return newRanking
     }
   }
@@ -302,20 +297,11 @@ export const updateRankingPositionsWithBinarySearch = (
 
       if (insertPosition === -1) {
         // Binary search not complete yet, DON'T change ranking - wait for more comparisons
-        console.log(
-          `  Binary search incomplete for ${winnerId} - waiting for more comparisons`
-        )
         return rankedCoasters
       }
 
       const newRanking = [...rankedCoasters]
       newRanking.splice(insertPosition, 0, winnerId)
-      console.log(
-        `  Binary search insertion: ${winnerId} at position ${
-          insertPosition + 1
-        }`
-      )
-      console.log('  New ranking:', newRanking)
       return newRanking
     }
   }
@@ -336,9 +322,6 @@ export const updateRankingPositionsWithBinarySearch = (
 
       if (insertPosition === -1) {
         // Binary search not complete yet, DON'T change ranking - wait for more comparisons
-        console.log(
-          `  Binary search incomplete for ${loserId} - waiting for more comparisons`
-        )
         return rankedCoasters
       }
 
@@ -348,21 +331,15 @@ export const updateRankingPositionsWithBinarySearch = (
 
       const newRanking = [...rankedCoasters]
       newRanking.splice(finalPosition, 0, loserId)
-      console.log(
-        `  Binary search insertion: ${loserId} at position ${finalPosition + 1}`
-      )
-      console.log('  New ranking:', newRanking)
       return newRanking
     }
   }
 
   // Case 4: Neither is ranked yet (first comparison)
   if (!winnerInRanking && !loserInRanking) {
-    console.log('  First comparison - establishing initial order')
     return [winnerId, loserId]
   }
 
-  console.log('  No changes needed')
   return rankedCoasters
 }
 
@@ -408,11 +385,6 @@ export const calculateInsertionPosition = (
     rankedCoasters,
     comparisonResults
   )
-  console.log(
-    `🎯 INSERTION POSITION: ${newCoaster.name} should be inserted at position ${
-      position + 1
-    }`
-  )
   return position
 }
 
@@ -434,9 +406,7 @@ export const isCoasterReadyForInsertion = (
     rankedCoasters,
     comparisonResults
   )
-  console.log(
-    `🎯 INSERTION READINESS: ${newCoaster.name} ready = ${isComplete}`
-  )
+
   return isComplete
 }
 
@@ -467,11 +437,6 @@ export const generatePositionalComparisons = (
   comparisonResults?: Map<string, string>
 ): [Coaster, Coaster][] => {
   const pairs: [Coaster, Coaster][] = []
-
-  console.log('🔧 GENERATE POSITIONAL COMPARISONS START')
-  console.log('Total coasters:', coasters.length)
-  console.log('Ranked coasters:', rankedCoasters.length, rankedCoasters)
-  console.log('Completed comparisons:', completedComparisons.size)
 
   // Special case: if no coasters are ranked yet, start with first comparison
   if (rankedCoasters.length === 0 && coasters.length >= 2) {
@@ -508,7 +473,6 @@ export const generatePositionalComparisons = (
 
     if (unrankedCoasters.length === 0) {
       // All coasters are ranked - validate critical comparisons
-      console.log('🔍 ALL COASTERS RANKED - Validating critical comparisons...')
       const criticalComparisons = validateAndGenerateCriticalComparisons(
         coasters,
         rankedCoasters,
@@ -567,22 +531,8 @@ export const generatePositionalComparisons = (
     const comparisonKey = getComparisonKey(currentRankingCoaster, nextTarget)
     if (!completedComparisons.has(comparisonKey)) {
       pairs.push([currentRankingCoaster, nextTarget])
-      console.log(
-        `🎯 TRUE BINARY SEARCH: Generated comparison ${currentRankingCoaster.name} vs ${nextTarget.name}`
-      )
     }
-  } else {
-    console.log(
-      `✅ TRUE BINARY SEARCH: Complete for ${currentRankingCoaster.name}`
-    )
   }
-
-  console.log('🔧 GENERATE POSITIONAL COMPARISONS END')
-  console.log('Generated pairs:', pairs.length)
-  console.log(
-    'Pairs details:',
-    pairs.map(pair => `${pair[0].name} vs ${pair[1].name}`)
-  )
 
   return pairs
 }
@@ -613,58 +563,26 @@ export const getNextTrueBinarySearchComparison = (
   let left = 0
   let right = rankedCoasters.length
 
-  console.log(
-    `🔍 BINARY SEARCH for ${newCoaster.name} among ${rankedCoasters.length} ranked coasters`
-  )
-
   while (left < right) {
     const mid = Math.floor((left + right) / 2)
     const midCoaster = rankedCoasters[mid]
     const comparisonKey = getComparisonKey(newCoaster, midCoaster)
     const winner = comparisonResults.get(comparisonKey)
 
-    console.log(
-      `  Checking range [${left}, ${right}), mid=${mid}, comparing against ${midCoaster.name}`
-    )
-
     if (winner === undefined) {
-      // This is the comparison we need - this implements the halving logic
-      console.log(
-        `🎯 BINARY SEARCH: Need comparison between ${newCoaster.name} and ${midCoaster.name}`
-      )
-      console.log(
-        `   Position range: ${
-          left + 1
-        } to ${right} (comparing against position ${mid + 1})`
-      )
+      // This is the comparison needed - this implements the halving logic
       return midCoaster
     }
 
     if (winner === newCoaster.id) {
       // New coaster won - search upper half (better positions)
-      console.log(
-        `✅ ${newCoaster.name} beat ${midCoaster.name} (pos ${
-          mid + 1
-        }) - searching positions ${left + 1} to ${mid}`
-      )
       right = mid
     } else {
       // Mid coaster won - search lower half (worse positions)
-      console.log(
-        `❌ ${midCoaster.name} (pos ${mid + 1}) beat ${
-          newCoaster.name
-        } - searching positions ${mid + 2} to ${right}`
-      )
       left = mid + 1
     }
   }
 
-  // Binary search complete - we found the exact position
-  console.log(
-    `🎯 BINARY SEARCH COMPLETE: ${
-      newCoaster.name
-    } should be inserted at position ${left + 1}`
-  )
   return null
 }
 
@@ -697,36 +615,18 @@ export const calculateTrueBinarySearchPosition = (
 
     if (winner === undefined) {
       // Not enough comparison data yet - return -1 to indicate incomplete
-      console.log(
-        `⚠️ INCOMPLETE BINARY SEARCH: Missing comparison ${newCoaster.name} vs ${midCoaster.name}`
-      )
       return -1
     }
 
     if (winner === newCoaster.id) {
       // New coaster won - insert in upper half
-      console.log(
-        `✅ ${newCoaster.name} beat ${midCoaster.name} (pos ${
-          mid + 1
-        }) - searching upper positions`
-      )
       right = mid
     } else {
       // Mid coaster won - insert in lower half
-      console.log(
-        `❌ ${midCoaster.name} (pos ${mid + 1}) beat ${
-          newCoaster.name
-        } - searching lower positions`
-      )
       left = mid + 1
     }
   }
 
-  console.log(
-    `🎯 BINARY SEARCH POSITION: ${newCoaster.name} should be at position ${
-      left + 1
-    }`
-  )
   return left
 }
 
@@ -970,11 +870,6 @@ export const validateAndGenerateCriticalComparisons = (
     .map(id => coasters.find(c => c.id === id))
     .filter(c => c !== undefined) as Coaster[]
 
-  console.log(
-    '🔍 VALIDATION: Checking critical comparisons for top coasters:',
-    topCoasters.map(c => c.name)
-  )
-
   // Ensure all top coasters have compared with each other
   for (let i = 0; i < topCoasters.length; i++) {
     for (let j = i + 1; j < topCoasters.length; j++) {
@@ -983,25 +878,9 @@ export const validateAndGenerateCriticalComparisons = (
       const comparisonKey = getComparisonKey(coaster1, coaster2)
 
       if (!completedComparisons.has(comparisonKey)) {
-        console.log(
-          `⚠️ MISSING: Direct comparison between ${coaster1.name} (rank ${
-            i + 1
-          }) and ${coaster2.name} (rank ${j + 1})`
-        )
         pairs.push([coaster1, coaster2])
-      } else {
-        console.log(
-          `✅ VERIFIED: ${coaster1.name} vs ${coaster2.name} already compared`
-        )
       }
     }
-  }
-
-  if (pairs.length > 0) {
-    console.log(
-      '🔧 ADDING CRITICAL COMPARISONS:',
-      pairs.map(([c1, c2]) => `${c1.name} vs ${c2.name}`)
-    )
   }
 
   return pairs

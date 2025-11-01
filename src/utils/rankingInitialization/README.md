@@ -143,8 +143,6 @@ const { strategy, comparisons } = getOptimalComparisons({
   completedComparisons: new Set(),
   comparisonResults: new Map(),
 })
-
-console.log(`Selected: ${strategy.type} - ${strategy.reason}`)
 ```
 
 ### State Preparation for React

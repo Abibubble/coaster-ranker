@@ -81,8 +81,6 @@ function Rank() {
   const initializeIndividualRankingCallback = useCallback(() => {
     if (!uploadedData) return
 
-    console.log('🔄 INITIALIZING RANKING - Clearing all previous state')
-
     // Reset comparison results when starting a new ranking session
     const freshComparisonResults = new Map<string, string>()
     setComparisonResults(freshComparisonResults)
@@ -92,21 +90,10 @@ function Rank() {
     setLastComparison(null)
     setRemainingComparisons([])
 
-    console.log(
-      '🔄 Using fresh comparison results:',
-      freshComparisonResults.size
-    )
-
     const result = initializeIndividualRanking({
       uploadedData,
       comparisonResults: freshComparisonResults,
     })
-
-    console.log('🔄 Generated comparisons:', result.comparisons.length)
-    console.log(
-      '🔄 First few comparisons:',
-      result.comparisons.slice(0, 3).map(([a, b]) => `${a.name} vs ${b.name}`)
-    )
 
     const stateUpdate = initializeRankingState({
       comparisons: result.comparisons,
@@ -123,15 +110,6 @@ function Rank() {
     setIsRankingComplete(stateUpdate.isRankingComplete)
     setRankedCoasters(stateUpdate.rankedCoasters)
     setUploadedData(result.updatedData)
-
-    console.log(
-      '🔄 Final state - Current pair:',
-      stateUpdate.currentPair?.map(c => c.name)
-    )
-    console.log(
-      '🔄 Final state - Remaining comparisons:',
-      stateUpdate.remainingComparisons.length
-    )
   }, [uploadedData, setUploadedData])
 
   const handleHierarchicalFallback = useCallback(
@@ -149,8 +127,6 @@ function Rank() {
     const result = resetRankings({ uploadedData })
 
     if (result.confirmed) {
-      console.log('🔄 RESETTING RANKING - Clearing all state')
-
       setRankingPhase('auto-ranking')
       setIsRankingComplete(false)
       setCurrentPair(null)
@@ -164,8 +140,6 @@ function Rank() {
       if (result.updatedData) {
         setUploadedData(result.updatedData)
       }
-
-      console.log('🔄 RESET COMPLETE - All state cleared')
     }
   }
 
@@ -176,7 +150,6 @@ function Rank() {
     }
 
     ;(window as WindowWithDebug).debugResetCoasterRanker = () => {
-      console.log('🔄 DEBUG RESET - Clearing all data including localStorage')
       localStorage.removeItem('coaster-ranker-data')
       setUploadedData(null)
       setComparisonResults(new Map())
@@ -187,7 +160,6 @@ function Rank() {
       setRankedCoasters([])
       setLastComparison(null)
       setRankingPhase('auto-ranking')
-      console.log('🔄 DEBUG RESET COMPLETE - Refresh the page')
     }
   }, [setUploadedData])
 
@@ -219,6 +191,31 @@ function Rank() {
       !isRankingComplete &&
       rankingPhase === 'auto-ranking'
     ) {
+      // Check if ranking is already complete from saved state
+      if (
+        uploadedData.rankingMetadata?.isRanked &&
+        uploadedData.rankingMetadata?.rankedCoasters
+      ) {
+        // Get coasters sorted by their rank positions
+        const savedRankedCoasters = uploadedData.coasters
+          .filter(coaster => coaster.rankPosition !== undefined)
+          .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0))
+
+        // If we have positioned coasters, use those; otherwise fall back to rankedCoasters array order
+        const rankedCoasterList =
+          savedRankedCoasters.length > 0
+            ? savedRankedCoasters
+            : (uploadedData.rankingMetadata.rankedCoasters
+                .map(id => uploadedData.coasters.find(c => c.id === id))
+                .filter(c => c !== undefined) as Coaster[])
+
+        setIsRankingComplete(true)
+        setRankedCoasters(rankedCoasterList)
+        setRankingPhase('complete')
+
+        return
+      }
+
       const optimalMode = determineOptimalRankingMode(uploadedData.coasters)
       setRankingMode(optimalMode)
 

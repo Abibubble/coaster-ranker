@@ -58,7 +58,7 @@ export const initializeIndividualRanking = ({
     comparisonResults,
   }
 
-  const { strategy, comparisons } = getOptimalComparisons(strategyParams)
+  const { comparisons } = getOptimalComparisons(strategyParams)
 
   const totalPossibleComparisons = calculateTotalComparisons(
     uploadedData.coasters.length
@@ -84,8 +84,6 @@ export const initializeIndividualRanking = ({
     comparisons.length,
     initialized.rankedCoasters
   )
-
-  console.log(`🎯 Strategy Selected: ${strategy.type} - ${strategy.reason}`)
 
   const updatedData: UploadedData = {
     ...uploadedData,

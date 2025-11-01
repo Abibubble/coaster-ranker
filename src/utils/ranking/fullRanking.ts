@@ -9,8 +9,6 @@ export const buildRankingFromComparisons = (
   coasters: Coaster[],
   comparisonResults: Map<string, string>
 ): string[] => {
-  console.log('🔄 BUILDING FULL RANKING from comparison results...')
-
   // Create adjacency list representing "beats" relationships
   const beats = new Map<string, Set<string>>()
   const beaten = new Map<string, Set<string>>()
@@ -26,8 +24,6 @@ export const buildRankingFromComparisons = (
     const [id1, id2] = comparisonKey.split('-')
     const loserId = winnerId === id1 ? id2 : id1
 
-    console.log(`  ${winnerId} beats ${loserId}`)
-
     beats.get(winnerId)?.add(loserId)
     beaten.get(loserId)?.add(winnerId)
   })
@@ -37,8 +33,6 @@ export const buildRankingFromComparisons = (
   coasters.forEach(coaster => {
     beatCounts.set(coaster.id, beats.get(coaster.id)?.size || 0)
   })
-
-  console.log('Beat counts:', Object.fromEntries(beatCounts))
 
   // Sort by number of wins (descending), then by coaster name for consistency
   const ranking = coasters
@@ -55,14 +49,6 @@ export const buildRankingFromComparisons = (
       return a.name.localeCompare(b.name)
     })
     .map(coaster => coaster.id)
-
-  console.log(
-    'Final ranking order:',
-    ranking.map(id => {
-      const coaster = coasters.find(c => c.id === id)
-      return `${coaster?.name} (${beatCounts.get(id)} wins)`
-    })
-  )
 
   return ranking
 }

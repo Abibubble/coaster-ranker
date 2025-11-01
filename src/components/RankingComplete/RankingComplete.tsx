@@ -74,16 +74,6 @@ export default function RankingComplete({
 
   const handleSaveChanges = () => {
     if (uploadedData) {
-      console.log('🔄 SAVING MANUAL RANKING ADJUSTMENTS')
-      console.log(
-        '📊 Original order:',
-        currentRankedCoasters.map(c => c.name)
-      )
-      console.log(
-        '📊 New order:',
-        coastersOrder.map(c => c.name)
-      )
-
       // Update the coasters array in uploadedData with new ranking order
       const updatedCoasters = [...uploadedData.coasters]
       coastersOrder.forEach((coaster, index) => {
@@ -110,10 +100,7 @@ export default function RankingComplete({
         rankingMetadata: updatedMetadata,
       }
 
-      console.log('💾 Saving updated data to context')
       setUploadedData(updatedData)
-
-      console.log('✅ Manual ranking adjustment saved successfully')
     }
     setIsEditing(false)
   }
