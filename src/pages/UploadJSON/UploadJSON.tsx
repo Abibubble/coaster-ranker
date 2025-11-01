@@ -207,7 +207,7 @@ export default function UploadJSON() {
               placeholder='Paste your JSON data here...'
               disabled={isLoading}
             />
-            <Button type='submit' disabled={isLoading || !jsonInput.trim()}>
+            <Button type='submit' variant={isLoading ? 'disabled' : 'default'}>
               {isLoading ? 'Processing...' : 'Process JSON'}
             </Button>
           </form>
