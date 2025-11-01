@@ -3,7 +3,6 @@ import {
   getCoastersWithPositions,
   initializePositionalRanking,
 } from '../ranking/rankingUtils'
-import { rankingLogger } from '../ranking/rankingLogger'
 import {
   getOptimalComparisons,
   ComparisonStrategyParams,
@@ -73,16 +72,6 @@ export const initializeIndividualRanking = ({
   const { isRankingComplete, rankedCoasters } = getRankingCompletionData(
     isComplete,
     coastersWithPositions
-  )
-
-  // Log initialization details
-  rankingLogger.logInitialization(
-    'individual',
-    uploadedData.coasters.length,
-    uploadedData.coasters.filter(c => c.isPreRanked).length,
-    uploadedData.coasters.filter(c => c.isNewCoaster).length,
-    comparisons.length,
-    initialized.rankedCoasters
   )
 
   const updatedData: UploadedData = {

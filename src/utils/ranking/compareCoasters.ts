@@ -1,6 +1,5 @@
 import { Coaster, UploadedData } from '../../types/data'
 import {
-  calculateInsertionPosition,
   generatePositionalComparisons,
   getComparisonKey,
   getCoastersWithPositions,
@@ -105,28 +104,22 @@ export function compareCoasters(
       (winner.id === currentRankingCoaster.id ||
         loser.id === currentRankingCoaster.id)
     ) {
-      const rankedCoasterObjects = updatedRankedCoasters
-        .map(id => uploadedData.coasters.find(c => c.id === id))
-        .filter(c => c !== undefined && !c.isCurrentlyRanking) as Coaster[]
-
       if (
         isCoasterReadyForInsertion(
           currentRankingCoaster,
-          rankedCoasterObjects,
-          updatedComparisonResults
+          updatedRankedCoasters,
+          updatedComparisonResults,
+          updatedCoasters
         )
       ) {
-        const insertPosition = calculateInsertionPosition(
+        const insertResult = insertCoasterIntoRanking(
           currentRankingCoaster,
-          rankedCoasterObjects,
-          updatedComparisonResults
+          updatedRankedCoasters,
+          updatedComparisonResults,
+          updatedCoasters
         )
 
-        finalRankedCoasters = insertCoasterIntoRanking(
-          updatedRankedCoasters.filter(id => id !== currentRankingCoaster.id),
-          currentRankingCoaster.id,
-          insertPosition
-        )
+        finalRankedCoasters = insertResult.newRanking
 
         // Update coaster states
         const unrankedCoasters = uploadedData.coasters.filter(

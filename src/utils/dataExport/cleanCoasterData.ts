@@ -1,4 +1,4 @@
-import { Coaster } from '../../types/data'
+import { Coaster, UploadedData } from '../../types/data'
 
 export interface CoasterWithRank
   extends Omit<Partial<Coaster>, 'rankPosition'> {
@@ -104,4 +104,25 @@ export function addRankingToCoasterData(
 
     return baseCoaster
   })
+}
+
+/**
+ * Check if uploaded data has ranking information available for export
+ */
+export function hasRankingDataForExport(
+  uploadedData: UploadedData | null
+): boolean {
+  if (!uploadedData) {
+    return false
+  }
+
+  // Check if any coasters have ranking positions
+  const hasCoasterRankings = uploadedData.coasters.some(
+    c => c.rankPosition !== undefined && c.rankPosition > 0
+  )
+
+  // Check if ranking metadata exists and indicates completion
+  const hasRankingMetadata = uploadedData.rankingMetadata?.isRanked === true
+
+  return hasCoasterRankings || hasRankingMetadata
 }

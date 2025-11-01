@@ -5,7 +5,7 @@ import { updateRankingPositionsWithBinarySearch } from './rankingUtils'
  * Build a complete ranking from comparison results using a topological sort approach
  * This is used for "full" ranking strategy where all comparisons are made
  */
-export const buildRankingFromComparisons = (
+const buildRankingFromComparisons = (
   coasters: Coaster[],
   comparisonResults: Map<string, string>
 ): string[] => {
