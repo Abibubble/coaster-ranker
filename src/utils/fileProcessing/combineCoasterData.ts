@@ -1,4 +1,5 @@
 import { Coaster, UploadedData } from '../../types/data'
+import { detectAndFixDuplicateIds } from '../duplicateIdDetection'
 
 export interface CombineCoasterDataParams {
   newCoasters: Coaster[]
@@ -35,6 +36,12 @@ export function combineCoasterData(
     }),
   }))
 
+  // Ensure existing coasters keep their original flags and are NOT marked as new
+  const preservedExistingCoasters = existingCoasters.map(coaster => ({
+    ...coaster,
+    isNewCoaster: false, // Explicitly ensure existing coasters are not marked as new
+  }))
+
   // Build existing ranking metadata with defaults
   const existingRankingMetadata = existingData?.rankingMetadata || {
     completedComparisons: new Set<string>(),
@@ -48,16 +55,19 @@ export function combineCoasterData(
     : filename
 
   // Build combined data
-  const allCoasters = [...existingCoasters, ...markedNewCoasters]
+  const allCoasters = [...preservedExistingCoasters, ...markedNewCoasters]
+
+  // Detect and fix any duplicate IDs to prevent comparison errors
+  const coastersWithUniqueIds = detectAndFixDuplicateIds(allCoasters)
 
   const combinedData: UploadedData = {
-    coasters: allCoasters,
+    coasters: coastersWithUniqueIds,
     uploadedAt: new Date(),
     filename: combinedFilename,
     rankingMetadata: {
       completedComparisons: existingRankingMetadata.completedComparisons,
       rankedCoasters: existingRankingMetadata.rankedCoasters,
-      isRanked: existingRankingMetadata.isRanked,
+      isRanked: false, // Reset ranking status when new coasters are added
       hasPreRankedCoasters:
         existingRankingMetadata.hasPreRankedCoasters || false || isPreRanked,
       preRankedGroups: isPreRanked
@@ -69,6 +79,6 @@ export function combineCoasterData(
   return {
     combinedData,
     newCoasterCount: newCoasters.length,
-    totalCount: allCoasters.length,
+    totalCount: coastersWithUniqueIds.length,
   }
 }

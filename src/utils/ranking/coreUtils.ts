@@ -16,6 +16,14 @@ export const formatCountry = (country?: string): string => {
  * Create a consistent comparison key for two coasters
  */
 export const getComparisonKey = (c1: Coaster, c2: Coaster): string => {
+  // Prevent self-comparison
+  if (c1.id === c2.id) {
+    throw new Error(
+      `Invalid comparison: Cannot compare coaster '${c1.name}' against itself (ID: ${c1.id}). ` +
+        `This suggests duplicate IDs in your data. Please check that all coasters have unique IDs. ` +
+        `Other coaster details: '${c2.name}' (ID: ${c2.id})`
+    )
+  }
   return c1.id < c2.id ? `${c1.id}-${c2.id}` : `${c2.id}-${c1.id}`
 }
 
@@ -33,6 +41,7 @@ export const initializePositionalRanking = (
       (c.isPreRanked && c.originalRankPosition !== undefined) ||
       (c.rankPosition !== undefined && !c.isNewCoaster)
   )
+
   const newCoasters = coasters.filter(
     c => c.isNewCoaster || (!c.isPreRanked && c.rankPosition === undefined)
   )
@@ -44,7 +53,7 @@ export const initializePositionalRanking = (
     return posA - posB
   })
 
-  // Create initial ranking array with pre-ranked coasters
+  // Build initial ranking IDs from sorted pre-ranked coasters
   const initialRanking = sortedPreRanked.map(c => c.id)
 
   // Mark the first new coaster as currently ranking (if any)

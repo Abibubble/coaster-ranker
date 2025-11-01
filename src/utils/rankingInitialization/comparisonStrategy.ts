@@ -24,12 +24,12 @@ export const determineComparisonStrategy = ({
   coasters: _coasters,
   rankedCoasters: _rankedCoasters,
 }: ComparisonStrategyParams): ComparisonStrategy => {
-  // Always use positional strategy for normal ranking workflows
-  // This implements sequential insertion: compare each new coaster against
-  // already-ranked coasters to find its position
+  // Always use positional strategy for all ranking workflows
+  // This implements sequential insertion: compare each coaster against
+  // already-ranked coasters to find its position using binary search
   return {
     type: 'positional',
-    reason: 'Sequential insertion strategy for efficient ranking',
+    reason: 'Sequential binary search insertion strategy for efficient ranking',
   }
 }
 

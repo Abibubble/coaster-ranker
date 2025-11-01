@@ -104,22 +104,36 @@ export function compareCoasters(
       (winner.id === currentRankingCoaster.id ||
         loser.id === currentRankingCoaster.id)
     ) {
-      if (
-        isCoasterReadyForInsertion(
-          currentRankingCoaster,
-          updatedRankedCoasters,
-          updatedComparisonResults,
-          updatedCoasters
-        )
-      ) {
-        const insertResult = insertCoasterIntoRanking(
-          currentRankingCoaster,
-          updatedRankedCoasters,
-          updatedComparisonResults,
-          updatedCoasters
-        )
+      // Check if this coaster is already in the ranking
+      const isAlreadyRanked = updatedRankedCoasters.includes(
+        currentRankingCoaster.id
+      )
 
-        finalRankedCoasters = insertResult.newRanking
+      let isReady = false
+      if (isAlreadyRanked) {
+        isReady = true // Already positioned, no need to insert
+      } else {
+        isReady = isCoasterReadyForInsertion(
+          currentRankingCoaster,
+          updatedRankedCoasters,
+          updatedComparisonResults,
+          updatedCoasters
+        )
+      }
+
+      if (isReady) {
+        if (isAlreadyRanked) {
+          finalRankedCoasters = updatedRankedCoasters
+        } else {
+          const insertResult = insertCoasterIntoRanking(
+            currentRankingCoaster,
+            updatedRankedCoasters,
+            updatedComparisonResults,
+            updatedCoasters
+          )
+
+          finalRankedCoasters = insertResult.newRanking
+        }
 
         // Update coaster states
         const unrankedCoasters = uploadedData.coasters.filter(
@@ -155,13 +169,22 @@ export function compareCoasters(
 
         updatedCoasters = uploadedData.coasters.map(coaster => {
           if (coaster.id === currentRankingCoaster.id) {
-            // Only complete ranking if we have enough comparisons
-            return {
-              ...coaster,
-              isCurrentlyRanking: !hasEnoughComparisons,
-              rankPosition: hasEnoughComparisons
-                ? finalRankedCoasters.indexOf(coaster.id) + 1
-                : undefined,
+            // If already ranked, don't mark as currently ranking
+            if (isAlreadyRanked) {
+              return {
+                ...coaster,
+                isCurrentlyRanking: false,
+                rankPosition: finalRankedCoasters.indexOf(coaster.id) + 1,
+              }
+            } else {
+              // Only complete ranking if we have enough comparisons
+              return {
+                ...coaster,
+                isCurrentlyRanking: !hasEnoughComparisons,
+                rankPosition: hasEnoughComparisons
+                  ? finalRankedCoasters.indexOf(coaster.id) + 1
+                  : undefined,
+              }
             }
           } else if (coaster.isCurrentlyRanking) {
             return { ...coaster, isCurrentlyRanking: false }
@@ -220,6 +243,7 @@ export function compareCoasters(
         }
       } else {
         // Coaster not ready for insertion, need more comparisons
+        finalRankedCoasters = updatedRankedCoasters
         newComparisons = generatePositionalComparisons(
           updatedCoasters,
           finalRankedCoasters,
@@ -276,7 +300,7 @@ export function compareCoasters(
       // Set final completion data
       const finalCoasters = getCoastersWithPositions(
         uploadedData.coasters,
-        uploadedData.rankingMetadata?.rankedCoasters || []
+        progressData.rankingMetadata?.rankedCoasters || []
       )
       const sortedFinalCoasters = finalCoasters.sort(
         (a, b) => (a.rankPosition || 0) - (b.rankPosition || 0)

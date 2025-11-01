@@ -174,10 +174,10 @@ export const generatePositionalComparisons = (
     return pairs
   }
 
-  // Get existing ranked coasters as objects
+  // Get existing ranked coasters as objects, excluding the target coaster
   const rankedCoasterObjects = rankedCoasters
     .map(id => coasters.find(c => c.id === id))
-    .filter(c => c !== undefined) as Coaster[]
+    .filter(c => c !== undefined && c.id !== targetCoaster.id) as Coaster[]
 
   if (rankedCoasterObjects.length === 0) {
     return pairs
@@ -190,8 +190,9 @@ export const generatePositionalComparisons = (
     comparisonResults || new Map()
   )
 
-  if (nextTarget) {
+  if (nextTarget && nextTarget.id !== targetCoaster.id) {
     const comparisonKey = getComparisonKey(targetCoaster, nextTarget)
+
     if (!completedComparisons.has(comparisonKey)) {
       pairs.push([targetCoaster, nextTarget])
     }

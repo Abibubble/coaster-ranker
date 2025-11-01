@@ -23,6 +23,14 @@ export const getNextTrueBinarySearchComparison = (
   while (left < right) {
     const mid = Math.floor((left + right) / 2)
     const midCoaster = rankedCoasters[mid]
+
+    // Prevent self-comparison
+    if (midCoaster.id === newCoaster.id) {
+      // Skip this coaster by moving search bounds
+      left = mid + 1
+      continue
+    }
+
     const comparisonKey = getComparisonKey(newCoaster, midCoaster)
     const winner = comparisonResults.get(comparisonKey)
 

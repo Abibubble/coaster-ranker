@@ -19,7 +19,7 @@ export const formatString = (
   if (url && typeof spacedText === 'string') {
     spacedText = spacedText.replace(
       /\s*\(([^)]+)\)\s*/g,
-      (_match, p1, offset) => {
+      (match, p1, offset) => {
         return (offset === 0 ? '' : '-') + p1
       }
     )
