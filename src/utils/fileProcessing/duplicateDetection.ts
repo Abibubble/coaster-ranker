@@ -1,4 +1,4 @@
-import { Coaster } from '../types/data'
+import { Coaster } from '../../types/data'
 
 export interface DuplicateMatch {
   existingCoaster: Coaster

@@ -1,7 +1,7 @@
 /**
  * Ranking Logger - Debug utility for tracking ranking operations
  */
-import { Coaster } from '../types/data'
+import { Coaster } from '../../types/data'
 
 interface ComparisonData {
   comparisonNumber: number

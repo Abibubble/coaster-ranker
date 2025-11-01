@@ -2,7 +2,7 @@ import React from 'react'
 import {
   DuplicateMatch,
   formatMatchingFields,
-} from '../../utils/duplicateDetection'
+} from '../../utils/fileProcessing/duplicateDetection'
 import * as Styled from './DuplicateResolver.styled'
 
 export interface DuplicateResolution {

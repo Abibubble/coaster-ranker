@@ -256,6 +256,38 @@ src/
 - `/upload-json` - JSON data upload via paste or file
 - `/upload-manual` - Manual coaster entry form
 - `/view-coasters` - View and manage your coaster collection
-- `/rank` - Rank your coasters (coming soon)
+- `/rank` - Rank your coasters with manual adjustment capabilities
 - `/download` - Download your coaster data in various formats
 - `/accessibility` - Accessibility information and compliance details
+
+## Future Work
+
+### Ranking Validation Questions
+
+**Feature**: Post-ranking validation through targeted questions about specific coaster comparisons.
+
+**Purpose**: Improve ranking accuracy by validating key algorithmic decisions with the user after the initial ranking is complete.
+
+**Implementation Approach**:
+
+- Identify "critical comparisons" where the algorithm made close decisions
+- Present 3-5 validation questions like "Do you really prefer [Coaster A] over [Coaster B]?"
+- Allow users to confirm or reverse specific comparisons
+- Automatically propagate changes through the ranking to maintain consistency
+- Focus on comparisons that could significantly impact the final ranking order
+
+**Benefits**:
+
+- Catches algorithmic decisions that don't match user preferences
+- Provides a lighter-weight alternative to full manual adjustment
+- Maintains the efficiency of the comparison-based ranking while allowing targeted corrections
+- Improves user confidence in the final ranking results
+
+**Technical Considerations**:
+
+- Track comparison confidence scores during ranking process
+- Implement ranking propagation logic to handle comparison reversals
+- Design accessible question interface with clear before/after preview
+- Integrate with existing ranking persistence and data management
+
+This feature would complement the existing manual adjustment capabilities by providing a guided approach to ranking refinement.

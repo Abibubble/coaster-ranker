@@ -1,5 +1,5 @@
 import { Coaster } from '../../types/data'
-import { formatCountry } from '../../utils/rankingUtils'
+import { formatCountry } from '../../utils/ranking/rankingUtils'
 import * as Styled from '../../pages/Rank/Rank.styled'
 
 interface CoasterComparisonProps {

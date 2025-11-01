@@ -23,13 +23,61 @@ export default function ViewCoasters() {
       coaster => coaster.id !== coasterId
     )
 
+    // Update ranking metadata to remove references to the deleted coaster
+    let updatedRankingMetadata = uploadedData.rankingMetadata
+    if (updatedRankingMetadata && updatedRankingMetadata.rankedCoasters) {
+      // Remove the coaster from the ranked list and update positions
+      const filteredRankedCoasters =
+        updatedRankingMetadata.rankedCoasters.filter(id => id !== coasterId)
+
+      // If ranking exists and we removed a coaster, mark as incomplete
+      updatedRankingMetadata = {
+        ...updatedRankingMetadata,
+        rankedCoasters: filteredRankedCoasters,
+        isRanked:
+          filteredRankedCoasters.length === updatedCoasters.length &&
+          updatedCoasters.length > 0,
+        // Clear completed comparisons that involved the removed coaster
+        completedComparisons: new Set(
+          Array.from(updatedRankingMetadata.completedComparisons || []).filter(
+            comparison => !comparison.includes(coasterId)
+          )
+        ),
+      }
+    }
+
     setUploadedData({
       ...uploadedData,
       coasters: updatedCoasters,
+      rankingMetadata: updatedRankingMetadata,
     })
 
     // Announce removal to screen readers
     setStatusMessage(`${coasterName} has been removed from your collection.`)
+    setTimeout(() => setStatusMessage(''), 3000)
+  }
+
+  const handleRemoveAllCoasters = () => {
+    if (!uploadedData || coasters.length === 0) return
+
+    const coasterCount = coasters.length
+    const confirmRemove = window.confirm(
+      `Are you sure you want to remove all ${coasterCount} coaster${
+        coasterCount === 1 ? '' : 's'
+      } from your collection? This action cannot be undone.`
+    )
+
+    if (!confirmRemove) return
+
+    // Completely clear all data from localStorage by setting to null
+    setUploadedData(null)
+
+    // Announce removal to screen readers
+    setStatusMessage(
+      `All ${coasterCount} coaster${
+        coasterCount === 1 ? '' : 's'
+      } have been removed from your collection.`
+    )
     setTimeout(() => setStatusMessage(''), 3000)
   }
 
@@ -91,6 +139,14 @@ export default function ViewCoasters() {
         <Styled.ActionsBar>
           <ViewLink href='/upload'>Add More Coasters</ViewLink>
           <ViewLink href='/rank'>Start Ranking</ViewLink>
+          <Styled.RemoveAllButton
+            onClick={handleRemoveAllCoasters}
+            aria-label={`Remove all ${coasters.length} coaster${
+              coasters.length === 1 ? '' : 's'
+            } from collection`}
+          >
+            Remove All Coasters
+          </Styled.RemoveAllButton>
         </Styled.ActionsBar>
 
         <Styled.CoastersTable role='table' aria-label='Coaster collection data'>

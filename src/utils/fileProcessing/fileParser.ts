@@ -1,4 +1,4 @@
-import { Coaster, UploadedData } from '../types/data'
+import { Coaster, UploadedData } from '../../types/data'
 
 // Raw data types for parsing - before validation
 interface RawCoasterData {

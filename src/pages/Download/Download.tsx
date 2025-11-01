@@ -1,96 +1,81 @@
 import { useState } from 'react'
 import { MainContent, Title } from '../../components'
 import { useData } from '../../contexts/DataContext'
-import { Coaster } from '../../types/data'
+import {
+  generateCSV,
+  generateJSON,
+  downloadFile,
+  hasRankingDataForExport,
+} from '../../utils/dataExport'
 import * as Styled from './Download.styled'
 
 export default function Download() {
   const { uploadedData } = useData()
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
+  const [includeRanking, setIncludeRanking] = useState(false)
 
   const coasters = uploadedData?.coasters || []
 
-  const generateCSV = (coasters: Coaster[]): string => {
-    if (coasters.length === 0) return ''
+  // Check if ranking data exists - either in individual coasters or in ranking metadata
+  const hasRankingData = hasRankingDataForExport(uploadedData)
 
-    // Create headers from all possible coaster properties
-    const headers = [
-      'id',
-      'name',
-      'park',
-      'country',
-      'manufacturer',
-      'model',
-      'type',
-    ]
-
-    // Create CSV content
-    const csvHeaders = headers.join(',')
-    const csvRows = coasters.map(coaster => {
-      return headers
-        .map(header => {
-          const value = coaster[header as keyof Coaster]
-          if (value === undefined || value === null) return ''
-          // Escape commas and quotes in values
-          const stringValue = String(value)
-          if (
-            stringValue.includes(',') ||
-            stringValue.includes('"') ||
-            stringValue.includes('\n')
-          ) {
-            return `"${stringValue.replace(/"/g, '""')}"`
-          }
-          return stringValue
-        })
-        .join(',')
+  // Debug: Log ranking data availability (remove this in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 Download Debug:', {
+      hasRankingData,
+      coastersWithRankPosition: coasters.filter(
+        c => c.rankPosition !== undefined && c.rankPosition > 0
+      ).length,
+      rankingMetadata: uploadedData?.rankingMetadata,
     })
-
-    return [csvHeaders, ...csvRows].join('\n')
   }
 
-  const generateJSON = (coasters: Coaster[]): string => {
-    return JSON.stringify(
-      {
-        coasters,
-        exportedAt: new Date().toISOString(),
-        totalCount: coasters.length,
-        source: 'Coaster Ranker',
-      },
-      null,
-      2
-    )
-  }
-
-  const downloadFile = (
-    content: string,
-    filename: string,
-    contentType: string
-  ) => {
-    const blob = new Blob([content], { type: contentType })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+  const generateFilename = (
+    basename: string,
+    format: 'csv' | 'json'
+  ): string => {
+    const timestamp = new Date().toISOString().split('T')[0]
+    return `${basename}-${timestamp}.${format}`
   }
 
   const handleDownload = (format: 'csv' | 'json') => {
     try {
-      const timestamp = new Date().toISOString().slice(0, 10)
-      const content =
-        format === 'csv' ? generateCSV(coasters) : generateJSON(coasters)
-      const contentType = format === 'csv' ? 'text/csv' : 'application/json'
+      let result
+      let contentType: string
 
-      if (content) {
-        downloadFile(
-          content,
-          `coaster-collection-${timestamp}.${format}`,
-          contentType
-        )
-        setDownloadStatus(`${format.toUpperCase()} downloaded successfully!`)
+      if (format === 'csv') {
+        result = generateCSV({
+          coasters,
+          includeRanking: includeRanking && hasRankingData,
+          rankingMetadata: uploadedData?.rankingMetadata,
+        })
+        contentType = 'text/csv'
+      } else {
+        result = generateJSON({
+          coasters,
+          includeRanking: includeRanking && hasRankingData,
+          rankingMetadata: uploadedData?.rankingMetadata,
+        })
+        contentType = 'application/json'
+      }
+
+      if (result.content && !result.isEmpty) {
+        const filename = generateFilename('coaster-collection', format)
+        const downloadResult = downloadFile({
+          content: result.content,
+          filename,
+          contentType,
+        })
+
+        if (downloadResult.success) {
+          setDownloadStatus(`${format.toUpperCase()} downloaded successfully!`)
+        } else {
+          setDownloadStatus(
+            downloadResult.error ||
+              `Error downloading ${format.toUpperCase()} file`
+          )
+        }
+
         setTimeout(() => setDownloadStatus(null), 3000)
       }
     } catch {
@@ -142,6 +127,20 @@ export default function Download() {
           <Styled.Section>
             <h3>Choose your format:</h3>
 
+            {hasRankingData && (
+              <Styled.RankingOption>
+                <label>
+                  <input
+                    type='checkbox'
+                    checked={includeRanking}
+                    onChange={e => setIncludeRanking(e.target.checked)}
+                  />
+                  Include ranking positions (adds "rank" field with current
+                  rankings)
+                </label>
+              </Styled.RankingOption>
+            )}
+
             <Styled.DownloadButton
               onClick={() => handleDownload('csv')}
               aria-describedby='csv-description'
@@ -151,6 +150,9 @@ export default function Download() {
                 <Styled.ButtonTitle>Download as CSV</Styled.ButtonTitle>
                 <Styled.ButtonDescription id='csv-description'>
                   For Excel, Google Sheets, and other spreadsheet apps
+                  {includeRanking &&
+                    hasRankingData &&
+                    ' (includes rank column)'}
                 </Styled.ButtonDescription>
               </Styled.ButtonContent>
             </Styled.DownloadButton>
@@ -164,6 +166,7 @@ export default function Download() {
                 <Styled.ButtonTitle>Download as JSON</Styled.ButtonTitle>
                 <Styled.ButtonDescription id='json-description'>
                   Developer-friendly format for importing into other apps
+                  {includeRanking && hasRankingData && ' (includes rank field)'}
                 </Styled.ButtonDescription>
               </Styled.ButtonContent>
             </Styled.DownloadButton>

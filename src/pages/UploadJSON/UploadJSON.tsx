@@ -10,77 +10,58 @@ import {
   ViewLink,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
-import { processUploadedFile } from '../../utils/fileParser'
 import {
-  detectDuplicates,
-  DuplicateMatch,
-} from '../../utils/duplicateDetection'
+  useUploadState,
+  handlePreRankingAnswer as handlePreRankingAnswerUtil,
+  handlePreRankingCancel as handlePreRankingCancelUtil,
+  handleUploadDuplicateResolution,
+  processUploadWorkflow,
+} from '../../utils/uploadState'
 import type { DuplicateResolution } from '../../components/DuplicateResolver'
-import { Coaster } from '../../types/data'
 import * as Styled from './UploadJSON.styled'
 
 export default function UploadJSON() {
   const { uploadedData, setUploadedData, isLoading, setIsLoading } = useData()
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
+  const uploadState = useUploadState()
   const [jsonInput, setJsonInput] = useState('')
-  const [duplicates, setDuplicates] = useState<DuplicateMatch[]>([])
-  const [pendingCoasters, setPendingCoasters] = useState<Coaster[]>([])
-  const [pendingFilename, setPendingFilename] = useState<string>('')
-  const [showDuplicateResolver, setShowDuplicateResolver] = useState(false)
-  const [showPreRankingQuestion, setShowPreRankingQuestion] = useState(false)
 
   const existingCoasterCount = uploadedData?.coasters?.length || 0
 
-  const finalizeCombinedData = (
-    newCoasters: Coaster[],
-    filename: string,
-    isPreRanked: boolean = false
-  ) => {
-    const existingCoasters = uploadedData?.coasters || []
-    const uploadId = Date.now().toString()
+  const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
+    handleUploadDuplicateResolution({
+      resolutions,
+      duplicates: uploadState.duplicates,
+      pendingCoasters: uploadState.pendingCoasters,
+      pendingFilename: uploadState.pendingFilename,
+      uploadedData,
+      uploadStateActions: uploadState,
+      setUploadedData,
+      successMessagePrefix: 'Successfully processed JSON data!',
+      onAdditionalCleanup: () => setJsonInput(''),
+    })
+  }
 
-    const markedNewCoasters = newCoasters.map((coaster, index) => ({
-      ...coaster,
-      isNewCoaster: true,
-      ...(isPreRanked && {
-        originalRankPosition: index,
-        isPreRanked: true,
-      }),
-    }))
+  const handleDuplicateCancel = () => {
+    uploadState.clearPendingData()
+    uploadState.setError('Upload cancelled.')
+    setJsonInput('')
+  }
 
-    const combinedData = {
-      coasters: [...existingCoasters, ...markedNewCoasters],
-      uploadedAt: new Date(),
-      filename: uploadedData?.filename
-        ? `${uploadedData.filename}, ${filename}`
-        : filename,
-      rankingMetadata: {
-        ...uploadedData?.rankingMetadata,
-        completedComparisons:
-          uploadedData?.rankingMetadata?.completedComparisons ||
-          new Set<string>(),
-        rankedCoasters:
-          uploadedData?.rankingMetadata?.rankedCoasters ||
-          [...existingCoasters, ...markedNewCoasters].map(c => c.id),
-        isRanked: uploadedData?.rankingMetadata?.isRanked || false,
-        ...(isPreRanked && {
-          hasPreRankedCoasters: true,
-          preRankedGroups: [
-            ...(uploadedData?.rankingMetadata?.preRankedGroups || []),
-            uploadId,
-          ],
-        }),
-      },
-    }
+  const handlePreRankingAnswer = (isPreRanked: boolean) => {
+    handlePreRankingAnswerUtil({
+      isPreRanked,
+      pendingCoasters: uploadState.pendingCoasters,
+      pendingFilename: uploadState.pendingFilename,
+      uploadedData,
+      uploadStateActions: uploadState,
+      setUploadedData,
+      successMessagePrefix: 'Successfully processed JSON data!',
+      onAdditionalCleanup: () => setJsonInput(''),
+    })
+  }
 
-    setUploadedData(combinedData)
-
-    const newCoasterCount = newCoasters.length
-    const totalCount = combinedData.coasters.length
-    setSuccess(
-      `Successfully processed JSON data! Added ${newCoasterCount} new coasters. You now have ${totalCount} coasters total.`
-    )
+  const handlePreRankingCancel = () => {
+    handlePreRankingCancelUtil({ uploadStateActions: uploadState })
     setJsonInput('')
   }
 
@@ -88,183 +69,29 @@ export default function UploadJSON() {
     jsonString: string,
     filename = 'pasted-data.json'
   ) => {
+    uploadState.setError('')
+    uploadState.setSuccess('')
     setIsLoading(true)
-    setError(null)
-    setSuccess(null)
 
     try {
-      const fakeFile = new File([jsonString], filename, {
-        type: 'application/json',
+      await processUploadWorkflow({
+        fileContent: jsonString,
+        filename,
+        uploadedData,
+        uploadStateActions: uploadState,
+        setUploadedData,
+        setIsLoading,
+        successMessagePrefix: 'Successfully processed JSON data!',
+        onAdditionalCleanup: () => setJsonInput(''),
       })
-      const newData = await processUploadedFile(fakeFile, jsonString)
-
-      setPendingCoasters(newData.coasters)
-      setPendingFilename(newData.filename)
-
-      if (newData.coasters.length === 1) {
-        const existingCoasters = uploadedData?.coasters || []
-        const detectedDuplicates = detectDuplicates(
-          existingCoasters,
-          newData.coasters
-        )
-
-        if (detectedDuplicates.duplicates.length > 0) {
-          setDuplicates(detectedDuplicates.duplicates)
-          setShowDuplicateResolver(true)
-          sessionStorage.setItem('pendingPreRanked', 'false')
-        } else {
-          finalizeCombinedData(newData.coasters, newData.filename, false)
-          setPendingCoasters([])
-          setPendingFilename('')
-        }
-      } else {
-        setShowPreRankingQuestion(true)
-      }
     } catch (err) {
-      setError(
+      uploadState.setError(
         `Error processing JSON: ${
           err instanceof Error ? err.message : 'Unknown error'
         }`
       )
-    } finally {
       setIsLoading(false)
     }
-  }
-
-  const handlePreRankingAnswer = (isPreRanked: boolean) => {
-    setShowPreRankingQuestion(false)
-
-    if (pendingCoasters.length > 0) {
-      const existingCoasters = uploadedData?.coasters || []
-      const detectedDuplicates = detectDuplicates(
-        existingCoasters,
-        pendingCoasters
-      )
-
-      if (detectedDuplicates.duplicates.length > 0) {
-        setDuplicates(detectedDuplicates.duplicates)
-        setShowDuplicateResolver(true)
-        // Store the pre-ranking decision for later use
-        sessionStorage.setItem('pendingPreRanked', isPreRanked.toString())
-      } else {
-        finalizeCombinedData(pendingCoasters, pendingFilename, isPreRanked)
-        setPendingCoasters([])
-        setPendingFilename('')
-      }
-    }
-  }
-
-  const handlePreRankingCancel = () => {
-    setShowPreRankingQuestion(false)
-    setPendingCoasters([])
-    setPendingFilename('')
-    setError('Upload cancelled by user.')
-  }
-
-  const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
-    if (!pendingCoasters.length) return
-
-    const existingCoasters = uploadedData?.coasters || []
-    let updatedCoasters = [...existingCoasters]
-    let coastersToAdd: Coaster[] = []
-
-    // Build a map of which coasters to process
-    const coastersToProcess = new Set(pendingCoasters)
-
-    // Process each resolution
-    resolutions.forEach((resolution, index) => {
-      const duplicate = duplicates[index]
-
-      switch (resolution.action) {
-        case 'keep-existing':
-          // Remove the new coaster from processing
-          coastersToProcess.delete(duplicate.newCoaster)
-          break
-        case 'keep-new':
-          // Remove existing coaster and mark new one for addition
-          updatedCoasters = updatedCoasters.filter(
-            c => c.id !== duplicate.existingCoaster.id
-          )
-          if (coastersToProcess.has(duplicate.newCoaster)) {
-            coastersToAdd.push(duplicate.newCoaster)
-            coastersToProcess.delete(duplicate.newCoaster)
-          }
-          break
-        case 'keep-both':
-          // Mark new coaster for addition
-          if (coastersToProcess.has(duplicate.newCoaster)) {
-            coastersToAdd.push(duplicate.newCoaster)
-            coastersToProcess.delete(duplicate.newCoaster)
-          }
-          break
-      }
-    })
-
-    // Add any remaining coasters that weren't involved in duplicates
-    coastersToAdd.push(...Array.from(coastersToProcess))
-
-    // Get the stored pre-ranking decision
-    const isPreRanked = sessionStorage.getItem('pendingPreRanked') === 'true'
-    sessionStorage.removeItem('pendingPreRanked') // Clean up
-
-    // Mark all new coasters with pre-ranking information
-    const uploadId = Date.now().toString()
-    const markedNewCoasters = coastersToAdd.map((coaster, index) => ({
-      ...coaster,
-      isNewCoaster: true,
-      ...(isPreRanked && {
-        originalRankPosition: index,
-        isPreRanked: true,
-      }),
-    }))
-
-    const combinedData = {
-      coasters: [...updatedCoasters, ...markedNewCoasters],
-      uploadedAt: new Date(),
-      filename: uploadedData?.filename
-        ? `${uploadedData.filename}, ${pendingFilename}`
-        : pendingFilename,
-      rankingMetadata: {
-        ...uploadedData?.rankingMetadata,
-        completedComparisons:
-          uploadedData?.rankingMetadata?.completedComparisons ||
-          new Set<string>(),
-        rankedCoasters:
-          uploadedData?.rankingMetadata?.rankedCoasters ||
-          [...updatedCoasters, ...markedNewCoasters].map(c => c.id),
-        isRanked: uploadedData?.rankingMetadata?.isRanked || false,
-        ...(isPreRanked && {
-          hasPreRankedCoasters: true,
-          preRankedGroups: [
-            ...(uploadedData?.rankingMetadata?.preRankedGroups || []),
-            uploadId,
-          ],
-        }),
-      },
-    }
-
-    setUploadedData(combinedData)
-
-    const addedCount = markedNewCoasters.length
-    const totalCount = combinedData.coasters.length
-    setSuccess(
-      `Successfully processed JSON data! Added ${addedCount} new coasters. You now have ${totalCount} coasters total.`
-    )
-
-    // Reset states
-    setShowDuplicateResolver(false)
-    setDuplicates([])
-    setPendingCoasters([])
-    setPendingFilename('')
-    setJsonInput('')
-  }
-
-  const handleDuplicateCancel = () => {
-    setShowDuplicateResolver(false)
-    setDuplicates([])
-    setPendingCoasters([])
-    setPendingFilename('')
-    setError('Upload cancelled due to potential duplicates.')
   }
 
   const handleFileInput = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -272,7 +99,7 @@ export default function UploadJSON() {
       const file = e.target.files[0]
 
       if (!file.name.toLowerCase().endsWith('.json')) {
-        setError('Please select a JSON file.')
+        uploadState.setError('Please select a JSON file.')
         return
       }
 
@@ -280,7 +107,7 @@ export default function UploadJSON() {
         const content = await file.text()
         await processJsonData(content, file.name)
       } catch {
-        setError('Error reading file.')
+        uploadState.setError('Error reading file.')
       }
     }
   }
@@ -414,26 +241,27 @@ export default function UploadJSON() {
         </Styled.FileSection>
 
         {/* Duplicate Resolution */}
-        {showDuplicateResolver && duplicates.length > 0 && (
-          <DuplicateResolver
-            duplicates={duplicates}
-            onResolve={handleDuplicateResolution}
-            onCancel={handleDuplicateCancel}
-          />
-        )}
+        {uploadState.showDuplicateResolver &&
+          uploadState.duplicates.length > 0 && (
+            <DuplicateResolver
+              duplicates={uploadState.duplicates}
+              onResolve={handleDuplicateResolution}
+              onCancel={handleDuplicateCancel}
+            />
+          )}
 
         {/* Status Messages */}
-        {error && (
+        {uploadState.error && (
           <Styled.ErrorMessage role='alert' aria-live='assertive'>
             <Styled.ErrorIcon aria-hidden='true'>ERROR:</Styled.ErrorIcon>
-            {error}
+            {uploadState.error}
           </Styled.ErrorMessage>
         )}
 
-        {success && (
+        {uploadState.success && (
           <Styled.SuccessMessage role='status' aria-live='polite'>
             <Styled.SuccessIcon aria-hidden='true'>SUCCESS:</Styled.SuccessIcon>
-            {success}
+            {uploadState.success}
           </Styled.SuccessMessage>
         )}
 
@@ -441,11 +269,11 @@ export default function UploadJSON() {
       </section>
 
       {/* Pre-ranking Question Modal */}
-      {showPreRankingQuestion && (
+      {uploadState.showPreRankingQuestion && (
         <PreRankingQuestion
-          coasterCount={pendingCoasters.length}
+          coasterCount={uploadState.pendingCoasters.length}
           existingCoasterCount={existingCoasterCount}
-          filename={pendingFilename}
+          filename={uploadState.pendingFilename}
           hasExistingRankedData={
             uploadedData?.rankingMetadata?.isRanked || false
           }

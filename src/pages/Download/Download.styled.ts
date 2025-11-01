@@ -169,6 +169,29 @@ export const BoldText = styled.span`
   font-weight: bold;
 `
 
+export const RankingOption = styled.div`
+  margin-bottom: ${spacing.medium};
+  padding: ${spacing.small};
+  background: ${colours.paleGrey};
+  border-radius: ${spacing.tiny};
+  border: 1px solid ${colours.softGrey};
+
+  label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: ${fonts.body};
+    color: ${colours.darkGrey};
+    gap: ${spacing.small};
+
+    input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+      accent-color: ${colours.blue};
+    }
+  }
+`
+
 export const LastUpdatedText = styled.p`
   font-size: ${fonts.small};
   color: ${colours.textGrey};

@@ -234,6 +234,41 @@ export const RemoveButton = styled.button`
   }
 `
 
+export const RemoveAllButton = styled.button`
+  background-color: ${colours.red};
+  color: ${colours.white};
+  border: none;
+  padding: ${spacing.tiny} ${spacing.small};
+  border-radius: ${spacing.fine};
+  font-size: ${fonts.small};
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
+  letter-spacing: 1px;
+
+  &:hover {
+    background-color: ${colours.darkRed};
+    transform: translateY(-1px);
+  }
+
+  &:focus {
+    outline: ${spacing.mini} solid ${colours.red};
+    outline-offset: ${spacing.mini};
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  @media (max-width: ${breakpoints.mobileLarge}) {
+    width: 100%;
+    text-align: center;
+  }
+`
+
 export const BoldText = styled.span`
   font-weight: bold;
 `

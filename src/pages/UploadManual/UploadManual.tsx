@@ -11,7 +11,7 @@ import { Coaster } from '../../types/data'
 import {
   detectDuplicates,
   DuplicateMatch,
-} from '../../utils/duplicateDetection'
+} from '../../utils/fileProcessing/duplicateDetection'
 import type { DuplicateResolution } from '../../components/DuplicateResolver'
 import * as Styled from './UploadManual.styled'
 

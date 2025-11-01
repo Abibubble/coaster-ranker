@@ -1,4 +1,4 @@
-import { Coaster } from '../types/data'
+import { Coaster } from '../../types/data'
 
 export type RankingMode = 'individual' | 'park' | 'model'
 
@@ -257,20 +257,66 @@ export const updateRankingPositions = (
   winnerId: string,
   loserId: string
 ): string[] => {
+  console.log(`🔧 RANKING UPDATE: ${winnerId} beats ${loserId}`)
+  console.log('  Current ranking:', rankedCoasters)
+
   const newRanking = [...rankedCoasters]
+
+  // Special case: if ranking is empty, establish the first two positions
+  if (newRanking.length === 0) {
+    console.log('  Empty ranking - establishing first two positions')
+    const result = [winnerId, loserId] // Winner first, loser second
+    console.log('  New ranking:', result)
+    return result
+  }
 
   // Find current positions
   const winnerIndex = newRanking.indexOf(winnerId)
   const loserIndex = newRanking.indexOf(loserId)
 
-  if (winnerIndex === -1 || loserIndex === -1) {
-    return newRanking // Invalid IDs, return unchanged
-  }
+  console.log(`  Winner index: ${winnerIndex}, Loser index: ${loserIndex}`)
 
-  // If winner is already ranked higher (lower index), no change needed
-  if (winnerIndex < loserIndex) {
+  // If either coaster is not in the ranking yet, this might be an insertion case
+  if (winnerIndex === -1 && loserIndex === -1) {
+    // Both are new - this shouldn't happen in normal sequential insertion
+    console.log('  Both coasters are new - no change')
     return newRanking
   }
+
+  if (winnerIndex === -1) {
+    // Winner is new, loser is in ranking - insert winner before loser
+    const newLoserIndex = newRanking.indexOf(loserId)
+    console.log(
+      `  Inserting winner ${winnerId} before loser at position ${newLoserIndex}`
+    )
+    newRanking.splice(newLoserIndex, 0, winnerId)
+    console.log('  New ranking:', newRanking)
+    return newRanking
+  }
+
+  if (loserIndex === -1) {
+    // Loser is new, winner is in ranking - insert loser after winner
+    const newWinnerIndex = newRanking.indexOf(winnerId)
+    console.log(
+      `  Inserting loser ${loserId} after winner at position ${
+        newWinnerIndex + 1
+      }`
+    )
+    newRanking.splice(newWinnerIndex + 1, 0, loserId)
+    console.log('  New ranking:', newRanking)
+    return newRanking
+  }
+
+  // Both coasters are already in ranking - reorder if needed
+  // If winner is already ranked higher (lower index), no change needed
+  if (winnerIndex < loserIndex) {
+    console.log('  Winner already ranked higher - no change needed')
+    return newRanking
+  }
+
+  console.log(
+    `  Moving winner from position ${winnerIndex} to before loser at position ${loserIndex}`
+  )
 
   // Move winner to just above loser
   // Remove winner from current position
@@ -282,6 +328,7 @@ export const updateRankingPositions = (
   // Insert winner just before loser
   newRanking.splice(newLoserIndex, 0, winnerId)
 
+  console.log('  New ranking:', newRanking)
   return newRanking
 }
 
@@ -400,13 +447,28 @@ export const generatePositionalComparisons = (
 ): [Coaster, Coaster][] => {
   const pairs: [Coaster, Coaster][] = []
 
+  console.log('🔧 GENERATE POSITIONAL COMPARISONS START')
+  console.log('Total coasters:', coasters.length)
+  console.log('Ranked coasters:', rankedCoasters.length, rankedCoasters)
+  console.log('Completed comparisons:', completedComparisons.size)
+
   // Special case: if no coasters are ranked yet, start with first comparison
   if (rankedCoasters.length === 0 && coasters.length >= 2) {
     const unrankedCoasters = coasters.filter(
       c => !c.isPreRanked && c.rankPosition === undefined
     )
     if (unrankedCoasters.length >= 2) {
+      // For positional insertion, we start with the first comparison between two coasters
       pairs.push([unrankedCoasters[0], unrankedCoasters[1]])
+
+      // If we have a third coaster, also prepare comparisons for it
+      // This helps establish more of the initial ranking structure
+      if (unrankedCoasters.length >= 3) {
+        const thirdCoaster = unrankedCoasters[2]
+        pairs.push([thirdCoaster, unrankedCoasters[0]])
+        pairs.push([thirdCoaster, unrankedCoasters[1]])
+      }
+
       return pairs
     }
   }
@@ -424,12 +486,42 @@ export const generatePositionalComparisons = (
     )
 
     if (unrankedCoasters.length === 0) {
-      return pairs // All coasters are ranked
+      // All coasters are ranked - validate critical comparisons
+      console.log('🔍 ALL COASTERS RANKED - Validating critical comparisons...')
+      const criticalComparisons = validateAndGenerateCriticalComparisons(
+        coasters,
+        rankedCoasters,
+        completedComparisons
+      )
+      return criticalComparisons
     }
 
-    // If we have ranked coasters but no one is currently ranking,
-    // this means we need to start ranking the next coaster
-    // This will be handled by the ranking component by updating the coaster states
+    // If we have unranked coasters but no one is currently ranking,
+    // we need to start ranking the next coaster
+    if (rankedCoasters.length >= 1 && unrankedCoasters.length > 0) {
+      // Start ranking the next unranked coaster against the already ranked ones
+      const nextCoasterToRank = unrankedCoasters[0]
+      const alreadyRanked = rankedCoasters
+        .map(id => coasters.find(c => c.id === id))
+        .filter(c => c !== undefined) as Coaster[]
+
+      if (alreadyRanked.length > 0) {
+        // Use binary search to find where this coaster should be inserted
+        const nextTarget = getNextBinarySearchTarget(
+          nextCoasterToRank,
+          alreadyRanked,
+          comparisonResults || new Map()
+        )
+
+        if (nextTarget) {
+          const comparisonKey = getComparisonKey(nextCoasterToRank, nextTarget)
+          if (!completedComparisons.has(comparisonKey)) {
+            pairs.push([nextCoasterToRank, nextTarget])
+          }
+        }
+      }
+    }
+
     return pairs
   }
 
@@ -450,17 +542,19 @@ export const generatePositionalComparisons = (
     comparisonResults || new Map()
   )
 
-  // Helper function to create comparison key
-  const getComparisonKey = (c1: Coaster, c2: Coaster) => {
-    return c1.id < c2.id ? `${c1.id}-${c2.id}` : `${c2.id}-${c1.id}`
-  }
-
   if (nextTarget) {
     const comparisonKey = getComparisonKey(currentRankingCoaster, nextTarget)
     if (!completedComparisons.has(comparisonKey)) {
       pairs.push([currentRankingCoaster, nextTarget])
     }
   }
+
+  console.log('🔧 GENERATE POSITIONAL COMPARISONS END')
+  console.log('Generated pairs:', pairs.length)
+  console.log(
+    'Pairs details:',
+    pairs.map(pair => `${pair[0].name} vs ${pair[1].name}`)
+  )
 
   return pairs
 }
@@ -705,6 +799,68 @@ export const generateBinarySearchPairsForCoaster = (
   const comparisonKey = getComparisonKey(newCoaster, middleCoaster)
   if (!completedComparisons.has(comparisonKey)) {
     pairs.push([newCoaster, middleCoaster])
+  }
+
+  return pairs
+}
+
+/**
+ * Validate that all critical comparisons have been made and generate missing ones
+ * This ensures top-ranked coasters have competed directly to determine accurate rankings
+ */
+export const validateAndGenerateCriticalComparisons = (
+  coasters: Coaster[],
+  rankedCoasters: string[],
+  completedComparisons: Set<string>
+): [Coaster, Coaster][] => {
+  const pairs: [Coaster, Coaster][] = []
+
+  // Helper function to create comparison key
+  const getComparisonKey = (c1: Coaster, c2: Coaster) => {
+    return c1.id < c2.id ? `${c1.id}-${c2.id}` : `${c2.id}-${c1.id}`
+  }
+
+  // Get top ranked coasters (top 3 should definitely have direct comparisons)
+  const topRankedIds = rankedCoasters.slice(
+    0,
+    Math.min(3, rankedCoasters.length)
+  )
+  const topCoasters = topRankedIds
+    .map(id => coasters.find(c => c.id === id))
+    .filter(c => c !== undefined) as Coaster[]
+
+  console.log(
+    '🔍 VALIDATION: Checking critical comparisons for top coasters:',
+    topCoasters.map(c => c.name)
+  )
+
+  // Ensure all top coasters have compared with each other
+  for (let i = 0; i < topCoasters.length; i++) {
+    for (let j = i + 1; j < topCoasters.length; j++) {
+      const coaster1 = topCoasters[i]
+      const coaster2 = topCoasters[j]
+      const comparisonKey = getComparisonKey(coaster1, coaster2)
+
+      if (!completedComparisons.has(comparisonKey)) {
+        console.log(
+          `⚠️ MISSING: Direct comparison between ${coaster1.name} (rank ${
+            i + 1
+          }) and ${coaster2.name} (rank ${j + 1})`
+        )
+        pairs.push([coaster1, coaster2])
+      } else {
+        console.log(
+          `✅ VERIFIED: ${coaster1.name} vs ${coaster2.name} already compared`
+        )
+      }
+    }
+  }
+
+  if (pairs.length > 0) {
+    console.log(
+      '🔧 ADDING CRITICAL COMPARISONS:',
+      pairs.map(([c1, c2]) => `${c1.name} vs ${c2.name}`)
+    )
   }
 
   return pairs

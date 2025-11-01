@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateCoasterData } from './fileParser'
+import { validateCoasterData } from './fileProcessing/fileParser'
 
 describe('fileParser - extra fields handling', () => {
   it('should accept and ignore extra fields in coaster data', () => {

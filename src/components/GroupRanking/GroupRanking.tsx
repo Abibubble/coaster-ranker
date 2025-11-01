@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Coaster } from '../../types/data'
 import { ProgressInfo } from '../../components'
+import { SimpleCoasterRanking } from '../SimpleCoasterRanking'
+import {
+  createCoasterGroups,
+  finalizeGroupRanking,
+  calculateGroupComparisons,
+  type CoasterGroup,
+  type GroupByType,
+} from '../../utils/ranking/groupRankingUtils'
 import * as Styled from './GroupRanking.styled'
-
-interface CoasterGroup {
-  name: string
-  coasters: Coaster[]
-  isRanked: boolean
-}
 
 interface GroupComparison {
   higherGroup: string
@@ -19,9 +21,9 @@ interface GroupComparison {
 
 interface GroupRankingProps {
   coasters: Coaster[]
-  groupBy: 'park' | 'model'
+  groupBy: GroupByType
   onRankingComplete: (rankedCoasters: Coaster[]) => void
-  onHierarchicalFallback: (attemptedMode: 'park' | 'model') => void
+  onHierarchicalFallback: (attemptedMode: GroupByType) => void
 }
 
 export default function GroupRanking({
@@ -43,47 +45,19 @@ export default function GroupRanking({
 
   const finalizeRanking = useCallback(
     (groupOrder: string[], groupMap: Map<string, CoasterGroup>) => {
-      const finalRankedCoasters: Coaster[] = []
-
-      groupOrder.forEach(groupName => {
-        const group = groupMap.get(groupName)!
-        finalRankedCoasters.push(...group.coasters)
-      })
-
-      onRankingComplete(finalRankedCoasters)
+      onRankingComplete(finalizeGroupRanking(groupOrder, groupMap))
     },
     [onRankingComplete]
   )
 
   // Initialize groups
   useEffect(() => {
-    const groupMap = new Map<string, CoasterGroup>()
-
-    coasters.forEach(coaster => {
-      const groupKey =
-        groupBy === 'park'
-          ? coaster.park
-          : `${coaster.manufacturer} ${coaster.model}`
-
-      if (!groupMap.has(groupKey)) {
-        groupMap.set(groupKey, {
-          name: groupKey,
-          coasters: [],
-          isRanked: false,
-        })
-      }
-
-      groupMap.get(groupKey)!.coasters.push(coaster)
-    })
-
-    setGroups(groupMap)
-
-    // Set up the initial group order
-    const groupNames = Array.from(groupMap.keys())
-    setFinalGroupOrder(groupNames)
+    const result = createCoasterGroups({ coasters, groupBy })
+    setGroups(result.groups)
+    setFinalGroupOrder(result.groupNames)
 
     // Start with first group that has multiple coasters
-    const firstGroupToRank = Array.from(groupMap.entries()).find(
+    const firstGroupToRank = Array.from(result.groups.entries()).find(
       ([_, group]) => group.coasters.length > 1
     )
 
@@ -92,13 +66,7 @@ export default function GroupRanking({
     } else {
       // All groups have single coasters, finalize immediately
       setPhase('complete')
-      const finalRankedCoasters: Coaster[] = []
-      groupNames.forEach(groupName => {
-        const group = groupMap.get(groupName)!
-        finalRankedCoasters.push(...group.coasters)
-      })
-
-      onRankingComplete(finalRankedCoasters)
+      onRankingComplete(finalizeGroupRanking(result.groupNames, result.groups))
     }
   }, [coasters, groupBy, onRankingComplete])
 
@@ -127,16 +95,7 @@ export default function GroupRanking({
       setCurrentGroupRanking(null)
       setPhase('complete')
 
-      // Create the final ranking by concatenating all groups in their current order
-      const finalRankedCoasters: Coaster[] = []
-      finalGroupOrder.forEach(groupName => {
-        const group = newGroups.get(groupName)!
-        if (group) {
-          finalRankedCoasters.push(...group.coasters)
-        }
-      })
-
-      onRankingComplete(finalRankedCoasters)
+      onRankingComplete(finalizeGroupRanking(finalGroupOrder, newGroups))
     }
   }
 
@@ -149,7 +108,7 @@ export default function GroupRanking({
     setCurrentComparison(null)
 
     if (chosenCoaster.id === higherGroupLowest.id) {
-      // Lower coaster from higher group wins - hierarchy is confirmed
+      // Lower coaster from higher group is preferred - hierarchy is confirmed
 
       // Call validation after state updates
       setTimeout(() => {
@@ -157,7 +116,7 @@ export default function GroupRanking({
         finalizeRanking(finalGroupOrder, groups)
       }, 10)
     } else {
-      // Higher coaster from lower group wins - hierarchy fails, fallback to individual ranking
+      // Higher coaster from lower group is preferred - hierarchy fails, fallback to individual ranking
 
       // Call fallback after state updates
       setTimeout(() => {
@@ -170,14 +129,7 @@ export default function GroupRanking({
     const currentGroup = groups.get(currentGroupRanking)!
 
     // Calculate total remaining comparisons across all groups
-    let totalRemainingComparisons = 0
-    groups.forEach(group => {
-      if (!group.isRanked && group.coasters.length > 1) {
-        // Calculate comparisons needed for this group: n*(n-1)/2
-        const n = group.coasters.length
-        totalRemainingComparisons += (n * (n - 1)) / 2
-      }
-    })
+    const totalRemainingComparisons = calculateGroupComparisons(groups)
 
     return (
       <div>
@@ -295,181 +247,4 @@ export default function GroupRanking({
   }
 
   return <div>Initializing hierarchical ranking...</div>
-}
-
-// Simple component for ranking coasters within a group
-function SimpleCoasterRanking({
-  coasters,
-  onComplete,
-  hideProgress = false,
-}: {
-  coasters: Coaster[]
-  onComplete: (ranked: Coaster[]) => void
-  hideProgress?: boolean
-}) {
-  const [currentPair, setCurrentPair] = useState<[Coaster, Coaster] | null>(
-    null
-  )
-  const [remainingComparisons, setRemainingComparisons] = useState<
-    [Coaster, Coaster][]
-  >([])
-  const [rankings, setRankings] = useState<Map<string, number>>(new Map())
-  const [totalComparisons, setTotalComparisons] = useState(0)
-
-  useEffect(() => {
-    if (coasters.length < 2) {
-      onComplete(coasters)
-      return
-    }
-
-    const pairs: [Coaster, Coaster][] = []
-    for (let i = 0; i < coasters.length - 1; i++) {
-      for (let j = i + 1; j < coasters.length; j++) {
-        pairs.push([coasters[i], coasters[j]])
-      }
-    }
-
-    setRemainingComparisons(pairs)
-    setTotalComparisons(pairs.length)
-    setCurrentPair(pairs[0] || null)
-
-    const initialRankings = new Map<string, number>()
-    coasters.forEach(coaster => {
-      initialRankings.set(coaster.id, 0)
-    })
-    setRankings(initialRankings)
-  }, [coasters, onComplete])
-
-  const handleChoice = (chosenCoaster: Coaster) => {
-    if (!currentPair) return
-
-    const newRankings = new Map(rankings)
-    const currentWins = newRankings.get(chosenCoaster.id) || 0
-    newRankings.set(chosenCoaster.id, currentWins + 1)
-    setRankings(newRankings)
-
-    const nextComparisons = remainingComparisons.slice(1)
-    setRemainingComparisons(nextComparisons)
-
-    if (nextComparisons.length > 0) {
-      setCurrentPair(nextComparisons[0])
-    } else {
-      // Ranking complete
-      const sortedCoasters = [...coasters].sort((a, b) => {
-        const aWins = newRankings.get(a.id) || 0
-        const bWins = newRankings.get(b.id) || 0
-
-        if (aWins !== bWins) {
-          return bWins - aWins
-        }
-        return a.id.localeCompare(b.id)
-      })
-
-      onComplete(sortedCoasters)
-    }
-  }
-
-  if (!currentPair) {
-    return <div>Completing ranking...</div>
-  }
-
-  return (
-    <div>
-      {!hideProgress && (
-        <Styled.ComparisonProgress>
-          <Styled.ProgressTitle>
-            Which coaster do you prefer?
-          </Styled.ProgressTitle>
-
-          <Styled.ProgressStats>
-            <Styled.ProgressStat>
-              <Styled.ProgressNumber>
-                {remainingComparisons.length}
-              </Styled.ProgressNumber>
-              <Styled.ProgressLabel>Comparisons Remaining</Styled.ProgressLabel>
-            </Styled.ProgressStat>
-
-            <Styled.ProgressStat>
-              <Styled.ProgressNumber>
-                {totalComparisons - remainingComparisons.length}
-              </Styled.ProgressNumber>
-              <Styled.ProgressLabel>Completed</Styled.ProgressLabel>
-            </Styled.ProgressStat>
-          </Styled.ProgressStats>
-
-          {(() => {
-            const progress = Math.round(
-              ((totalComparisons - remainingComparisons.length) /
-                totalComparisons) *
-                100
-            )
-            return (
-              <>
-                <Styled.ProgressBarContainer>
-                  <Styled.ProgressBar $progress={progress} />
-                </Styled.ProgressBarContainer>
-                <Styled.ProgressPercentage>
-                  {progress}% Complete
-                </Styled.ProgressPercentage>
-              </>
-            )
-          })()}
-        </Styled.ComparisonProgress>
-      )}
-
-      <Styled.ComparisonArea>
-        <Styled.CoasterCard
-          onClick={() => handleChoice(currentPair[0])}
-          aria-label={`Choose ${currentPair[0].name}`}
-        >
-          <Styled.CoasterName>{currentPair[0].name}</Styled.CoasterName>
-          <Styled.CoasterPark>
-            {currentPair[0].park}
-            {currentPair[0].country &&
-              currentPair[0].country.trim() !== '' &&
-              ` (${currentPair[0].country})`}
-          </Styled.CoasterPark>
-          <Styled.CoasterDetails>
-            <p>
-              <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-              {currentPair[0].manufacturer}
-            </p>
-            <p>
-              <Styled.BoldText>Model:</Styled.BoldText> {currentPair[0].model}
-            </p>
-            <p>
-              <Styled.BoldText>Type:</Styled.BoldText> {currentPair[0].type}
-            </p>
-          </Styled.CoasterDetails>
-        </Styled.CoasterCard>
-
-        <Styled.VersusText>VS</Styled.VersusText>
-
-        <Styled.CoasterCard
-          onClick={() => handleChoice(currentPair[1])}
-          aria-label={`Choose ${currentPair[1].name}`}
-        >
-          <Styled.CoasterName>{currentPair[1].name}</Styled.CoasterName>
-          <Styled.CoasterPark>
-            {currentPair[1].park}
-            {currentPair[1].country &&
-              currentPair[1].country.trim() !== '' &&
-              ` (${currentPair[1].country})`}
-          </Styled.CoasterPark>
-          <Styled.CoasterDetails>
-            <p>
-              <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-              {currentPair[1].manufacturer}
-            </p>
-            <p>
-              <Styled.BoldText>Model:</Styled.BoldText> {currentPair[1].model}
-            </p>
-            <p>
-              <Styled.BoldText>Type:</Styled.BoldText> {currentPair[1].type}
-            </p>
-          </Styled.CoasterDetails>
-        </Styled.CoasterCard>
-      </Styled.ComparisonArea>
-    </div>
-  )
 }
