@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Coaster } from '../../types/data'
 import { useData } from '../../contexts/DataContext'
+import { Button } from '../Button'
 import * as Styled from '../../pages/Rank/Rank.styled'
 import * as LocalStyled from './RankingComplete.styled'
 
@@ -136,14 +137,6 @@ export default function RankingComplete({
         final ranking:
       </p>
 
-      {!isEditing && (
-        <LocalStyled.ButtonContainer>
-          <LocalStyled.AdjustButton onClick={handleEditClick}>
-            Adjust Rankings
-          </LocalStyled.AdjustButton>
-        </LocalStyled.ButtonContainer>
-      )}
-
       {isEditing ? (
         <LocalStyled.EditableList>
           <LocalStyled.EditInstructions>
@@ -195,12 +188,12 @@ export default function RankingComplete({
             ))}
           </ol>
           <LocalStyled.ButtonContainer>
-            <LocalStyled.SaveButton onClick={handleSaveChanges}>
+            <Button variant='success' onClick={handleSaveChanges}>
               Save Changes
-            </LocalStyled.SaveButton>
-            <LocalStyled.CancelButton onClick={handleCancelEdit}>
+            </Button>
+            <Button variant='secondary' onClick={handleCancelEdit}>
               Cancel
-            </LocalStyled.CancelButton>
+            </Button>
           </LocalStyled.ButtonContainer>
         </LocalStyled.EditableList>
       ) : (
@@ -225,9 +218,17 @@ export default function RankingComplete({
         This ranking order will be used when you download your coaster
         collection.
       </LocalStyled.Instructions>
-      <Styled.RestartButton onClick={onRankAgain}>
-        Rank Again
-      </Styled.RestartButton>
+      {!isEditing && (
+        <LocalStyled.ButtonContainer>
+          <Button onClick={handleEditClick}>Adjust Rankings</Button>
+          <Button as='a' href='/download'>
+            Download rankings
+          </Button>
+          <Button variant='destructive' onClick={onRankAgain}>
+            Rank again
+          </Button>
+        </LocalStyled.ButtonContainer>
+      )}
     </Styled.RankingComplete>
   )
 }

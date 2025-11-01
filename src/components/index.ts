@@ -1,4 +1,5 @@
 export { BackLink } from './BackLink'
+export { Button } from './Button'
 export { CodeBlock } from './CodeBlock'
 export { CoasterComparison } from './CoasterComparison'
 export { DuplicateResolver } from './DuplicateResolver'

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MainContent, Title, ViewLink } from '../../components'
+import { Button, MainContent, Title, ViewLink } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './ViewCoasters.styled'
 
@@ -139,14 +139,15 @@ export default function ViewCoasters() {
         <Styled.ActionsBar>
           <ViewLink href='/upload'>Add More Coasters</ViewLink>
           <ViewLink href='/rank'>Start Ranking</ViewLink>
-          <Styled.RemoveAllButton
+          <Button
+            variant='destructive'
             onClick={handleRemoveAllCoasters}
             aria-label={`Remove all ${coasters.length} coaster${
               coasters.length === 1 ? '' : 's'
             } from collection`}
           >
             Remove All Coasters
-          </Styled.RemoveAllButton>
+          </Button>
         </Styled.ActionsBar>
 
         <Styled.CoastersTable role='table' aria-label='Coaster collection data'>
@@ -174,12 +175,13 @@ export default function ViewCoasters() {
                 <Styled.TableCell role='cell'>{coaster.model}</Styled.TableCell>
                 <Styled.TableCell role='cell'>{coaster.type}</Styled.TableCell>
                 <Styled.TableCell role='cell'>
-                  <Styled.RemoveButton
+                  <Button
+                    variant='destructive'
                     onClick={() => handleRemoveCoaster(coaster.id)}
                     aria-label={`Remove ${coaster.name} from collection`}
                   >
                     Remove
-                  </Styled.RemoveButton>
+                  </Button>
                 </Styled.TableCell>
               </Styled.TableRow>
             ))}

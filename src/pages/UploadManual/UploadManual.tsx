@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {
   BackLink,
+  Button,
   DuplicateResolver,
   MainContent,
   Title,
@@ -328,9 +329,7 @@ export default function UploadManual() {
             </Styled.FormGroup>
           </Styled.FormSection>
 
-          <Styled.SubmitButton type='submit'>
-            Add Coaster to Collection
-          </Styled.SubmitButton>
+          <Button type='submit'>Add Coaster to Collection</Button>
         </Styled.Form>
 
         {/* Duplicate Resolution */}

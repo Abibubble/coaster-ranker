@@ -35,6 +35,17 @@ export const ButtonContainer = styled.div`
   gap: ${spacing.small};
   justify-content: center;
   margin: ${spacing.medium} 0;
+
+  @media (max-width: 630px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    > * {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
 `
 
 export const AdjustButton = styled.button`
@@ -240,5 +251,25 @@ export const MoveButton = styled.button`
     width: 48px;
     height: 48px;
     font-size: 20px;
+  }
+`
+
+export const RedButton = styled.button`
+  padding: ${spacing.tiny} ${spacing.small};
+  background: ${colours.red};
+  color: ${colours.white};
+  border: none;
+  border-radius: ${spacing.tiny};
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: ${colours.darkRed};
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 ${spacing.fine} rgba(220, 53, 69, 0.25);
   }
 `

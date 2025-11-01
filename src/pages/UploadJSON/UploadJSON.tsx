@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import {
   BackLink,
+  Button,
   CodeBlock,
   DuplicateResolver,
   MainContent,
@@ -206,12 +207,9 @@ export default function UploadJSON() {
               placeholder='Paste your JSON data here...'
               disabled={isLoading}
             />
-            <Styled.SubmitButton
-              type='submit'
-              disabled={isLoading || !jsonInput.trim()}
-            >
+            <Button type='submit' disabled={isLoading || !jsonInput.trim()}>
               {isLoading ? 'Processing...' : 'Process JSON'}
-            </Styled.SubmitButton>
+            </Button>
           </form>
         </Styled.JsonSection>
 

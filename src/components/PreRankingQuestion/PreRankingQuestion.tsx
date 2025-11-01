@@ -1,3 +1,4 @@
+import { Button } from '../Button'
 import * as Styled from './PreRankingQuestion.styled'
 
 interface PreRankingQuestionProps {
@@ -59,9 +60,13 @@ export default function PreRankingQuestion({
               Continue Upload
             </Styled.ActionButton>
 
-            <Styled.CancelButton onClick={onCancel} aria-label='Cancel upload'>
+            <Button
+              variant='disabled'
+              onClick={onCancel}
+              aria-label='Cancel upload'
+            >
               Cancel upload
-            </Styled.CancelButton>
+            </Button>
           </Styled.ButtonContainer>
         </Styled.QuestionCard>
       </Styled.OverlayContainer>
@@ -112,9 +117,13 @@ export default function PreRankingQuestion({
             No, not ranked
           </Styled.ActionButton>
 
-          <Styled.CancelButton onClick={onCancel} aria-label='Cancel upload'>
+          <Button
+            variant='disabled'
+            onClick={onCancel}
+            aria-label='Cancel upload'
+          >
             Cancel upload
-          </Styled.CancelButton>
+          </Button>
         </Styled.ButtonContainer>
       </Styled.QuestionCard>
     </Styled.OverlayContainer>
