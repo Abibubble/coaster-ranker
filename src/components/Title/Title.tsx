@@ -6,5 +6,9 @@ interface TitleProps {
 }
 
 export default function Title({ children }: TitleProps) {
-  return <Styled.TitleText>{children}</Styled.TitleText>
+  return (
+    <Styled.TitleText as='h1' center colour='darkGrey'>
+      {children}
+    </Styled.TitleText>
+  )
 }

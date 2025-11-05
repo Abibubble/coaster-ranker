@@ -7,6 +7,7 @@ import {
   RankingComplete,
   RankingControls,
   Title,
+  Text,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
@@ -319,17 +320,17 @@ function Rank() {
           {/* TODO: Revisit hierarchical ranking system - consider if it's still needed with the new binary search optimization for individual ranking */}
           {hierarchicalResults.failed && (
             <Styled.HierarchicalFallbackNotice>
-              <Styled.FallbackTitle>
+              <Text as='p' bold colour='warningYellow' mb='tiny'>
                 Switched to Individual Ranking
-              </Styled.FallbackTitle>
-              <Styled.FallbackDescription>
+              </Text>
+              <Text as='p' colour='warningYellow' fontSize='small'>
                 {hierarchicalResults.attemptedMode === 'park'
                   ? 'Park-based'
                   : 'Manufacturer & Model-based'}{' '}
                 ranking didn't work well for your collection, so we've switched
                 to comparing each coaster individually for the most accurate
                 results.
-              </Styled.FallbackDescription>
+              </Text>
             </Styled.HierarchicalFallbackNotice>
           )}
 
@@ -363,7 +364,7 @@ function Rank() {
               </>
             ) : (
               <Styled.PreparingContainer>
-                <p>Preparing comparisons...</p>
+                <Text as='p'>Preparing comparisons...</Text>
                 <RankingControls onReset={resetRanking} />
               </Styled.PreparingContainer>
             )}
@@ -381,17 +382,16 @@ function Rank() {
       <section>
         <h2>Your Coaster Collection</h2>
         <Styled.UploadSummary aria-label='Upload summary'>
-          <p>
-            <Styled.BoldText>File:</Styled.BoldText> {filename}
-          </p>
-          <p>
-            <Styled.BoldText>Uploaded:</Styled.BoldText>{' '}
-            {uploadedAt.toLocaleDateString()} at{' '}
+          <Text as='p'>
+            <Text bold>File:</Text> {filename}
+          </Text>
+          <Text as='p'>
+            <Text bold>Uploaded:</Text> {uploadedAt.toLocaleDateString()} at{' '}
             {uploadedAt.toLocaleTimeString()}
-          </p>
-          <p>
-            <Styled.BoldText>Total Coasters:</Styled.BoldText> {coasters.length}
-          </p>
+          </Text>
+          <Text as='p'>
+            <Text bold>Total Coasters:</Text> {coasters.length}
+          </Text>
         </Styled.UploadSummary>
 
         <h3>Coasters Ready for Ranking</h3>
@@ -399,23 +399,23 @@ function Rank() {
           <ul>
             {coasters.slice(0, 10).map((coaster, _index) => (
               <li key={coaster.id}>
-                <Styled.BoldText>{coaster.name}</Styled.BoldText> at{' '}
-                {coaster.park}
+                <Text bold>{coaster.name}</Text> at {coaster.park}
                 {formatCountry(coaster.country)}
-                <span
+                <Text
+                  as='span'
                   aria-label={`Manufacturer: ${coaster.manufacturer}, Model: ${coaster.model}, Type: ${coaster.type}`}
                 >
                   {' '}
                   - {coaster.manufacturer} {coaster.model} ({coaster.type})
-                </span>
+                </Text>
               </li>
             ))}
             {coasters.length > 10 && (
               <li>
-                <Styled.ItalicText>
+                <Text italic>
                   ...and {coasters.length - 10} more coaster
                   {coasters.length - 10 === 1 ? '' : 's'}
-                </Styled.ItalicText>
+                </Text>
               </li>
             )}
           </ul>
@@ -424,19 +424,15 @@ function Rank() {
         {coasters.length > 0 && (
           <Styled.RankingInstructions>
             {coasters.length >= 2 ? (
-              <p>
-                <Styled.ItalicText>
-                  Ranking functionality is available! You can start ranking your{' '}
-                  {coasters.length} coasters.
-                </Styled.ItalicText>
-              </p>
+              <Text as='p' colour='mediumGrey' italic>
+                Ranking functionality is available! You can start ranking your{' '}
+                {coasters.length} coasters.
+              </Text>
             ) : (
-              <p>
-                <Styled.ItalicText>
-                  Upload at least one more coaster to start ranking. You need a
-                  minimum of 2 coasters to compare and rank.
-                </Styled.ItalicText>
-              </p>
+              <Text as='p' colour='mediumGrey' italic>
+                Upload at least one more coaster to start ranking. You need a
+                minimum of 2 coasters to compare and rank.
+              </Text>
             )}
           </Styled.RankingInstructions>
         )}

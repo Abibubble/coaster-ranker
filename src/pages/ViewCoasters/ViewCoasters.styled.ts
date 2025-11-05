@@ -1,67 +1,13 @@
 import styled from 'styled-components'
-import { Link } from '../../components'
 import { breakpoints, colours, fonts, spacing } from '../../theme'
 
 export const EmptyState = styled.div`
   text-align: center;
   padding: ${spacing.giant};
-
-  h2 {
-    color: ${colours.charcoal};
-    margin-bottom: ${spacing.medium};
-    font-size: ${fonts.large};
-  }
-
-  p {
-    color: ${colours.mediumGrey};
-    margin-bottom: ${spacing.large};
-    line-height: 1.6;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-`
-
-export const UploadLink = styled(Link)`
-  display: inline-block;
-  background-color: ${colours.blue};
-  color: ${colours.white};
-  padding: ${spacing.small} ${spacing.medium};
-  border-radius: ${spacing.tiny};
-  text-decoration: none;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: ${colours.darkBlue};
-  }
-
-  &:focus {
-    outline: ${spacing.mini} solid ${colours.blue};
-    outline-offset: ${spacing.mini};
-  }
 `
 
 export const CoastersSummary = styled.div`
   margin-bottom: ${spacing.large};
-
-  h2 {
-    color: ${colours.charcoal};
-    margin-bottom: ${spacing.small};
-    font-size: ${fonts.large};
-  }
-
-  p {
-    color: ${colours.mediumGrey};
-    line-height: 1.6;
-    margin-bottom: ${spacing.small};
-  }
-`
-
-export const UploadInfo = styled.div`
-  font-size: ${fonts.small};
-  color: ${colours.mutedGrey};
-  font-style: italic;
 `
 
 export const ActionsBar = styled.div`
@@ -116,8 +62,6 @@ export const HeaderCell = styled.div`
   }
 `
 
-export const TableBody = styled.div``
-
 export const TableRow = styled.div`
   display: grid;
   grid-template-columns:
@@ -156,119 +100,4 @@ export const TableCell = styled.div`
       display: none;
     }
   }
-`
-
-export const CoasterName = styled.div`
-  font-weight: bold;
-  color: ${colours.charcoal};
-  margin-bottom: ${spacing.tiny};
-`
-
-export const CoasterModel = styled.div`
-  font-size: ${fonts.small};
-  color: ${colours.mutedGrey};
-`
-
-export const TypeBadge = styled.span<{ $type: string }>`
-  display: inline-block;
-  padding: ${spacing.tiny} ${spacing.small};
-  border-radius: ${spacing.tiny};
-  font-size: ${fonts.small};
-  font-weight: bold;
-  text-transform: capitalize;
-
-  background-color: ${({ $type }) => {
-    switch ($type.toLowerCase()) {
-      case 'steel':
-        return colours.blue
-      case 'wood':
-        return colours.orange
-      case 'hybrid':
-        return colours.green
-      default:
-        return colours.mutedGrey
-    }
-  }};
-
-  color: ${colours.white};
-`
-
-export const CoasterCount = styled.div`
-  text-align: center;
-  font-size: ${fonts.small};
-  color: ${colours.mutedGrey};
-  font-style: italic;
-  padding: ${spacing.medium};
-`
-
-export const RemoveButton = styled.button`
-  background-color: ${colours.red};
-  color: ${colours.white};
-  border: none;
-  padding: ${spacing.tiny} ${spacing.small};
-  border-radius: ${spacing.tiny};
-  font-size: ${fonts.small};
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  min-width: fit-content;
-
-  &:hover {
-    background-color: ${colours.darkRed};
-    transform: translateY(-1px);
-  }
-
-  &:focus {
-    outline: ${spacing.mini} solid ${colours.red};
-    outline-offset: ${spacing.mini};
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-
-  @media (max-width: ${breakpoints.tablet}) {
-    font-size: ${fonts.small};
-    padding: ${spacing.tiny};
-  }
-`
-
-export const RemoveAllButton = styled.button`
-  background-color: ${colours.red};
-  color: ${colours.white};
-  border: none;
-  padding: ${spacing.tiny} ${spacing.small};
-  border-radius: ${spacing.fine};
-  font-size: ${fonts.small};
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  text-decoration: none;
-  display: inline-block;
-  letter-spacing: 1px;
-
-  &:hover {
-    background-color: ${colours.darkRed};
-    transform: translateY(-1px);
-  }
-
-  &:focus {
-    outline: ${spacing.mini} solid ${colours.red};
-    outline-offset: ${spacing.mini};
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
-  @media (max-width: ${breakpoints.mobileLarge}) {
-    width: 100%;
-    text-align: center;
-  }
-`
-
-export const BoldText = styled.span`
-  font-weight: bold;
 `

@@ -1,12 +1,13 @@
 import React from 'react'
 import {
-  BackLink,
   CodeBlock,
   DuplicateResolver,
+  InfoMessage,
   MainContent,
   PreRankingQuestion,
   Title,
-  ViewLink,
+  Link,
+  Text,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import {
@@ -111,47 +112,55 @@ export default function UploadCSV() {
 
       <section>
         <Styled.Instructions>
-          <h2>Import from CSV Spreadsheet</h2>
-          <p>
+          <Text as='h2' colour='charcoal' fontSize='large' mb='small'>
+            Import from CSV Spreadsheet
+          </Text>
+          <Text as='p' colour='mediumGrey' mb='small'>
             Upload a CSV file containing your coaster data. Each row should
             represent one coaster with the required fields.
-          </p>
+          </Text>
           {existingCoasterCount > 0 && (
             <Styled.CurrentDataInfo>
               You currently have{' '}
-              <Styled.BoldText>{existingCoasterCount} coasters</Styled.BoldText>{' '}
-              in your collection.{' '}
-              <ViewLink href='/view-coasters'>View all coasters</ViewLink>
+              <Text bold>{existingCoasterCount} coasters</Text> in your
+              collection.{' '}
+              <Link href='/view-coasters' variant='button'>
+                View all coasters
+              </Link>
             </Styled.CurrentDataInfo>
           )}
         </Styled.Instructions>
 
         {/* Required Fields Info */}
         <Styled.RequiredFields>
-          <h3>Required Fields:</h3>
+          <Text as='h3' colour='darkBlue' mb='small'>
+            Required Fields:
+          </Text>
           <ul>
-            <li>
-              <Styled.BoldText>name:</Styled.BoldText> Coaster name
-            </li>
-            <li>
-              <Styled.BoldText>park:</Styled.BoldText> Theme park
-            </li>
-            <li>
-              <Styled.BoldText>manufacturer:</Styled.BoldText> Builder company
-            </li>
-            <li>
-              <Styled.BoldText>model:</Styled.BoldText> Model name
-            </li>
-            <li>
-              <Styled.BoldText>type:</Styled.BoldText> Steel/Wood/Hybrid
-            </li>
+            <Text as='li' colour='slateGrey'>
+              <Text bold>Name:</Text> Coaster name
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold>Park:</Text> Theme park
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold>Manufacturer:</Text> Builder company
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold>Model:</Text> Model name
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold>Type:</Text> Steel/Wood/Hybrid
+            </Text>
           </ul>
         </Styled.RequiredFields>
 
         {/* CSV Format Example */}
         <Styled.ExampleFiles>
           <details>
-            <summary>CSV Format Example</summary>
+            <Text as='summary' bold colour='orange'>
+              CSV Format Example
+            </Text>
 
             <CodeBlock>
               {`name,park,manufacturer,model,type,country
@@ -164,7 +173,9 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,United Kingdom`}
 
         {/* File Upload */}
         <Styled.FileSection>
-          <h3>Select CSV File</h3>
+          <Text as='h3' colour='charcoal' mb='small'>
+            Select CSV File
+          </Text>
           <Styled.FileInputWrapper>
             <Styled.FileInput
               type='file'
@@ -186,11 +197,18 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,United Kingdom`}
               {isLoading ? 'Processing File...' : 'Choose CSV File'}
             </Styled.FileLabel>
           </Styled.FileInputWrapper>
-          <Styled.FileInfo id='file-status'>
+          <Text
+            as='p'
+            center
+            colour='mutedGrey'
+            fontSize='small'
+            id='file-status'
+            mt='tiny'
+          >
             {isLoading
               ? 'Please wait while your file is being processed...'
               : 'Only CSV files are accepted. File should have headers in the first row.'}
-          </Styled.FileInfo>
+          </Text>
         </Styled.FileSection>
 
         {/* Duplicate Resolution */}
@@ -205,20 +223,30 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,United Kingdom`}
 
         {/* Status Messages */}
         {uploadState.error && (
-          <Styled.ErrorMessage role='alert' aria-live='assertive'>
-            <Styled.ErrorIcon aria-hidden='true'>ERROR:</Styled.ErrorIcon>
-            {uploadState.error}
-          </Styled.ErrorMessage>
+          <InfoMessage variant='error' role='alert' aria-live='assertive'>
+            <Text as='span' bold colour='errorText' fontSize='small'>
+              ERROR:
+            </Text>
+            <Text as='span' colour='errorText' fontSize='small'>
+              {uploadState.error}
+            </Text>
+          </InfoMessage>
         )}
 
         {uploadState.success && (
-          <Styled.SuccessMessage role='status' aria-live='polite'>
-            <Styled.SuccessIcon aria-hidden='true'>SUCCESS:</Styled.SuccessIcon>
-            {uploadState.success}
-          </Styled.SuccessMessage>
+          <InfoMessage variant='success' role='status' aria-live='polite'>
+            <Text as='span' bold colour='successGreen' fontSize='small'>
+              SUCCESS:
+            </Text>
+            <Text as='span' colour='successGreen' fontSize='small'>
+              {uploadState.success}
+            </Text>
+          </InfoMessage>
         )}
 
-        <BackLink href='/upload'>Back to Upload Options</BackLink>
+        <Link href='/upload' variant='back'>
+          Back to Upload Options
+        </Link>
       </section>
 
       {/* Pre-ranking Question Modal */}

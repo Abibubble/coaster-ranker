@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Coaster } from '../../types/data'
-import * as Styled from '../GroupRanking/GroupRanking.styled'
+import { CoasterComparison, Text } from '../'
+import * as Styled from './SimpleCoasterRanking.styled'
 
 export interface SimpleCoasterRankingProps {
   coasters: Coaster[]
@@ -91,23 +92,35 @@ export default function SimpleCoasterRanking({
     <div>
       {!hideProgress && (
         <Styled.ComparisonProgress>
-          <Styled.ProgressTitle>
+          <Text as='h4' bold colour='navyBlue' fontSize='large' mb='small'>
             Which coaster do you prefer?
-          </Styled.ProgressTitle>
+          </Text>
 
           <Styled.ProgressStats>
             <Styled.ProgressStat>
-              <Styled.ProgressNumber>
+              <Styled.ProgressNumber bold colour='lightBlue' fontSize='large'>
                 {remainingComparisons.length}
               </Styled.ProgressNumber>
-              <Styled.ProgressLabel>Comparisons Remaining</Styled.ProgressLabel>
+              <Styled.ProgressLabel
+                colour='mutedGrey'
+                fontSize='small'
+                mt='fine'
+              >
+                Comparisons Remaining
+              </Styled.ProgressLabel>
             </Styled.ProgressStat>
 
             <Styled.ProgressStat>
-              <Styled.ProgressNumber>
+              <Styled.ProgressNumber bold colour='lightBlue' fontSize='large'>
                 {totalComparisons - remainingComparisons.length}
               </Styled.ProgressNumber>
-              <Styled.ProgressLabel>Completed</Styled.ProgressLabel>
+              <Styled.ProgressLabel
+                colour='mutedGrey'
+                fontSize='small'
+                mt='fine'
+              >
+                Completed
+              </Styled.ProgressLabel>
             </Styled.ProgressStat>
           </Styled.ProgressStats>
 
@@ -122,68 +135,21 @@ export default function SimpleCoasterRanking({
                 <Styled.ProgressBarContainer>
                   <Styled.ProgressBar $progress={progress} />
                 </Styled.ProgressBarContainer>
-                <Styled.ProgressPercentage>
+                <Text as='p' colour='slateGrey' fontSize='small' mt='tiny'>
                   {progress}% Complete
-                </Styled.ProgressPercentage>
+                </Text>
               </>
             )
           })()}
         </Styled.ComparisonProgress>
       )}
 
-      <Styled.ComparisonArea>
-        <Styled.CoasterCard
-          onClick={() => handleChoice(currentPair[0])}
-          aria-label={`Choose ${currentPair[0].name}`}
-        >
-          <Styled.CoasterName>{currentPair[0].name}</Styled.CoasterName>
-          <Styled.CoasterPark>
-            {currentPair[0].park}
-            {currentPair[0].country &&
-              currentPair[0].country.trim() !== '' &&
-              ` (${currentPair[0].country})`}
-          </Styled.CoasterPark>
-          <Styled.CoasterDetails>
-            <p>
-              <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-              {currentPair[0].manufacturer}
-            </p>
-            <p>
-              <Styled.BoldText>Model:</Styled.BoldText> {currentPair[0].model}
-            </p>
-            <p>
-              <Styled.BoldText>Type:</Styled.BoldText> {currentPair[0].type}
-            </p>
-          </Styled.CoasterDetails>
-        </Styled.CoasterCard>
-
-        <Styled.VersusText>VS</Styled.VersusText>
-
-        <Styled.CoasterCard
-          onClick={() => handleChoice(currentPair[1])}
-          aria-label={`Choose ${currentPair[1].name}`}
-        >
-          <Styled.CoasterName>{currentPair[1].name}</Styled.CoasterName>
-          <Styled.CoasterPark>
-            {currentPair[1].park}
-            {currentPair[1].country &&
-              currentPair[1].country.trim() !== '' &&
-              ` (${currentPair[1].country})`}
-          </Styled.CoasterPark>
-          <Styled.CoasterDetails>
-            <p>
-              <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-              {currentPair[1].manufacturer}
-            </p>
-            <p>
-              <Styled.BoldText>Model:</Styled.BoldText> {currentPair[1].model}
-            </p>
-            <p>
-              <Styled.BoldText>Type:</Styled.BoldText> {currentPair[1].type}
-            </p>
-          </Styled.CoasterDetails>
-        </Styled.CoasterCard>
-      </Styled.ComparisonArea>
+      <CoasterComparison
+        coaster1={currentPair[0]}
+        coaster2={currentPair[1]}
+        onChoose1={() => handleChoice(currentPair[0])}
+        onChoose2={() => handleChoice(currentPair[1])}
+      />
     </div>
   )
 }

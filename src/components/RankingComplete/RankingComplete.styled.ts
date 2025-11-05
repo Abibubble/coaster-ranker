@@ -1,9 +1,6 @@
 import styled from 'styled-components'
-import { colours, fonts, spacing } from '../../theme'
-
-export const BoldText = styled.span`
-  font-weight: bold;
-`
+import { colours, fonts, textSpacing, spacing } from '../../theme'
+import { Text } from '../'
 
 export const ResultsList = styled.div`
   margin: ${spacing.medium} 0;
@@ -19,15 +16,12 @@ export const ResultsList = styled.div`
   }
 `
 
-export const MoreCoastersText = styled.li`
-  font-style: italic;
-  color: ${colours.mediumGrey};
-`
-
-export const Instructions = styled.p`
-  font-size: ${fonts.small};
-  color: ${colours.mediumGrey};
-  margin-bottom: ${spacing.small};
+export const RankingComplete = styled.div`
+  text-align: center;
+  padding: ${textSpacing.large};
+  background: ${colours.successBg};
+  border-radius: ${spacing.tiny};
+  border-left: ${spacing.fine} solid ${colours.lightGreen};
 `
 
 export const ButtonContainer = styled.div`
@@ -48,101 +42,7 @@ export const ButtonContainer = styled.div`
   }
 `
 
-export const AdjustButton = styled.button`
-  background: ${colours.blue};
-  color: ${colours.white};
-  border: 2px solid transparent;
-  padding: ${spacing.small} ${spacing.medium};
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: ${fonts.body};
-  font-weight: 500;
-  transition: all 0.2s ease;
-  min-height: 44px;
-
-  &:hover {
-    background: ${colours.darkBlue};
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px ${colours.shadowMedium};
-  }
-
-  &:focus {
-    outline: none;
-    border-color: ${colours.darkBlue};
-    box-shadow: 0 0 0 3px ${colours.veryLightBlue};
-  }
-
-  &:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 2px ${colours.shadowMedium};
-  }
-`
-
-export const SaveButton = styled.button`
-  background: ${colours.green};
-  color: ${colours.white};
-  border: 2px solid transparent;
-  padding: ${spacing.small} ${spacing.medium};
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: ${fonts.body};
-  font-weight: 500;
-  transition: all 0.2s ease;
-  min-height: 44px;
-
-  &:hover {
-    background: ${colours.successGreen};
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px ${colours.shadowMedium};
-  }
-
-  &:focus {
-    outline: none;
-    border-color: ${colours.successGreen};
-    box-shadow: 0 0 0 3px ${colours.successBg};
-  }
-
-  &:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 2px ${colours.shadowMedium};
-  }
-`
-
-export const CancelButton = styled.button`
-  background: ${colours.mediumGrey};
-  color: ${colours.white};
-  border: 2px solid transparent;
-  padding: ${spacing.small} ${spacing.medium};
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: ${fonts.body};
-  font-weight: 500;
-  transition: all 0.2s ease;
-  min-height: 44px;
-
-  &:hover {
-    background: ${colours.darkGrey};
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px ${colours.shadowMedium};
-  }
-
-  &:focus {
-    outline: none;
-    border-color: ${colours.darkGrey};
-    box-shadow: 0 0 0 3px ${colours.veryLightGrey};
-  }
-
-  &:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 2px ${colours.shadowMedium};
-  }
-`
-
-export const EditInstructions = styled.p`
-  font-size: ${fonts.small};
-  color: ${colours.mediumGrey};
-  margin: 0 0 ${spacing.medium} 0;
-  text-align: center;
+export const EditInstructions = styled(Text)`
   background: ${colours.veryLightGrey};
   padding: ${spacing.small};
   border-radius: 4px;
@@ -181,11 +81,9 @@ export const EditableItem = styled.li`
   }
 `
 
-export const Position = styled.span`
-  font-weight: bold;
+export const Position = styled(Text)`
   min-width: 40px;
   margin-right: ${spacing.small};
-  color: ${colours.darkGrey};
   font-size: ${fonts.body};
 `
 
@@ -220,30 +118,22 @@ export const MoveButton = styled.button`
   line-height: 1;
 
   /* Ensure sufficient contrast ratio for WCAG 2.1 AA */
-  &:hover:not(:disabled) {
+  &:hover {
     background: ${colours.blue};
     border-color: ${colours.darkBlue};
     transform: translateY(-1px);
     box-shadow: 0 2px 4px ${colours.shadowMedium};
   }
 
-  &:focus:not(:disabled) {
+  &:focus {
     outline: none;
     border-color: ${colours.blue};
     box-shadow: 0 0 0 3px ${colours.veryLightBlue};
   }
 
-  &:active:not(:disabled) {
+  &:active {
     transform: translateY(0);
     box-shadow: 0 1px 2px ${colours.shadowMedium};
-  }
-
-  &:disabled {
-    background: ${colours.lightGrey};
-    color: ${colours.mediumGrey};
-    cursor: not-allowed;
-    opacity: 0.6;
-    border-color: transparent;
   }
 
   /* Improve touch targets for mobile */
@@ -251,25 +141,5 @@ export const MoveButton = styled.button`
     width: 48px;
     height: 48px;
     font-size: 20px;
-  }
-`
-
-export const RedButton = styled.button`
-  padding: ${spacing.tiny} ${spacing.small};
-  background: ${colours.red};
-  color: ${colours.white};
-  border: none;
-  border-radius: ${spacing.tiny};
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background: ${colours.darkRed};
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 ${spacing.fine} rgba(220, 53, 69, 0.25);
   }
 `

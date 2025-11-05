@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import {
-  BackLink,
   Button,
   DuplicateResolver,
+  InfoMessage,
   MainContent,
+  Text,
   Title,
-  ViewLink,
+  Link,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
@@ -220,143 +221,208 @@ export default function UploadManual() {
       <Title>Add Coaster Manually</Title>
 
       <section>
-        <Styled.Instructions>
-          <h2>Enter Coaster Details</h2>
-          <p>
-            Add a single coaster to your collection by filling out the form
-            below. You can add multiple coasters by submitting the form multiple
-            times.
-          </p>
-          {coasterCount > 0 && (
-            <Styled.CurrentDataInfo>
+        <Text as='h2' colour='charcoal' fontSize='large' mb='small'>
+          Enter Coaster Details
+        </Text>
+        <Text as='p' colour='mediumGrey' mb='small'>
+          Add a single coaster to your collection by filling out the form below.
+          You can add multiple coasters by submitting the form multiple times.
+        </Text>
+        {coasterCount > 0 && (
+          <Styled.CurrentDataInfo>
+            <Text as='span' colour='charcoal' fontSize='small'>
               You currently have{' '}
-              <Styled.BoldText>{coasterCount} coasters</Styled.BoldText> in your
-              collection.{' '}
-              <ViewLink href='/view-coasters'>View all coasters</ViewLink>
-            </Styled.CurrentDataInfo>
+              <Text bold colour='blue'>
+                {coasterCount} coasters
+              </Text>{' '}
+              in your collection.{' '}
+              <Link href='/view-coasters' variant='button'>
+                View all coasters
+              </Link>
+            </Text>
+          </Styled.CurrentDataInfo>
+        )}
+
+        <section>
+          <Styled.Form onSubmit={handleSubmit}>
+            <div>
+              <Styled.FormTitle as='h3' colour='charcoal' mb='small'>
+                Required Information
+              </Styled.FormTitle>
+
+              <Styled.FormRow>
+                <Styled.FormGroup>
+                  <Text
+                    as='label'
+                    bold
+                    colour='charcoal'
+                    fontSize='small'
+                    htmlFor='name'
+                  >
+                    Name *
+                  </Text>
+                  <Styled.Input
+                    type='text'
+                    id='name'
+                    name='name'
+                    value={formData.name || ''}
+                    onChange={handleInputChange}
+                    placeholder='e.g. The Smiler'
+                    required
+                  />
+                </Styled.FormGroup>
+
+                <Styled.FormGroup>
+                  <Text
+                    as='label'
+                    bold
+                    colour='charcoal'
+                    fontSize='small'
+                    htmlFor='park'
+                  >
+                    Theme Park *
+                  </Text>
+                  <Styled.Input
+                    type='text'
+                    id='park'
+                    name='park'
+                    value={formData.park || ''}
+                    onChange={handleInputChange}
+                    placeholder='e.g. Alton Towers'
+                    required
+                  />
+                </Styled.FormGroup>
+              </Styled.FormRow>
+
+              <Styled.FormRow>
+                <Styled.FormGroup>
+                  <Text
+                    as='label'
+                    bold
+                    colour='charcoal'
+                    fontSize='small'
+                    htmlFor='manufacturer'
+                  >
+                    Manufacturer *
+                  </Text>
+                  <Styled.Input
+                    type='text'
+                    id='manufacturer'
+                    name='manufacturer'
+                    value={formData.manufacturer || ''}
+                    onChange={handleInputChange}
+                    placeholder='e.g. Gerstlauer'
+                    required
+                  />
+                </Styled.FormGroup>
+
+                <Styled.FormGroup>
+                  <Text
+                    as='label'
+                    bold
+                    colour='charcoal'
+                    fontSize='small'
+                    htmlFor='model'
+                  >
+                    Model *
+                  </Text>
+                  <Styled.Input
+                    type='text'
+                    id='model'
+                    name='model'
+                    value={formData.model || ''}
+                    onChange={handleInputChange}
+                    placeholder='e.g. Euro-Fighter'
+                    required
+                  />
+                </Styled.FormGroup>
+              </Styled.FormRow>
+
+              <Styled.FormGroup>
+                <Text
+                  as='label'
+                  bold
+                  colour='charcoal'
+                  fontSize='small'
+                  htmlFor='type'
+                >
+                  Type *
+                </Text>
+                <Styled.Select
+                  id='type'
+                  name='type'
+                  value={formData.type || ''}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value=''>Select type...</option>
+                  <option value='Steel'>Steel</option>
+                  <option value='Wood'>Wood</option>
+                  <option value='Hybrid'>Hybrid</option>
+                </Styled.Select>
+              </Styled.FormGroup>
+
+              <Styled.FormGroup>
+                <Text
+                  as='label'
+                  bold
+                  colour='charcoal'
+                  fontSize='small'
+                  htmlFor='country'
+                >
+                  Country
+                </Text>
+                <Styled.Input
+                  type='text'
+                  id='country'
+                  name='country'
+                  value={formData.country || ''}
+                  onChange={handleInputChange}
+                  placeholder='e.g. United Kingdom'
+                  required
+                />
+              </Styled.FormGroup>
+            </div>
+
+            <Button type='submit'>Add Coaster to Collection</Button>
+          </Styled.Form>
+
+          {/* Duplicate Resolution */}
+          {showDuplicateResolver && duplicates.length > 0 && (
+            <DuplicateResolver
+              duplicates={duplicates}
+              onResolve={handleDuplicateResolution}
+              onCancel={handleDuplicateCancel}
+            />
           )}
-        </Styled.Instructions>
 
-        <Styled.Form onSubmit={handleSubmit}>
-          <Styled.FormSection>
-            <h3>Required Information</h3>
+          {/* Status Messages */}
+          {error && (
+            <InfoMessage variant='error' role='alert' aria-live='assertive'>
+              <Text as='span' bold colour='errorText' fontSize='small'>
+                ERROR:
+              </Text>
+              <Text as='span' colour='errorText' fontSize='small'>
+                {error}
+              </Text>
+            </InfoMessage>
+          )}
 
-            <Styled.FormRow>
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='name'>Name *</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='name'
-                  name='name'
-                  value={formData.name || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. The Smiler'
-                  required
-                />
-              </Styled.FormGroup>
+          {success && (
+            <InfoMessage variant='success' role='status' aria-live='polite'>
+              <Text as='span' bold colour='successGreen' fontSize='small'>
+                SUCCESS:
+              </Text>
+              <Text as='span' colour='successGreen' fontSize='small'>
+                {success}
+              </Text>
+            </InfoMessage>
+          )}
+        </section>
 
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='park'>Theme Park *</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='park'
-                  name='park'
-                  value={formData.park || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. Alton Towers'
-                  required
-                />
-              </Styled.FormGroup>
-            </Styled.FormRow>
-
-            <Styled.FormRow>
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='manufacturer'>
-                  Manufacturer *
-                </Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='manufacturer'
-                  name='manufacturer'
-                  value={formData.manufacturer || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. Gerstlauer'
-                  required
-                />
-              </Styled.FormGroup>
-
-              <Styled.FormGroup>
-                <Styled.Label htmlFor='model'>Model *</Styled.Label>
-                <Styled.Input
-                  type='text'
-                  id='model'
-                  name='model'
-                  value={formData.model || ''}
-                  onChange={handleInputChange}
-                  placeholder='e.g. Euro-Fighter'
-                  required
-                />
-              </Styled.FormGroup>
-            </Styled.FormRow>
-
-            <Styled.FormGroup>
-              <Styled.Label htmlFor='type'>Type *</Styled.Label>
-              <Styled.Select
-                id='type'
-                name='type'
-                value={formData.type || ''}
-                onChange={handleInputChange}
-                required
-              >
-                <option value=''>Select type...</option>
-                <option value='Steel'>Steel</option>
-                <option value='Wood'>Wood</option>
-                <option value='Hybrid'>Hybrid</option>
-              </Styled.Select>
-            </Styled.FormGroup>
-
-            <Styled.FormGroup>
-              <Styled.Label htmlFor='country'>Country</Styled.Label>
-              <Styled.Input
-                type='text'
-                id='country'
-                name='country'
-                value={formData.country || ''}
-                onChange={handleInputChange}
-                placeholder='e.g. United Kingdom'
-                required
-              />
-            </Styled.FormGroup>
-          </Styled.FormSection>
-
-          <Button type='submit'>Add Coaster to Collection</Button>
-        </Styled.Form>
-
-        {/* Duplicate Resolution */}
-        {showDuplicateResolver && duplicates.length > 0 && (
-          <DuplicateResolver
-            duplicates={duplicates}
-            onResolve={handleDuplicateResolution}
-            onCancel={handleDuplicateCancel}
-          />
-        )}
-
-        {/* Status Messages */}
-        {error && (
-          <Styled.ErrorMessage role='alert' aria-live='assertive'>
-            <Styled.ErrorIcon aria-hidden='true'>ERROR:</Styled.ErrorIcon>
-            {error}
-          </Styled.ErrorMessage>
-        )}
-
-        {success && (
-          <Styled.SuccessMessage role='status' aria-live='polite'>
-            <Styled.SuccessIcon aria-hidden='true'>SUCCESS:</Styled.SuccessIcon>
-            {success}
-          </Styled.SuccessMessage>
-        )}
-
-        <BackLink href='/upload'>Back to Upload Options</BackLink>
+        <Link href='/upload' variant='back'>
+          Back to Upload Options
+        </Link>
       </section>
     </MainContent>
   )

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { colours, spacing } from '../../theme'
 
-export const SkipLinkStyled = styled.a`
+export const SkipLink = styled.a`
   position: absolute;
   left: -10000px;
   top: auto;

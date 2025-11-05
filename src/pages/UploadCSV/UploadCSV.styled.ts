@@ -4,27 +4,13 @@ import { colours, spacing, fonts } from '../../theme'
 export const Instructions = styled.div`
   margin-bottom: ${spacing.large};
 
-  h2 {
-    color: ${colours.charcoal};
-    margin-bottom: ${spacing.small};
-    font-size: ${fonts.large};
-  }
-
   p {
     line-height: 1.6;
-    color: ${colours.mediumGrey};
-    margin-bottom: ${spacing.small};
   }
 `
 
 export const RequiredFields = styled.div`
   margin: ${spacing.large} 0;
-
-  h3 {
-    color: ${colours.darkBlue};
-    margin-bottom: ${spacing.small};
-    font-size: ${fonts.body};
-  }
 
   ul {
     list-style: none;
@@ -34,11 +20,9 @@ export const RequiredFields = styled.div`
 
   li {
     padding: ${spacing.tiny} 0;
-    font-size: ${fonts.body};
     line-height: 1.5;
     position: relative;
     padding-left: ${spacing.large};
-    color: ${colours.slateGrey};
 
     &::before {
       content: '✓';
@@ -48,12 +32,6 @@ export const RequiredFields = styled.div`
       position: absolute;
       left: 0;
       top: ${spacing.tiny};
-    }
-
-    strong {
-      color: ${colours.charcoal};
-      font-weight: 600;
-      margin-right: ${spacing.tiny};
     }
   }
 `
@@ -69,9 +47,6 @@ export const ExampleFiles = styled.div`
   }
 
   summary {
-    color: ${colours.orange};
-    font-size: ${fonts.body};
-    font-weight: 600;
     cursor: pointer;
     padding: ${spacing.tiny} 0;
     margin-bottom: 0;
@@ -94,22 +69,10 @@ export const ExampleFiles = styled.div`
   details[open] summary::before {
     transform: rotate(90deg);
   }
-
-  h4 {
-    color: ${colours.charcoal};
-    margin: ${spacing.small} 0 ${spacing.tiny} 0;
-    font-size: ${fonts.body};
-  }
 `
 
 export const FileSection = styled.div`
   margin-bottom: ${spacing.large};
-
-  h3 {
-    color: ${colours.charcoal};
-    margin-bottom: ${spacing.small};
-    font-size: ${fonts.body};
-  }
 `
 
 export const FileInputWrapper = styled.div`
@@ -180,49 +143,6 @@ export const FileLabel = styled.label<{ $isLoading?: boolean }>`
   }
 `
 
-export const FileInfo = styled.p`
-  color: ${colours.mutedGrey};
-  font-size: ${fonts.small};
-  margin-top: ${spacing.tiny};
-  text-align: center;
-`
-
-export const ErrorMessage = styled.div`
-  background-color: ${colours.lightRed};
-  border: ${spacing.micro} solid ${colours.redBorder};
-  border-radius: ${spacing.fine};
-  padding: ${spacing.small};
-  margin-top: ${spacing.small};
-  color: ${colours.red};
-  display: flex;
-  align-items: center;
-  gap: ${spacing.tiny};
-`
-
-export const ErrorIcon = styled.span`
-  font-size: ${fonts.small};
-  font-weight: bold;
-  color: ${colours.red};
-`
-
-export const SuccessMessage = styled.div`
-  background-color: ${colours.lightGreenBg};
-  border: ${spacing.micro} solid ${colours.greenBorder};
-  border-radius: ${spacing.fine};
-  padding: ${spacing.small};
-  margin-top: ${spacing.small};
-  color: ${colours.green};
-  display: flex;
-  align-items: center;
-  gap: ${spacing.tiny};
-`
-
-export const SuccessIcon = styled.span`
-  font-size: ${fonts.small};
-  font-weight: bold;
-  color: ${colours.green};
-`
-
 export const CurrentDataInfo = styled.div`
   background-color: ${colours.paleGrey};
   border: ${spacing.micro} solid ${colours.softGrey};
@@ -231,13 +151,4 @@ export const CurrentDataInfo = styled.div`
   margin-top: ${spacing.small};
   color: ${colours.charcoal};
   font-size: ${fonts.small};
-
-  strong {
-    color: ${colours.blue};
-  }
-`
-
-export const BoldText = styled.span`
-  font-weight: bold;
-  color: ${colours.blue};
 `

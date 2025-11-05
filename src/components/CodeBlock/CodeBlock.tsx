@@ -7,5 +7,16 @@ interface CodeBlockProps {
 }
 
 export default function CodeBlock({ children, className }: CodeBlockProps) {
-  return <Styled.CodeBlock className={className}>{children}</Styled.CodeBlock>
+  return (
+    <Styled.CodeBlock
+      as='pre'
+      className={className}
+      colour='slateGrey'
+      fontSize='small'
+      mb='small'
+      mt='small'
+    >
+      {children}
+    </Styled.CodeBlock>
+  )
 }

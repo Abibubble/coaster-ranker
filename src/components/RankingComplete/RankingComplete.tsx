@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Coaster } from '../../types/data'
 import { useData } from '../../contexts/DataContext'
-import { Button } from '../Button'
-import * as Styled from '../../pages/Rank/Rank.styled'
-import * as LocalStyled from './RankingComplete.styled'
+import { Button, Text } from '../'
+import * as Styled from './RankingComplete.styled'
 
 interface RankingCompleteProps {
   rankedCoasters: Coaster[]
@@ -131,21 +130,29 @@ export default function RankingComplete({
 
   return (
     <Styled.RankingComplete>
-      <h2>Ranking Complete!</h2>
-      <p>
+      <Text as='h2' colour='successGreen' mb='small'>
+        Ranking Complete!
+      </Text>
+      <Text as='p' colour='successGreen' mb='small'>
         Your coasters have been ranked based on your preferences! Here's your
         final ranking:
-      </p>
+      </Text>
 
       {isEditing ? (
-        <LocalStyled.EditableList>
-          <LocalStyled.EditInstructions>
+        <Styled.EditableList>
+          <Styled.EditInstructions
+            as='p'
+            center
+            colour='mediumGrey'
+            fontSize='small'
+            mb='medium'
+          >
             Use the arrow buttons or arrow keys to reorder your coasters. Press
             Tab to navigate between items.
-          </LocalStyled.EditInstructions>
+          </Styled.EditInstructions>
           <ol>
             {displayCoasters.slice(0, 10).map((coaster, index) => (
-              <LocalStyled.EditableItem
+              <Styled.EditableItem
                 key={coaster.id}
                 tabIndex={0}
                 onKeyDown={event => handleKeyDown(event, coaster, index)}
@@ -156,70 +163,71 @@ export default function RankingComplete({
                   displayCoasters.length
                 }. Use arrow keys or buttons to reorder.`}
               >
-                <LocalStyled.Position>{index + 1}.</LocalStyled.Position>
-                <LocalStyled.CoasterInfo>
-                  <LocalStyled.BoldText>{coaster.name}</LocalStyled.BoldText> at{' '}
-                  {coaster.park}
-                </LocalStyled.CoasterInfo>
-                <LocalStyled.MoveButtons>
-                  <LocalStyled.MoveButton
-                    onClick={() => moveCoaster(index, Math.max(0, index - 1))}
-                    disabled={index === 0}
+                <Styled.Position bold colour='darkGrey'>
+                  {index + 1}.
+                </Styled.Position>
+                <Styled.CoasterInfo>
+                  <Text bold>{coaster.name}</Text> at {coaster.park}
+                </Styled.CoasterInfo>
+                <Styled.MoveButtons>
+                  <Styled.MoveButton
+                    onClick={() => {
+                      if (index > 0) {
+                        moveCoaster(index, index - 1)
+                      }
+                    }}
                     aria-label={`Move ${coaster.name} up one position`}
                     title={`Move ${coaster.name} up one position`}
                   >
                     ↑
-                  </LocalStyled.MoveButton>
-                  <LocalStyled.MoveButton
-                    onClick={() =>
-                      moveCoaster(
-                        index,
-                        Math.min(displayCoasters.length - 1, index + 1)
-                      )
-                    }
-                    disabled={index === displayCoasters.length - 1}
+                  </Styled.MoveButton>
+                  <Styled.MoveButton
+                    onClick={() => {
+                      if (index < displayCoasters.length - 1) {
+                        moveCoaster(index, index + 1)
+                      }
+                    }}
                     aria-label={`Move ${coaster.name} down one position`}
                     title={`Move ${coaster.name} down one position`}
                   >
                     ↓
-                  </LocalStyled.MoveButton>
-                </LocalStyled.MoveButtons>
-              </LocalStyled.EditableItem>
+                  </Styled.MoveButton>
+                </Styled.MoveButtons>
+              </Styled.EditableItem>
             ))}
           </ol>
-          <LocalStyled.ButtonContainer>
+          <Styled.ButtonContainer>
             <Button variant='success' onClick={handleSaveChanges}>
               Save Changes
             </Button>
-            <Button variant='secondary' onClick={handleCancelEdit}>
+            <Button variant='disabled' onClick={handleCancelEdit}>
               Cancel
             </Button>
-          </LocalStyled.ButtonContainer>
-        </LocalStyled.EditableList>
+          </Styled.ButtonContainer>
+        </Styled.EditableList>
       ) : (
-        <LocalStyled.ResultsList>
+        <Styled.ResultsList>
           <ol>
             {displayCoasters.slice(0, 10).map((coaster, _index) => (
               <li key={coaster.id}>
-                <LocalStyled.BoldText>{coaster.name}</LocalStyled.BoldText> at{' '}
-                {coaster.park}
+                <Text bold>{coaster.name}</Text> at {coaster.park}
               </li>
             ))}
             {displayCoasters.length > 10 && (
-              <LocalStyled.MoreCoastersText>
+              <Text as='li' colour='mediumGrey' italic>
                 ...and {displayCoasters.length - 10} more
-              </LocalStyled.MoreCoastersText>
+              </Text>
             )}
           </ol>
-        </LocalStyled.ResultsList>
+        </Styled.ResultsList>
       )}
 
-      <LocalStyled.Instructions>
+      <Text as='p' colour='mediumGrey' fontSize='small' mb='small'>
         This ranking order will be used when you download your coaster
         collection.
-      </LocalStyled.Instructions>
+      </Text>
       {!isEditing && (
-        <LocalStyled.ButtonContainer>
+        <Styled.ButtonContainer>
           <Button onClick={handleEditClick}>Adjust Rankings</Button>
           <Button as='a' href='/download'>
             Download rankings
@@ -227,7 +235,7 @@ export default function RankingComplete({
           <Button variant='destructive' onClick={onRankAgain}>
             Rank again
           </Button>
-        </LocalStyled.ButtonContainer>
+        </Styled.ButtonContainer>
       )}
     </Styled.RankingComplete>
   )

@@ -4,7 +4,7 @@ import * as Styled from './Button.styled'
 export interface ButtonProps {
   children: React.ReactNode
   onClick?: () => void
-  variant?: 'default' | 'destructive' | 'success' | 'secondary' | 'disabled'
+  variant?: 'default' | 'destructive' | 'success' | 'disabled' | 'warning'
   as?: 'button' | 'a'
   href?: string
   type?: 'button' | 'submit' | 'reset'
@@ -17,7 +17,7 @@ export default function Button({
   variant = 'default',
   as = 'button',
   href,
-  type = 'button',
+  type,
   className,
   ...props
 }: ButtonProps) {

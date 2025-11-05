@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Coaster } from '../../types/data'
-import { ProgressInfo } from '../../components'
-import { SimpleCoasterRanking } from '../SimpleCoasterRanking'
+import {
+  CoasterComparison,
+  ProgressInfo,
+  SimpleCoasterRanking,
+  Text,
+} from '../'
 import {
   createCoasterGroups,
   finalizeGroupRanking,
@@ -153,71 +157,16 @@ export default function GroupRanking({
           <p>Finalizing your ranking...</p>
         </Styled.HierarchicalHeader>
 
-        <Styled.ComparisonArea>
-          <Styled.CoasterCard
-            onClick={() =>
-              handleHierarchicalChoice(currentComparison.higherGroupLowest)
-            }
-            aria-label={`Choose ${currentComparison.higherGroupLowest.name}`}
-          >
-            <Styled.CoasterName>
-              {currentComparison.higherGroupLowest.name}
-            </Styled.CoasterName>
-            <Styled.CoasterPark>
-              {currentComparison.higherGroupLowest.park}
-              {currentComparison.higherGroupLowest.country &&
-                currentComparison.higherGroupLowest.country.trim() !== '' &&
-                ` (${currentComparison.higherGroupLowest.country})`}
-            </Styled.CoasterPark>
-            <Styled.CoasterDetails>
-              <p>
-                <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-                {currentComparison.higherGroupLowest.manufacturer}
-              </p>
-              <p>
-                <Styled.BoldText>Model:</Styled.BoldText>{' '}
-                {currentComparison.higherGroupLowest.model}
-              </p>
-              <p>
-                <Styled.BoldText>Type:</Styled.BoldText>{' '}
-                {currentComparison.higherGroupLowest.type}
-              </p>
-            </Styled.CoasterDetails>
-          </Styled.CoasterCard>
-
-          <Styled.VersusText>VS</Styled.VersusText>
-
-          <Styled.CoasterCard
-            onClick={() =>
-              handleHierarchicalChoice(currentComparison.lowerGroupHighest)
-            }
-            aria-label={`Choose ${currentComparison.lowerGroupHighest.name}`}
-          >
-            <Styled.CoasterName>
-              {currentComparison.lowerGroupHighest.name}
-            </Styled.CoasterName>
-            <Styled.CoasterPark>
-              {currentComparison.lowerGroupHighest.park}
-              {currentComparison.lowerGroupHighest.country &&
-                currentComparison.lowerGroupHighest.country.trim() !== '' &&
-                ` (${currentComparison.lowerGroupHighest.country})`}
-            </Styled.CoasterPark>
-            <Styled.CoasterDetails>
-              <p>
-                <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-                {currentComparison.lowerGroupHighest.manufacturer}
-              </p>
-              <p>
-                <Styled.BoldText>Model:</Styled.BoldText>{' '}
-                {currentComparison.lowerGroupHighest.model}
-              </p>
-              <p>
-                <Styled.BoldText>Type:</Styled.BoldText>{' '}
-                {currentComparison.lowerGroupHighest.type}
-              </p>
-            </Styled.CoasterDetails>
-          </Styled.CoasterCard>
-        </Styled.ComparisonArea>
+        <CoasterComparison
+          coaster1={currentComparison.higherGroupLowest}
+          coaster2={currentComparison.lowerGroupHighest}
+          onChoose1={() =>
+            handleHierarchicalChoice(currentComparison.higherGroupLowest)
+          }
+          onChoose2={() =>
+            handleHierarchicalChoice(currentComparison.lowerGroupHighest)
+          }
+        />
       </div>
     )
   }
@@ -234,8 +183,8 @@ export default function GroupRanking({
           <ol>
             {finalGroupOrder.map((groupName, _index) => (
               <Styled.GroupOrderItem key={groupName}>
-                <Styled.BoldText>{groupName}</Styled.BoldText>
-                <Styled.GroupCount>
+                <Text bold>{groupName}</Text>
+                <Styled.GroupCount colour='mediumGrey' fontSize='small'>
                   ({groups.get(groupName)?.coasters.length || 0} coasters)
                 </Styled.GroupCount>
               </Styled.GroupOrderItem>

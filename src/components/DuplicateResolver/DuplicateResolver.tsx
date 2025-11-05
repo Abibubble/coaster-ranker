@@ -4,6 +4,8 @@ import {
   formatMatchingFields,
 } from '../../utils/fileProcessing/duplicateDetection'
 import * as Styled from './DuplicateResolver.styled'
+import { Text } from '../'
+import { CoasterComparison } from '../CoasterComparison'
 
 export interface DuplicateResolution {
   action: 'keep-existing' | 'keep-new' | 'keep-both'
@@ -57,113 +59,53 @@ export default function DuplicateResolver({
   return (
     <Styled.DuplicateContainer>
       <Styled.DuplicateHeader>
-        <Styled.DuplicateTitle>
+        <Text as='h3' colour='warningYellow' fontSize='large' mb='tiny'>
           Potential Duplicate Coasters Detected
-        </Styled.DuplicateTitle>
-        <Styled.DuplicateDescription>
+        </Text>
+        <Text as='p' colour='warningYellow' fontSize='small'>
           We found {duplicates.length} potential duplicate
           {duplicates.length !== 1 ? 's' : ''} in your upload. Please review
           each match and choose how to handle them.
-        </Styled.DuplicateDescription>
+        </Text>
       </Styled.DuplicateHeader>
 
       {duplicates.map((duplicate, index) => (
         <Styled.DuplicateItem key={index}>
-          <Styled.MatchInfo>
-            <Styled.BoldText>Match {index + 1}:</Styled.BoldText>{' '}
+          <Styled.MatchInfo as='p' fontSize='small' mb='small' mt='small'>
+            <Text bold colour='darkerBlue'>
+              Match {index + 1}:
+            </Text>{' '}
             {formatMatchingFields(duplicate.matchingFields)} match (
             {duplicate.matchCount} of 4 fields)
           </Styled.MatchInfo>
 
-          <Styled.CoasterComparison>
-            <Styled.CoasterCard>
-              <Styled.CoasterTitle>Existing Coaster</Styled.CoasterTitle>
-              <Styled.CoasterDetails>
-                <p>
-                  <Styled.BoldText>Name:</Styled.BoldText>{' '}
-                  {duplicate.existingCoaster.name}
-                </p>
-                <p>
-                  <Styled.BoldText>Park:</Styled.BoldText>{' '}
-                  {duplicate.existingCoaster.park}
-                </p>
-                <p>
-                  <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-                  {duplicate.existingCoaster.manufacturer}
-                </p>
-                <p>
-                  <Styled.BoldText>Model:</Styled.BoldText>{' '}
-                  {duplicate.existingCoaster.model}
-                </p>
-                <p>
-                  <Styled.BoldText>Country:</Styled.BoldText>{' '}
-                  {duplicate.existingCoaster.country || 'Not specified'}
-                </p>
-              </Styled.CoasterDetails>
-            </Styled.CoasterCard>
-
-            <Styled.VersusText>VS</Styled.VersusText>
-
-            <Styled.CoasterCard>
-              <Styled.CoasterTitle>New Coaster</Styled.CoasterTitle>
-              <Styled.CoasterDetails>
-                <p>
-                  <Styled.BoldText>Name:</Styled.BoldText>{' '}
-                  {duplicate.newCoaster.name}
-                </p>
-                <p>
-                  <Styled.BoldText>Park:</Styled.BoldText>{' '}
-                  {duplicate.newCoaster.park}
-                </p>
-                <p>
-                  <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-                  {duplicate.newCoaster.manufacturer}
-                </p>
-                <p>
-                  <Styled.BoldText>Model:</Styled.BoldText>{' '}
-                  {duplicate.newCoaster.model}
-                </p>
-                <p>
-                  <Styled.BoldText>Country:</Styled.BoldText>{' '}
-                  {duplicate.newCoaster.country || 'Not specified'}
-                </p>
-              </Styled.CoasterDetails>
-            </Styled.CoasterCard>
-          </Styled.CoasterComparison>
+          <CoasterComparison
+            coaster1={duplicate.existingCoaster}
+            coaster2={duplicate.newCoaster}
+            clickable={false}
+            coaster1Label='Existing Coaster'
+            coaster2Label='New Coaster'
+          />
 
           <Styled.ButtonGroup>
             <Styled.DuplicateButton
               onClick={() => handleResolution('keep-existing', index)}
-              style={{
-                opacity: resolutions.get(index) === 'keep-existing' ? 1 : 0.7,
-                fontWeight:
-                  resolutions.get(index) === 'keep-existing'
-                    ? 'bold'
-                    : 'normal',
-              }}
-              variant='existing'
+              $isSelected={resolutions.get(index) === 'keep-existing'}
+              variant='destructive'
             >
               Keep Existing Only
             </Styled.DuplicateButton>
             <Styled.DuplicateButton
               onClick={() => handleResolution('keep-new', index)}
-              style={{
-                opacity: resolutions.get(index) === 'keep-new' ? 1 : 0.7,
-                fontWeight:
-                  resolutions.get(index) === 'keep-new' ? 'bold' : 'normal',
-              }}
-              variant='new'
+              $isSelected={resolutions.get(index) === 'keep-new'}
+              variant='success'
             >
               Keep New Only
             </Styled.DuplicateButton>
             <Styled.DuplicateButton
               onClick={() => handleResolution('keep-both', index)}
-              style={{
-                opacity: resolutions.get(index) === 'keep-both' ? 1 : 0.7,
-                fontWeight:
-                  resolutions.get(index) === 'keep-both' ? 'bold' : 'normal',
-              }}
-              variant='both'
+              $isSelected={resolutions.get(index) === 'keep-both'}
+              variant='default'
             >
               Keep Both (Different Experiences)
             </Styled.DuplicateButton>
@@ -172,22 +114,22 @@ export default function DuplicateResolver({
       ))}
 
       <Styled.ActionButtons>
-        <Styled.ActionButton
+        <Styled.DuplicateButton
           aria-describedby={!canConfirm ? 'confirm-help-text' : undefined}
           onClick={handleConfirm}
-          primary
+          variant='default'
         >
           {canConfirm ? 'Confirm Choices' : 'Confirm Choices'}
-        </Styled.ActionButton>
+        </Styled.DuplicateButton>
         {!canConfirm && (
           <Styled.ProgressInfo id='confirm-help-text'>
             Please choose an action for {missingChoices} more duplicate
             {missingChoices !== 1 ? 's' : ''}
           </Styled.ProgressInfo>
         )}
-        <Styled.ActionButton onClick={onCancel}>
+        <Styled.DuplicateButton onClick={onCancel} variant='disabled'>
           Cancel Upload
-        </Styled.ActionButton>
+        </Styled.DuplicateButton>
       </Styled.ActionButtons>
     </Styled.DuplicateContainer>
   )

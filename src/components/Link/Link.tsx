@@ -9,6 +9,7 @@ interface LinkProps {
   center?: boolean
   dark?: boolean
   fontSize?: string
+  variant?: 'text' | 'button' | 'back'
   onClick?: () => void
 }
 
@@ -19,6 +20,7 @@ export default function Link({
   center = false,
   dark = false,
   fontSize = fonts.body,
+  variant = 'text',
   onClick,
 }: LinkProps) {
   return (
@@ -28,6 +30,7 @@ export default function Link({
       $center={center}
       $dark={dark}
       $fontSize={fontSize}
+      $variant={variant}
       onClick={onClick}
     >
       {children}

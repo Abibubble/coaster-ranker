@@ -1,9 +1,7 @@
-import * as Styled from './SkipLink.Styled'
+import * as Styled from './SkipLink.styled'
 
 export default function SkipLink() {
   return (
-    <Styled.SkipLinkStyled href='#main-content'>
-      Skip to main content
-    </Styled.SkipLinkStyled>
+    <Styled.SkipLink href='#main-content'>Skip to main content</Styled.SkipLink>
   )
 }

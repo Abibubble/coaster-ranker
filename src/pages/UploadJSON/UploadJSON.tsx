@@ -1,14 +1,15 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import {
-  BackLink,
   Button,
   CodeBlock,
   DuplicateResolver,
+  InfoMessage,
   MainContent,
   PreRankingQuestion,
   ScreenReaderOnly,
   Title,
-  ViewLink,
+  Link,
+  Text,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import {
@@ -125,48 +126,78 @@ export default function UploadJSON() {
       <Title>Upload JSON Data</Title>
 
       <section>
-        <Styled.Instructions>
-          <h2>Import JSON Data</h2>
-          <p>
+        <Styled.Section>
+          <Text as='h2' colour='charcoal' fontSize='large' mb='large'>
+            Import JSON Data
+          </Text>
+          <Text as='p' colour='mediumGrey' mb='small'>
             Paste your coaster data as JSON or upload a JSON file. Your data
             should be an array of coaster objects.
-          </p>
+          </Text>
           {existingCoasterCount > 0 && (
-            <Styled.CurrentDataInfo>
+            <Styled.CurrentDataInfo
+              as='p'
+              colour='charcoal'
+              fontSize='small'
+              mt='small'
+            >
               You currently have{' '}
-              <Styled.BoldText>{existingCoasterCount} coasters</Styled.BoldText>{' '}
+              <Text bold colour='blue'>
+                {existingCoasterCount} coasters
+              </Text>{' '}
               in your collection.{' '}
-              <ViewLink href='/view-coasters'>View all coasters</ViewLink>
+              <Link href='/view-coasters' variant='button'>
+                View all coasters
+              </Link>
             </Styled.CurrentDataInfo>
           )}
-        </Styled.Instructions>
+        </Styled.Section>
 
         {/* Required Fields Info */}
         <Styled.RequiredFields>
-          <h3>Required Fields:</h3>
+          <Text as='h3' colour='darkBlue' mb='small'>
+            Required Fields:
+          </Text>
           <ul>
-            <li>
-              <Styled.BoldText>name:</Styled.BoldText> Coaster name
-            </li>
-            <li>
-              <Styled.BoldText>park:</Styled.BoldText> Theme park
-            </li>
-            <li>
-              <Styled.BoldText>manufacturer:</Styled.BoldText> Builder company
-            </li>
-            <li>
-              <Styled.BoldText>model:</Styled.BoldText> Model name
-            </li>
-            <li>
-              <Styled.BoldText>type:</Styled.BoldText> Steel/Wood/Hybrid
-            </li>
+            <Text as='li' colour='slateGrey'>
+              <Text bold colour='charcoal'>
+                name:
+              </Text>{' '}
+              Coaster name
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold colour='charcoal'>
+                park:
+              </Text>{' '}
+              Theme park
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold colour='charcoal'>
+                manufacturer:
+              </Text>{' '}
+              Builder company
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold colour='charcoal'>
+                model:
+              </Text>{' '}
+              Model name
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold colour='charcoal'>
+                type:
+              </Text>{' '}
+              Steel/Wood/Hybrid
+            </Text>
           </ul>
         </Styled.RequiredFields>
 
         {/* JSON Format Example */}
         <Styled.ExampleFiles>
           <details>
-            <summary>JSON Format Example</summary>
+            <Text as='summary' bold colour='orange'>
+              JSON Format Example
+            </Text>
 
             <CodeBlock>
               {`[
@@ -192,8 +223,10 @@ export default function UploadJSON() {
         </Styled.ExampleFiles>
 
         {/* JSON Paste Area */}
-        <Styled.JsonSection>
-          <h3>Paste JSON Data</h3>
+        <Styled.Section>
+          <Text as='h3' colour='charcoal' mb='small'>
+            Paste JSON Data
+          </Text>
           <form onSubmit={handleJsonSubmit}>
             <ScreenReaderOnly as='label' htmlFor='json-textarea'>
               JSON data input area
@@ -211,15 +244,19 @@ export default function UploadJSON() {
               {isLoading ? 'Processing...' : 'Process JSON'}
             </Button>
           </form>
-        </Styled.JsonSection>
+        </Styled.Section>
 
         <Styled.Divider>
-          <span>or</span>
+          <Text colour='mediumGrey' italic>
+            or
+          </Text>
         </Styled.Divider>
 
         {/* File Upload */}
-        <Styled.FileSection>
-          <h3>Upload JSON File</h3>
+        <Styled.Section>
+          <Text as='h3' colour='charcoal' mb='small'>
+            Upload JSON File
+          </Text>
           <Styled.FileInputWrapper>
             <Styled.FileInput
               type='file'
@@ -232,11 +269,11 @@ export default function UploadJSON() {
               {isLoading ? 'Processing...' : 'Choose JSON File'}
             </Styled.FileLabel>
           </Styled.FileInputWrapper>
-          <Styled.FileInfo>
+          <Text as='p' center colour='mutedGrey' fontSize='small' mt='tiny'>
             Only JSON files are accepted. File should contain an array of
             coaster objects.
-          </Styled.FileInfo>
-        </Styled.FileSection>
+          </Text>
+        </Styled.Section>
 
         {/* Duplicate Resolution */}
         {uploadState.showDuplicateResolver &&
@@ -250,20 +287,30 @@ export default function UploadJSON() {
 
         {/* Status Messages */}
         {uploadState.error && (
-          <Styled.ErrorMessage role='alert' aria-live='assertive'>
-            <Styled.ErrorIcon aria-hidden='true'>ERROR:</Styled.ErrorIcon>
-            {uploadState.error}
-          </Styled.ErrorMessage>
+          <InfoMessage variant='error' role='alert' aria-live='assertive'>
+            <Text as='span' bold colour='errorText' fontSize='small'>
+              ERROR:
+            </Text>
+            <Text as='span' colour='errorText' fontSize='small'>
+              {uploadState.error}
+            </Text>
+          </InfoMessage>
         )}
 
         {uploadState.success && (
-          <Styled.SuccessMessage role='status' aria-live='polite'>
-            <Styled.SuccessIcon aria-hidden='true'>SUCCESS:</Styled.SuccessIcon>
-            {uploadState.success}
-          </Styled.SuccessMessage>
+          <InfoMessage variant='success' role='status' aria-live='polite'>
+            <Text as='span' bold colour='successGreen' fontSize='small'>
+              SUCCESS:
+            </Text>
+            <Text as='span' colour='successGreen' fontSize='small'>
+              {uploadState.success}
+            </Text>
+          </InfoMessage>
         )}
 
-        <BackLink href='/upload'>Back to Upload Options</BackLink>
+        <Link href='/upload' variant='back'>
+          Back to Upload Options
+        </Link>
       </section>
 
       {/* Pre-ranking Question Modal */}

@@ -1,12 +1,16 @@
 import { Coaster } from '../../types/data'
 import { formatCountry } from '../../utils/ranking/rankingUtils'
-import * as Styled from '../../pages/Rank/Rank.styled'
+import * as Styled from './CoasterComparison.styled'
+import { Card, Text } from '../'
 
 interface CoasterComparisonProps {
   coaster1: Coaster
   coaster2: Coaster
-  onChoose1: () => void
-  onChoose2: () => void
+  onChoose1?: () => void
+  onChoose2?: () => void
+  clickable?: boolean
+  coaster1Label?: string
+  coaster2Label?: string
 }
 
 export default function CoasterComparison({
@@ -14,56 +18,59 @@ export default function CoasterComparison({
   coaster2,
   onChoose1,
   onChoose2,
+  clickable = true,
+  coaster1Label = coaster1.name,
+  coaster2Label = coaster2.name,
 }: CoasterComparisonProps) {
   return (
     <Styled.ComparisonArea>
-      <Styled.CoasterCard
-        aria-label={`Choose ${coaster1.name} as your favorite`}
-        onClick={onChoose1}
+      <Card
+        title={coaster1Label}
+        subtitle={`${coaster1.park}${formatCountry(coaster1.country)}`}
+        clickable={clickable}
+        aria-label={
+          clickable ? `Choose ${coaster1.name} as your favorite` : undefined
+        }
+        onClick={clickable ? onChoose1 : undefined}
       >
-        <Styled.CoasterName>{coaster1.name}</Styled.CoasterName>
-        <Styled.CoasterPark>
-          {coaster1.park}
-          {formatCountry(coaster1.country)}
-        </Styled.CoasterPark>
-        <Styled.CoasterDetails>
-          <p>
-            <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-            {coaster1.manufacturer}
-          </p>
-          <p>
-            <Styled.BoldText>Model:</Styled.BoldText> {coaster1.model}
-          </p>
-          <p>
-            <Styled.BoldText>Type:</Styled.BoldText> {coaster1.type}
-          </p>
-        </Styled.CoasterDetails>
-      </Styled.CoasterCard>
+        <p>
+          <Text bold>Manufacturer:</Text> {coaster1.manufacturer}
+        </p>
+        <p>
+          <Text bold>Model:</Text> {coaster1.model}
+        </p>
+        <p>
+          <Text bold>Type:</Text> {coaster1.type}
+        </p>
+        <p>
+          <Text bold>Country:</Text> {coaster1.country || 'Not specified'}
+        </p>
+      </Card>
 
       <Styled.VersusText>VS</Styled.VersusText>
 
-      <Styled.CoasterCard
-        aria-label={`Choose ${coaster2.name} as your favorite`}
-        onClick={onChoose2}
+      <Card
+        title={coaster2Label}
+        subtitle={`${coaster2.park}${formatCountry(coaster2.country)}`}
+        clickable={clickable}
+        aria-label={
+          clickable ? `Choose ${coaster2.name} as your favorite` : undefined
+        }
+        onClick={clickable ? onChoose2 : undefined}
       >
-        <Styled.CoasterName>{coaster2.name}</Styled.CoasterName>
-        <Styled.CoasterPark>
-          {coaster2.park}
-          {formatCountry(coaster2.country)}
-        </Styled.CoasterPark>
-        <Styled.CoasterDetails>
-          <p>
-            <Styled.BoldText>Manufacturer:</Styled.BoldText>{' '}
-            {coaster2.manufacturer}
-          </p>
-          <p>
-            <Styled.BoldText>Model:</Styled.BoldText> {coaster2.model}
-          </p>
-          <p>
-            <Styled.BoldText>Type:</Styled.BoldText> {coaster2.type}
-          </p>
-        </Styled.CoasterDetails>
-      </Styled.CoasterCard>
+        <p>
+          <Text bold>Manufacturer:</Text> {coaster2.manufacturer}
+        </p>
+        <p>
+          <Text bold>Model:</Text> {coaster2.model}
+        </p>
+        <p>
+          <Text bold>Type:</Text> {coaster2.type}
+        </p>
+        <p>
+          <Text bold>Country:</Text> {coaster2.country || 'Not specified'}
+        </p>
+      </Card>
     </Styled.ComparisonArea>
   )
 }

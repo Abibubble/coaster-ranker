@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { MainContent, Title } from '../../components'
+import {
+  Link,
+  Button,
+  InfoMessage,
+  MainContent,
+  Text,
+  Title,
+} from '../../components'
 import { useData } from '../../contexts/DataContext'
 import {
   generateCSV,
@@ -79,14 +86,16 @@ export default function Download() {
         <Title>Download Your Collection</Title>
         <section>
           <Styled.EmptyState>
-            <h2>No Coasters Yet</h2>
-            <p>
+            <Text as='h2' center colour='darkGrey' mb='small'>
+              No Coasters Yet
+            </Text>
+            <Text as='p' center colour='mediumGrey' mb='large'>
               Upload some coasters to download your collection in CSV or JSON
               format.
-            </p>
-            <Styled.UploadLink href='/upload'>
+            </Text>
+            <Button as='a' href='/upload'>
               Upload Coasters
-            </Styled.UploadLink>
+            </Button>
           </Styled.EmptyState>
         </section>
       </MainContent>
@@ -100,25 +109,28 @@ export default function Download() {
       <section>
         <Styled.DownloadContent>
           <Styled.Section>
-            <h2>Your Coaster Collection</h2>
-            <p>
-              You have <Styled.BoldText>{coasters.length}</Styled.BoldText>{' '}
-              coaster
+            <Text as='h2' colour='darkGrey' mb='tiny'>
+              Your Coaster Collection
+            </Text>
+            <Text as='p' colour='mediumGrey' mb='small'>
+              You have <Text bold>{coasters.length}</Text> coaster
               {coasters.length === 1 ? '' : 's'} in your collection.
-            </p>
+            </Text>
             {uploadedData?.uploadedAt && (
-              <Styled.LastUpdatedText>
+              <Text as='p' colour='textGrey' fontSize='small' italic mb='tiny'>
                 Last updated: {uploadedData.uploadedAt.toLocaleDateString()}
-              </Styled.LastUpdatedText>
+              </Text>
             )}
           </Styled.Section>
 
           <Styled.Section>
-            <h3>Choose your format:</h3>
+            <Text as='h3' colour='darkGrey' mb='tiny'>
+              Choose your format:
+            </Text>
 
             {hasRankingData && (
               <Styled.RankingOption>
-                <label>
+                <Text as='label' colour='darkGrey'>
                   <input
                     type='checkbox'
                     checked={includeRanking}
@@ -126,7 +138,7 @@ export default function Download() {
                   />
                   Include ranking positions (adds "rank" field with current
                   rankings)
-                </label>
+                </Text>
               </Styled.RankingOption>
             )}
 
@@ -134,10 +146,16 @@ export default function Download() {
               onClick={() => handleDownload('csv')}
               aria-describedby='csv-description'
             >
-              <Styled.FileIcon aria-hidden='true'>📊</Styled.FileIcon>
               <Styled.ButtonContent>
-                <Styled.ButtonTitle>Download as CSV</Styled.ButtonTitle>
-                <Styled.ButtonDescription id='csv-description'>
+                <Text as='h4' bold colour='darkGrey' fontSize='large' mb='fine'>
+                  Download as CSV
+                </Text>
+                <Styled.ButtonDescription
+                  as='p'
+                  colour='mediumGrey'
+                  fontSize='small'
+                  id='csv-description'
+                >
                   For Excel, Google Sheets, and other spreadsheet apps
                   {includeRanking &&
                     hasRankingData &&
@@ -150,10 +168,16 @@ export default function Download() {
               onClick={() => handleDownload('json')}
               aria-describedby='json-description'
             >
-              <Styled.FileIcon aria-hidden='true'>📄</Styled.FileIcon>
               <Styled.ButtonContent>
-                <Styled.ButtonTitle>Download as JSON</Styled.ButtonTitle>
-                <Styled.ButtonDescription id='json-description'>
+                <Text as='h4' bold colour='darkGrey' fontSize='large' mb='fine'>
+                  Download as JSON
+                </Text>
+                <Styled.ButtonDescription
+                  as='p'
+                  colour='mediumGrey'
+                  fontSize='small'
+                  id='json-description'
+                >
                   Developer-friendly format for importing into other apps
                   {includeRanking && hasRankingData && ' (includes rank field)'}
                 </Styled.ButtonDescription>
@@ -162,25 +186,27 @@ export default function Download() {
           </Styled.Section>
 
           {downloadStatus && (
-            <Styled.StatusMessage
+            <InfoMessage
+              variant={
+                downloadStatus.includes('successfully') ? 'success' : 'error'
+              }
               role='status'
               aria-live='polite'
-              $isSuccess={downloadStatus.includes('successfully')}
             >
               {downloadStatus}
-            </Styled.StatusMessage>
+            </InfoMessage>
           )}
 
           <Styled.InfoSection>
-            <p>
+            <Text as='p' colour='mediumGrey' fontSize='small'>
               Files are generated locally in your browser - your data stays
               private.
-            </p>
+            </Text>
           </Styled.InfoSection>
 
-          <Styled.BackLink href='/view-coasters'>
+          <Link href='/view-coasters' variant='back'>
             Back to View Coasters
-          </Styled.BackLink>
+          </Link>
         </Styled.DownloadContent>
       </section>
     </MainContent>

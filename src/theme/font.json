@@ -2,6 +2,7 @@
   "title": "3.5rem",
   "huge": "3rem",
   "large": "1.5rem",
+  "medium": "1.25rem",
   "body": "1rem",
   "small": "0.875rem"
 }

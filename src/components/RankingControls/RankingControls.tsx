@@ -1,3 +1,4 @@
+import { Button } from '../'
 import * as Styled from './RankingControls.styled'
 
 interface RankingControlsProps {
@@ -11,12 +12,18 @@ export default function RankingControls({
   canUndo = false,
   onUndo,
 }: RankingControlsProps) {
+  const handleUndoClick = () => {
+    if (canUndo && onUndo) {
+      onUndo()
+    }
+  }
+
   return (
     <Styled.ControlsContainer>
       {onUndo && (
-        <Styled.UndoButton
-          onClick={onUndo}
-          $canUndo={canUndo}
+        <Button
+          onClick={handleUndoClick}
+          variant={canUndo ? 'warning' : 'disabled'}
           aria-label={
             canUndo
               ? 'Undo last choice'
@@ -25,13 +32,19 @@ export default function RankingControls({
         >
           {canUndo ? 'Undo last choice' : 'No choices to undo'}
           {!canUndo && (
-            <Styled.HelpText>Make some comparisons first</Styled.HelpText>
+            <Styled.HelpText colour='white' fontSize='small' mt='fine'>
+              Make some comparisons first
+            </Styled.HelpText>
           )}
-        </Styled.UndoButton>
+        </Button>
       )}
-      <Styled.ResetButton onClick={onReset} aria-label='Reset all rankings'>
+      <Button
+        onClick={onReset}
+        variant='destructive'
+        aria-label='Reset all rankings'
+      >
         Reset all rankings
-      </Styled.ResetButton>
+      </Button>
     </Styled.ControlsContainer>
   )
 }

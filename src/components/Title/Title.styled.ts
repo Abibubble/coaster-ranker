@@ -1,11 +1,10 @@
 import styled from 'styled-components'
 import { breakpoints, colours, fonts, spacing } from '../../theme'
+import { Text } from '../'
 
-export const TitleText = styled.h1`
+export const TitleText = styled(Text)`
   font-size: ${fonts.large};
   padding: ${spacing.tiny} ${spacing.small};
-  text-align: center;
-  color: ${colours.darkGrey};
   line-height: 1.2;
 
   @media (min-width: ${breakpoints.mobileLarge}) {

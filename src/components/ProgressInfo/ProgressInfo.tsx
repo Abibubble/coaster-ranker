@@ -1,4 +1,5 @@
 import * as Styled from './ProgressInfo.styled'
+import { Text } from '../'
 
 interface ProgressInfoProps {
   remainingComparisons?: number
@@ -33,20 +34,27 @@ export default function ProgressInfo({
 
   return (
     <Styled.ProgressContainer>
-      <Styled.ProgressTitle>{title}</Styled.ProgressTitle>
-      <Styled.ProgressText>
+      <Text as='h4' bold colour='slateGrey' fontSize='large' mb='small'>
+        {title}
+      </Text>
+      <Text as='p' colour='mutedGrey'>
         {showCoastersLeft ? (
           <>
-            <Styled.BoldText>{coastersLeft}</Styled.BoldText> coaster
+            <Text bold colour='blue' fontSize='large'>
+              {coastersLeft}
+            </Text>{' '}
+            coaster
             {coastersLeft !== 1 ? 's' : ''} left to rank
           </>
         ) : (
           <>
-            <Styled.BoldText>{remainingComparisons || 0}</Styled.BoldText>{' '}
+            <Text bold colour='blue' fontSize='large'>
+              {remainingComparisons || 0}
+            </Text>{' '}
             comparisons remaining
           </>
         )}
-      </Styled.ProgressText>
+      </Text>
       {showProgressBar &&
         totalComparisons &&
         remainingComparisons !== undefined && (

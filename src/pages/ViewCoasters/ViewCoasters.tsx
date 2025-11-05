@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, MainContent, Title, ViewLink } from '../../components'
+import { Button, MainContent, Title, Text, Link } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './ViewCoasters.styled'
 
@@ -87,14 +87,16 @@ export default function ViewCoasters() {
         <Title>Your Coasters</Title>
         <section>
           <Styled.EmptyState>
-            <h2>No Coasters Yet</h2>
-            <p>
+            <Text as='h2' center colour='darkGrey' mb='medium' fontSize='large'>
+              No Coasters Yet
+            </Text>
+            <Text as='p' center colour='mediumGrey' mb='large'>
               You haven't uploaded any coasters yet. Use one of the upload
               methods to add some coasters to your collection.
-            </p>
-            <Styled.UploadLink href='/upload'>
+            </Text>
+            <Link href='/upload' variant='button'>
               Go to Upload Page
-            </Styled.UploadLink>
+            </Link>
           </Styled.EmptyState>
         </section>
       </MainContent>
@@ -123,22 +125,27 @@ export default function ViewCoasters() {
 
       <section>
         <Styled.CoastersSummary>
-          <h2>Your Collection</h2>
-          <p>
-            You have <Styled.BoldText>{coasters.length}</Styled.BoldText>{' '}
-            coaster
+          <Text as='h2' colour='charcoal' fontSize='large' mb='small'>
+            Your Collection
+          </Text>
+          <Text as='p' colour='mediumGrey' mb='small'>
+            You have <Text bold>{coasters.length}</Text> coaster
             {coasters.length === 1 ? '' : 's'} in your collection.
-          </p>
+          </Text>
           {uploadedData?.uploadedAt && (
-            <Styled.UploadInfo>
+            <Text as='p' colour='mutedGrey' fontSize='small' italic>
               Last updated: {uploadedData.uploadedAt.toLocaleDateString()}
-            </Styled.UploadInfo>
+            </Text>
           )}
         </Styled.CoastersSummary>
 
         <Styled.ActionsBar>
-          <ViewLink href='/upload'>Add More Coasters</ViewLink>
-          <ViewLink href='/rank'>Start Ranking</ViewLink>
+          <Link href='/upload' variant='button'>
+            Add More Coasters
+          </Link>
+          <Link href='/rank' variant='button'>
+            Start Ranking
+          </Link>
           <Button
             variant='destructive'
             onClick={handleRemoveAllCoasters}
@@ -162,11 +169,13 @@ export default function ViewCoasters() {
             <Styled.HeaderCell role='columnheader'>Actions</Styled.HeaderCell>
           </Styled.TableHeader>
 
-          <Styled.TableBody role='rowgroup'>
+          <div role='rowgroup'>
             {coasters.map(coaster => (
               <Styled.TableRow key={coaster.id} role='row'>
                 <Styled.TableCell role='cell'>
-                  <Styled.CoasterName>{coaster.name}</Styled.CoasterName>
+                  <Text bold colour='charcoal' mb='tiny'>
+                    {coaster.name}
+                  </Text>
                 </Styled.TableCell>
                 <Styled.TableCell role='cell'>{coaster.park}</Styled.TableCell>
                 <Styled.TableCell role='cell'>
@@ -185,12 +194,19 @@ export default function ViewCoasters() {
                 </Styled.TableCell>
               </Styled.TableRow>
             ))}
-          </Styled.TableBody>
+          </div>
         </Styled.CoastersTable>
 
-        <Styled.CoasterCount>
+        <Text
+          as='div'
+          center
+          colour='mutedGrey'
+          fontSize='small'
+          italic
+          mt='medium'
+        >
           Showing {coasters.length} coaster{coasters.length === 1 ? '' : 's'}
-        </Styled.CoasterCount>
+        </Text>
       </section>
     </MainContent>
   )

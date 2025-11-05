@@ -1,4 +1,4 @@
-import { MainContent, Title, ViewLink } from '../../components'
+import { MainContent, Title, Link, Text } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './Upload.styled'
 
@@ -16,17 +16,23 @@ function Upload() {
 
       <section>
         <Styled.Instructions>
-          <h2>Choose Your Upload Method</h2>
-          <p>
+          <Text as='h2' colour='charcoal' fontSize='large' mb='small'>
+            Choose Your Upload Method
+          </Text>
+          <Text as='p' colour='mediumGrey' mb='small'>
             Select how you'd like to add coasters to your collection. You can
             use multiple methods - all data will be combined together.
-          </p>
+          </Text>
           {coasterCount > 0 && (
             <Styled.CurrentDataInfo>
               You currently have{' '}
-              <Styled.BoldText>{coasterCount} coasters</Styled.BoldText> in your
-              collection.{' '}
-              <ViewLink href='/view-coasters'>View all coasters</ViewLink>
+              <Text bold colour='blue'>
+                {coasterCount} coasters
+              </Text>{' '}
+              in your collection.{' '}
+              <Link href='/view-coasters' variant='button'>
+                View all coasters
+              </Link>
             </Styled.CurrentDataInfo>
           )}
         </Styled.Instructions>
@@ -43,8 +49,12 @@ function Upload() {
               }}
             >
               <Styled.UploadIcon>CSV</Styled.UploadIcon>
-              <h3>Upload CSV File</h3>
-              <p>Import coaster data from a CSV spreadsheet file</p>
+              <Text as='h3' colour='charcoal'>
+                Upload CSV File
+              </Text>
+              <Text as='p' colour='mediumGrey' fontSize='small'>
+                Import coaster data from a CSV spreadsheet file
+              </Text>
             </Styled.UploadButton>
           </div>
 
@@ -59,8 +69,12 @@ function Upload() {
               }}
             >
               <Styled.UploadIcon>JSON</Styled.UploadIcon>
-              <h3>Upload JSON Data</h3>
-              <p>Paste JSON data or upload a JSON file</p>
+              <Text as='h3' colour='charcoal'>
+                Upload JSON Data
+              </Text>
+              <Text as='p' colour='mediumGrey' fontSize='small'>
+                Paste JSON data or upload a JSON file
+              </Text>
             </Styled.UploadButton>
           </div>
 
@@ -76,7 +90,7 @@ function Upload() {
             >
               <Styled.UploadIcon>FORM</Styled.UploadIcon>
               <h3>Enter Manually</h3>
-              <p>Add coasters one at a time using a form</p>
+              <Text as='p'>Add coasters one at a time using a form</Text>
             </Styled.UploadButton>
           </div>
         </Styled.UploadOptions>
