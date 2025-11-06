@@ -40,7 +40,7 @@ export default function CoasterComparison({
           <Text bold>Model:</Text> {coaster1.model}
         </p>
         <p>
-          <Text bold>Type:</Text> {coaster1.type}
+          <Text bold>Material:</Text> {coaster1.material}
         </p>
         <p>
           <Text bold>Country:</Text> {coaster1.country || 'Not specified'}
@@ -65,7 +65,7 @@ export default function CoasterComparison({
           <Text bold>Model:</Text> {coaster2.model}
         </p>
         <p>
-          <Text bold>Type:</Text> {coaster2.type}
+          <Text bold>Material:</Text> {coaster2.material}
         </p>
         <p>
           <Text bold>Country:</Text> {coaster2.country || 'Not specified'}

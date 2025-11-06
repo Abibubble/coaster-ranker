@@ -11,7 +11,7 @@ const mockCoaster1: Coaster = {
   country: 'United States',
   manufacturer: 'Rocky Mountain Construction',
   model: 'I-Box',
-  type: 'Hybrid',
+  material: 'Hybrid',
 }
 
 const mockCoaster2: Coaster = {
@@ -21,7 +21,7 @@ const mockCoaster2: Coaster = {
   country: 'United States',
   manufacturer: 'Bolliger & Mabillard',
   model: 'Giga',
-  type: 'Steel',
+  material: 'Steel',
 }
 
 const mockCoaster3: Coaster = {
@@ -31,7 +31,7 @@ const mockCoaster3: Coaster = {
   country: 'Poland',
   manufacturer: 'Intamin',
   model: 'Mega',
-  type: 'Steel',
+  material: 'Steel',
 }
 
 const mockCoaster4: Coaster = {
@@ -41,7 +41,7 @@ const mockCoaster4: Coaster = {
   country: 'United States',
   manufacturer: 'The Gravity Group',
   model: 'Wooden',
-  type: 'Wood',
+  material: 'Wood',
 }
 
 const meta: Meta<typeof CoasterComparison> = {
@@ -105,7 +105,7 @@ export const DifferentManufacturers: Story = {
       country: 'Germany',
       manufacturer: 'Intamin',
       model: 'LSM Launch',
-      type: 'Steel',
+      material: 'Steel',
     },
     coaster2: {
       id: '6',
@@ -114,7 +114,7 @@ export const DifferentManufacturers: Story = {
       country: 'United Kingdom',
       manufacturer: 'Bolliger & Mabillard',
       model: 'Inverted',
-      type: 'Steel',
+      material: 'Steel',
     },
     onChoose1: () => console.log('Chose Taron'),
     onChoose2: () => console.log('Chose Nemesis'),
@@ -130,7 +130,7 @@ export const LongNames: Story = {
       country: 'Germany',
       manufacturer: 'Mack Rides',
       model: 'Xtreme Spinning Coaster',
-      type: 'Steel',
+      material: 'Steel',
     },
     coaster2: {
       id: '8',
@@ -139,7 +139,7 @@ export const LongNames: Story = {
       country: 'United States',
       manufacturer: 'Bolliger & Mabillard',
       model: 'Launched Sit Down',
-      type: 'Steel',
+      material: 'Steel',
     },
     onChoose1: () => console.log('Chose Voltron'),
     onChoose2: () => console.log('Chose Hulk'),

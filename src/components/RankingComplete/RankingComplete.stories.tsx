@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import React from 'react'
 import RankingComplete from './RankingComplete'
 import { Coaster } from '../../types/data'
+import { DataProvider } from '../../contexts/DataContext'
 
 // Mock coaster data for stories
 const mockCoasters: Coaster[] = [
@@ -11,7 +13,7 @@ const mockCoasters: Coaster[] = [
     country: 'United States',
     manufacturer: 'Rocky Mountain Construction',
     model: 'I-Box',
-    type: 'Hybrid',
+    material: 'Hybrid',
     rankPosition: 1,
   },
   {
@@ -21,7 +23,7 @@ const mockCoasters: Coaster[] = [
     country: 'United States',
     manufacturer: 'Bolliger & Mabillard',
     model: 'Giga',
-    type: 'Steel',
+    material: 'Steel',
     rankPosition: 2,
   },
   {
@@ -31,7 +33,7 @@ const mockCoasters: Coaster[] = [
     country: 'United States',
     manufacturer: 'Rocky Mountain Construction',
     model: 'Launch',
-    type: 'Wood',
+    material: 'Wood',
     rankPosition: 3,
   },
   {
@@ -41,7 +43,7 @@ const mockCoasters: Coaster[] = [
     country: 'United States',
     manufacturer: 'Intamin',
     model: 'Blitz',
-    type: 'Steel',
+    material: 'Steel',
     rankPosition: 4,
   },
   {
@@ -51,7 +53,7 @@ const mockCoasters: Coaster[] = [
     country: 'United States',
     manufacturer: 'Intamin',
     model: 'Mega',
-    type: 'Steel',
+    material: 'Steel',
     rankPosition: 5,
   },
 ]
@@ -67,9 +69,11 @@ const meta: Meta<typeof RankingComplete> = {
   },
   decorators: [
     Story => (
-      <div style={{ minHeight: '400px', width: '100%', maxWidth: '600px' }}>
-        <Story />
-      </div>
+      <DataProvider>
+        <div style={{ minHeight: '400px', width: '100%', maxWidth: '600px' }}>
+          <Story />
+        </div>
+      </DataProvider>
     ),
   ],
 }

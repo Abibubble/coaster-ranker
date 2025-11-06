@@ -12,7 +12,7 @@ const mockCoaster: Coaster[] = [
     country: 'UK',
     manufacturer: 'B&M',
     model: 'Inverted Coaster',
-    type: 'Inverted',
+    material: 'Steel',
   },
 ]
 

@@ -177,6 +177,12 @@ export default function UploadJSON() {
               </Text>{' '}
               Builder company
             </Text>
+          </ul>
+
+          <Text as='h3' colour='darkBlue' mb='small' mt='medium'>
+            Optional Fields:
+          </Text>
+          <ul>
             <Text as='li' colour='slateGrey'>
               <Text bold colour='charcoal'>
                 model:
@@ -185,9 +191,21 @@ export default function UploadJSON() {
             </Text>
             <Text as='li' colour='slateGrey'>
               <Text bold colour='charcoal'>
-                type:
+                material:
               </Text>{' '}
               Steel/Wood/Hybrid
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold colour='charcoal'>
+                thrillLevel:
+              </Text>{' '}
+              Kiddie/Family/Family Thrill/Thrill
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold colour='charcoal'>
+                country:
+              </Text>{' '}
+              Country location
             </Text>
           </ul>
         </Styled.RequiredFields>
@@ -206,7 +224,8 @@ export default function UploadJSON() {
     "park": "Alton Towers",
     "manufacturer": "Gerstlauer",
     "model": "Euro-Fighter",
-    "type": "Steel",
+    "material": "Steel",
+    "thrillLevel": "Thrill",
     "country": "United Kingdom"
   },
   {
@@ -214,7 +233,8 @@ export default function UploadJSON() {
     "park": "Alton Towers",
     "manufacturer": "Bolliger & Mabillard",
     "model": "Inverted Coaster",
-    "type": "Steel",
+    "material": "Steel",
+    "thrillLevel": "Family Thrill",
     "country": "United Kingdom"
   }
 ]`}

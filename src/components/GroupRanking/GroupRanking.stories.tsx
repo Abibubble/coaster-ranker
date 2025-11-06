@@ -11,7 +11,7 @@ const mockCoasters: Coaster[] = [
     country: 'United States',
     manufacturer: 'Rocky Mountain Construction',
     model: 'I-Box',
-    type: 'Hybrid',
+    material: 'Hybrid',
   },
   {
     id: '2',
@@ -20,7 +20,7 @@ const mockCoasters: Coaster[] = [
     country: 'United States',
     manufacturer: 'Intamin',
     model: 'Blitz',
-    type: 'Steel',
+    material: 'Steel',
   },
   {
     id: '3',
@@ -29,16 +29,16 @@ const mockCoasters: Coaster[] = [
     country: 'United States',
     manufacturer: 'Bolliger & Mabillard',
     model: 'Giga',
-    type: 'Steel',
+    material: 'Steel',
   },
   {
     id: '4',
-    name: 'Intimidator',
-    park: 'Carowinds',
+    name: 'Twisted Timbers',
+    park: 'Kings Dominion',
     country: 'United States',
-    manufacturer: 'Bolliger & Mabillard',
-    model: 'Hyper',
-    type: 'Steel',
+    manufacturer: 'Rocky Mountain Construction',
+    model: 'I-Box',
+    material: 'Steel',
   },
 ]
 

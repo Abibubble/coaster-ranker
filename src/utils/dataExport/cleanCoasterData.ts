@@ -7,8 +7,9 @@ export interface CoasterWithRank
   park: string
   country: string
   manufacturer: string
-  model: string
-  type: string
+  model?: string
+  material?: string
+  thrillLevel?: string
   rank?: number // The exported rank position (1 = best)
 }
 
@@ -26,7 +27,8 @@ export function cleanCoasterData(coasters: Coaster[]): Coaster[] {
       country: coaster.country,
       manufacturer: coaster.manufacturer,
       model: coaster.model,
-      type: coaster.type,
+      material: coaster.material,
+      thrillLevel: coaster.thrillLevel,
     }
 
     // Add optional fields if they exist
@@ -66,7 +68,8 @@ export function cleanCoasterDataForExport(
     country: coaster.country,
     manufacturer: coaster.manufacturer,
     model: coaster.model,
-    type: coaster.type,
+    material: coaster.material,
+    thrillLevel: coaster.thrillLevel,
   }))
 }
 
@@ -88,7 +91,8 @@ export function addRankingToCoasterData(
       country: coaster.country,
       manufacturer: coaster.manufacturer,
       model: coaster.model,
-      type: coaster.type,
+      material: coaster.material,
+      thrillLevel: coaster.thrillLevel,
     }
 
     // Add rank if the coaster has been ranked

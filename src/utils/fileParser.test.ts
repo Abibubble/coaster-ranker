@@ -32,7 +32,8 @@ describe('fileParser - extra fields handling', () => {
       country: 'Test Country',
       manufacturer: 'Test Manufacturer',
       model: 'Test Model',
-      type: 'Steel',
+      material: 'Steel',
+      thrillLevel: undefined,
     })
 
     // Verify extra fields are not included
@@ -50,7 +51,7 @@ describe('fileParser - extra fields handling', () => {
       {
         name: 'Test Coaster',
         park: 'Test Park',
-        // Missing country, manufacturer, model, type
+        // Missing country, manufacturer
         height: '50', // Extra field
         speed: '80', // Extra field
         extraField: 'ignored',
@@ -99,7 +100,8 @@ describe('fileParser - extra fields handling', () => {
       country: 'Country 1',
       manufacturer: 'Manufacturer 1',
       model: 'Model 1',
-      type: 'Steel',
+      material: 'Steel',
+      thrillLevel: undefined,
     })
 
     // Second coaster - extra fields should be filtered out
@@ -110,7 +112,8 @@ describe('fileParser - extra fields handling', () => {
       country: 'Country 2',
       manufacturer: 'Manufacturer 2',
       model: 'Model 2',
-      type: 'Wood',
+      material: 'Wood',
+      thrillLevel: undefined,
     })
 
     // Verify extra fields are not included in second coaster

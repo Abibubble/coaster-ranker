@@ -146,11 +146,23 @@ export default function UploadCSV() {
             <Text as='li' colour='slateGrey'>
               <Text bold>Manufacturer:</Text> Builder company
             </Text>
+          </ul>
+
+          <Text as='h3' colour='darkBlue' mb='small' mt='medium'>
+            Optional Fields:
+          </Text>
+          <ul>
             <Text as='li' colour='slateGrey'>
               <Text bold>Model:</Text> Model name
             </Text>
             <Text as='li' colour='slateGrey'>
-              <Text bold>Type:</Text> Steel/Wood/Hybrid
+              <Text bold>Material:</Text> Steel/Wood/Hybrid
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold>ThrillLevel:</Text> Kiddie/Family/Family Thrill/Thrill
+            </Text>
+            <Text as='li' colour='slateGrey'>
+              <Text bold>Country:</Text> Country location
             </Text>
           </ul>
         </Styled.RequiredFields>
@@ -163,10 +175,10 @@ export default function UploadCSV() {
             </Text>
 
             <CodeBlock>
-              {`name,park,manufacturer,model,type,country
-The Smiler,Alton Towers,Gerstlauer,Euro-Fighter,Steel,United Kingdom
-Nemesis,Alton Towers,Bolliger & Mabillard,Inverted Coaster,Steel,United Kingdom
-Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,United Kingdom`}
+              {`name,park,manufacturer,model,material,thrillLevel,country
+The Smiler,Alton Towers,Gerstlauer,Euro-Fighter,Steel,Thrill,United Kingdom
+Nemesis,Alton Towers,Bolliger & Mabillard,Inverted Coaster,Steel,Thrill,United Kingdom
+Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,Family Thrill,United Kingdom`}
             </CodeBlock>
           </details>
         </Styled.ExampleFiles>

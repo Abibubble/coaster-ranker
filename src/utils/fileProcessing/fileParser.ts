@@ -9,6 +9,9 @@ interface RawCoasterData {
   country?: string
   manufacturer?: string
   model?: string
+  material?: string
+  thrillLevel?: string
+  // Legacy support for 'type' field - will be mapped to 'material'
   type?: string
 }
 
@@ -77,15 +80,12 @@ export function validateCoasterData(data: RawCoasterData[]): Coaster[] {
     if (!item.manufacturer) {
       throw new Error(`Row ${index + 1}: Manufacturer is required`)
     }
-    if (!item.model) {
-      throw new Error(`Row ${index + 1}: Model is required`)
-    }
-    if (!item.type) {
-      throw new Error(`Row ${index + 1}: Type is required`)
-    }
     if (!item.country) {
       throw new Error(`Row ${index + 1}: Country is required`)
     }
+
+    // Support legacy 'type' field by mapping it to 'material'
+    const material = item.material || item.type
 
     return {
       id: item.id || `coaster_${index}`,
@@ -94,7 +94,8 @@ export function validateCoasterData(data: RawCoasterData[]): Coaster[] {
       country: item.country,
       manufacturer: item.manufacturer,
       model: item.model,
-      type: item.type,
+      material: material,
+      thrillLevel: item.thrillLevel,
     }
   })
 }
@@ -133,10 +134,17 @@ export function processUploadedFile(
       const headers = Object.keys(firstRow).map(h => h.toLowerCase())
 
       // Check if it has required coaster fields
-      const requiredFields = ['name', 'park', 'manufacturer', 'model', 'type']
+      const requiredFields = ['name', 'park', 'manufacturer']
       const missingFields = requiredFields.filter(
         field => !headers.includes(field)
       )
+
+      // Also check for legacy 'type' field or new 'material' field
+      const hasMaterialOrType =
+        headers.includes('material') || headers.includes('type')
+      if (!hasMaterialOrType) {
+        missingFields.push('material (or type)')
+      }
 
       if (missingFields.length > 0) {
         throw new Error(

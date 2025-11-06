@@ -6,7 +6,8 @@
     "country": "United Kingdom",
     "manufacturer": "Gerstlauer",
     "model": "Euro-Fighter",
-    "type": "Steel"
+    "material": "Steel",
+    "thrillLevel": "Thrill"
   },
   {
     "id": "nemesis",
@@ -15,7 +16,8 @@
     "country": "United Kingdom",
     "manufacturer": "Bolliger & Mabillard",
     "model": "Inverted",
-    "type": "Steel"
+    "material": "Steel",
+    "thrillLevel": "Family Thrill"
   },
   {
     "id": "taron",
@@ -24,6 +26,7 @@
     "country": "Germany",
     "manufacturer": "Intamin",
     "model": "Multi-Launch",
-    "type": "Steel"
+    "material": "Steel",
+    "thrillLevel": "Thrill"
   }
 ]

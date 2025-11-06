@@ -9,8 +9,9 @@ export interface Coaster {
   park: string
   rankPosition?: number // Current position in ranking (1 = best, higher = worse)
   manufacturer: string
-  model: string
-  type: string
+  model?: string
+  material?: string
+  thrillLevel?: string
   // Ranking metadata
 }
 

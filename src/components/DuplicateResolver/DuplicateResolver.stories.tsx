@@ -11,7 +11,7 @@ const existingCoaster: Coaster = {
   country: 'United States',
   manufacturer: 'Rocky Mountain Construction',
   model: 'I-Box',
-  type: 'Hybrid',
+  material: 'Hybrid',
 }
 
 const newCoaster: Coaster = {
@@ -21,7 +21,7 @@ const newCoaster: Coaster = {
   country: 'USA',
   manufacturer: 'Rocky Mountain Construction',
   model: 'I-Box Track',
-  type: 'Hybrid',
+  material: 'Hybrid',
 }
 
 const createDuplicateMatch = (

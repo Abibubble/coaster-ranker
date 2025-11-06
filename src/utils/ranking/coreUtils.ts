@@ -91,7 +91,7 @@ export const determineOptimalRankingMode = (
   // Group by model
   const modelGroups = new Map<string, Coaster[]>()
   coasters.forEach(coaster => {
-    const model = coaster.model
+    const model = coaster.model || 'Unknown Model'
     if (!modelGroups.has(model)) {
       modelGroups.set(model, [])
     }

@@ -403,10 +403,10 @@ function Rank() {
                 {formatCountry(coaster.country)}
                 <Text
                   as='span'
-                  aria-label={`Manufacturer: ${coaster.manufacturer}, Model: ${coaster.model}, Type: ${coaster.type}`}
+                  aria-label={`Manufacturer: ${coaster.manufacturer}, Model: ${coaster.model}, Material: ${coaster.material}`}
                 >
                   {' '}
-                  - {coaster.manufacturer} {coaster.model} ({coaster.type})
+                  - {coaster.manufacturer} {coaster.model} ({coaster.material})
                 </Text>
               </li>
             ))}

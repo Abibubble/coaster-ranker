@@ -8,6 +8,17 @@ export default function ViewCoasters() {
   const [statusMessage, setStatusMessage] = useState<string>('')
   const coasters = uploadedData?.coasters || []
 
+  // Check if any coasters have values for optional fields
+  const hasModel = coasters.some(
+    coaster => coaster.model && coaster.model.trim() !== ''
+  )
+  const hasMaterial = coasters.some(
+    coaster => coaster.material && coaster.material.trim() !== ''
+  )
+  const hasThrillLevel = coasters.some(
+    coaster => coaster.thrillLevel && coaster.thrillLevel.trim() !== ''
+  )
+
   const handleRemoveCoaster = (coasterId: string) => {
     if (!uploadedData) return
 
@@ -164,8 +175,19 @@ export default function ViewCoasters() {
             <Styled.HeaderCell role='columnheader'>
               Manufacturer
             </Styled.HeaderCell>
-            <Styled.HeaderCell role='columnheader'>Model</Styled.HeaderCell>
-            <Styled.HeaderCell role='columnheader'>Type</Styled.HeaderCell>
+            {hasModel && (
+              <Styled.HeaderCell role='columnheader'>Model</Styled.HeaderCell>
+            )}
+            {hasMaterial && (
+              <Styled.HeaderCell role='columnheader'>
+                Material
+              </Styled.HeaderCell>
+            )}
+            {hasThrillLevel && (
+              <Styled.HeaderCell role='columnheader'>
+                Thrill Level
+              </Styled.HeaderCell>
+            )}
             <Styled.HeaderCell role='columnheader'>Actions</Styled.HeaderCell>
           </Styled.TableHeader>
 
@@ -181,8 +203,21 @@ export default function ViewCoasters() {
                 <Styled.TableCell role='cell'>
                   {coaster.manufacturer}
                 </Styled.TableCell>
-                <Styled.TableCell role='cell'>{coaster.model}</Styled.TableCell>
-                <Styled.TableCell role='cell'>{coaster.type}</Styled.TableCell>
+                {hasModel && (
+                  <Styled.TableCell role='cell'>
+                    {coaster.model}
+                  </Styled.TableCell>
+                )}
+                {hasMaterial && (
+                  <Styled.TableCell role='cell'>
+                    {coaster.material}
+                  </Styled.TableCell>
+                )}
+                {hasThrillLevel && (
+                  <Styled.TableCell role='cell'>
+                    {coaster.thrillLevel}
+                  </Styled.TableCell>
+                )}
                 <Styled.TableCell role='cell'>
                   <Button
                     variant='destructive'

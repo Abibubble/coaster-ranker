@@ -21,8 +21,9 @@ interface CoasterFormData {
   name: string
   park: string
   manufacturer: string
-  model: string
-  type: string
+  model?: string
+  material?: string
+  thrillLevel?: string
   country: string
 }
 
@@ -39,7 +40,8 @@ export default function UploadManual() {
     park: '',
     manufacturer: '',
     model: '',
-    type: '',
+    material: '',
+    thrillLevel: '',
     country: '',
   })
 
@@ -80,7 +82,8 @@ export default function UploadManual() {
       park: '',
       manufacturer: '',
       model: '',
-      type: '',
+      material: '',
+      thrillLevel: '',
       country: '',
     })
   }
@@ -95,11 +98,9 @@ export default function UploadManual() {
       'name',
       'park',
       'manufacturer',
-      'model',
-      'type',
     ]
     const missingFields = requiredFields.filter(
-      field => !formData[field].trim()
+      field => !formData[field]?.trim()
     )
 
     if (missingFields.length > 0) {
@@ -115,8 +116,9 @@ export default function UploadManual() {
       name: formData.name.trim(),
       park: formData.park.trim(),
       manufacturer: formData.manufacturer.trim(),
-      model: formData.model.trim(),
-      type: formData.type.trim(),
+      model: formData.model?.trim(),
+      material: formData.material?.trim(),
+      thrillLevel: formData.thrillLevel?.trim(),
       country: formData.country.trim(),
       isNewCoaster: true,
     }
@@ -202,7 +204,8 @@ export default function UploadManual() {
       park: '',
       manufacturer: '',
       model: '',
-      type: '',
+      material: '',
+      thrillLevel: '',
       country: '',
     })
   }
@@ -324,7 +327,7 @@ export default function UploadManual() {
                     fontSize='small'
                     htmlFor='model'
                   >
-                    Model *
+                    Model
                   </Text>
                   <Styled.Input
                     type='text'
@@ -333,7 +336,6 @@ export default function UploadManual() {
                     value={formData.model || ''}
                     onChange={handleInputChange}
                     placeholder='e.g. Euro-Fighter'
-                    required
                   />
                 </Styled.FormGroup>
               </Styled.FormRow>
@@ -344,21 +346,44 @@ export default function UploadManual() {
                   bold
                   colour='charcoal'
                   fontSize='small'
-                  htmlFor='type'
+                  htmlFor='material'
                 >
-                  Type *
+                  Material
                 </Text>
                 <Styled.Select
-                  id='type'
-                  name='type'
-                  value={formData.type || ''}
+                  id='material'
+                  name='material'
+                  value={formData.material || ''}
                   onChange={handleInputChange}
-                  required
                 >
-                  <option value=''>Select type...</option>
+                  <option value=''>Select material...</option>
                   <option value='Steel'>Steel</option>
                   <option value='Wood'>Wood</option>
                   <option value='Hybrid'>Hybrid</option>
+                </Styled.Select>
+              </Styled.FormGroup>
+
+              <Styled.FormGroup>
+                <Text
+                  as='label'
+                  bold
+                  colour='charcoal'
+                  fontSize='small'
+                  htmlFor='thrillLevel'
+                >
+                  Thrill Level
+                </Text>
+                <Styled.Select
+                  id='thrillLevel'
+                  name='thrillLevel'
+                  value={formData.thrillLevel || ''}
+                  onChange={handleInputChange}
+                >
+                  <option value=''>Select thrill level...</option>
+                  <option value='Kiddie'>Kiddie</option>
+                  <option value='Family'>Family</option>
+                  <option value='Family Thrill'>Family Thrill</option>
+                  <option value='Thrill'>Thrill</option>
                 </Styled.Select>
               </Styled.FormGroup>
 
@@ -379,7 +404,6 @@ export default function UploadManual() {
                   value={formData.country || ''}
                   onChange={handleInputChange}
                   placeholder='e.g. United Kingdom'
-                  required
                 />
               </Styled.FormGroup>
             </div>
