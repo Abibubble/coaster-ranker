@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Button, MainContent, Title, Text, Link } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './ViewCoasters.styled'
@@ -445,28 +445,28 @@ export default function ViewCoasters() {
         <Styled.CoastersTable role='table' aria-label='Coaster collection data'>
           <Styled.TableHeader
             role='row'
-            hasRank={uploadedData?.rankingMetadata?.isRanked}
+            $hasRank={uploadedData?.rankingMetadata?.isRanked}
           >
             {uploadedData?.rankingMetadata?.isRanked && (
               <Styled.HeaderCell role='columnheader'>Rank</Styled.HeaderCell>
             )}
             <Styled.HeaderCell role='columnheader'>Name</Styled.HeaderCell>
             <Styled.HeaderCell role='columnheader'>Park</Styled.HeaderCell>
-            <Styled.HeaderCell role='columnheader' isHiddenOnTablet>
+            <Styled.HeaderCell role='columnheader' $isHiddenOnTablet>
               Manufacturer
             </Styled.HeaderCell>
             {hasModel && (
-              <Styled.HeaderCell role='columnheader' isHiddenOnTablet>
+              <Styled.HeaderCell role='columnheader' $isHiddenOnTablet>
                 Model
               </Styled.HeaderCell>
             )}
             {hasMaterial && (
-              <Styled.HeaderCell role='columnheader' isHiddenOnTablet>
+              <Styled.HeaderCell role='columnheader' $isHiddenOnTablet>
                 Material
               </Styled.HeaderCell>
             )}
             {hasThrillLevel && (
-              <Styled.HeaderCell role='columnheader' isHiddenOnTablet>
+              <Styled.HeaderCell role='columnheader' $isHiddenOnTablet>
                 Thrill Level
               </Styled.HeaderCell>
             )}
@@ -478,7 +478,7 @@ export default function ViewCoasters() {
               <Styled.TableRow
                 key={coaster.id}
                 role='row'
-                hasRank={uploadedData?.rankingMetadata?.isRanked}
+                $hasRank={uploadedData?.rankingMetadata?.isRanked}
               >
                 {uploadedData?.rankingMetadata?.isRanked && (
                   <Styled.TableCell role='cell'>
@@ -511,7 +511,7 @@ export default function ViewCoasters() {
                 </Styled.ClickableTableCell>
                 <Styled.ClickableTableCell
                   role='button'
-                  isHiddenOnTablet
+                  $isHiddenOnTablet
                   onClick={() =>
                     handleFieldClick('manufacturer', coaster.manufacturer)
                   }
@@ -530,7 +530,7 @@ export default function ViewCoasters() {
                 {hasModel && (
                   <Styled.ClickableTableCell
                     role='button'
-                    isHiddenOnTablet
+                    $isHiddenOnTablet
                     onClick={() =>
                       coaster.model && handleFieldClick('model', coaster.model)
                     }
@@ -561,7 +561,7 @@ export default function ViewCoasters() {
                 {hasMaterial && (
                   <Styled.ClickableTableCell
                     role='button'
-                    isHiddenOnTablet
+                    $isHiddenOnTablet
                     onClick={() =>
                       coaster.material &&
                       handleFieldClick('material', coaster.material)
@@ -593,7 +593,7 @@ export default function ViewCoasters() {
                 {hasThrillLevel && (
                   <Styled.ClickableTableCell
                     role='button'
-                    isHiddenOnTablet
+                    $isHiddenOnTablet
                     onClick={() =>
                       coaster.thrillLevel &&
                       handleFieldClick('thrillLevel', coaster.thrillLevel)

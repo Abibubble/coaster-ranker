@@ -38,9 +38,9 @@ export default function Card({
   return (
     <Styled.CardContainer
       as={Component}
-      clickable={clickable}
-      variant={variant}
-      maxWidth={maxWidth}
+      $clickable={clickable}
+      $variant={variant}
+      $maxWidth={maxWidth}
       onClick={onClick}
       className={className}
       aria-label={ariaLabel}

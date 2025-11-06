@@ -59,7 +59,7 @@ export default function ProgressInfo({
         totalComparisons &&
         remainingComparisons !== undefined && (
           <Styled.ProgressBarContainer>
-            <Styled.ProgressBar progress={progress} />
+            <Styled.ProgressBar $progress={progress} />
           </Styled.ProgressBarContainer>
         )}
     </Styled.ProgressContainer>

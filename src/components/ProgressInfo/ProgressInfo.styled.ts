@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, fonts, spacing, textSpacing } from '../../theme'
+import { colours, spacing, textSpacing } from '../../theme'
 
 export const ProgressContainer = styled.div`
   text-align: center;
@@ -18,8 +18,8 @@ export const ProgressBarContainer = styled.div`
   height: ${spacing.tiny};
 `
 
-export const ProgressBar = styled.div<{ progress: number }>`
-  width: ${props => props.progress}%;
+export const ProgressBar = styled.div<{ $progress: number }>`
+  width: ${props => props.$progress}%;
   background-color: ${colours.blue};
   height: 100%;
   border-radius: ${spacing.tiny};

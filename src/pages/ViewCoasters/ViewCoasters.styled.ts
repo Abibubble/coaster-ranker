@@ -114,10 +114,10 @@ export const CoastersTable = styled.div`
   border-radius: ${spacing.tiny};
 `
 
-export const TableHeader = styled.div<{ hasRank?: boolean }>`
+export const TableHeader = styled.div<{ $hasRank?: boolean }>`
   display: grid;
-  grid-template-columns: ${({ hasRank }) =>
-    hasRank
+  grid-template-columns: ${({ $hasRank }) =>
+    $hasRank
       ? `minmax(80px, 0.5fr)
          minmax(200px, 2fr)
          minmax(150px, 1.5fr)
@@ -135,12 +135,12 @@ export const TableHeader = styled.div<{ hasRank?: boolean }>`
   border-bottom: ${spacing.micro} solid ${colours.borderGrey};
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: ${({ hasRank }) =>
-      hasRank ? '80px 1fr 1fr 100px' : '1fr 1fr 100px'};
+    grid-template-columns: ${({ $hasRank }) =>
+      $hasRank ? '80px 1fr 1fr 100px' : '1fr 1fr 100px'};
   }
 `
 
-export const HeaderCell = styled.div<{ isHiddenOnTablet?: boolean }>`
+export const HeaderCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
   padding: ${spacing.medium};
   font-weight: bold;
   color: ${colours.charcoal};
@@ -149,18 +149,18 @@ export const HeaderCell = styled.div<{ isHiddenOnTablet?: boolean }>`
   letter-spacing: 0.5px;
 
   @media (max-width: ${breakpoints.tablet}) {
-    ${({ isHiddenOnTablet }) =>
-      isHiddenOnTablet &&
+    ${({ $isHiddenOnTablet }) =>
+      $isHiddenOnTablet &&
       `
       display: none;
     `}
   }
 `
 
-export const TableRow = styled.div<{ hasRank?: boolean }>`
+export const TableRow = styled.div<{ $hasRank?: boolean }>`
   display: grid;
-  grid-template-columns: ${({ hasRank }) =>
-    hasRank
+  grid-template-columns: ${({ $hasRank }) =>
+    $hasRank
       ? `minmax(80px, 0.5fr)
          minmax(200px, 2fr)
          minmax(150px, 1.5fr)
@@ -186,20 +186,20 @@ export const TableRow = styled.div<{ hasRank?: boolean }>`
   }
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: ${({ hasRank }) =>
-      hasRank ? '80px 1fr 1fr 100px' : '1fr 1fr 100px'};
+    grid-template-columns: ${({ $hasRank }) =>
+      $hasRank ? '80px 1fr 1fr 100px' : '1fr 1fr 100px'};
   }
 `
 
-export const TableCell = styled.div<{ isHiddenOnTablet?: boolean }>`
+export const TableCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
   padding: ${spacing.medium};
   color: ${colours.slateGrey};
   font-size: ${fonts.body};
   align-self: center;
 
   @media (max-width: ${breakpoints.tablet}) {
-    ${({ isHiddenOnTablet }) =>
-      isHiddenOnTablet &&
+    ${({ $isHiddenOnTablet }) =>
+      $isHiddenOnTablet &&
       `
       display: none;
     `}
@@ -207,7 +207,7 @@ export const TableCell = styled.div<{ isHiddenOnTablet?: boolean }>`
 `
 
 export const ClickableTableCell = styled(TableCell)<{
-  isHiddenOnTablet?: boolean
+  $isHiddenOnTablet?: boolean
 }>`
   cursor: pointer;
   transition: all 0.2s ease;

@@ -2,35 +2,35 @@ import styled from 'styled-components'
 import { colours, spacing, breakpoints } from '../../theme'
 
 export const CardContainer = styled.div<{
-  clickable?: boolean
-  variant?: 'default' | 'elevated' | 'outlined'
-  maxWidth?: string
+  $clickable?: boolean
+  $variant?: 'default' | 'elevated' | 'outlined'
+  $maxWidth?: string
 }>`
-  max-width: ${props => props.maxWidth || '300px'};
+  max-width: ${props => props.$maxWidth || '300px'};
   padding: ${spacing.medium};
   background: ${colours.paleGrey};
   border: ${spacing.mini} solid ${colours.softGrey};
   border-radius: ${spacing.small};
   text-align: left;
   transition: all 0.2s ease;
-  cursor: ${props => (props.clickable ? 'pointer' : 'default')};
+  cursor: ${props => (props.$clickable ? 'pointer' : 'default')};
 
   ${props =>
-    props.variant === 'elevated' &&
+    props.$variant === 'elevated' &&
     `
     box-shadow: 0 ${spacing.fine} ${spacing.small} ${colours.shadowLight};
     border: none;
   `}
 
   ${props =>
-    props.variant === 'outlined' &&
+    props.$variant === 'outlined' &&
     `
     background: transparent;
     border: ${spacing.mini} solid ${colours.blue};
   `}
 
   ${props =>
-    props.clickable &&
+    props.$clickable &&
     `
     &:hover {
       background: ${colours.softGrey};
