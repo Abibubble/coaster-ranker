@@ -1,5 +1,7 @@
 # Coaster Ranker
 
+**NOTE**: This project is still in progress. While the core functionality is working, some features may be incomplete or subject to change. Please report any issues you encounter.
+
 [![Accessibility](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-green.svg)](https://www.w3.org/WAI/WCAG21/quickref/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
@@ -27,8 +29,9 @@ A fully accessible React/TypeScript web application for ranking roller coasters 
 
 - **Accessibility First**: WCAG 2.1 AA compliant with full keyboard navigation and screen reader support
 - **Multiple Upload Methods**: Support for CSV files, JSON data, and manual entry
-- **Collection Management**: View and manage your uploaded coaster collection
-- **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices
+- **Collection Management**: View and manage your uploaded coaster collection with real-time status display
+- **Responsive Design**: Fully optimized for all screen sizes from 320px to desktop with mobile-first approach
+- **Component Architecture**: Modular, reusable components for consistent UX across all pages
 - **Type Safety**: Full TypeScript implementation for robust development
 
 ## Data Persistence
@@ -123,6 +126,8 @@ Our application includes comprehensive accessibility features:
 - **Keyboard Navigation**: Full keyboard accessibility for all interactive elements
 - **Color Contrast**: WCAG 2.1 AA compliant color contrast ratios
 - **Focus Management**: Clear focus indicators and logical tab order
+- **Responsive Typography**: Proper heading hierarchy maintained across all screen sizes (320px+)
+- **Mobile Accessibility**: Touch targets and interactions optimized for mobile devices
 
 ### Testing Accessibility
 
@@ -204,6 +209,8 @@ src/
 │   ├── Header/          # Navigation header with mobile menu
 │   ├── Footer/          # Application footer
 │   ├── SkipLink/        # Accessibility skip navigation
+│   ├── Text/            # Typography component with theme integration
+│   ├── Title/           # Page title component with responsive sizing
 │   └── ...
 ├── pages/               # Page components
 │   ├── Home/            # Homepage
@@ -218,10 +225,10 @@ src/
 ├── contexts/            # React context providers
 │   └── DataContext/     # Global state management
 ├── theme/               # Design system
-│   ├── colours.json
-│   ├── fonts.json
-│   ├── spacing.json
-│   └── breakpoints.json
+│   ├── colours.json     # Color palette and accessibility-compliant colors
+│   ├── fonts.json       # Typography scale with responsive sizing
+│   ├── spacing.json     # Consistent spacing system
+│   └── breakpoints.json # Mobile-first responsive breakpoints
 ├── types/               # TypeScript type definitions
 └── utils/               # Utility functions
 ```
@@ -259,6 +266,7 @@ src/
 - `/rank` - Rank your coasters with manual adjustment capabilities
 - `/download` - Download your coaster data in various formats
 - `/accessibility` - Accessibility information and compliance details
+- `/privacy-policy` - Privacy policy and data handling information
 
 ## Future Work
 
