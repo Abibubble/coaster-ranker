@@ -1,6 +1,63 @@
 import { describe, it, expect } from 'vitest'
 import { validateCoasterData } from './fileProcessing/fileParser'
 
+describe('fileParser - formatString integration', () => {
+  it('should format string data with space and first-word capitalization', () => {
+    const rawDataWithFormattingNeeds = [
+      {
+        name: 'the smiler',
+        park: 'ALTON TOWERS',
+        country: 'united-kingdom',
+        manufacturer: 'gerstlauer',
+        model: 'euro_fighter',
+        type: 'STEEL',
+        thrillLevel: 'family-thrill',
+      },
+    ]
+
+    const result = validateCoasterData(rawDataWithFormattingNeeds)
+
+    expect(result).toHaveLength(1)
+    expect(result[0]).toEqual({
+      id: 'coaster_0',
+      name: 'The Smiler',
+      park: 'Alton Towers',
+      country: 'United Kingdom',
+      manufacturer: 'Gerstlauer',
+      model: 'Euro Fighter',
+      material: 'Steel',
+      thrillLevel: 'Family Thrill',
+    })
+  })
+
+  it('should handle mixed case and special characters in formatting', () => {
+    const rawDataWithSpecialChars = [
+      {
+        name: 'BOLT-action COASTER',
+        park: "disney's_california adventure",
+        country: 'united states',
+        manufacturer: 'INTAMIN ag',
+        model: 'launch-coaster',
+        type: 'STEEL track',
+      },
+    ]
+
+    const result = validateCoasterData(rawDataWithSpecialChars)
+
+    expect(result).toHaveLength(1)
+    expect(result[0]).toEqual({
+      id: 'coaster_0',
+      name: 'Bolt Action Coaster',
+      park: 'Disneys California Adventure',
+      country: 'United States',
+      manufacturer: 'Intamin Ag',
+      model: 'Launch Coaster',
+      material: 'Steel Track',
+      thrillLevel: undefined,
+    })
+  })
+})
+
 describe('fileParser - extra fields handling', () => {
   it('should accept and ignore extra fields in coaster data', () => {
     const rawDataWithExtraFields = [

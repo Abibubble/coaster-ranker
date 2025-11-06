@@ -1,21 +1,19 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   Button,
-  DuplicateResolver,
-  InfoMessage,
   MainContent,
-  Text,
   Title,
+  Text,
+  InfoMessage,
+  DuplicateResolver,
   Link,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
-import {
-  detectDuplicates,
-  DuplicateMatch,
-} from '../../utils/fileProcessing/duplicateDetection'
+import { detectDuplicates, DuplicateMatch } from '../../utils/fileProcessing'
 import type { DuplicateResolution } from '../../components/DuplicateResolver'
 import * as Styled from './UploadManual.styled'
+import { formatString } from '../../utils/formatString'
 
 interface CoasterFormData {
   name: string
@@ -113,13 +111,34 @@ export default function UploadManual() {
     // Create new coaster object
     const newCoaster: Coaster = {
       id: generateId(),
-      name: formData.name.trim(),
-      park: formData.park.trim(),
-      manufacturer: formData.manufacturer.trim(),
-      model: formData.model?.trim(),
-      material: formData.material?.trim(),
-      thrillLevel: formData.thrillLevel?.trim(),
-      country: formData.country.trim(),
+      name: formatString(formData.name.trim(), 'space', 'first-word', false),
+      park: formatString(formData.park.trim(), 'space', 'first-word', false),
+      manufacturer: formatString(
+        formData.manufacturer.trim(),
+        'space',
+        'first-word',
+        false
+      ),
+      model: formData.model?.trim()
+        ? formatString(formData.model.trim(), 'space', 'first-word', false)
+        : undefined,
+      material: formData.material?.trim()
+        ? formatString(formData.material.trim(), 'space', 'first-word', false)
+        : undefined,
+      thrillLevel: formData.thrillLevel?.trim()
+        ? formatString(
+            formData.thrillLevel.trim(),
+            'space',
+            'first-word',
+            false
+          )
+        : undefined,
+      country: formatString(
+        formData.country.trim(),
+        'space',
+        'first-word',
+        false
+      ),
       isNewCoaster: true,
     }
 

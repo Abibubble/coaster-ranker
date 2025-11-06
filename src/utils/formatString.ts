@@ -66,9 +66,11 @@ export const formatString = (
       formattedText = spacedText.toLowerCase()
       break
     case 'first-string':
-    case 'first-word':
       formattedText =
         spacedText.charAt(0).toUpperCase() + spacedText.slice(1).toLowerCase()
+      break
+    case 'first-word':
+      formattedText = spacedText.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
       break
     default:
       formattedText = spacedText.replace(/(?:^|\s)\S/g, a => a.toUpperCase())

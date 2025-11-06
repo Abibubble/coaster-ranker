@@ -1,4 +1,5 @@
 import { Coaster, UploadedData } from '../../types/data'
+import { formatString } from '../formatString'
 
 // Raw data types for parsing - before validation
 interface RawCoasterData {
@@ -89,13 +90,24 @@ export function validateCoasterData(data: RawCoasterData[]): Coaster[] {
 
     return {
       id: item.id || `coaster_${index}`,
-      name: item.name,
-      park: item.park,
-      country: item.country,
-      manufacturer: item.manufacturer,
-      model: item.model,
-      material: material,
-      thrillLevel: item.thrillLevel,
+      name: formatString(item.name, 'space', 'first-word', false),
+      park: formatString(item.park, 'space', 'first-word', false),
+      country: formatString(item.country, 'space', 'first-word', false),
+      manufacturer: formatString(
+        item.manufacturer,
+        'space',
+        'first-word',
+        false
+      ),
+      model: item.model
+        ? formatString(item.model, 'space', 'first-word', false)
+        : undefined,
+      material: material
+        ? formatString(material, 'space', 'first-word', false)
+        : undefined,
+      thrillLevel: item.thrillLevel
+        ? formatString(item.thrillLevel, 'space', 'first-word', false)
+        : undefined,
     }
   })
 }

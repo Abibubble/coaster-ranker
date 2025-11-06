@@ -138,13 +138,13 @@ export default function UploadCSV() {
           </Text>
           <ul>
             <Text as='li' colour='slateGrey'>
-              <Text bold>Name:</Text> Coaster name
+              <Text bold>name:</Text> Coaster name
             </Text>
             <Text as='li' colour='slateGrey'>
-              <Text bold>Park:</Text> Theme park
+              <Text bold>park:</Text> Theme park
             </Text>
             <Text as='li' colour='slateGrey'>
-              <Text bold>Manufacturer:</Text> Builder company
+              <Text bold>manufacturer:</Text> Builder company
             </Text>
           </ul>
 
@@ -153,16 +153,16 @@ export default function UploadCSV() {
           </Text>
           <ul>
             <Text as='li' colour='slateGrey'>
-              <Text bold>Model:</Text> Model name
+              <Text bold>model:</Text> Model name
             </Text>
             <Text as='li' colour='slateGrey'>
-              <Text bold>Material:</Text> Steel/Wood/Hybrid
+              <Text bold>material:</Text> Steel/Wood/Hybrid
             </Text>
             <Text as='li' colour='slateGrey'>
-              <Text bold>ThrillLevel:</Text> Kiddie/Family/Family Thrill/Thrill
+              <Text bold>thrillLevel:</Text> Kiddie/Family/Family Thrill/Thrill
             </Text>
             <Text as='li' colour='slateGrey'>
-              <Text bold>Country:</Text> Country location
+              <Text bold>country:</Text> Country location
             </Text>
           </ul>
         </Styled.RequiredFields>
