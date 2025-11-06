@@ -1,12 +1,12 @@
 import React from 'react'
 import {
   CodeBlock,
+  CurrentDataInfo,
   DuplicateResolver,
   InfoMessage,
   MainContent,
   PreRankingQuestion,
   Title,
-  Link,
   Text,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
@@ -112,23 +112,16 @@ export default function UploadCSV() {
 
       <section>
         <Styled.Instructions>
-          <Text as='h2' colour='charcoal' fontSize='large' mb='small'>
+          {existingCoasterCount > 0 && (
+            <CurrentDataInfo coasterCount={existingCoasterCount} />
+          )}
+          <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
             Import from CSV Spreadsheet
           </Text>
           <Text as='p' colour='mediumGrey' mb='small'>
             Upload a CSV file containing your coaster data. Each row should
             represent one coaster with the required fields.
           </Text>
-          {existingCoasterCount > 0 && (
-            <Styled.CurrentDataInfo>
-              You currently have{' '}
-              <Text bold>{existingCoasterCount} coasters</Text> in your
-              collection.{' '}
-              <Link href='/view-coasters' variant='button'>
-                View all coasters
-              </Link>
-            </Styled.CurrentDataInfo>
-          )}
         </Styled.Instructions>
 
         {/* Required Fields Info */}
@@ -255,10 +248,6 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,Family Thrill,United Kingd
             </Text>
           </InfoMessage>
         )}
-
-        <Link href='/upload' variant='back'>
-          Back to Upload Options
-        </Link>
       </section>
 
       {/* Pre-ranking Question Modal */}

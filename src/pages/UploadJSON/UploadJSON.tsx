@@ -2,13 +2,13 @@ import { ChangeEvent, FormEvent, useState } from 'react'
 import {
   Button,
   CodeBlock,
+  CurrentDataInfo,
   DuplicateResolver,
   InfoMessage,
   MainContent,
   PreRankingQuestion,
   ScreenReaderOnly,
   Title,
-  Link,
   Text,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
@@ -127,30 +127,16 @@ export default function UploadJSON() {
 
       <section>
         <Styled.Section>
-          <Text as='h2' colour='charcoal' fontSize='large' mb='large'>
+          {existingCoasterCount > 0 && (
+            <CurrentDataInfo coasterCount={existingCoasterCount} />
+          )}
+          <Text as='h2' colour='charcoal' fontSize='medium' mb='large'>
             Import JSON Data
           </Text>
           <Text as='p' colour='mediumGrey' mb='small'>
             Paste your coaster data as JSON or upload a JSON file. Your data
             should be an array of coaster objects.
           </Text>
-          {existingCoasterCount > 0 && (
-            <Styled.CurrentDataInfo
-              as='p'
-              colour='charcoal'
-              fontSize='small'
-              mt='small'
-            >
-              You currently have{' '}
-              <Text bold colour='blue'>
-                {existingCoasterCount} coasters
-              </Text>{' '}
-              in your collection.{' '}
-              <Link href='/view-coasters' variant='button'>
-                View all coasters
-              </Link>
-            </Styled.CurrentDataInfo>
-          )}
         </Styled.Section>
 
         {/* Required Fields Info */}
@@ -327,10 +313,6 @@ export default function UploadJSON() {
             </Text>
           </InfoMessage>
         )}
-
-        <Link href='/upload' variant='back'>
-          Back to Upload Options
-        </Link>
       </section>
 
       {/* Pre-ranking Question Modal */}

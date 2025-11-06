@@ -1,22 +1,35 @@
 import styled from 'styled-components'
-import { colours, fonts, shadows, spacing } from '../../theme'
+import { colours, fonts, shadows, spacing, breakpoints } from '../../theme'
 
 export const Button = styled.button<{
   $variant: 'default' | 'destructive' | 'success' | 'disabled' | 'warning'
 }>`
-  padding: ${spacing.small} ${spacing.medium};
+  padding: ${spacing.tiny};
   border: ${spacing.mini} solid transparent;
   border-radius: ${spacing.tiny};
   cursor: pointer;
-  font-size: ${fonts.body};
+  font-size: ${fonts.small};
   font-weight: 500;
   transition: all 0.2s ease;
-  min-height: ${spacing.large};
+  min-height: ${spacing.tapTarget};
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: ${colours.white};
+  width: auto;
+  overflow-wrap: break-word;
+  hyphens: auto;
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    font-size: ${fonts.body};
+    padding: ${spacing.small} ${spacing.medium};
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: ${shadows.medium};
+  }
 
   &:focus {
     outline: none;
@@ -36,12 +49,9 @@ export const Button = styled.button<{
 
     &:hover {
       background: ${colours.darkBlue};
-      transform: translateY(-1px);
-      box-shadow: ${shadows.medium};
     }
 
     &:focus {
-      outline: none;
       border-color: ${colours.darkBlue};
       box-shadow: ${shadows.focus};
     }
@@ -54,12 +64,9 @@ export const Button = styled.button<{
 
     &:hover {
       background: ${colours.darkRed};
-      transform: translateY(-1px);
-      box-shadow: ${shadows.medium};
     }
 
     &:focus {
-      outline: none;
       border-color: ${colours.darkRed};
       box-shadow: 0 0 0 3px ${colours.errorBorder};
     }
@@ -72,12 +79,9 @@ export const Button = styled.button<{
 
     &:hover {
       background: ${colours.successGreen};
-      transform: translateY(-1px);
-      box-shadow: ${shadows.medium};
     }
 
     &:focus {
-      outline: none;
       border-color: ${colours.successGreen};
       box-shadow: 0 0 0 3px ${colours.successBg};
     }
@@ -90,8 +94,6 @@ export const Button = styled.button<{
 
     &:hover {
       background: ${colours.darkGrey};
-      transform: translateY(-1px);
-      box-shadow: ${shadows.medium};
     }
   `}
 
@@ -103,12 +105,9 @@ export const Button = styled.button<{
 
     &:hover {
       background: ${colours.orange};
-      transform: translateY(-1px);
-      box-shadow: ${shadows.medium};
     }
 
     &:focus {
-      outline: none;
       border-color: ${colours.orange};
       box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25);
     }

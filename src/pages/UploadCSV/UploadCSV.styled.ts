@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, fonts } from '../../theme'
+import { colours, spacing, fonts, breakpoints } from '../../theme'
 
 export const Instructions = styled.div`
   margin-bottom: ${spacing.large};
@@ -80,6 +80,13 @@ export const FileInputWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: ${spacing.small};
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    padding: 0;
+  }
 `
 
 export const FileInput = styled.input`
@@ -87,18 +94,37 @@ export const FileInput = styled.input`
 `
 
 export const FileLabel = styled.label<{ $isLoading?: boolean }>`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: ${(props: { $isLoading?: boolean }) =>
     props.$isLoading ? colours.lightGrey : colours.blue};
   color: ${colours.white};
-  padding: ${spacing.small} ${spacing.large};
   border-radius: ${spacing.fine};
-  font-size: ${fonts.body};
   cursor: ${(props: { $isLoading?: boolean }) =>
     props.$isLoading ? 'wait' : 'pointer'};
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  min-height: ${spacing.tapTarget};
+  box-sizing: border-box;
+  text-align: center;
+  padding: ${spacing.small};
+  font-size: ${fonts.small};
+  width: calc(100% - ${spacing.medium});
+  margin: 0 ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: ${spacing.small} ${spacing.medium};
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: ${spacing.small} ${spacing.large};
+    font-size: ${fonts.body};
+  }
 
   ${(props: { $isLoading?: boolean }) =>
     props.$isLoading &&
@@ -141,14 +167,4 @@ export const FileLabel = styled.label<{ $isLoading?: boolean }>`
     transform: ${(props: { $isLoading?: boolean }) =>
       props.$isLoading ? 'none' : 'translateY(0)'};
   }
-`
-
-export const CurrentDataInfo = styled.div`
-  background-color: ${colours.paleGrey};
-  border: ${spacing.micro} solid ${colours.softGrey};
-  border-radius: ${spacing.tiny};
-  padding: ${spacing.small};
-  margin-top: ${spacing.small};
-  color: ${colours.charcoal};
-  font-size: ${fonts.small};
 `

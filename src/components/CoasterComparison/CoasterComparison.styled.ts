@@ -3,13 +3,22 @@ import { breakpoints, colours, fonts, spacing } from '../../theme'
 
 export const ComparisonArea = styled.div`
   display: flex;
-  gap: ${spacing.medium};
   justify-content: center;
-  margin: ${spacing.large} 0;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: ${spacing.small};
+  margin: ${spacing.medium} 0;
+  padding: 0 ${spacing.tiny};
 
-  @media (max-width: ${breakpoints.tabletLarge}) {
-    flex-direction: column;
-    gap: ${spacing.small};
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: 0;
+    margin: ${spacing.large} 0;
+  }
+
+  @media (min-width: ${breakpoints.tabletLarge}) {
+    flex-direction: row;
+    gap: ${spacing.medium};
   }
 `
 
@@ -17,13 +26,17 @@ export const VersusText = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${fonts.large};
   font-weight: bold;
   color: ${colours.mediumGrey};
-  margin: 0 ${spacing.small};
+  margin: ${spacing.tiny} 0;
+  font-size: ${fonts.medium};
 
-  @media (max-width: ${breakpoints.tabletLarge}) {
-    margin: ${spacing.tiny} 0;
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    margin: ${spacing.small} 0;
     font-size: ${fonts.large};
+  }
+
+  @media (min-width: ${breakpoints.tabletLarge}) {
+    margin: 0 ${spacing.small};
   }
 `

@@ -6,14 +6,29 @@ export const CardContainer = styled.div<{
   $variant?: 'default' | 'elevated' | 'outlined'
   $maxWidth?: string
 }>`
-  max-width: ${props => props.$maxWidth || '300px'};
-  padding: ${spacing.medium};
+  max-width: 100%;
+  width: 100%;
+  padding: ${spacing.small};
+  margin: 0 ${spacing.tiny};
   background: ${colours.paleGrey};
   border: ${spacing.mini} solid ${colours.softGrey};
   border-radius: ${spacing.small};
   text-align: left;
   transition: all 0.2s ease;
   cursor: ${props => (props.$clickable ? 'pointer' : 'default')};
+  box-sizing: border-box;
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    margin: 0;
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: ${spacing.medium};
+  }
+
+  @media (min-width: ${breakpoints.tabletLarge}) {
+    max-width: ${props => props.$maxWidth || '300px'};
+  }
 
   ${props =>
     props.$variant === 'elevated' &&
@@ -49,10 +64,6 @@ export const CardContainer = styled.div<{
       transform: translateY(0);
     }
   `}
-
-  @media (max-width: ${breakpoints.tabletLarge}) {
-    max-width: 100%;
-  }
 `
 
 export const CardHeader = styled.div`
@@ -63,7 +74,7 @@ export const CardContent = styled.div`
   color: ${colours.textGrey};
   line-height: 1.5;
 
-  p {
+  > p:not([class]) {
     margin: ${spacing.fine} 0;
   }
 
@@ -80,8 +91,14 @@ export const CardFooter = styled.div`
 
 export const CardActions = styled.div`
   display: flex;
-  gap: ${spacing.small};
+  flex-direction: column;
+  gap: ${spacing.tiny};
   margin-top: ${spacing.small};
   justify-content: flex-end;
   flex-wrap: wrap;
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    flex-direction: row;
+    gap: ${spacing.small};
+  }
 `

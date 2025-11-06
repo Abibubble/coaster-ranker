@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, textSpacing } from '../../theme'
+import { colours, spacing, textSpacing, breakpoints } from '../../theme'
 import { Text } from '../../components'
 
 export const DownloadContent = styled.div`
@@ -14,13 +14,24 @@ export const DownloadButton = styled.button`
   display: flex;
   align-items: center;
   width: 100%;
-  padding: ${spacing.medium};
   margin-bottom: ${spacing.small};
   background: ${colours.paleGrey};
   border: ${spacing.mini} solid ${colours.softGrey};
   border-radius: ${spacing.tiny};
   cursor: pointer;
   transition: all 0.2s ease;
+  min-height: ${spacing.tapTarget};
+  box-sizing: border-box;
+  padding: ${spacing.small};
+  font-size: ${spacing.small};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    padding: ${spacing.small} ${spacing.medium};
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: ${spacing.medium};
+  }
 
   &:hover {
     background: ${colours.softGrey};
@@ -46,16 +57,7 @@ export const ButtonContent = styled.div`
 
 export const ButtonDescription = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
-    const customProps = [
-      'bold',
-      'center',
-      'colour',
-      'fontSize',
-      'italic',
-      'mb',
-      'mt',
-    ]
+    const customProps = ['colour', 'fontSize']
     return !customProps.includes(prop)
   },
 })`
@@ -83,22 +85,34 @@ export const EmptyState = styled.div`
 `
 
 export const RankingOption = styled.div`
-  margin-bottom: ${spacing.medium};
-  padding: ${spacing.small};
+  border: 1px solid ${colours.softGrey};
   background: ${colours.paleGrey};
   border-radius: ${spacing.tiny};
-  border: 1px solid ${colours.softGrey};
+  box-sizing: border-box;
+  padding: ${spacing.tiny};
+  margin-bottom: ${spacing.small};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    padding: ${spacing.small};
+    margin-bottom: ${spacing.medium};
+  }
 
   label {
     display: flex;
     align-items: center;
     cursor: pointer;
-    gap: ${spacing.small};
+    min-height: ${spacing.tapTarget};
+    gap: ${spacing.tiny};
+
+    @media (min-width: ${breakpoints.mobileSmall}) {
+      gap: ${spacing.small};
+    }
 
     input[type='checkbox'] {
       width: 16px;
       height: 16px;
       accent-color: ${colours.blue};
+      min-width: 16px;
     }
   }
 `

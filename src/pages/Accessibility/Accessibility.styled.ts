@@ -3,8 +3,12 @@ import { breakpoints, colours, fonts, spacing } from '../../theme'
 import { Text } from '../../components'
 
 export const PageContent = styled.div`
-  padding: 0 ${spacing.medium};
   margin-bottom: ${spacing.large};
+  padding: 0 ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: 0 ${spacing.medium};
+  }
 `
 
 export const Section = styled.section`
@@ -24,26 +28,20 @@ export const ContactInfo = styled.div`
   background-color: ${colours.paleGrey};
   border: ${spacing.mini} solid ${colours.borderGrey};
   border-radius: ${spacing.tiny};
-  padding: ${spacing.medium};
   margin: ${spacing.medium} 0;
+  box-sizing: border-box;
+  padding: ${spacing.small};
+  margin: ${spacing.small} 0;
 
   @media (min-width: ${breakpoints.mobileLarge}) {
     padding: ${spacing.medium} ${spacing.large};
+    margin: ${spacing.medium} 0;
   }
 `
 
 export const KeyboardShortcut = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
-    const customProps = [
-      'bold',
-      'center',
-      'colour',
-      'fontSize',
-      'italic',
-      'mb',
-      'mt',
-    ]
+    const customProps = ['colour']
     return !customProps.includes(prop)
   },
 })`
@@ -62,7 +60,6 @@ export const KeyboardShortcut = styled(Text).withConfig({
 
 export const FooterText = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
     const customProps = ['italic', 'mt']
     return !customProps.includes(prop)
   },

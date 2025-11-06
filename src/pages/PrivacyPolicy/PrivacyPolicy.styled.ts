@@ -1,10 +1,15 @@
 import styled from 'styled-components'
-import { spacing, colours } from '../../theme'
+import { spacing, colours, breakpoints } from '../../theme'
 import { Text } from '../../components'
 
 export const PageContent = styled.div`
-  padding: 0 ${spacing.medium};
   margin-bottom: ${spacing.large};
+  box-sizing: border-box;
+  padding: 0 ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: 0 ${spacing.medium};
+  }
 `
 
 export const Section = styled.section`
@@ -22,7 +27,6 @@ export const List = styled.ul`
 
 export const FooterText = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
     const customProps = ['italic', 'mt']
     return !customProps.includes(prop)
   },

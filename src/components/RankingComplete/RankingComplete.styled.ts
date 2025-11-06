@@ -44,16 +44,7 @@ export const ButtonContainer = styled.div`
 
 export const EditInstructions = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
-    const customProps = [
-      'bold',
-      'center',
-      'colour',
-      'fontSize',
-      'italic',
-      'mb',
-      'mt',
-    ]
+    const customProps = ['center', 'colour', 'fontSize', 'mb']
     return !customProps.includes(prop)
   },
 })`
@@ -97,16 +88,7 @@ export const EditableItem = styled.li`
 
 export const Position = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
-    const customProps = [
-      'bold',
-      'center',
-      'colour',
-      'fontSize',
-      'italic',
-      'mb',
-      'mt',
-    ]
+    const customProps = ['bold', 'colour']
     return !customProps.includes(prop)
   },
 })`
@@ -119,13 +101,13 @@ export const CoasterInfo = styled.div`
   flex: 1;
   line-height: 1.5;
   margin-right: ${spacing.small};
-  min-width: 0; /* Allows text to wrap properly */
+  min-width: 0;
 `
 
 export const MoveButtons = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: ${spacing.tiny};
   align-items: center;
 `
 
@@ -133,8 +115,8 @@ export const MoveButton = styled.button`
   background: ${colours.darkGrey};
   color: ${colours.white};
   border: 2px solid transparent;
-  width: 44px;
-  height: 44px;
+  width: ${spacing.tapTarget};
+  height: ${spacing.tapTarget};
   border-radius: 6px;
   cursor: pointer;
   font-size: 18px;
@@ -145,7 +127,6 @@ export const MoveButton = styled.button`
   transition: all 0.2s ease;
   line-height: 1;
 
-  /* Ensure sufficient contrast ratio for WCAG 2.1 AA */
   &:hover {
     background: ${colours.blue};
     border-color: ${colours.darkBlue};
@@ -162,12 +143,5 @@ export const MoveButton = styled.button`
   &:active {
     transform: translateY(0);
     box-shadow: 0 1px 2px ${colours.shadowMedium};
-  }
-
-  /* Improve touch targets for mobile */
-  @media (max-width: 768px) {
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
   }
 `

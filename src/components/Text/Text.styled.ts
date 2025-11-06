@@ -17,6 +17,13 @@ export const StyledText = styled.span<StyledTextProps>`
   text-align: ${({ $center }) => ($center ? 'center' : 'left')};
   margin-bottom: ${({ $mb }) => ($mb ? spacing[$mb] : '0')};
   margin-top: ${({ $mt }) => ($mt ? spacing[$mt] : '0')};
+  margin-left: 0;
+  margin-right: 0;
+  overflow-wrap: normal;
+  word-wrap: normal;
+  hyphens: none;
+  white-space: normal;
+  max-width: 100%;
 
   ${({ $bold }) =>
     $bold &&

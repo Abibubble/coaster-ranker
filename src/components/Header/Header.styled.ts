@@ -21,8 +21,17 @@ export const HeaderTop = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${spacing.small};
   text-align: left;
+  padding: ${spacing.tiny} ${spacing.small};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    padding: ${spacing.small};
+  }
+
+  @media (min-width: ${breakpoints.tabletLarge}) {
+    padding: 0;
+    flex: 0 0 auto;
+  }
 
   a {
     text-decoration: none;
@@ -30,6 +39,9 @@ export const HeaderTop = styled.div`
     padding: ${spacing.tiny};
     border-radius: ${spacing.fine};
     transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    min-height: ${spacing.tapTarget};
 
     &:hover,
     &:focus {
@@ -46,12 +58,8 @@ export const HeaderTop = styled.div`
       margin: 0;
       font-weight: bold;
       line-height: 1.2;
+      overflow-wrap: break-word;
     }
-  }
-
-  @media (min-width: ${breakpoints.tabletLarge}) {
-    padding: 0;
-    flex: 0 0 auto;
   }
 `
 
@@ -65,6 +73,10 @@ export const BurgerButton = styled.button`
   padding: ${spacing.tiny};
   border-radius: ${spacing.fine};
   transition: background-color 0.2s ease;
+  min-height: ${spacing.tapTarget};
+  min-width: ${spacing.tapTarget};
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: ${colours.darkGrey};

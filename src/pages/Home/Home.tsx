@@ -24,7 +24,7 @@ function Home() {
       </Styled.HeroSection>
 
       <Styled.FeaturesSection>
-        <Text as='h2' center mb='large' fontSize='large'>
+        <Text as='h2' center fontSize='large'>
           Why Choose Coaster Ranker?
         </Text>
 
@@ -76,7 +76,7 @@ function Home() {
             <Styled.Step>
               <Styled.StepNumber>1</Styled.StepNumber>
               <div>
-                <Text bold mb='tiny'>
+                <Text as='h3' bold mb='tiny'>
                   Add Your Coasters
                 </Text>
                 <Text as='p' colour='mediumGrey'>
@@ -90,7 +90,7 @@ function Home() {
             <Styled.Step>
               <Styled.StepNumber>2</Styled.StepNumber>
               <div>
-                <Text bold mb='tiny'>
+                <Text as='h3' bold mb='tiny'>
                   Start Ranking
                 </Text>
                 <Text as='p' colour='mediumGrey'>
@@ -103,7 +103,7 @@ function Home() {
             <Styled.Step>
               <Styled.StepNumber>3</Styled.StepNumber>
               <div>
-                <Text bold mb='tiny'>
+                <Text as='h3' bold mb='tiny'>
                   Build Your List
                 </Text>
                 <Text as='p' colour='mediumGrey'>
@@ -116,7 +116,7 @@ function Home() {
             <Styled.Step>
               <Styled.StepNumber>4</Styled.StepNumber>
               <div>
-                <Text bold mb='tiny'>
+                <Text as='h3' bold mb='tiny'>
                   Download Results
                 </Text>
                 <Text as='p' colour='mediumGrey'>

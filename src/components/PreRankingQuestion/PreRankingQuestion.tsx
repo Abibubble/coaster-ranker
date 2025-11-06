@@ -41,7 +41,7 @@ export default function PreRankingQuestion({
             </Text>
 
             <Styled.ExplanationText>
-              <strong>New coasters will be ranked:</strong> Your new uploads
+              <Text bold>New coasters will be ranked:</Text> Your new uploads
               will be compared against your existing rankings to find their
               proper position.
             </Styled.ExplanationText>
@@ -107,7 +107,7 @@ export default function PreRankingQuestion({
           </Styled.ExplanationText>
 
           <Styled.ExplanationText>
-            <strong>If NO:</strong> All coasters will be treated equally and
+            <Text bold>If NO:</Text> All coasters will be treated equally and
             you'll rank them through comparisons.
           </Styled.ExplanationText>
         </Styled.QuestionContent>

@@ -1,4 +1,4 @@
-import { MainContent, Title, Link, Text } from '../../components'
+import { CurrentDataInfo, MainContent, Title, Text } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import * as Styled from './Upload.styled'
 
@@ -16,25 +16,14 @@ function Upload() {
 
       <section>
         <Styled.Instructions>
-          <Text as='h2' colour='charcoal' fontSize='large' mb='small'>
+          {coasterCount > 0 && <CurrentDataInfo coasterCount={coasterCount} />}
+          <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
             Choose Your Upload Method
           </Text>
           <Text as='p' colour='mediumGrey' mb='small'>
             Select how you'd like to add coasters to your collection. You can
             use multiple methods - all data will be combined together.
           </Text>
-          {coasterCount > 0 && (
-            <Styled.CurrentDataInfo>
-              You currently have{' '}
-              <Text bold colour='blue'>
-                {coasterCount} coasters
-              </Text>{' '}
-              in your collection.{' '}
-              <Link href='/view-coasters' variant='button'>
-                View all coasters
-              </Link>
-            </Styled.CurrentDataInfo>
-          )}
         </Styled.Instructions>
 
         <Styled.UploadOptions>

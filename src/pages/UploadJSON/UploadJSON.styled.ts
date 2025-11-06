@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { colours, fonts, shadows, spacing } from '../../theme'
-import { Text } from '../../components'
 
 export const Section = styled.div`
   margin-bottom: ${spacing.large};
@@ -160,25 +159,4 @@ export const FileLabel = styled.label<{ $disabled?: boolean }>`
     outline: ${spacing.mini} solid ${colours.orange};
     outline-offset: ${spacing.mini};
   }
-`
-
-export const CurrentDataInfo = styled(Text).withConfig({
-  shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
-    const customProps = [
-      'bold',
-      'center',
-      'colour',
-      'fontSize',
-      'italic',
-      'mb',
-      'mt',
-    ]
-    return !customProps.includes(prop)
-  },
-})`
-  background-color: ${colours.paleGrey};
-  border: ${spacing.micro} solid ${colours.softGrey};
-  border-radius: ${spacing.tiny};
-  padding: ${spacing.small};
 `

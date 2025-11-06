@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, fonts, spacing } from '../../theme'
+import { colours, fonts, spacing, breakpoints } from '../../theme'
 
 export const Instructions = styled.div`
   margin-bottom: ${spacing.large};
@@ -9,21 +9,20 @@ export const Instructions = styled.div`
   }
 `
 
-export const CurrentDataInfo = styled.div`
-  background-color: ${colours.paleGrey};
-  border: ${spacing.micro} solid ${colours.softGrey};
-  border-radius: ${spacing.tiny};
-  padding: ${spacing.small};
-  margin-top: ${spacing.small};
-  color: ${colours.charcoal};
-  font-size: ${fonts.small};
-`
-
 export const UploadOptions = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: ${spacing.medium};
-  margin: ${spacing.large} 0;
+  margin: ${spacing.medium} 0;
+  grid-template-columns: 1fr;
+
+  @media (min-width: ${breakpoints.tablet}) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  @media (min-width: ${breakpoints.desktop}) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: ${spacing.large};
+  }
 `
 
 export const UploadButton = styled.div`
@@ -33,10 +32,20 @@ export const UploadButton = styled.div`
   background-color: ${colours.white};
   border: ${spacing.mini} solid ${colours.borderGrey};
   border-radius: ${spacing.tiny};
-  padding: ${spacing.medium};
   text-align: center;
   transition: all 0.3s ease;
   cursor: pointer;
+  box-sizing: border-box;
+  padding: ${spacing.small};
+  margin: 0 ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    margin: 0;
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: ${spacing.medium};
+  }
 
   &:hover {
     border-color: ${colours.blue};

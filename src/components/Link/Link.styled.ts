@@ -13,7 +13,7 @@ const buttonStyles = css`
   display: inline-block;
   background-color: ${colours.blue};
   color: ${colours.white};
-  padding: ${spacing.small} ${spacing.medium};
+  padding: ${spacing.tiny};
   border-radius: ${spacing.tiny};
   font-weight: bold;
   transition: all 0.2s ease;

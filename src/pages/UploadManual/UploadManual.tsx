@@ -1,19 +1,18 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
   Button,
+  CurrentDataInfo,
+  DuplicateResolver,
+  InfoMessage,
   MainContent,
   Title,
   Text,
-  InfoMessage,
-  DuplicateResolver,
-  Link,
 } from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { Coaster } from '../../types/data'
-import { detectDuplicates, DuplicateMatch } from '../../utils/fileProcessing'
+import { detectDuplicates, DuplicateMatch, formatString } from '../../utils'
 import type { DuplicateResolution } from '../../components/DuplicateResolver'
 import * as Styled from './UploadManual.styled'
-import { formatString } from '../../utils/formatString'
 
 interface CoasterFormData {
   name: string
@@ -243,27 +242,14 @@ export default function UploadManual() {
       <Title>Add Coaster Manually</Title>
 
       <section>
-        <Text as='h2' colour='charcoal' fontSize='large' mb='small'>
+        {coasterCount > 0 && <CurrentDataInfo coasterCount={coasterCount} />}
+        <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
           Enter Coaster Details
         </Text>
         <Text as='p' colour='mediumGrey' mb='small'>
           Add a single coaster to your collection by filling out the form below.
           You can add multiple coasters by submitting the form multiple times.
         </Text>
-        {coasterCount > 0 && (
-          <Styled.CurrentDataInfo>
-            <Text as='span' colour='charcoal' fontSize='small'>
-              You currently have{' '}
-              <Text bold colour='blue'>
-                {coasterCount} coasters
-              </Text>{' '}
-              in your collection.{' '}
-              <Link href='/view-coasters' variant='button'>
-                View all coasters
-              </Link>
-            </Text>
-          </Styled.CurrentDataInfo>
-        )}
 
         <section>
           <Styled.Form onSubmit={handleSubmit}>
@@ -462,10 +448,6 @@ export default function UploadManual() {
             </InfoMessage>
           )}
         </section>
-
-        <Link href='/upload' variant='back'>
-          Back to Upload Options
-        </Link>
       </section>
     </MainContent>
   )

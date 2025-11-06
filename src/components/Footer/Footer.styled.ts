@@ -65,16 +65,7 @@ export const FooterLinks = styled.nav`
 
 export const CopyrightText = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
-    const customProps = [
-      'bold',
-      'center',
-      'colour',
-      'fontSize',
-      'italic',
-      'mb',
-      'mt',
-    ]
+    const customProps = ['colour', 'fontSize']
     return !customProps.includes(prop)
   },
 })`

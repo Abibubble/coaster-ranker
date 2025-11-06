@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, fonts, shadows, spacing, textSpacing } from '../../theme'
+import { colours, shadows, spacing, textSpacing } from '../../theme'
 import { Text } from '../Text'
 
 export const ComparisonProgress = styled.div`

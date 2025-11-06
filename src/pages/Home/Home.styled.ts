@@ -15,18 +15,30 @@ export const HeroSection = styled.section`
     ${colours.darkBlue} 100%
   );
   color: ${colours.white};
-  padding: ${spacing.giant} ${spacing.medium} ${spacing.large};
-  margin: -${spacing.medium} -${spacing.medium} ${spacing.large};
+  padding: ${spacing.medium} ${spacing.tiny};
+  margin: -${spacing.tiny} -${spacing.tiny} ${spacing.medium};
   border-radius: 0 0 ${spacing.medium} ${spacing.medium};
   overflow: hidden;
-  min-height: 500px;
+  min-height: 280px;
   display: flex;
   align-items: center;
 
-  @media (max-width: ${breakpoints.tablet}) {
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    padding: ${spacing.medium} ${spacing.small};
+    margin: -${spacing.small} -${spacing.small} ${spacing.medium};
+    min-height: 320px;
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
     padding: ${spacing.large} ${spacing.small};
     margin: -${spacing.small} -${spacing.small} ${spacing.large};
     min-height: 400px;
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    padding: ${spacing.giant} ${spacing.medium} ${spacing.large};
+    margin: -${spacing.medium} -${spacing.medium} ${spacing.large};
+    min-height: 500px;
   }
 
   &::before {
@@ -73,30 +85,53 @@ export const HeroImage = styled.div`
 
 export const CTAButtonGroup = styled.div`
   display: flex;
-  gap: ${spacing.small};
+  flex-direction: column;
+  align-items: center;
+  gap: ${spacing.tiny};
   justify-content: center;
   flex-wrap: wrap;
 
-  @media (max-width: ${breakpoints.mobileLarge}) {
-    flex-direction: column;
-    align-items: center;
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    gap: ${spacing.small};
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    flex-direction: row;
   }
 `
 
 export const FeaturesSection = styled.section`
   margin-bottom: ${spacing.large};
+
+  h2 {
+    margin-bottom: ${spacing.medium};
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    h2 {
+      margin-bottom: ${spacing.large};
+    }
+  }
 `
 
 export const FeatureGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: ${spacing.small};
   max-width: 1200px;
   margin: 0 auto;
+  grid-template-columns: 1fr;
 
-  @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: 1fr;
-    gap: ${spacing.tiny};
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    gap: ${spacing.medium};
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  @media (min-width: ${breakpoints.desktop}) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: ${spacing.large};
   }
 `
 
@@ -108,10 +143,19 @@ export const FeatureCard = styled.div`
   );
   border: 1px solid ${colours.borderGrey};
   border-radius: ${spacing.small};
-  padding: ${spacing.medium};
   box-shadow: 0 ${spacing.fine} ${spacing.medium} ${colours.shadowLight};
   position: relative;
   overflow: hidden;
+  padding: ${spacing.small};
+  margin: 0 ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    margin: 0;
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: ${spacing.medium};
+  }
 
   &::before {
     content: '';
@@ -149,11 +193,26 @@ export const StepsList = styled.div`
 
 export const Step = styled.div`
   display: flex;
-  gap: ${spacing.small};
-  align-items: flex-start;
+  gap: ${spacing.tiny};
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 
-  @media (max-width: ${breakpoints.mobileLarge}) {
-    gap: ${spacing.tiny};
+  h3,
+  p {
+    text-align: center;
+  }
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: ${spacing.small};
+
+    h3,
+    p {
+      text-align: left;
+    }
   }
 `
 

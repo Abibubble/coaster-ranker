@@ -1,15 +1,6 @@
 import styled, { css } from 'styled-components'
-import { colours, fonts, spacing } from '../../theme'
+import { colours, fonts, spacing, breakpoints } from '../../theme'
 import { Text } from '../../components'
-
-export const CurrentDataInfo = styled.div`
-  background-color: ${colours.paleGrey};
-  border: ${spacing.micro} solid ${colours.softGrey};
-  border-radius: ${spacing.tiny};
-  padding: ${spacing.small};
-  margin-top: ${spacing.small};
-  font-size: ${fonts.small};
-`
 
 export const Form = styled.form`
   display: flex;
@@ -19,16 +10,7 @@ export const Form = styled.form`
 
 export const FormTitle = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
-    const customProps = [
-      'bold',
-      'center',
-      'colour',
-      'fontSize',
-      'italic',
-      'mb',
-      'mt',
-    ]
+    const customProps = ['colour', 'mb']
     return !customProps.includes(prop)
   },
 })`
@@ -38,9 +20,17 @@ export const FormTitle = styled(Text).withConfig({
 
 export const FormRow = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: ${spacing.small};
   margin-bottom: ${spacing.small};
+  grid-template-columns: 1fr;
+
+  @media (min-width: ${breakpoints.tablet}) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  @media (min-width: ${breakpoints.desktop}) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `
 
 export const FormGroup = styled.div`
@@ -50,11 +40,22 @@ export const FormGroup = styled.div`
 `
 
 const baseFormControlStyles = css`
-  padding: ${spacing.small};
   border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.fine};
-  font-size: ${fonts.body};
   background-color: ${colours.white};
+  box-sizing: border-box;
+  min-height: ${spacing.tapTarget};
+  width: 100%;
+  padding: ${spacing.tiny} ${spacing.small};
+  font-size: ${fonts.small};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    padding: ${spacing.small};
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    font-size: ${fonts.body};
+  }
 
   &:focus {
     outline: none;

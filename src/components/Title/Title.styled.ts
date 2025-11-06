@@ -4,30 +4,30 @@ import { Text } from '../Text'
 
 export const TitleText = styled(Text).withConfig({
   shouldForwardProp: prop => {
-    // Don't forward Text component's custom props to the DOM
-    const customProps = [
-      'bold',
-      'center',
-      'colour',
-      'fontSize',
-      'italic',
-      'mb',
-      'mt',
-    ]
+    const customProps = ['center', 'colour']
     return !customProps.includes(prop)
   },
 })`
   font-size: ${fonts.large};
-  padding: ${spacing.tiny} ${spacing.small};
+  padding: ${spacing.small} 0;
   line-height: 1.2;
+  overflow-wrap: break-word;
+  hyphens: auto;
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    padding: ${spacing.tiny} ${spacing.small};
+  }
 
   @media (min-width: ${breakpoints.mobileLarge}) {
     font-size: ${fonts.huge};
-    padding: ${spacing.small} ${spacing.small};
+    padding: ${spacing.small};
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    font-size: ${fonts.title};
   }
 
   @media (min-width: ${breakpoints.tabletLarge}) {
-    font-size: ${fonts.title};
     padding: ${spacing.small} 0;
   }
 `
