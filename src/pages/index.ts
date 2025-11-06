@@ -1,6 +1,7 @@
 export { Accessibility } from './Accessibility'
 export { Download } from './Download'
 export { Home } from './Home'
+export { PrivacyPolicy } from './PrivacyPolicy'
 export { Upload } from './Upload'
 export { UploadCSV } from './UploadCSV'
 export { UploadJSON } from './UploadJSON'

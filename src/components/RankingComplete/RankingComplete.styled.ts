@@ -42,7 +42,21 @@ export const ButtonContainer = styled.div`
   }
 `
 
-export const EditInstructions = styled(Text)`
+export const EditInstructions = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   background: ${colours.veryLightGrey};
   padding: ${spacing.small};
   border-radius: 4px;
@@ -81,7 +95,21 @@ export const EditableItem = styled.li`
   }
 `
 
-export const Position = styled(Text)`
+export const Position = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   min-width: 40px;
   margin-right: ${spacing.small};
   font-size: ${fonts.body};

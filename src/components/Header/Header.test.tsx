@@ -15,9 +15,9 @@ describe('Header', () => {
     expect(screen.getByText('Coaster Ranker')).toBeInTheDocument()
     expect(screen.getByText('Home')).toBeInTheDocument()
     expect(screen.getByText('Upload')).toBeInTheDocument()
+    expect(screen.getByText('View Coasters')).toBeInTheDocument()
     expect(screen.getByText('Rank')).toBeInTheDocument()
     expect(screen.getByText('Download')).toBeInTheDocument()
-    expect(screen.getByText('Accessibility')).toBeInTheDocument()
   })
 
   it('toggles mobile menu', () => {

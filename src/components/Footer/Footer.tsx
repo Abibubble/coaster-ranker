@@ -1,12 +1,18 @@
 import * as Styled from './Footer.styled'
-import { Text } from '../Text'
+import { Link } from '../Link'
 
 export default function Footer() {
   return (
     <Styled.FooterContainer>
-      <Text as='p' center colour='white'>
-        © Bubble & Squeak
-      </Text>
+      <Styled.FooterContent>
+        <Styled.FooterLinks>
+          <Link href='/accessibility'>Accessibility</Link>
+          <Link href='/privacy-policy'>Privacy Policy</Link>
+        </Styled.FooterLinks>
+        <Styled.CopyrightText as='p' colour='white' fontSize='small'>
+          © Bubble & Squeak
+        </Styled.CopyrightText>
+      </Styled.FooterContent>
     </Styled.FooterContainer>
   )
 }

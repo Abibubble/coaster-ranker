@@ -162,7 +162,21 @@ export const FileLabel = styled.label<{ $disabled?: boolean }>`
   }
 `
 
-export const CurrentDataInfo = styled(Text)`
+export const CurrentDataInfo = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   background-color: ${colours.paleGrey};
   border: ${spacing.micro} solid ${colours.softGrey};
   border-radius: ${spacing.tiny};

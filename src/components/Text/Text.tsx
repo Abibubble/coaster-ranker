@@ -7,6 +7,7 @@ export interface TextProps {
   as?: React.ElementType
   bold?: boolean
   center?: boolean
+  className?: string
   colour?: keyof typeof colours
   fontSize?: keyof typeof fonts
   htmlFor?: string
@@ -23,6 +24,7 @@ export function Text({
   as = 'span',
   bold = false,
   center = false,
+  className,
   colour = 'black',
   fontSize = 'body',
   htmlFor,
@@ -33,20 +35,27 @@ export function Text({
   role,
   'aria-live': ariaLive,
 }: TextProps) {
+  // Create filtered props object excluding custom Text props
+  const domProps: Record<string, unknown> = {}
+
+  // Only add props that are valid DOM attributes
+  if (as) domProps.as = as
+  if (className) domProps.className = className
+  if (htmlFor) domProps.htmlFor = htmlFor
+  if (id) domProps.id = id
+  if (role) domProps.role = role
+  if (ariaLive) domProps['aria-live'] = ariaLive
+
   return (
     <StyledText
-      as={as}
+      {...domProps}
       $bold={bold}
       $center={center}
       $colour={colour}
       $fontSize={fontSize}
-      htmlFor={htmlFor}
-      id={id}
       $italic={italic}
       $mb={mb}
       $mt={mt}
-      role={role}
-      aria-live={ariaLive}
     >
       {children}
     </StyledText>

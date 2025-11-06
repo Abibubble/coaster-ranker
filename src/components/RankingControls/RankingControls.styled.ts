@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing } from '../../theme'
+import { spacing } from '../../theme'
 import { Text } from '../Text'
 
 export const ControlsContainer = styled.div`
@@ -9,7 +9,21 @@ export const ControlsContainer = styled.div`
   margin: ${spacing.small} 0;
 `
 
-export const HelpText = styled(Text)`
+export const HelpText = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   display: block;
   font-weight: normal;
 `

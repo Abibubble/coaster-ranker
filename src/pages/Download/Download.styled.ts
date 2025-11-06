@@ -44,7 +44,21 @@ export const ButtonContent = styled.div`
   flex: 1;
 `
 
-export const ButtonDescription = styled(Text)`
+export const ButtonDescription = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   margin: 0;
   line-height: 1.4;
 `

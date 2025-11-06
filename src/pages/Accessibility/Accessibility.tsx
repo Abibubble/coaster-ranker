@@ -7,7 +7,7 @@ function Accessibility() {
       <Styled.PageContent>
         <Title>Accessibility Statement</Title>
 
-        <Text as='p'>
+        <Text as='p' mb='medium'>
           Coaster Ranker is committed to being accessible to all users,
           including those with disabilities. We've built this application to
           work with screen readers, keyboard navigation, and other assistive
@@ -19,38 +19,38 @@ function Accessibility() {
             How to Use Coaster Ranker Accessibly
           </Text>
 
-          <Styled.SubsectionTitle as='h3' bold colour='darkGrey'>
+          <Text as='h3' bold colour='darkGrey' mb='small' mt='medium'>
             Keyboard Navigation
-          </Styled.SubsectionTitle>
-          <Text as='p'>
+          </Text>
+          <Text as='p' mb='small'>
             You can navigate the entire application using only your keyboard:
           </Text>
           <Styled.List>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>
               <Styled.KeyboardShortcut as='code' colour='white'>
                 Tab
               </Styled.KeyboardShortcut>{' '}
               - Move to the next button, link, or form field
             </Text>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>
               <Styled.KeyboardShortcut as='code' colour='white'>
                 Shift + Tab
               </Styled.KeyboardShortcut>{' '}
               - Move to the previous element
             </Text>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>
               <Styled.KeyboardShortcut as='code' colour='white'>
                 Enter
               </Styled.KeyboardShortcut>{' '}
               - Activate buttons and links
             </Text>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>
               <Styled.KeyboardShortcut as='code' colour='white'>
                 Space
               </Styled.KeyboardShortcut>{' '}
               - Activate buttons and checkboxes
             </Text>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>
               <Styled.KeyboardShortcut as='code' colour='white'>
                 Arrow Keys
               </Styled.KeyboardShortcut>{' '}
@@ -58,39 +58,29 @@ function Accessibility() {
             </Text>
           </Styled.List>
 
-          <Styled.SubsectionTitle>Screen Reader Support</Styled.SubsectionTitle>
+          <Text as='h3' bold colour='darkGrey' mb='small' mt='medium'>
+            Screen Reader Support
+          </Text>
           <Styled.List>
-            <Text as='li' mb='tiny'>
-              All images have descriptive alternative text
-            </Text>
-            <Text as='li' mb='tiny'>
-              Form fields are clearly labeled
-            </Text>
-            <Text as='li' mb='tiny'>
-              Error messages are announced when they appear
-            </Text>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>All images have descriptive alternative text</Text>
+            <Text as='li'>Form fields are clearly labeled</Text>
+            <Text as='li'>Error messages are announced when they appear</Text>
+            <Text as='li'>
               Page structure uses proper headings for easy navigation
             </Text>
-            <Text as='li' mb='tiny'>
-              Skip link available to jump to main content
-            </Text>
+            <Text as='li'>Skip link available to jump to main content</Text>
           </Styled.List>
 
-          <Styled.SubsectionTitle>Visual Features</Styled.SubsectionTitle>
+          <Text as='h3' bold colour='darkGrey' mb='small' mt='medium'>
+            Visual Features
+          </Text>
           <Styled.List>
-            <Text as='li' mb='tiny'>
-              High contrast colors for better readability
-            </Text>
-            <Text as='li' mb='tiny'>
-              Text remains readable when zoomed up to 200%
-            </Text>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>High contrast colors for better readability</Text>
+            <Text as='li'>Text remains readable when zoomed up to 200%</Text>
+            <Text as='li'>
               Clear focus indicators show where you are on the page
             </Text>
-            <Text as='li' mb='tiny'>
-              No information is conveyed by color alone
-            </Text>
+            <Text as='li'>No information is conveyed by color alone</Text>
           </Styled.List>
         </Styled.Section>
 
@@ -98,23 +88,17 @@ function Accessibility() {
           <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
             Supported Assistive Technologies
           </Text>
-          <Text as='p'>Coaster Ranker works with:</Text>
+          <Text as='p' mb='small'>
+            Coaster Ranker works with:
+          </Text>
           <Styled.List>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>
               Screen readers (JAWS, NVDA, VoiceOver, TalkBack)
             </Text>
-            <Text as='li' mb='tiny'>
-              Voice control software
-            </Text>
-            <Text as='li' mb='tiny'>
-              Screen magnification tools
-            </Text>
-            <Text as='li' mb='tiny'>
-              Switch navigation devices
-            </Text>
-            <Text as='li' mb='tiny'>
-              Eye tracking systems
-            </Text>
+            <Text as='li'>Voice control software</Text>
+            <Text as='li'>Screen magnification tools</Text>
+            <Text as='li'>Switch navigation devices</Text>
+            <Text as='li'>Eye tracking systems</Text>
           </Styled.List>
         </Styled.Section>
 
@@ -122,22 +106,14 @@ function Accessibility() {
           <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
             Browser Compatibility
           </Text>
-          <Text as='p'>
+          <Text as='p' mb='small'>
             This application works best with recent versions of:
           </Text>
           <Styled.List>
-            <Text as='li' mb='tiny'>
-              Chrome
-            </Text>
-            <Text as='li' mb='tiny'>
-              Firefox
-            </Text>
-            <Text as='li' mb='tiny'>
-              Safari
-            </Text>
-            <Text as='li' mb='tiny'>
-              Edge
-            </Text>
+            <Text as='li'>Chrome</Text>
+            <Text as='li'>Firefox</Text>
+            <Text as='li'>Safari</Text>
+            <Text as='li'>Edge</Text>
           </Styled.List>
         </Styled.Section>
 
@@ -157,12 +133,12 @@ function Accessibility() {
             Learn More About Web Accessibility
           </Text>
           <Styled.List>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>
               <Link dark href='https://www.w3.org/WAI/'>
                 Web Accessibility Initiative (WAI)
               </Link>
             </Text>
-            <Text as='li' mb='tiny'>
+            <Text as='li'>
               <Link dark href='https://webaim.org/'>
                 WebAIM - Web Accessibility In Mind
               </Link>
@@ -170,9 +146,9 @@ function Accessibility() {
           </Styled.List>
         </Styled.Section>
 
-        <Text as='p'>
-          <Text italic>Last updated: October 30, 2025</Text>
-        </Text>
+        <Styled.FooterText as='p' italic mt='large'>
+          Last updated: October 30, 2025
+        </Styled.FooterText>
       </Styled.PageContent>
     </MainContent>
   )

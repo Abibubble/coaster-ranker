@@ -5,6 +5,7 @@ import {
   Accessibility,
   Download,
   Home,
+  PrivacyPolicy,
   Rank,
   Upload,
   UploadCSV,
@@ -30,6 +31,7 @@ root.render(
             <Route path='/' element={<Home />} />
             <Route path='/accessibility' element={<Accessibility />} />
             <Route path='/download' element={<Download />} />
+            <Route path='/privacy-policy' element={<PrivacyPolicy />} />
             <Route path='/rank' element={<Rank />} />
             <Route path='/upload' element={<Upload />} />
             <Route path='/upload-csv' element={<UploadCSV />} />

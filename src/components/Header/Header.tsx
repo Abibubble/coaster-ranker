@@ -58,11 +58,6 @@ export default function Header() {
                 Download
               </Link>
             </li>
-            <li>
-              <Link href='/accessibility' onClick={closeMobileMenu}>
-                Accessibility
-              </Link>
-            </li>
           </Styled.NavLinks>
         </nav>
       </Styled.NavContainer>

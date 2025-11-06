@@ -19,7 +19,6 @@ import * as Styled from './Download.styled'
 export default function Download() {
   const { uploadedData } = useData()
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
-  const [includeRanking, setIncludeRanking] = useState(false)
 
   const coasters = uploadedData?.coasters || []
 
@@ -42,14 +41,14 @@ export default function Download() {
       if (format === 'csv') {
         result = generateCSV({
           coasters,
-          includeRanking: includeRanking && hasRankingData,
+          includeRanking: hasRankingData,
           rankingMetadata: uploadedData?.rankingMetadata,
         })
         contentType = 'text/csv'
       } else {
         result = generateJSON({
           coasters,
-          includeRanking: includeRanking && hasRankingData,
+          includeRanking: hasRankingData,
           rankingMetadata: uploadedData?.rankingMetadata,
         })
         contentType = 'application/json'
@@ -128,20 +127,6 @@ export default function Download() {
               Choose your format:
             </Text>
 
-            {hasRankingData && (
-              <Styled.RankingOption>
-                <Text as='label' colour='darkGrey'>
-                  <input
-                    type='checkbox'
-                    checked={includeRanking}
-                    onChange={e => setIncludeRanking(e.target.checked)}
-                  />
-                  Include ranking positions (adds "rank" field with current
-                  rankings)
-                </Text>
-              </Styled.RankingOption>
-            )}
-
             <Styled.DownloadButton
               onClick={() => handleDownload('csv')}
               aria-describedby='csv-description'
@@ -157,9 +142,7 @@ export default function Download() {
                   id='csv-description'
                 >
                   For Excel, Google Sheets, and other spreadsheet apps
-                  {includeRanking &&
-                    hasRankingData &&
-                    ' (includes rank column)'}
+                  {hasRankingData && ' (includes rank column)'}
                 </Styled.ButtonDescription>
               </Styled.ButtonContent>
             </Styled.DownloadButton>
@@ -179,7 +162,7 @@ export default function Download() {
                   id='json-description'
                 >
                   Developer-friendly format for importing into other apps
-                  {includeRanking && hasRankingData && ' (includes rank field)'}
+                  {hasRankingData && ' (includes rank field)'}
                 </Styled.ButtonDescription>
               </Styled.ButtonContent>
             </Styled.DownloadButton>

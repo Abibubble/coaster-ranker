@@ -1,22 +1,23 @@
 import styled from 'styled-components'
 import { breakpoints, colours, fonts, spacing } from '../../theme'
-import { Text } from '../../components/Text/Text'
+import { Text } from '../../components'
 
 export const PageContent = styled.div`
   padding: 0 ${spacing.medium};
+  margin-bottom: ${spacing.large};
 `
 
 export const Section = styled.section`
   margin-bottom: ${spacing.large};
 `
 
-export const SubsectionTitle = styled(Text)`
-  margin: ${spacing.medium} 0 ${spacing.small};
-`
-
 export const List = styled.ul`
-  margin: ${spacing.small} 0;
+  margin: ${spacing.small} 0 ${spacing.medium};
   padding-left: ${spacing.medium};
+
+  li {
+    margin-bottom: ${spacing.small};
+  }
 `
 
 export const ContactInfo = styled.div`
@@ -31,14 +32,41 @@ export const ContactInfo = styled.div`
   }
 `
 
-export const KeyboardShortcut = styled(Text)`
+export const KeyboardShortcut = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   background-color: ${colours.darkGrey};
+  color: ${colours.white};
   border: ${spacing.micro} solid ${colours.black};
   border-radius: ${spacing.fine};
   padding: ${spacing.tiny} ${spacing.small};
   font-family: 'Courier New', monospace;
   font-size: ${fonts.body};
-  margin: 0 ${spacing.fine};
   font-weight: 500;
   display: inline-block;
+  margin-left: ${spacing.fine};
+  margin-right: ${spacing.fine};
+`
+
+export const FooterText = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = ['italic', 'mt']
+    return !customProps.includes(prop)
+  },
+})`
+  padding-top: ${spacing.medium};
+  border-top: 1px solid ${colours.lightGrey};
 `

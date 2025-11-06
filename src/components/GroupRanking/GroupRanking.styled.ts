@@ -28,7 +28,21 @@ export const GroupOrderItem = styled.li`
   margin-bottom: ${textSpacing.tiny};
 `
 
-export const GroupCount = styled(Text)`
+export const GroupCount = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   font-size: ${fonts.small};
   color: ${colours.mediumGrey};
   margin-left: ${textSpacing.tiny};

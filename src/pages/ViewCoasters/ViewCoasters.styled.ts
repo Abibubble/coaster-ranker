@@ -7,11 +7,11 @@ export const EmptyState = styled.div`
 `
 
 export const CoastersSummary = styled.div`
-  margin-bottom: ${spacing.large};
+  margin-bottom: ${spacing.medium};
 `
 
 export const FiltersSection = styled.div`
-  margin-bottom: ${spacing.large};
+  margin-bottom: ${spacing.medium};
   padding: ${spacing.medium};
   background-color: ${colours.veryLightGrey};
   border-radius: ${spacing.tiny};
@@ -99,7 +99,7 @@ export const SkipTableLink = styled.a`
 export const ActionsBar = styled.div`
   display: flex;
   gap: ${spacing.medium};
-  margin-bottom: ${spacing.large};
+  margin-bottom: ${spacing.medium};
   flex-wrap: wrap;
 
   @media (max-width: ${breakpoints.mobileLarge}) {

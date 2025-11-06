@@ -28,7 +28,21 @@ export const DuplicateItem = styled.div`
   }
 `
 
-export const MatchInfo = styled(Text)`
+export const MatchInfo = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   background: ${colours.veryLightBlue};
   border: ${spacing.micro} solid ${colours.lightBlue};
   border-radius: ${spacing.fine};

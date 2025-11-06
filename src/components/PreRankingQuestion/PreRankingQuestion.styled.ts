@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, fonts, spacing, shadows } from '../../theme'
+import { colours, spacing, shadows } from '../../theme'
 import { Text } from '../Text'
 import { Button } from '../Button'
 
@@ -36,7 +36,21 @@ export const QuestionContent = styled.div`
   padding: ${spacing.medium} ${spacing.large};
 `
 
-export const ExplanationText = styled(Text)`
+export const ExplanationText = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    // Don't forward Text component's custom props to the DOM
+    const customProps = [
+      'bold',
+      'center',
+      'colour',
+      'fontSize',
+      'italic',
+      'mb',
+      'mt',
+    ]
+    return !customProps.includes(prop)
+  },
+})`
   line-height: 1.5;
 `
 

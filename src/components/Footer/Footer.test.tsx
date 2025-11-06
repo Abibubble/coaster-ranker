@@ -9,9 +9,15 @@ describe('Footer', () => {
     expect(results).toHaveNoViolations()
   })
 
-  it('renders copyright text', () => {
+  it('renders copyright text and navigation links', () => {
     render(<Footer />)
 
     expect(screen.getByText('© Bubble & Squeak')).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: 'Accessibility' })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: 'Privacy Policy' })
+    ).toBeInTheDocument()
   })
 })
