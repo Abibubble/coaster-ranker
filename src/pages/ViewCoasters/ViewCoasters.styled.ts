@@ -10,6 +10,70 @@ export const CoastersSummary = styled.div`
   margin-bottom: ${spacing.large};
 `
 
+export const FiltersSection = styled.div`
+  margin-bottom: ${spacing.large};
+  padding: ${spacing.medium};
+  background-color: ${colours.veryLightGrey};
+  border-radius: ${spacing.tiny};
+  border: ${spacing.micro} solid ${colours.borderGrey};
+`
+
+export const FiltersGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: ${spacing.medium};
+  margin-bottom: ${spacing.medium};
+
+  @media (max-width: ${breakpoints.tablet}) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: ${breakpoints.mobileLarge}) {
+    grid-template-columns: 1fr;
+  }
+`
+
+export const FilterGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing.tiny};
+`
+
+export const FilterLabel = styled.label`
+  font-size: ${fonts.small};
+  font-weight: bold;
+  color: ${colours.charcoal};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`
+
+export const FilterSelect = styled.select`
+  padding: ${spacing.small};
+  border: ${spacing.micro} solid ${colours.borderGrey};
+  border-radius: ${spacing.micro};
+  background-color: ${colours.white};
+  color: ${colours.charcoal};
+  font-size: ${fonts.body};
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: ${colours.slateGrey};
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${colours.charcoal};
+    box-shadow: 0 0 0 2px ${colours.paleGrey};
+  }
+`
+
+export const FilterActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: ${spacing.small};
+`
+
 export const ActionsBar = styled.div`
   display: flex;
   gap: ${spacing.medium};
@@ -28,24 +92,33 @@ export const CoastersTable = styled.div`
   border-radius: ${spacing.tiny};
 `
 
-export const TableHeader = styled.div`
+export const TableHeader = styled.div<{ hasRank?: boolean }>`
   display: grid;
-  grid-template-columns:
-    minmax(200px, 2fr)
-    minmax(150px, 1.5fr)
-    minmax(150px, 1fr)
-    minmax(120px, 1fr)
-    minmax(100px, 1fr)
-    minmax(100px, 1fr);
+  grid-template-columns: ${({ hasRank }) =>
+    hasRank
+      ? `minmax(80px, 0.5fr)
+         minmax(200px, 2fr)
+         minmax(150px, 1.5fr)
+         minmax(150px, 1fr)
+         minmax(120px, 1fr)
+         minmax(100px, 1fr)
+         minmax(100px, 1fr)`
+      : `minmax(200px, 2fr)
+         minmax(150px, 1.5fr)
+         minmax(150px, 1fr)
+         minmax(120px, 1fr)
+         minmax(100px, 1fr)
+         minmax(100px, 1fr)`};
   background-color: ${colours.veryLightGrey};
   border-bottom: ${spacing.micro} solid ${colours.borderGrey};
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: 1fr 1fr 100px;
+    grid-template-columns: ${({ hasRank }) =>
+      hasRank ? '80px 1fr 1fr 100px' : '1fr 1fr 100px'};
   }
 `
 
-export const HeaderCell = styled.div`
+export const HeaderCell = styled.div<{ isHiddenOnTablet?: boolean }>`
   padding: ${spacing.medium};
   font-weight: bold;
   color: ${colours.charcoal};
@@ -54,23 +127,31 @@ export const HeaderCell = styled.div`
   letter-spacing: 0.5px;
 
   @media (max-width: ${breakpoints.tablet}) {
-    &:nth-child(3),
-    &:nth-child(4),
-    &:nth-child(5) {
+    ${({ isHiddenOnTablet }) =>
+      isHiddenOnTablet &&
+      `
       display: none;
-    }
+    `}
   }
 `
 
-export const TableRow = styled.div`
+export const TableRow = styled.div<{ hasRank?: boolean }>`
   display: grid;
-  grid-template-columns:
-    minmax(200px, 2fr)
-    minmax(150px, 1.5fr)
-    minmax(150px, 1fr)
-    minmax(120px, 1fr)
-    minmax(100px, 1fr)
-    minmax(100px, 1fr);
+  grid-template-columns: ${({ hasRank }) =>
+    hasRank
+      ? `minmax(80px, 0.5fr)
+         minmax(200px, 2fr)
+         minmax(150px, 1.5fr)
+         minmax(150px, 1fr)
+         minmax(120px, 1fr)
+         minmax(100px, 1fr)
+         minmax(100px, 1fr)`
+      : `minmax(200px, 2fr)
+         minmax(150px, 1.5fr)
+         minmax(150px, 1fr)
+         minmax(120px, 1fr)
+         minmax(100px, 1fr)
+         minmax(100px, 1fr)`};
   border-bottom: ${spacing.micro} solid ${colours.borderGrey};
   transition: background-color 0.2s ease;
 
@@ -83,21 +164,22 @@ export const TableRow = styled.div`
   }
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: 1fr 1fr 100px;
+    grid-template-columns: ${({ hasRank }) =>
+      hasRank ? '80px 1fr 1fr 100px' : '1fr 1fr 100px'};
   }
 `
 
-export const TableCell = styled.div`
+export const TableCell = styled.div<{ isHiddenOnTablet?: boolean }>`
   padding: ${spacing.medium};
   color: ${colours.slateGrey};
   font-size: ${fonts.body};
   align-self: center;
 
   @media (max-width: ${breakpoints.tablet}) {
-    &:nth-child(3),
-    &:nth-child(4),
-    &:nth-child(5) {
+    ${({ isHiddenOnTablet }) =>
+      isHiddenOnTablet &&
+      `
       display: none;
-    }
+    `}
   }
 `
