@@ -16,6 +16,7 @@ const dirname =
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [react()],
+  base: '/coaster-ranker/',
   server: {
     port: 3000,
     open: true,

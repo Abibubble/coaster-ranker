@@ -26,7 +26,7 @@ root.render(
       <SkipLink />
       <Header />
       <main id='main-content'>
-        <Router>
+        <Router basename='/coaster-ranker'>
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/accessibility' element={<Accessibility />} />
