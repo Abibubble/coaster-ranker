@@ -1,6 +1,6 @@
 import React from 'react'
 import * as Styled from './Card.styled'
-import { Text } from '../'
+import { Text } from '../Text'
 
 interface CardProps {
   children: React.ReactNode

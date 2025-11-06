@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Coaster } from '../../types/data'
-import {
-  CoasterComparison,
-  ProgressInfo,
-  SimpleCoasterRanking,
-  Text,
-} from '../'
+import { CoasterComparison } from '../CoasterComparison'
+import { ProgressInfo } from '../ProgressInfo'
+import { SimpleCoasterRanking } from '../SimpleCoasterRanking'
+import { Text } from '../Text'
 import {
   createCoasterGroups,
   finalizeGroupRanking,

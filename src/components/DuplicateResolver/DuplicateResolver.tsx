@@ -4,7 +4,7 @@ import {
   formatMatchingFields,
 } from '../../utils/fileProcessing/duplicateDetection'
 import * as Styled from './DuplicateResolver.styled'
-import { Text } from '../'
+import { Text } from '../Text'
 import { CoasterComparison } from '../CoasterComparison'
 
 export interface DuplicateResolution {

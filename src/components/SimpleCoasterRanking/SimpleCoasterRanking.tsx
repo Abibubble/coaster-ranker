@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Coaster } from '../../types/data'
-import { CoasterComparison, Text } from '../'
+import { CoasterComparison } from '../CoasterComparison'
+import { Text } from '../Text'
 import * as Styled from './SimpleCoasterRanking.styled'
 
 export interface SimpleCoasterRankingProps {

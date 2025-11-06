@@ -1,6 +1,7 @@
 import { breakpoints, colours, fonts, spacing, textSpacing } from '../../theme'
 import styled from 'styled-components'
-import { Text, Button } from '../'
+import { Text } from '../Text'
+import { Button } from '../Button'
 
 export const DuplicateContainer = styled.div`
   background: ${colours.successBg};

@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { colours, fonts, spacing, shadows } from '../../theme'
-import { Text, Button } from '../'
+import { Text } from '../Text'
+import { Button } from '../Button'
 
 export const OverlayContainer = styled.div`
   position: fixed;

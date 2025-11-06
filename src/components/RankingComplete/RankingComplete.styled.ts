@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { colours, fonts, textSpacing, spacing } from '../../theme'
-import { Text } from '../'
+import { Text } from '../Text'
 
 export const ResultsList = styled.div`
   margin: ${spacing.medium} 0;

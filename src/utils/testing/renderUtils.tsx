@@ -1,9 +1,12 @@
 import { render, RenderOptions } from '@testing-library/react'
 import React, { ReactElement } from 'react'
-import { DataProvider } from './contexts/DataContext'
+import { DataProvider } from '../../contexts/DataContext'
 
-// Custom render function that includes DataProvider
-const customRender = (
+/**
+ * Custom render function that includes DataProvider
+ * Wraps components with necessary providers for testing
+ */
+export const customRender = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>
 ) => {

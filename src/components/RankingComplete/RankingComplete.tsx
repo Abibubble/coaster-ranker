@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Coaster } from '../../types/data'
 import { useData } from '../../contexts/DataContext'
-import { Button, Text } from '../'
+import { Button } from '../Button'
+import { Text } from '../Text'
 import * as Styled from './RankingComplete.styled'
 
 interface RankingCompleteProps {

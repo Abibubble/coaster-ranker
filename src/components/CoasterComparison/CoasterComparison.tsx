@@ -1,7 +1,8 @@
 import { Coaster } from '../../types/data'
 import { formatCountry } from '../../utils/ranking/rankingUtils'
 import * as Styled from './CoasterComparison.styled'
-import { Card, Text } from '../'
+import { Card } from '../Card'
+import { Text } from '../Text'
 
 interface CoasterComparisonProps {
   coaster1: Coaster

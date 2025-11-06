@@ -1,34 +1,46 @@
-import { render } from '@testing-library/react'
-import { axe } from 'jest-axe'
+import {
+  render,
+  testAxeCompliance,
+  runBasicWCAG22Tests,
+} from '../../utils/testing'
+import { vi } from 'vitest'
 import CoasterComparison from './CoasterComparison'
 
 const defaultProps = {
   coaster1: {
     id: '1',
-    name: 'Coaster One',
-    park: 'Park A',
-    country: 'US',
-    manufacturer: 'Manufacturer A',
-    model: 'Model A',
+    name: 'Steel Vengeance',
+    park: 'Cedar Point',
+    country: 'USA',
+    manufacturer: 'Rocky Mountain Construction',
+    model: 'I-Box',
     type: 'Steel',
   },
   coaster2: {
-    id: '1',
-    name: 'Coaster One',
-    park: 'Park A',
-    country: 'US',
-    manufacturer: 'Manufacturer A',
-    model: 'Model A',
+    id: '2',
+    name: 'Fury 325',
+    park: 'Carowinds',
+    country: 'USA',
+    manufacturer: 'Bolliger & Mabillard',
+    model: 'Giga Coaster',
     type: 'Steel',
   },
-  onChoose1: () => {},
-  onChoose2: () => {},
+  onChoose1: vi.fn(),
+  onChoose2: vi.fn(),
 }
 
 describe('CoasterComparison', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(<CoasterComparison {...defaultProps} />)
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+    await testAxeCompliance(container)
+  })
+
+  it('meets WCAG 2.2 Level AA requirements', async () => {
+    const { container } = render(<CoasterComparison {...defaultProps} />)
+    await runBasicWCAG22Tests(container)
   })
 })

@@ -1,11 +1,18 @@
-import { render } from '../../test-utils'
-import { axe } from 'jest-axe'
+import {
+  render,
+  testAxeCompliance,
+  runBasicWCAG22Tests,
+} from '../../utils/testing'
 import Rank from './Rank'
 
 describe('Rank Page', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(<Rank />)
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+    await testAxeCompliance(container)
+  })
+
+  it('meets WCAG 2.2 Level AA requirements', async () => {
+    const { container } = render(<Rank />)
+    await runBasicWCAG22Tests(container)
   })
 })

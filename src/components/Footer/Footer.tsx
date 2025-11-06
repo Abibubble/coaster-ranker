@@ -1,5 +1,5 @@
 import * as Styled from './Footer.styled'
-import { Text } from '../'
+import { Text } from '../Text'
 
 export default function Footer() {
   return (

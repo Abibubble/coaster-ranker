@@ -24,7 +24,10 @@ export default function ViewCoasters() {
     country: '',
   })
 
-  const allCoasters = uploadedData?.coasters || []
+  const allCoasters = useMemo(
+    () => uploadedData?.coasters || [],
+    [uploadedData?.coasters]
+  )
 
   // Sort and filter coasters
   const coasters = useMemo(() => {
@@ -131,6 +134,16 @@ export default function ViewCoasters() {
   }
 
   const hasActiveFilters = Object.values(filters).some(filter => filter !== '')
+
+  const handleFieldClick = (field: keyof FilterOptions, value: string) => {
+    // Only apply filter if the value exists and is not empty
+    if (value && value.trim()) {
+      setFilters(prev => ({
+        ...prev,
+        [field]: value,
+      }))
+    }
+  }
 
   const handleRemoveCoaster = (coasterId: string) => {
     if (!uploadedData) return
@@ -410,6 +423,25 @@ export default function ViewCoasters() {
           </Button>
         </Styled.ActionsBar>
 
+        <Styled.TableHelpText>
+          <Text as='p' colour='mediumGrey' fontSize='small' italic>
+            Tip: Click on any park, manufacturer, model, material, or thrill
+            level to filter by that value (keyboard: Tab to navigate,
+            Enter/Space to activate)
+          </Text>
+          <Styled.SkipTableLink
+            href='#table-end'
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                document.getElementById('table-end')?.focus()
+              }
+            }}
+          >
+            Skip table navigation
+          </Styled.SkipTableLink>
+        </Styled.TableHelpText>
+
         <Styled.CoastersTable role='table' aria-label='Coaster collection data'>
           <Styled.TableHeader
             role='row'
@@ -462,24 +494,133 @@ export default function ViewCoasters() {
                     {coaster.name}
                   </Text>
                 </Styled.TableCell>
-                <Styled.TableCell role='cell'>{coaster.park}</Styled.TableCell>
-                <Styled.TableCell role='cell' isHiddenOnTablet>
+                <Styled.ClickableTableCell
+                  role='button'
+                  onClick={() => handleFieldClick('park', coaster.park)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleFieldClick('park', coaster.park)
+                    }
+                  }}
+                  tabIndex={0}
+                  title={`Filter by park: ${coaster.park}`}
+                  aria-label={`Filter by park: ${coaster.park}`}
+                >
+                  {coaster.park}
+                </Styled.ClickableTableCell>
+                <Styled.ClickableTableCell
+                  role='button'
+                  isHiddenOnTablet
+                  onClick={() =>
+                    handleFieldClick('manufacturer', coaster.manufacturer)
+                  }
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleFieldClick('manufacturer', coaster.manufacturer)
+                    }
+                  }}
+                  tabIndex={0}
+                  title={`Filter by manufacturer: ${coaster.manufacturer}`}
+                  aria-label={`Filter by manufacturer: ${coaster.manufacturer}`}
+                >
                   {coaster.manufacturer}
-                </Styled.TableCell>
+                </Styled.ClickableTableCell>
                 {hasModel && (
-                  <Styled.TableCell role='cell' isHiddenOnTablet>
+                  <Styled.ClickableTableCell
+                    role='button'
+                    isHiddenOnTablet
+                    onClick={() =>
+                      coaster.model && handleFieldClick('model', coaster.model)
+                    }
+                    onKeyDown={e => {
+                      if (
+                        (e.key === 'Enter' || e.key === ' ') &&
+                        coaster.model
+                      ) {
+                        e.preventDefault()
+                        handleFieldClick('model', coaster.model)
+                      }
+                    }}
+                    tabIndex={0}
+                    title={
+                      coaster.model
+                        ? `Filter by model: ${coaster.model}`
+                        : undefined
+                    }
+                    aria-label={
+                      coaster.model
+                        ? `Filter by model: ${coaster.model}`
+                        : undefined
+                    }
+                  >
                     {coaster.model}
-                  </Styled.TableCell>
+                  </Styled.ClickableTableCell>
                 )}
                 {hasMaterial && (
-                  <Styled.TableCell role='cell' isHiddenOnTablet>
+                  <Styled.ClickableTableCell
+                    role='button'
+                    isHiddenOnTablet
+                    onClick={() =>
+                      coaster.material &&
+                      handleFieldClick('material', coaster.material)
+                    }
+                    onKeyDown={e => {
+                      if (
+                        (e.key === 'Enter' || e.key === ' ') &&
+                        coaster.material
+                      ) {
+                        e.preventDefault()
+                        handleFieldClick('material', coaster.material)
+                      }
+                    }}
+                    tabIndex={0}
+                    title={
+                      coaster.material
+                        ? `Filter by material: ${coaster.material}`
+                        : undefined
+                    }
+                    aria-label={
+                      coaster.material
+                        ? `Filter by material: ${coaster.material}`
+                        : undefined
+                    }
+                  >
                     {coaster.material}
-                  </Styled.TableCell>
+                  </Styled.ClickableTableCell>
                 )}
                 {hasThrillLevel && (
-                  <Styled.TableCell role='cell' isHiddenOnTablet>
+                  <Styled.ClickableTableCell
+                    role='button'
+                    isHiddenOnTablet
+                    onClick={() =>
+                      coaster.thrillLevel &&
+                      handleFieldClick('thrillLevel', coaster.thrillLevel)
+                    }
+                    onKeyDown={e => {
+                      if (
+                        (e.key === 'Enter' || e.key === ' ') &&
+                        coaster.thrillLevel
+                      ) {
+                        e.preventDefault()
+                        handleFieldClick('thrillLevel', coaster.thrillLevel)
+                      }
+                    }}
+                    tabIndex={0}
+                    title={
+                      coaster.thrillLevel
+                        ? `Filter by thrill level: ${coaster.thrillLevel}`
+                        : undefined
+                    }
+                    aria-label={
+                      coaster.thrillLevel
+                        ? `Filter by thrill level: ${coaster.thrillLevel}`
+                        : undefined
+                    }
+                  >
                     {coaster.thrillLevel}
-                  </Styled.TableCell>
+                  </Styled.ClickableTableCell>
                 )}
                 <Styled.TableCell role='cell'>
                   <Button
@@ -495,16 +636,18 @@ export default function ViewCoasters() {
           </div>
         </Styled.CoastersTable>
 
-        <Text
-          as='div'
-          center
-          colour='mutedGrey'
-          fontSize='small'
-          italic
-          mt='medium'
-        >
-          Showing {coasters.length} coaster{coasters.length === 1 ? '' : 's'}
-        </Text>
+        <div id='table-end' tabIndex={-1}>
+          <Text
+            as='div'
+            center
+            colour='mutedGrey'
+            fontSize='small'
+            italic
+            mt='medium'
+          >
+            Showing {coasters.length} coaster{coasters.length === 1 ? '' : 's'}
+          </Text>
+        </div>
       </section>
     </MainContent>
   )

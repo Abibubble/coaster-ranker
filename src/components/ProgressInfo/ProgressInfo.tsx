@@ -1,5 +1,5 @@
 import * as Styled from './ProgressInfo.styled'
-import { Text } from '../'
+import { Text } from '../Text'
 
 interface ProgressInfoProps {
   remainingComparisons?: number

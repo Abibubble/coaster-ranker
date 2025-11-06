@@ -74,6 +74,28 @@ export const FilterActions = styled.div`
   margin-top: ${spacing.small};
 `
 
+export const TableHelpText = styled.div`
+  margin-bottom: ${spacing.medium};
+  text-align: center;
+`
+
+export const SkipTableLink = styled.a`
+  display: inline-block;
+  margin-left: ${spacing.medium};
+  color: ${colours.blue};
+  font-size: ${fonts.small};
+  text-decoration: underline;
+
+  &:hover {
+    color: ${colours.darkBlue};
+  }
+
+  &:focus {
+    outline: 2px solid ${colours.blue};
+    outline-offset: 2px;
+  }
+`
+
 export const ActionsBar = styled.div`
   display: flex;
   gap: ${spacing.medium};
@@ -181,5 +203,60 @@ export const TableCell = styled.div<{ isHiddenOnTablet?: boolean }>`
       `
       display: none;
     `}
+  }
+`
+
+export const ClickableTableCell = styled(TableCell)<{
+  isHiddenOnTablet?: boolean
+}>`
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: ${spacing.micro};
+  position: relative;
+
+  &:hover {
+    background-color: ${colours.paleGrey};
+    color: ${colours.charcoal};
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &:hover::after {
+    content: 'filter';
+    position: absolute;
+    right: ${spacing.small};
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    opacity: 0.6;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: ${colours.blue};
+  }
+
+  &:focus {
+    outline: 2px solid ${colours.blue};
+    outline-offset: 2px;
+    background-color: ${colours.paleGrey};
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &:focus::after {
+    content: 'filter';
+    position: absolute;
+    right: ${spacing.small};
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    opacity: 0.6;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: ${colours.blue};
+  }
+
+  &:active {
+    background-color: ${colours.softGrey};
+    transform: translateY(0);
   }
 `

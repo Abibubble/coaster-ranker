@@ -1,4 +1,4 @@
-import { Button } from '../'
+import { Button } from '../Button'
 import * as Styled from './RankingControls.styled'
 
 interface RankingControlsProps {

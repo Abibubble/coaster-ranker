@@ -146,58 +146,60 @@ export const LongNames: Story = {
   },
 }
 
-export const InteractiveDemo: Story = {
-  render: () => {
-    const [choice, setChoice] = React.useState<string | null>(null)
-    const [comparisonCount, setComparisonCount] = React.useState(1)
+const InteractiveDemoComponent = () => {
+  const [choice, setChoice] = React.useState<string | null>(null)
+  const [comparisonCount, setComparisonCount] = React.useState(1)
 
-    const handleChoice1 = () => {
-      setChoice(mockCoaster1.name)
-      setTimeout(() => {
-        setChoice(null)
-        setComparisonCount(prev => prev + 1)
-      }, 1000)
-    }
+  const handleChoice1 = () => {
+    setChoice(mockCoaster1.name)
+    setTimeout(() => {
+      setChoice(null)
+      setComparisonCount(prev => prev + 1)
+    }, 1000)
+  }
 
-    const handleChoice2 = () => {
-      setChoice(mockCoaster2.name)
-      setTimeout(() => {
-        setChoice(null)
-        setComparisonCount(prev => prev + 1)
-      }, 1000)
-    }
+  const handleChoice2 = () => {
+    setChoice(mockCoaster2.name)
+    setTimeout(() => {
+      setChoice(null)
+      setComparisonCount(prev => prev + 1)
+    }, 1000)
+  }
 
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '20px',
-          alignItems: 'center',
-        }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <h3>Comparison #{comparisonCount}</h3>
-          {choice && (
-            <p style={{ color: '#007acc', fontWeight: 'bold' }}>
-              You chose: {choice}
-            </p>
-          )}
-        </div>
-
-        <CoasterComparison
-          coaster1={mockCoaster1}
-          coaster2={mockCoaster2}
-          onChoose1={handleChoice1}
-          onChoose2={handleChoice2}
-        />
-
-        <p style={{ fontSize: '14px', color: '#666', textAlign: 'center' }}>
-          Click on either coaster card to make your choice!
-        </p>
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ textAlign: 'center' }}>
+        <h3>Comparison #{comparisonCount}</h3>
+        {choice && (
+          <p style={{ color: '#007acc', fontWeight: 'bold' }}>
+            You chose: {choice}
+          </p>
+        )}
       </div>
-    )
-  },
+
+      <CoasterComparison
+        coaster1={mockCoaster1}
+        coaster2={mockCoaster2}
+        onChoose1={handleChoice1}
+        onChoose2={handleChoice2}
+      />
+
+      <p style={{ fontSize: '14px', color: '#666', textAlign: 'center' }}>
+        Click on either coaster card to make your choice!
+      </p>
+    </div>
+  )
+}
+
+export const InteractiveDemo: Story = {
+  render: () => <InteractiveDemoComponent />,
 }
 
 export const AccessibilityDemo: Story = {

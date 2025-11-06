@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { colours, spacing } from '../../theme'
-import { Text } from '../'
+import { Text } from '../Text'
 
 export const ControlsContainer = styled.div`
   display: flex;

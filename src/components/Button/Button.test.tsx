@@ -1,11 +1,18 @@
-import { render } from '@testing-library/react'
-import { axe } from 'jest-axe'
+import {
+  render,
+  testAxeCompliance,
+  runBasicWCAG22Tests,
+} from '../../utils/testing'
 import Button from './Button'
 
 describe('Button', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(<Button>Test</Button>)
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+    await testAxeCompliance(container)
+  })
+
+  it('meets WCAG 2.2 Level AA requirements', async () => {
+    const { container } = render(<Button>Test Button</Button>)
+    await runBasicWCAG22Tests(container)
   })
 })

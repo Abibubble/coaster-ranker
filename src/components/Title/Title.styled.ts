@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { breakpoints, colours, fonts, spacing } from '../../theme'
-import { Text } from '../'
+import { Text } from '../Text'
 
 export const TitleText = styled(Text)`
   font-size: ${fonts.large};

@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { colours, fonts, shadows, spacing, textSpacing } from '../../theme'
-import { Text } from '../'
+import { Text } from '../Text'
 
 export const ComparisonProgress = styled.div`
   text-align: center;

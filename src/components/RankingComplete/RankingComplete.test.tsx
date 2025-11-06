@@ -1,5 +1,4 @@
-import { render } from '../../test-utils'
-import { axe } from 'jest-axe'
+import { render, testAxeCompliance } from '../../utils/testing'
 import { vi } from 'vitest'
 import RankingComplete from './RankingComplete'
 
@@ -32,7 +31,6 @@ const defaultProps = {
 describe('RankingComplete', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(<RankingComplete {...defaultProps} />)
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
+    await testAxeCompliance(container)
   })
 })

@@ -1,6 +1,6 @@
 import { Button } from '../Button'
 import * as Styled from './PreRankingQuestion.styled'
-import { Text } from '../'
+import { Text } from '../Text'
 
 interface PreRankingQuestionProps {
   coasterCount: number
