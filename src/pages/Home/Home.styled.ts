@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { spacing, textSpacing, colours, breakpoints } from '../../theme'
+import hyperiaImage from '../../assets/hyperia-thorpe-park.webp'
 
 export const Section = styled.section`
   margin-bottom: ${spacing.large};
@@ -71,7 +72,7 @@ export const HeroImage = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: url('/images/homepage/hyperia-thorpe-park.webp');
+  background-image: url(${hyperiaImage});
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
