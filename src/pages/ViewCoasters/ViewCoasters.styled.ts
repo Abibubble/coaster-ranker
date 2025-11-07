@@ -3,10 +3,10 @@ import { breakpoints, colours, fonts, spacing } from '../../theme'
 
 export const EmptyState = styled.div`
   text-align: center;
-  padding: ${spacing.large};
+  padding: ${spacing.medium};
 
   @media (max-width: ${breakpoints.tablet}) {
-    padding: ${spacing.giant};
+    padding: ${spacing.large};
   }
 `
 

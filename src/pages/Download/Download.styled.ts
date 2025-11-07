@@ -146,12 +146,10 @@ export const ButtonDescription = styled(Text).withConfig({
   word-wrap: break-word;
   overflow-wrap: break-word;
 
-  /* Mobile-first: ensure readability */
   @media (max-width: ${breakpoints.mobileSmall}) {
     font-size: 0.875rem;
   }
 
-  /* Tablet: slightly larger text */
   @media (min-width: ${breakpoints.tablet}) {
     line-height: 1.6;
   }
@@ -185,21 +183,16 @@ export const EmptyState = styled.div`
   border-radius: ${spacing.small};
   border-left: ${spacing.fine} solid ${colours.mediumGrey};
   box-shadow: 0 2px 8px ${colours.shadowLight};
-
-  /* Mobile-first: compact padding */
   padding: ${spacing.medium} ${spacing.small};
 
-  /* Mobile medium: 400px+ */
   @media (min-width: ${breakpoints.mobileMedium}) {
     padding: ${spacing.large} ${spacing.medium};
   }
 
-  /* Mobile large: 480px+ */
   @media (min-width: ${breakpoints.mobileLarge}) {
     padding: ${spacing.large};
   }
 
-  /* Tablet: 640px+ */
   @media (min-width: ${breakpoints.tablet}) {
     padding: ${spacing.giant} ${spacing.large};
     border-radius: ${spacing.medium};
@@ -207,7 +200,6 @@ export const EmptyState = styled.div`
     margin: 0 auto;
   }
 
-  /* Desktop: 1024px+ */
   @media (min-width: ${breakpoints.desktop}) {
     padding: ${spacing.giant};
   }
@@ -215,20 +207,33 @@ export const EmptyState = styled.div`
   p {
     line-height: 1.6;
     margin: 0 auto ${spacing.large} auto;
-
-    /* Mobile: smaller max-width */
     max-width: 300px;
 
-    /* Mobile medium: 400px+ */
     @media (min-width: ${breakpoints.mobileMedium}) {
       max-width: 400px;
     }
 
-    /* Tablet: 640px+ */
     @media (min-width: ${breakpoints.tablet}) {
       max-width: 500px;
       font-size: 1.1rem;
       line-height: 1.7;
+    }
+  }
+
+  /* Ensure buttons are centered on small screens */
+  a[role='button'],
+  button {
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  /* For very small screens, ensure proper centering */
+  @media (max-width: ${breakpoints.mobileMedium}) {
+    a[role='button'],
+    button {
+      display: block;
+      width: fit-content;
+      margin: 0 auto;
     }
   }
 `
@@ -236,7 +241,6 @@ export const EmptyState = styled.div`
 export const SectionHeader = styled.div`
   margin-bottom: ${spacing.medium};
 
-  /* Mobile medium: 400px+ */
   @media (min-width: ${breakpoints.mobileMedium}) {
     margin-bottom: ${spacing.large};
   }
@@ -245,7 +249,6 @@ export const SectionHeader = styled.div`
     position: relative;
     padding-bottom: ${spacing.small};
 
-    /* Add subtle underline accent */
     &::after {
       content: '';
       position: absolute;
@@ -260,17 +263,14 @@ export const SectionHeader = styled.div`
 `
 
 export const DownloadOptions = styled.div`
-  /* Mobile-first: stack vertically */
   display: flex;
   flex-direction: column;
   gap: ${spacing.small};
 
-  /* Mobile medium: 400px+ */
   @media (min-width: ${breakpoints.mobileMedium}) {
     gap: ${spacing.medium};
   }
 
-  /* Tablet: 640px+ - could potentially show side by side if needed */
   @media (min-width: ${breakpoints.tablet}) {
     gap: ${spacing.large};
   }
