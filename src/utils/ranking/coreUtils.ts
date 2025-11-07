@@ -78,6 +78,17 @@ export const determineOptimalRankingMode = (
 ): RankingMode => {
   if (coasters.length === 0) return 'individual'
 
+  // If we have a mix of ranked and unranked coasters, always use individual mode
+  // This handles cases where new coasters are added to existing rankings
+  const rankedCoasters = coasters.filter(c => c.rankPosition !== undefined)
+  const unrankedCoasters = coasters.filter(
+    c => c.rankPosition === undefined && !c.isPreRanked
+  )
+
+  if (rankedCoasters.length > 0 && unrankedCoasters.length > 0) {
+    return 'individual'
+  }
+
   // Group by park
   const parkGroups = new Map<string, Coaster[]>()
   coasters.forEach(coaster => {

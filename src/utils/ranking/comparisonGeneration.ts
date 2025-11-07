@@ -144,11 +144,10 @@ export const generatePositionalComparisons = (
     return pairs
   }
 
-  // Find coasters that are currently ranking or ready to be ranked
-  const allRankedIds = new Set(rankedCoasters)
+  // Find coasters that need to be ranked
+  // This includes: 1) New coasters without rank positions, 2) Non-pre-ranked coasters without rank positions
   const unrankedCoasters = coasters.filter(
-    c =>
-      !c.isPreRanked && !allRankedIds.has(c.id) && c.rankPosition === undefined
+    c => c.rankPosition === undefined && !c.isPreRanked
   )
 
   if (unrankedCoasters.length === 0) {

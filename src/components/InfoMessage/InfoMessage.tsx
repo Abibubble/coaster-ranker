@@ -61,7 +61,6 @@ export function InfoMessage({
   return (
     <Styled.InfoMessage
       as='p'
-      mt='small'
       $bgColour={backgroundColour}
       $borderColour={borderColor}
       role={role}

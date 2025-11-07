@@ -2,7 +2,12 @@ import styled from 'styled-components'
 import { spacing } from '../../theme'
 import { Text } from '../Text/Text'
 
-export const InfoMessage = styled(Text)<{
+export const InfoMessage = styled(Text).withConfig({
+  shouldForwardProp: prop => {
+    const customProps = ['mb', 'mt']
+    return !customProps.includes(prop)
+  },
+})<{
   $bgColour: string
   $borderColour: string
 }>`
@@ -13,4 +18,5 @@ export const InfoMessage = styled(Text)<{
   display: flex;
   align-items: center;
   gap: ${spacing.tiny};
+  margin: ${spacing.small} 0;
 `

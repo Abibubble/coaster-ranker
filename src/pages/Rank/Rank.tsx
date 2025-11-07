@@ -194,9 +194,15 @@ function Rank() {
       rankingPhase === 'auto-ranking'
     ) {
       // Check if ranking is already complete from saved state
+      // Look for coasters that haven't been ranked yet (including new coasters)
+      const unrankedCoasters = uploadedData.coasters.filter(
+        coaster => coaster.rankPosition === undefined && !coaster.isPreRanked
+      )
+
       if (
         uploadedData.rankingMetadata?.isRanked &&
-        uploadedData.rankingMetadata?.rankedCoasters
+        uploadedData.rankingMetadata?.rankedCoasters &&
+        unrankedCoasters.length === 0
       ) {
         // Get coasters sorted by their rank positions
         const savedRankedCoasters = uploadedData.coasters
