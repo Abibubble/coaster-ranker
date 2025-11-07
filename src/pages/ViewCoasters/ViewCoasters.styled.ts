@@ -3,7 +3,11 @@ import { breakpoints, colours, fonts, spacing } from '../../theme'
 
 export const EmptyState = styled.div`
   text-align: center;
-  padding: ${spacing.giant};
+  padding: ${spacing.large};
+
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: ${spacing.giant};
+  }
 `
 
 export const CoastersSummary = styled.div`
@@ -16,6 +20,57 @@ export const FiltersSection = styled.div`
   background-color: ${colours.veryLightGrey};
   border-radius: ${spacing.tiny};
   border: ${spacing.micro} solid ${colours.borderGrey};
+`
+
+export const FilterHeading = styled.h3`
+  @media (max-width: ${breakpoints.tablet}) {
+    display: none;
+  }
+`
+
+export const FilterToggle = styled.button`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: ${fonts.medium};
+  font-weight: bold;
+  color: ${colours.charcoal};
+  cursor: pointer;
+  line-height: 1;
+  min-height: auto;
+
+  &:hover {
+    color: ${colours.blue};
+  }
+
+  &:focus {
+    outline: 2px solid ${colours.blue};
+    outline-offset: 2px;
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    display: none;
+  }
+`
+
+export const FilterIcon = styled.span<{ $isOpen: boolean }>`
+  transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transition: transform 0.2s ease;
+
+  &::after {
+    content: '▼';
+  }
+`
+
+export const FilterContent = styled.div<{ $isOpen: boolean }>`
+  @media (max-width: ${breakpoints.tablet}) {
+    display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
+  }
 `
 
 export const FiltersGrid = styled.div`
@@ -112,6 +167,11 @@ export const CoastersTable = styled.div`
   margin-bottom: ${spacing.medium};
   border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.tiny};
+
+  @media (max-width: ${breakpoints.tablet}) {
+    overflow-x: visible;
+    border: none;
+  }
 `
 
 export const TableHeader = styled.div<{ $hasRank?: boolean }>`
@@ -135,8 +195,7 @@ export const TableHeader = styled.div<{ $hasRank?: boolean }>`
   border-bottom: ${spacing.micro} solid ${colours.borderGrey};
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: ${({ $hasRank }) =>
-      $hasRank ? '80px 1fr 1fr 100px' : '1fr 1fr 100px'};
+    display: none;
   }
 `
 
@@ -186,8 +245,23 @@ export const TableRow = styled.div<{ $hasRank?: boolean }>`
   }
 
   @media (max-width: ${breakpoints.tablet}) {
-    grid-template-columns: ${({ $hasRank }) =>
-      $hasRank ? '80px 1fr 1fr 100px' : '1fr 1fr 100px'};
+    display: block;
+    border: ${spacing.micro} solid ${colours.borderGrey};
+    border-radius: ${spacing.small};
+    padding: ${spacing.small};
+    margin-bottom: ${spacing.small};
+    background-color: ${colours.white};
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      background-color: ${colours.white};
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transform: none;
+    }
+
+    &:last-child {
+      border-bottom: ${spacing.micro} solid ${colours.borderGrey};
+    }
   }
 `
 
@@ -198,11 +272,19 @@ export const TableCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
   align-self: center;
 
   @media (max-width: ${breakpoints.tablet}) {
-    ${({ $isHiddenOnTablet }) =>
-      $isHiddenOnTablet &&
-      `
-      display: none;
-    `}
+    padding: 0;
+    margin-bottom: ${spacing.tiny};
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: ${spacing.small};
+    align-items: start;
+
+    &:last-child {
+      margin-bottom: 0;
+      margin-top: ${spacing.small};
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
   }
 `
 
@@ -221,19 +303,6 @@ export const ClickableTableCell = styled(TableCell)<{
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  &:hover::after {
-    content: 'filter';
-    position: absolute;
-    right: ${spacing.small};
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 10px;
-    opacity: 0.6;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: ${colours.blue};
-  }
-
   &:focus {
     outline: 2px solid ${colours.blue};
     outline-offset: 2px;
@@ -242,21 +311,89 @@ export const ClickableTableCell = styled(TableCell)<{
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  &:focus::after {
-    content: 'filter';
-    position: absolute;
-    right: ${spacing.small};
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 10px;
-    opacity: 0.6;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: ${colours.blue};
-  }
-
   &:active {
     background-color: ${colours.softGrey};
     transform: translateY(0);
+  }
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: 0;
+    margin-bottom: ${spacing.tiny};
+    border-radius: ${spacing.small};
+    background-color: transparent;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: ${spacing.small};
+    align-items: start;
+
+    &:hover {
+      background-color: transparent;
+      transform: none;
+      box-shadow: none;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+      margin-top: ${spacing.small};
+      background-color: transparent;
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+  }
+`
+
+export const MobileFieldLabel = styled.span`
+  display: none;
+
+  @media (max-width: ${breakpoints.tablet}) {
+    display: block;
+    font-size: ${fonts.small};
+    font-weight: bold;
+    color: ${colours.charcoal};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    justify-self: start;
+    align-self: center;
+  }
+`
+
+export const MobileFieldValue = styled.div`
+  @media (max-width: ${breakpoints.tablet}) {
+    font-size: ${fonts.body};
+    color: ${colours.slateGrey};
+    justify-self: start;
+    align-self: center;
+  }
+`
+
+export const MobileFieldValueClickable = styled.div`
+  @media (max-width: ${breakpoints.tablet}) {
+    font-size: ${fonts.body};
+    color: ${colours.slateGrey};
+    justify-self: start;
+    align-self: center;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: ${colours.blue};
+    }
+  }
+`
+
+export const MobileRankCell = styled(TableCell)`
+  @media (max-width: ${breakpoints.tablet}) {
+    padding: 0;
+    margin-bottom: ${spacing.tiny};
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: ${spacing.small};
+    align-items: center;
+
+    &:last-child {
+      margin-bottom: 0;
+      margin-top: ${spacing.small};
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
   }
 `

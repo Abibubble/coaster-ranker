@@ -14,7 +14,7 @@ export const Instructions = styled.div`
 `
 
 export const RequiredFields = styled.div`
-  margin: ${spacing.large} 0 ${spacing.medium};
+  margin: ${spacing.medium} 0;
 
   ul {
     list-style: none;
@@ -84,7 +84,11 @@ export const ExampleFiles = styled.div`
 `
 
 export const FileSection = styled.div`
-  margin-bottom: ${spacing.large};
+  margin-bottom: ${spacing.medium};
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin-bottom: ${spacing.large};
+  }
 `
 
 export const FileInputWrapper = styled.div`

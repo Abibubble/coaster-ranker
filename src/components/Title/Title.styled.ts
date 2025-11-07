@@ -14,20 +14,11 @@ export const TitleText = styled(Text).withConfig({
   overflow-wrap: break-word;
   hyphens: auto;
 
-  @media (min-width: ${breakpoints.mobileSmall}) {
-    padding: ${spacing.tiny} ${spacing.small};
-  }
-
   @media (min-width: ${breakpoints.mobileLarge}) {
     font-size: ${fonts.huge};
-    padding: ${spacing.small};
   }
 
   @media (min-width: ${breakpoints.tablet}) {
     font-size: ${fonts.title};
-  }
-
-  @media (min-width: ${breakpoints.tabletLarge}) {
-    padding: ${spacing.small} 0;
   }
 `

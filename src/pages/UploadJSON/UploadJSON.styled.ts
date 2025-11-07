@@ -20,7 +20,7 @@ export const Section = styled.div`
 `
 
 export const RequiredFields = styled.div`
-  margin: ${spacing.large} 0 ${spacing.medium};
+  margin: ${spacing.medium} 0;
 
   ul {
     list-style: none;
@@ -124,7 +124,7 @@ export const JsonTextarea = styled.textarea`
 export const Divider = styled.div`
   display: flex;
   align-items: center;
-  margin: ${spacing.large} 0;
+  margin: ${spacing.medium} 0;
 
   &::before,
   &::after {
@@ -136,6 +136,10 @@ export const Divider = styled.div`
 
   span {
     padding: 0 ${spacing.small};
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin: ${spacing.large} 0;
   }
 `
 

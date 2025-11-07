@@ -15,6 +15,7 @@ interface FilterOptions {
 export default function ViewCoasters() {
   const { uploadedData, setUploadedData } = useData()
   const [statusMessage, setStatusMessage] = useState<string>('')
+  const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false)
   const [filters, setFilters] = useState<FilterOptions>({
     park: '',
     manufacturer: '',
@@ -225,14 +226,14 @@ export default function ViewCoasters() {
         <section>
           <Styled.EmptyState>
             <Text as='h2' center colour='darkGrey' mb='medium' fontSize='large'>
-              No Coasters Yet
+              No coasters yet
             </Text>
             <Text as='p' center colour='mediumGrey' mb='large'>
               You haven't uploaded any coasters yet. Use one of the upload
               methods to add some coasters to your collection.
             </Text>
             <Link href='/upload' variant='button'>
-              Go to Upload Page
+              Go to upload page
             </Link>
           </Styled.EmptyState>
         </section>
@@ -262,9 +263,6 @@ export default function ViewCoasters() {
 
       <section>
         <Styled.CoastersSummary>
-          <Text as='h2' colour='charcoal' fontSize='large' mb='small'>
-            Your Collection
-          </Text>
           <Text as='p' colour='mediumGrey' mb='small'>
             You have <Text bold>{allCoasters.length}</Text> coaster
             {allCoasters.length === 1 ? '' : 's'} in your collection.
@@ -283,135 +281,150 @@ export default function ViewCoasters() {
         </Styled.CoastersSummary>
 
         <Styled.FiltersSection>
-          <Text as='h3' colour='charcoal' fontSize='medium' mb='small'>
-            Filter Coasters
-          </Text>
-          <Styled.FiltersGrid>
-            <Styled.FilterGroup>
-              <Styled.FilterLabel>Park</Styled.FilterLabel>
-              <Styled.FilterSelect
-                value={filters.park}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  handleFilterChange('park', e.target.value)
-                }
-              >
-                <option value=''>All Parks</option>
-                {filterOptions.parks.map(park => (
-                  <option key={park} value={park}>
-                    {park}
-                  </option>
-                ))}
-              </Styled.FilterSelect>
-            </Styled.FilterGroup>
-
-            <Styled.FilterGroup>
-              <Styled.FilterLabel>Manufacturer</Styled.FilterLabel>
-              <Styled.FilterSelect
-                value={filters.manufacturer}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  handleFilterChange('manufacturer', e.target.value)
-                }
-              >
-                <option value=''>All Manufacturers</option>
-                {filterOptions.manufacturers.map(manufacturer => (
-                  <option key={manufacturer} value={manufacturer}>
-                    {manufacturer}
-                  </option>
-                ))}
-              </Styled.FilterSelect>
-            </Styled.FilterGroup>
-
-            <Styled.FilterGroup>
-              <Styled.FilterLabel>Country</Styled.FilterLabel>
-              <Styled.FilterSelect
-                value={filters.country}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  handleFilterChange('country', e.target.value)
-                }
-              >
-                <option value=''>All Countries</option>
-                {filterOptions.countries.map(country => (
-                  <option key={country} value={country}>
-                    {country}
-                  </option>
-                ))}
-              </Styled.FilterSelect>
-            </Styled.FilterGroup>
-
-            {hasModel && (
+          <Styled.FilterHeading
+            as={Text}
+            colour='charcoal'
+            fontSize='medium'
+            mb='small'
+          >
+            Filter coasters
+          </Styled.FilterHeading>
+          <Styled.FilterToggle
+            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+            aria-expanded={isFiltersOpen}
+            aria-label={`${isFiltersOpen ? 'Hide' : 'Show'} filter options`}
+          >
+            Filter coasters
+            <Styled.FilterIcon $isOpen={isFiltersOpen} />
+          </Styled.FilterToggle>
+          <Styled.FilterContent $isOpen={isFiltersOpen}>
+            <Styled.FiltersGrid>
               <Styled.FilterGroup>
-                <Styled.FilterLabel>Model</Styled.FilterLabel>
+                <Styled.FilterLabel>Park</Styled.FilterLabel>
                 <Styled.FilterSelect
-                  value={filters.model}
+                  value={filters.park}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    handleFilterChange('model', e.target.value)
+                    handleFilterChange('park', e.target.value)
                   }
                 >
-                  <option value=''>All Models</option>
-                  {filterOptions.models.map(model => (
-                    <option key={model} value={model}>
-                      {model}
+                  <option value=''>All Parks</option>
+                  {filterOptions.parks.map(park => (
+                    <option key={park} value={park}>
+                      {park}
                     </option>
                   ))}
                 </Styled.FilterSelect>
               </Styled.FilterGroup>
-            )}
 
-            {hasMaterial && (
               <Styled.FilterGroup>
-                <Styled.FilterLabel>Material</Styled.FilterLabel>
+                <Styled.FilterLabel>Manufacturer</Styled.FilterLabel>
                 <Styled.FilterSelect
-                  value={filters.material}
+                  value={filters.manufacturer}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    handleFilterChange('material', e.target.value)
+                    handleFilterChange('manufacturer', e.target.value)
                   }
                 >
-                  <option value=''>All Materials</option>
-                  {filterOptions.materials.map(material => (
-                    <option key={material} value={material}>
-                      {material}
+                  <option value=''>All Manufacturers</option>
+                  {filterOptions.manufacturers.map(manufacturer => (
+                    <option key={manufacturer} value={manufacturer}>
+                      {manufacturer}
                     </option>
                   ))}
                 </Styled.FilterSelect>
               </Styled.FilterGroup>
-            )}
 
-            {hasThrillLevel && (
               <Styled.FilterGroup>
-                <Styled.FilterLabel>Thrill Level</Styled.FilterLabel>
+                <Styled.FilterLabel>Country</Styled.FilterLabel>
                 <Styled.FilterSelect
-                  value={filters.thrillLevel}
+                  value={filters.country}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    handleFilterChange('thrillLevel', e.target.value)
+                    handleFilterChange('country', e.target.value)
                   }
                 >
-                  <option value=''>All Thrill Levels</option>
-                  {filterOptions.thrillLevels.map(level => (
-                    <option key={level} value={level}>
-                      {level}
+                  <option value=''>All Countries</option>
+                  {filterOptions.countries.map(country => (
+                    <option key={country} value={country}>
+                      {country}
                     </option>
                   ))}
                 </Styled.FilterSelect>
               </Styled.FilterGroup>
-            )}
-          </Styled.FiltersGrid>
 
-          {hasActiveFilters && (
-            <Styled.FilterActions>
-              <Button variant='default' onClick={clearAllFilters}>
-                Clear All Filters
-              </Button>
-            </Styled.FilterActions>
-          )}
+              {hasModel && (
+                <Styled.FilterGroup>
+                  <Styled.FilterLabel>Model</Styled.FilterLabel>
+                  <Styled.FilterSelect
+                    value={filters.model}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      handleFilterChange('model', e.target.value)
+                    }
+                  >
+                    <option value=''>All Models</option>
+                    {filterOptions.models.map(model => (
+                      <option key={model} value={model}>
+                        {model}
+                      </option>
+                    ))}
+                  </Styled.FilterSelect>
+                </Styled.FilterGroup>
+              )}
+
+              {hasMaterial && (
+                <Styled.FilterGroup>
+                  <Styled.FilterLabel>Material</Styled.FilterLabel>
+                  <Styled.FilterSelect
+                    value={filters.material}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      handleFilterChange('material', e.target.value)
+                    }
+                  >
+                    <option value=''>All Materials</option>
+                    {filterOptions.materials.map(material => (
+                      <option key={material} value={material}>
+                        {material}
+                      </option>
+                    ))}
+                  </Styled.FilterSelect>
+                </Styled.FilterGroup>
+              )}
+
+              {hasThrillLevel && (
+                <Styled.FilterGroup>
+                  <Styled.FilterLabel>Thrill Level</Styled.FilterLabel>
+                  <Styled.FilterSelect
+                    value={filters.thrillLevel}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      handleFilterChange('thrillLevel', e.target.value)
+                    }
+                  >
+                    <option value=''>All Thrill Levels</option>
+                    {filterOptions.thrillLevels.map(level => (
+                      <option key={level} value={level}>
+                        {level}
+                      </option>
+                    ))}
+                  </Styled.FilterSelect>
+                </Styled.FilterGroup>
+              )}
+            </Styled.FiltersGrid>
+
+            {hasActiveFilters && (
+              <Styled.FilterActions>
+                <Button variant='default' onClick={clearAllFilters}>
+                  Clear all filters
+                </Button>
+              </Styled.FilterActions>
+            )}
+          </Styled.FilterContent>
         </Styled.FiltersSection>
 
         <Styled.ActionsBar>
-          <Link href='/upload' variant='button'>
-            Add More Coasters
-          </Link>
-          <Link href='/rank' variant='button'>
-            Start Ranking
-          </Link>
+          <Button as='a' href='/upload'>
+            Add more coasters
+          </Button>
+          <Button as='a' href='/rank'>
+            Start ranking
+          </Button>
           <Button
             variant='destructive'
             onClick={handleRemoveAllCoasters}
@@ -419,15 +432,15 @@ export default function ViewCoasters() {
               coasters.length === 1 ? '' : 's'
             } from collection`}
           >
-            Remove All Coasters
+            Remove all coasters
           </Button>
         </Styled.ActionsBar>
 
         <Styled.TableHelpText>
           <Text as='p' colour='mediumGrey' fontSize='small' italic>
             Tip: Click on any park, manufacturer, model, material, or thrill
-            level to filter by that value (keyboard: Tab to navigate,
-            Enter/Space to activate)
+            level to filter by that value. On smaller screens, each coaster is
+            shown as a card for easier viewing.
           </Text>
           <Styled.SkipTableLink
             href='#table-end'
@@ -481,18 +494,22 @@ export default function ViewCoasters() {
                 $hasRank={uploadedData?.rankingMetadata?.isRanked}
               >
                 {uploadedData?.rankingMetadata?.isRanked && (
-                  <Styled.TableCell role='cell'>
+                  <Styled.MobileRankCell role='cell'>
+                    <Styled.MobileFieldLabel>Rank</Styled.MobileFieldLabel>
                     {coaster.rankPosition && (
                       <Text bold colour='charcoal'>
                         #{coaster.rankPosition}
                       </Text>
                     )}
-                  </Styled.TableCell>
+                  </Styled.MobileRankCell>
                 )}
                 <Styled.TableCell role='cell'>
-                  <Text bold colour='charcoal' mb='tiny'>
-                    {coaster.name}
-                  </Text>
+                  <Styled.MobileFieldLabel>Name</Styled.MobileFieldLabel>
+                  <Styled.MobileFieldValue>
+                    <Text bold colour='charcoal' mb='tiny'>
+                      {coaster.name}
+                    </Text>
+                  </Styled.MobileFieldValue>
                 </Styled.TableCell>
                 <Styled.ClickableTableCell
                   role='button'
@@ -507,7 +524,10 @@ export default function ViewCoasters() {
                   title={`Filter by park: ${coaster.park}`}
                   aria-label={`Filter by park: ${coaster.park}`}
                 >
-                  {coaster.park}
+                  <Styled.MobileFieldLabel>Park</Styled.MobileFieldLabel>
+                  <Styled.MobileFieldValueClickable>
+                    {coaster.park}
+                  </Styled.MobileFieldValueClickable>
                 </Styled.ClickableTableCell>
                 <Styled.ClickableTableCell
                   role='button'
@@ -525,7 +545,12 @@ export default function ViewCoasters() {
                   title={`Filter by manufacturer: ${coaster.manufacturer}`}
                   aria-label={`Filter by manufacturer: ${coaster.manufacturer}`}
                 >
-                  {coaster.manufacturer}
+                  <Styled.MobileFieldLabel>
+                    Manufacturer
+                  </Styled.MobileFieldLabel>
+                  <Styled.MobileFieldValueClickable>
+                    {coaster.manufacturer}
+                  </Styled.MobileFieldValueClickable>
                 </Styled.ClickableTableCell>
                 {hasModel && (
                   <Styled.ClickableTableCell
@@ -555,7 +580,10 @@ export default function ViewCoasters() {
                         : undefined
                     }
                   >
-                    {coaster.model}
+                    <Styled.MobileFieldLabel>Model</Styled.MobileFieldLabel>
+                    <Styled.MobileFieldValueClickable>
+                      {coaster.model}
+                    </Styled.MobileFieldValueClickable>
                   </Styled.ClickableTableCell>
                 )}
                 {hasMaterial && (
@@ -587,7 +615,10 @@ export default function ViewCoasters() {
                         : undefined
                     }
                   >
-                    {coaster.material}
+                    <Styled.MobileFieldLabel>Material</Styled.MobileFieldLabel>
+                    <Styled.MobileFieldValueClickable>
+                      {coaster.material}
+                    </Styled.MobileFieldValueClickable>
                   </Styled.ClickableTableCell>
                 )}
                 {hasThrillLevel && (
@@ -619,7 +650,12 @@ export default function ViewCoasters() {
                         : undefined
                     }
                   >
-                    {coaster.thrillLevel}
+                    <Styled.MobileFieldLabel>
+                      Thrill Level
+                    </Styled.MobileFieldLabel>
+                    <Styled.MobileFieldValueClickable>
+                      {coaster.thrillLevel}
+                    </Styled.MobileFieldValueClickable>
                   </Styled.ClickableTableCell>
                 )}
                 <Styled.TableCell role='cell'>
@@ -643,6 +679,7 @@ export default function ViewCoasters() {
             colour='mutedGrey'
             fontSize='small'
             italic
+            mb='medium'
             mt='medium'
           >
             Showing {coasters.length} coaster{coasters.length === 1 ? '' : 's'}
