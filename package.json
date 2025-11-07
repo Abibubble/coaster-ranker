@@ -23,6 +23,8 @@
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "lint:a11y": "eslint src/ --config eslint.config.a11y.js",
+    "a11y:audit": "bash src/scripts/accessibility-audit.sh",
+    "commit:check": "npm run lint && npm run lint:a11y && npm run types && npm run test:ci && npm run a11y:audit && npm run build",
     "serve:build": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
