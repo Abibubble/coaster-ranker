@@ -15,6 +15,13 @@ import {
 } from './pages'
 import { Footer, Header, SkipLink } from './components'
 import { DataProvider } from './contexts/DataContext'
+import { useScrollToTop } from './hooks'
+
+// Simple component that uses the scroll to top hook
+function ScrollToTop() {
+  useScrollToTop()
+  return null
+}
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Failed to find the root element')
@@ -24,6 +31,7 @@ root.render(
   <React.StrictMode>
     <DataProvider>
       <Router basename='/coaster-ranker'>
+        <ScrollToTop />
         <SkipLink />
         <Header />
         <main id='main-content'>
