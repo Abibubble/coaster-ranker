@@ -86,9 +86,6 @@ export default function UploadCSV() {
           setIsLoading,
           successMessagePrefix: 'Successfully processed CSV file!',
         })
-
-        // processUploadWorkflow now handles all state updates internally
-        // No need to call processUploadResult separately
       } catch (err) {
         uploadState.setError(
           err instanceof Error ? err.message : 'Failed to process file'
@@ -113,11 +110,13 @@ export default function UploadCSV() {
       <section>
         <Styled.Instructions>
           {existingCoasterCount > 0 && (
-            <CurrentDataInfo coasterCount={existingCoasterCount} />
+            <>
+              <CurrentDataInfo coasterCount={existingCoasterCount} />
+              <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
+                Import from CSV Spreadsheet
+              </Text>
+            </>
           )}
-          <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
-            Import from CSV Spreadsheet
-          </Text>
           <Text as='p' colour='mediumGrey' mb='small'>
             Upload a CSV file containing your coaster data. Each row should
             represent one coaster with the required fields.
@@ -212,7 +211,7 @@ Stealth,Thorpe Park,Intamin,Accelerator Coaster,Steel,Family Thrill,United Kingd
           >
             {isLoading
               ? 'Please wait while your file is being processed...'
-              : 'Only CSV files are accepted. File should have headers in the first row.'}
+              : 'Only CSV files are accepted. The file should have headers in the first row.'}
           </Text>
         </Styled.FileSection>
 

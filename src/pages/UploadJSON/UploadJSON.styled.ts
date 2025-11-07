@@ -1,8 +1,8 @@
 import styled from 'styled-components'
-import { colours, fonts, shadows, spacing } from '../../theme'
+import { colours, spacing, fonts, breakpoints, shadows } from '../../theme'
 
 export const Section = styled.div`
-  margin-bottom: ${spacing.large};
+  margin-bottom: ${spacing.medium};
 
   p {
     line-height: 1.6;
@@ -13,10 +13,14 @@ export const Section = styled.div`
     flex-direction: column;
     gap: ${spacing.small};
   }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin-bottom: ${spacing.large};
+  }
 `
 
 export const RequiredFields = styled.div`
-  margin: ${spacing.large} 0;
+  margin: ${spacing.large} 0 ${spacing.medium};
 
   ul {
     list-style: none;
@@ -44,10 +48,14 @@ export const RequiredFields = styled.div`
       margin-right: ${spacing.tiny};
     }
   }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin-bottom: ${spacing.large};
+  }
 `
 
 export const ExampleFiles = styled.div`
-  margin: ${spacing.large} 0;
+  margin: ${spacing.medium} 0;
 
   details {
     border: ${spacing.micro} solid ${colours.borderGrey};
@@ -78,6 +86,10 @@ export const ExampleFiles = styled.div`
 
   details[open] summary::before {
     transform: rotate(90deg);
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin: ${spacing.large} 0;
   }
 `
 
@@ -132,6 +144,13 @@ export const FileInputWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: ${spacing.small};
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    padding: 0;
+  }
 `
 
 export const FileInput = styled.input`
@@ -139,24 +158,77 @@ export const FileInput = styled.input`
 `
 
 export const FileLabel = styled.label<{ $disabled?: boolean }>`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: ${(props: { $disabled?: boolean }) =>
     props.$disabled ? colours.lightGrey : colours.orange};
   color: ${colours.white};
-  padding: ${spacing.small} ${spacing.large};
   border-radius: ${spacing.fine};
-  font-size: ${fonts.body};
   cursor: ${(props: { $disabled?: boolean }) =>
     props.$disabled ? 'not-allowed' : 'pointer'};
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: ${spacing.tapTarget};
+  box-sizing: border-box;
+  text-align: center;
+  padding: ${spacing.small};
+  font-size: ${fonts.small};
+  width: calc(100% - ${spacing.medium});
+  margin: 0 ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileSmall}) {
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: ${spacing.small} ${spacing.medium};
+  }
+
+  @media (min-width: ${breakpoints.mobileLarge}) {
+    padding: ${spacing.small} ${spacing.large};
+    font-size: ${fonts.body};
+  }
+
+  ${(props: { $disabled?: boolean }) =>
+    props.$disabled &&
+    `
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+  `}
 
   &:hover {
     background-color: ${(props: { $disabled?: boolean }) =>
       props.$disabled ? colours.lightGrey : colours.yellow};
+    transform: ${(props: { $disabled?: boolean }) =>
+      props.$disabled ? 'none' : 'translateY(-1px)'};
   }
 
   &:focus {
     outline: ${spacing.mini} solid ${colours.orange};
     outline-offset: ${spacing.mini};
+  }
+
+  &:active {
+    transform: ${(props: { $disabled?: boolean }) =>
+      props.$disabled ? 'none' : 'translateY(0)'};
   }
 `

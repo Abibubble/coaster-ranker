@@ -2,10 +2,14 @@ import styled from 'styled-components'
 import { colours, fonts, spacing, breakpoints } from '../../theme'
 
 export const Instructions = styled.div`
-  margin-bottom: ${spacing.large};
+  margin-bottom: ${spacing.medium};
 
   p {
     line-height: 1.6;
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin-bottom: ${spacing.large};
   }
 `
 
@@ -56,10 +60,6 @@ export const UploadButton = styled.div`
   &:focus {
     outline: ${spacing.mini} solid ${colours.blue};
     outline-offset: ${spacing.mini};
-  }
-
-  h3 {
-    margin: ${spacing.small} 0 ${spacing.tiny};
   }
 
   p {

@@ -18,10 +18,14 @@ function Upload() {
 
       <section>
         <Styled.Instructions>
-          {coasterCount > 0 && <CurrentDataInfo coasterCount={coasterCount} />}
-          <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
-            Choose Your Upload Method
-          </Text>
+          {coasterCount > 0 && (
+            <>
+              <CurrentDataInfo coasterCount={coasterCount} />
+              <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
+                Choose Your Upload Method
+              </Text>
+            </>
+          )}
           <Text as='p' colour='mediumGrey' mb='small'>
             Select how you'd like to add coasters to your collection. You can
             use multiple methods - all data will be combined together.
@@ -40,7 +44,7 @@ function Upload() {
               }}
             >
               <Styled.UploadIcon>CSV</Styled.UploadIcon>
-              <Text as='h3' colour='charcoal'>
+              <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
                 Upload CSV File
               </Text>
               <Text as='p' colour='mediumGrey' fontSize='small'>
@@ -60,7 +64,7 @@ function Upload() {
               }}
             >
               <Styled.UploadIcon>JSON</Styled.UploadIcon>
-              <Text as='h3' colour='charcoal'>
+              <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
                 Upload JSON Data
               </Text>
               <Text as='p' colour='mediumGrey' fontSize='small'>
@@ -80,8 +84,12 @@ function Upload() {
               }}
             >
               <Styled.UploadIcon>FORM</Styled.UploadIcon>
-              <h3>Enter Manually</h3>
-              <Text as='p'>Add coasters one at a time using a form</Text>
+              <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
+                Enter Manually
+              </Text>
+              <Text as='p' colour='mediumGrey' fontSize='small'>
+                Add coasters one at a time using a form
+              </Text>
             </Styled.UploadButton>
           </div>
         </Styled.UploadOptions>

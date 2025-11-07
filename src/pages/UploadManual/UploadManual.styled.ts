@@ -5,7 +5,12 @@ import { Text } from '../../components'
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${spacing.large};
+  gap: ${spacing.small};
+  margin-bottom: ${spacing.medium};
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin-bottom: ${spacing.large};
+  }
 `
 
 export const FormTitle = styled(Text).withConfig({
@@ -24,6 +29,10 @@ export const FormRow = styled.div`
   margin-bottom: ${spacing.small};
   grid-template-columns: 1fr;
 
+  > div {
+    margin-bottom: 0;
+  }
+
   @media (min-width: ${breakpoints.tablet}) {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
@@ -37,6 +46,7 @@ export const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacing.tiny};
+  margin-bottom: ${spacing.small};
 `
 
 const baseFormControlStyles = css`

@@ -242,10 +242,14 @@ export default function UploadManual() {
       <Title>Add Coaster Manually</Title>
 
       <section>
-        {coasterCount > 0 && <CurrentDataInfo coasterCount={coasterCount} />}
-        <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
-          Enter Coaster Details
-        </Text>
+        {coasterCount > 0 && (
+          <>
+            <CurrentDataInfo coasterCount={coasterCount} />
+            <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
+              Enter Coaster Details
+            </Text>
+          </>
+        )}
         <Text as='p' colour='mediumGrey' mb='small'>
           Add a single coaster to your collection by filling out the form below.
           You can add multiple coasters by submitting the form multiple times.
@@ -254,9 +258,9 @@ export default function UploadManual() {
         <section>
           <Styled.Form onSubmit={handleSubmit}>
             <div>
-              <Styled.FormTitle as='h3' colour='charcoal' mb='small'>
+              {/* <Styled.FormTitle as='h3' colour='charcoal' mb='small'>
                 Required Information
-              </Styled.FormTitle>
+              </Styled.FormTitle> */}
 
               <Styled.FormRow>
                 <Styled.FormGroup>

@@ -2,15 +2,19 @@ import styled from 'styled-components'
 import { colours, spacing, fonts, breakpoints } from '../../theme'
 
 export const Instructions = styled.div`
-  margin-bottom: ${spacing.large};
+  margin-bottom: ${spacing.medium};
 
   p {
     line-height: 1.6;
   }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin-bottom: ${spacing.large};
+  }
 `
 
 export const RequiredFields = styled.div`
-  margin: ${spacing.large} 0;
+  margin: ${spacing.large} 0 ${spacing.medium};
 
   ul {
     list-style: none;
@@ -34,10 +38,14 @@ export const RequiredFields = styled.div`
       top: ${spacing.tiny};
     }
   }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin-bottom: ${spacing.large};
+  }
 `
 
 export const ExampleFiles = styled.div`
-  margin: ${spacing.large} 0;
+  margin: ${spacing.medium} 0;
 
   details {
     border: ${spacing.micro} solid ${colours.borderGrey};
@@ -68,6 +76,10 @@ export const ExampleFiles = styled.div`
 
   details[open] summary::before {
     transform: rotate(90deg);
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin: ${spacing.large} 0;
   }
 `
 

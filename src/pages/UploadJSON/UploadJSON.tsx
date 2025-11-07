@@ -128,11 +128,13 @@ export default function UploadJSON() {
       <section>
         <Styled.Section>
           {existingCoasterCount > 0 && (
-            <CurrentDataInfo coasterCount={existingCoasterCount} />
+            <>
+              <CurrentDataInfo coasterCount={existingCoasterCount} />
+              <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
+                Import JSON Data
+              </Text>
+            </>
           )}
-          <Text as='h2' colour='charcoal' fontSize='medium' mb='large'>
-            Import JSON Data
-          </Text>
           <Text as='p' colour='mediumGrey' mb='small'>
             Paste your coaster data as JSON or upload a JSON file. Your data
             should be an array of coaster objects.
