@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   Link,
   Button,
+  CurrentDataInfo,
   InfoMessage,
   MainContent,
   Text,
@@ -107,65 +108,68 @@ export default function Download() {
 
       <section>
         <Styled.DownloadContent>
+          <CurrentDataInfo coasterCount={coasters.length} />
+
           <Styled.Section>
-            <Text as='h2' colour='darkGrey' mb='tiny'>
-              Your Coaster Collection
-            </Text>
-            <Text as='p' colour='mediumGrey' mb='small'>
-              You have <Text bold>{coasters.length}</Text> coaster
-              {coasters.length === 1 ? '' : 's'} in your collection.
-            </Text>
-            {uploadedData?.uploadedAt && (
-              <Text as='p' colour='textGrey' fontSize='small' italic mb='tiny'>
-                Last updated: {uploadedData.uploadedAt.toLocaleDateString()}
+            <Styled.SectionHeader>
+              <Text as='h3' colour='darkGrey' mb='tiny'>
+                Choose your format:
               </Text>
-            )}
-          </Styled.Section>
+            </Styled.SectionHeader>
 
-          <Styled.Section>
-            <Text as='h3' colour='darkGrey' mb='tiny'>
-              Choose your format:
-            </Text>
+            <Styled.DownloadOptions>
+              <Styled.DownloadButton
+                onClick={() => handleDownload('csv')}
+                aria-describedby='csv-description'
+              >
+                <Styled.ButtonContent>
+                  <Text
+                    as='h4'
+                    bold
+                    colour='darkGrey'
+                    fontSize='large'
+                    mb='fine'
+                  >
+                    Download as CSV
+                  </Text>
+                  <Styled.ButtonDescription
+                    as='p'
+                    colour='mediumGrey'
+                    fontSize='small'
+                    id='csv-description'
+                  >
+                    For Excel, Google Sheets, and other spreadsheet apps
+                    {hasRankingData && ' (includes rank column)'}
+                  </Styled.ButtonDescription>
+                </Styled.ButtonContent>
+              </Styled.DownloadButton>
 
-            <Styled.DownloadButton
-              onClick={() => handleDownload('csv')}
-              aria-describedby='csv-description'
-            >
-              <Styled.ButtonContent>
-                <Text as='h4' bold colour='darkGrey' fontSize='large' mb='fine'>
-                  Download as CSV
-                </Text>
-                <Styled.ButtonDescription
-                  as='p'
-                  colour='mediumGrey'
-                  fontSize='small'
-                  id='csv-description'
-                >
-                  For Excel, Google Sheets, and other spreadsheet apps
-                  {hasRankingData && ' (includes rank column)'}
-                </Styled.ButtonDescription>
-              </Styled.ButtonContent>
-            </Styled.DownloadButton>
-
-            <Styled.DownloadButton
-              onClick={() => handleDownload('json')}
-              aria-describedby='json-description'
-            >
-              <Styled.ButtonContent>
-                <Text as='h4' bold colour='darkGrey' fontSize='large' mb='fine'>
-                  Download as JSON
-                </Text>
-                <Styled.ButtonDescription
-                  as='p'
-                  colour='mediumGrey'
-                  fontSize='small'
-                  id='json-description'
-                >
-                  Developer-friendly format for importing into other apps
-                  {hasRankingData && ' (includes rank field)'}
-                </Styled.ButtonDescription>
-              </Styled.ButtonContent>
-            </Styled.DownloadButton>
+              <Styled.DownloadButton
+                onClick={() => handleDownload('json')}
+                aria-describedby='json-description'
+              >
+                <Styled.ButtonContent>
+                  <Text
+                    as='h4'
+                    bold
+                    colour='darkGrey'
+                    fontSize='large'
+                    mb='fine'
+                  >
+                    Download as JSON
+                  </Text>
+                  <Styled.ButtonDescription
+                    as='p'
+                    colour='mediumGrey'
+                    fontSize='small'
+                    id='json-description'
+                  >
+                    Developer-friendly format for importing into other apps
+                    {hasRankingData && ' (includes rank field)'}
+                  </Styled.ButtonDescription>
+                </Styled.ButtonContent>
+              </Styled.DownloadButton>
+            </Styled.DownloadOptions>
           </Styled.Section>
 
           {downloadStatus && (

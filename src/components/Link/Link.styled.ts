@@ -48,7 +48,7 @@ const buttonStyles = css`
 
 const backStyles = css`
   display: inline-block;
-  margin-top: ${spacing.large};
+  margin-top: ${spacing.medium};
   color: ${colours.blue};
   font-size: ${fonts.small};
 
