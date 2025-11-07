@@ -1,17 +1,10 @@
-import { render } from '@testing-library/react'
+import { render } from '../../utils/testing'
 import { axe } from 'jest-axe'
 import Download from './Download'
-import { DataProvider } from '../../contexts/DataContext'
-
-const MockedDownload = () => (
-  <DataProvider>
-    <Download />
-  </DataProvider>
-)
 
 describe('Download Page', () => {
   it('has no accessibility violations', async () => {
-    const { container } = render(<MockedDownload />)
+    const { container } = render(<Download />)
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })

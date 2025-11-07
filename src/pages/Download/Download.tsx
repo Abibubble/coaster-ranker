@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import {
   Link,
-  Button,
   CurrentDataInfo,
   InfoMessage,
   MainContent,
@@ -56,7 +55,7 @@ export default function Download() {
       }
 
       if (result.content && !result.isEmpty) {
-        const filename = generateFilename('coaster-collection', format)
+        const filename = generateFilename('coaster-ranker', format)
         const downloadResult = downloadFile({
           content: result.content,
           filename,
@@ -93,9 +92,9 @@ export default function Download() {
               Upload some coasters to download your collection in CSV or JSON
               format.
             </Text>
-            <Button as='a' href='/upload'>
+            <Link href='/upload' variant='button'>
               Upload Coasters
-            </Button>
+            </Link>
           </Styled.EmptyState>
         </section>
       </MainContent>
