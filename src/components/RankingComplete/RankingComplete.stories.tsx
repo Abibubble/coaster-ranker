@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import RankingComplete from './RankingComplete'
 import { Coaster } from '../../types/data'
 import { DataProvider } from '../../contexts/DataContext'
@@ -69,11 +70,13 @@ const meta: Meta<typeof RankingComplete> = {
   },
   decorators: [
     Story => (
-      <DataProvider>
-        <div style={{ minHeight: '400px', width: '100%', maxWidth: '600px' }}>
-          <Story />
-        </div>
-      </DataProvider>
+      <BrowserRouter>
+        <DataProvider>
+          <div style={{ minHeight: '400px', width: '100%', maxWidth: '600px' }}>
+            <Story />
+          </div>
+        </DataProvider>
+      </BrowserRouter>
     ),
   ],
 }

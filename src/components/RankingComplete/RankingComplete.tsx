@@ -218,13 +218,15 @@ export default function RankingComplete({
               </li>
             ))}
           </ol>
-          {displayCoasters.length > 10 && (
-            <Styled.ViewAllLink>
-              <Link href='/view-coasters'>
-                View all {displayCoasters.length} ranked coasters
-              </Link>
-            </Styled.ViewAllLink>
-          )}
+          <Styled.ViewAllLink>
+            <Link href='/view-coasters'>
+              {displayCoasters.length > 10
+                ? `View all ${displayCoasters.length} ranked coasters`
+                : `View ${displayCoasters.length} ranked coaster${
+                    displayCoasters.length === 1 ? '' : 's'
+                  }`}
+            </Link>
+          </Styled.ViewAllLink>
         </Styled.ResultsList>
       )}
 
