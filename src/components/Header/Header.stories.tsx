@@ -1,4 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { MemoryRouter } from 'react-router-dom'
 import Header from './Header'
 
 const meta: Meta<typeof Header> = {
@@ -7,6 +8,13 @@ const meta: Meta<typeof Header> = {
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [
+    Story => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 }
 
 export default meta

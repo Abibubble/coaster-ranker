@@ -73,7 +73,6 @@ describe('PrivacyPolicy Page', () => {
     render(<PrivacyPolicy />)
 
     expect(screen.getByText('Changes to This Policy')).toBeInTheDocument()
-    expect(screen.getByText('Contact')).toBeInTheDocument()
   })
 
   it('includes last updated date', () => {

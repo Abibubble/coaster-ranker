@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import PreRankingQuestion from './PreRankingQuestion'
 
 const meta: Meta<typeof PreRankingQuestion> = {

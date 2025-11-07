@@ -12,10 +12,10 @@ function Home() {
             coasters head-to-head to build your ultimate coaster tier list.
           </Text>
           <Styled.CTAButtonGroup>
-            <Button as='a' href='/upload' variant='success'>
+            <Button as='link' to='/upload' variant='success'>
               Get Started
             </Button>
-            <Button as='a' href='/upload/csv' variant='default'>
+            <Button as='link' to='/upload-csv' variant='default'>
               Try Example Data
             </Button>
           </Styled.CTAButtonGroup>

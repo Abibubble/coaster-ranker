@@ -189,17 +189,21 @@ function Accessibility() {
           </Text>
           <Styled.List>
             <Text as='li'>
-              <Link dark href='https://www.w3.org/WAI/WCAG22/quickref/'>
+              <Link
+                dark
+                href='https://www.w3.org/WAI/WCAG22/quickref/'
+                external
+              >
                 WCAG 2.2 Guidelines (Quick Reference)
               </Link>
             </Text>
             <Text as='li'>
-              <Link dark href='https://www.w3.org/WAI/'>
+              <Link dark href='https://www.w3.org/WAI/' external>
                 Web Accessibility Initiative (WAI)
               </Link>
             </Text>
             <Text as='li'>
-              <Link dark href='https://webaim.org/'>
+              <Link dark href='https://webaim.org/' external>
                 WebAIM - Web Accessibility In Mind
               </Link>
             </Text>

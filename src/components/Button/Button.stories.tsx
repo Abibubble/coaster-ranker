@@ -1,4 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { MemoryRouter } from 'react-router-dom'
 import Button from './Button'
 
 const meta: Meta<typeof Button> = {
@@ -8,6 +9,13 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  decorators: [
+    Story => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   argTypes: {
     variant: {
       control: { type: 'select' },
@@ -15,7 +23,7 @@ const meta: Meta<typeof Button> = {
     },
     as: {
       control: { type: 'select' },
-      options: ['button', 'a'],
+      options: ['button', 'a', 'link'],
     },
     onClick: { action: 'clicked' },
   },
@@ -68,8 +76,8 @@ export const Warning: Story = {
 export const AsLink: Story = {
   args: {
     children: 'Visit Page',
-    as: 'a',
-    href: '#',
+    as: 'link',
+    to: '/test',
     variant: 'default',
   },
 }

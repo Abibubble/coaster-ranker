@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import DuplicateResolver from './DuplicateResolver'
 import { DuplicateMatch } from '../../utils/fileProcessing/duplicateDetection'
 import { Coaster } from '../../types/data'

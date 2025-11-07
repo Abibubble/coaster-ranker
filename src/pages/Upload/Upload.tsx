@@ -1,13 +1,15 @@
-import { CurrentDataInfo, MainContent, Title, Text } from '../../components'
+import { MainContent, Title, Text, CurrentDataInfo } from '../../components'
 import { useData } from '../../contexts/DataContext'
+import { useNavigate } from 'react-router-dom'
 import * as Styled from './Upload.styled'
 
 function Upload() {
   const { uploadedData } = useData()
+  const navigate = useNavigate()
   const coasterCount = uploadedData?.coasters?.length || 0
 
   const handleNavigation = (path: string) => {
-    window.location.href = path
+    navigate(path)
   }
 
   return (

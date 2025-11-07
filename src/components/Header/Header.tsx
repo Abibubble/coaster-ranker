@@ -16,9 +16,9 @@ export default function Header() {
   return (
     <Styled.HeaderContainer>
       <Styled.HeaderTop>
-        <a href='/' aria-label='Coaster Ranker Home'>
+        <Link href='/' aria-label='Coaster Ranker Home'>
           <p>Coaster Ranker</p>
-        </a>
+        </Link>
         <Styled.BurgerButton
           onClick={toggleMobileMenu}
           aria-label='Toggle navigation menu'

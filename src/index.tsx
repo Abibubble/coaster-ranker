@@ -23,10 +23,10 @@ const root = ReactDOM.createRoot(rootElement)
 root.render(
   <React.StrictMode>
     <DataProvider>
-      <SkipLink />
-      <Header />
-      <main id='main-content'>
-        <Router basename='/coaster-ranker'>
+      <Router basename='/coaster-ranker'>
+        <SkipLink />
+        <Header />
+        <main id='main-content'>
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/accessibility' element={<Accessibility />} />
@@ -39,9 +39,9 @@ root.render(
             <Route path='/upload-manual' element={<UploadManual />} />
             <Route path='/view-coasters' element={<ViewCoasters />} />
           </Routes>
-        </Router>
-      </main>
-      <Footer />
+        </main>
+        <Footer />
+      </Router>
     </DataProvider>
   </React.StrictMode>
 )

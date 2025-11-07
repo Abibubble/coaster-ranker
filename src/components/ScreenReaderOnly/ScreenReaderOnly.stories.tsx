@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import ScreenReaderOnly from './ScreenReaderOnly'
 
 const meta: Meta<typeof ScreenReaderOnly> = {

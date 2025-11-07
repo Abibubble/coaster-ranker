@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { InfoMessage } from './InfoMessage'
 
 const meta: Meta<typeof InfoMessage> = {

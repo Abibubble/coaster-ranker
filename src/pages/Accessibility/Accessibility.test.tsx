@@ -63,7 +63,7 @@ describe('Accessibility Page', () => {
     render(<Accessibility />)
 
     expect(
-      screen.getByText('Learn More About Web Accessibility')
+      screen.getByText('Learn more About web accessibility')
     ).toBeInTheDocument()
 
     const waiLink = screen.getByRole('link', {
@@ -80,9 +80,9 @@ describe('Accessibility Page', () => {
   it('includes comprehensive accessibility feature sections', () => {
     render(<Accessibility />)
 
-    expect(screen.getByText('Visual Features')).toBeInTheDocument()
-    expect(screen.getByText('Screen Reader Support')).toBeInTheDocument()
-    expect(screen.getByText('Keyboard Navigation')).toBeInTheDocument()
+    expect(screen.getByText('Visual features')).toBeInTheDocument()
+    expect(screen.getByText('Screen reader support')).toBeInTheDocument()
+    expect(screen.getByText('Keyboard navigation')).toBeInTheDocument()
   })
 
   it('renders the main content with proper structure', () => {
