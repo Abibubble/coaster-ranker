@@ -1,0 +1,32 @@
+[
+  {
+    "id": "smiler",
+    "name": "The Smiler",
+    "park": "Alton Towers",
+    "country": "United Kingdom",
+    "manufacturer": "Gerstlauer",
+    "model": "Euro-Fighter",
+    "material": "Steel",
+    "thrillLevel": "Thrill"
+  },
+  {
+    "id": "nemesis",
+    "name": "Nemesis",
+    "park": "Alton Towers",
+    "country": "United Kingdom",
+    "manufacturer": "Bolliger & Mabillard",
+    "model": "Inverted",
+    "material": "Steel",
+    "thrillLevel": "Family Thrill"
+  },
+  {
+    "id": "taron",
+    "name": "Taron",
+    "park": "Phantasialand",
+    "country": "Germany",
+    "manufacturer": "Intamin",
+    "model": "Multi-Launch",
+    "material": "Steel",
+    "thrillLevel": "Thrill"
+  }
+]
