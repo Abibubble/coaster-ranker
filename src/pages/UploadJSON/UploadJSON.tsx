@@ -135,6 +135,9 @@ export default function UploadJSON() {
               </Text>
             </>
           )}
+          {existingCoasterCount === 0 && (
+            <ScreenReaderOnly as='h2'>Import JSON Data</ScreenReaderOnly>
+          )}
           <Text as='p' colour='mediumGrey' mb='small'>
             Paste your coaster data as JSON or upload a JSON file. Your data
             should be an array of coaster objects.

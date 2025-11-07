@@ -1,14 +1,14 @@
 import { MemoryRouter } from 'react-router-dom'
-import {
-  render,
-  testAxeCompliance,
-  runBasicWCAG22Tests,
-} from '../../utils/testing'
+import { render } from '@testing-library/react'
+import { testAxeCompliance, runBasicWCAG22Tests } from '../../utils/testing'
 import Upload from './Upload'
+import { DataProvider } from '../../contexts/DataContext'
 
 const UploadWithRouter = () => (
   <MemoryRouter>
-    <Upload />
+    <DataProvider>
+      <Upload />
+    </DataProvider>
   </MemoryRouter>
 )
 

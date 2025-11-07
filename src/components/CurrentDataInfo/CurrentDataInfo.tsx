@@ -11,11 +11,8 @@ export default function CurrentDataInfo({
   return (
     <Styled.CurrentDataInfo>
       <Text as='p'>
-        You currently have{' '}
-        <Text bold colour='blue'>
-          {coasterCount} coasters
-        </Text>{' '}
-        in your collection.
+        You currently have <Text bold>{coasterCount} coasters</Text> in your
+        collection.
       </Text>
       <Link href='/view-coasters' variant='button'>
         View all coasters

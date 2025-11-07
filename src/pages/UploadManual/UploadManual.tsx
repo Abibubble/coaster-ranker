@@ -5,6 +5,7 @@ import {
   DuplicateResolver,
   InfoMessage,
   MainContent,
+  ScreenReaderOnly,
   Title,
   Text,
 } from '../../components'
@@ -249,6 +250,9 @@ export default function UploadManual() {
               Enter Coaster Details
             </Text>
           </>
+        )}
+        {coasterCount === 0 && (
+          <ScreenReaderOnly as='h2'>Enter Coaster Details</ScreenReaderOnly>
         )}
         <Text as='p' colour='mediumGrey' mb='small'>
           Add a single coaster to your collection by filling out the form below.

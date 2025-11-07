@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '../../utils/testing'
 import { axe } from 'jest-axe'
 import Header from './Header'
 

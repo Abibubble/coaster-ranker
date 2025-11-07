@@ -10,7 +10,7 @@ describe('fileParser - formatString integration', () => {
         country: 'united-kingdom',
         manufacturer: 'gerstlauer',
         model: 'euro_fighter',
-        type: 'STEEL',
+        material: 'Steel',
         thrillLevel: 'family-thrill',
       },
     ]
@@ -38,7 +38,7 @@ describe('fileParser - formatString integration', () => {
         country: 'united states',
         manufacturer: 'INTAMIN ag',
         model: 'launch-coaster',
-        type: 'STEEL track',
+        material: 'Steel',
       },
     ]
 
@@ -48,11 +48,11 @@ describe('fileParser - formatString integration', () => {
     expect(result[0]).toEqual({
       id: 'coaster_0',
       name: 'Bolt Action Coaster',
-      park: 'Disneys California Adventure',
+      park: "Disney's California Adventure",
       country: 'United States',
       manufacturer: 'Intamin Ag',
       model: 'Launch Coaster',
-      material: 'Steel Track',
+      material: 'Steel',
       thrillLevel: undefined,
     })
   })
@@ -67,7 +67,7 @@ describe('fileParser - extra fields handling', () => {
         country: 'Test Country',
         manufacturer: 'Test Manufacturer',
         model: 'Test Model',
-        type: 'Steel',
+        material: 'Steel',
         // Extra fields that should be ignored
         height: '50',
         speed: '80',
@@ -128,7 +128,7 @@ describe('fileParser - extra fields handling', () => {
         country: 'Country 1',
         manufacturer: 'Manufacturer 1',
         model: 'Model 1',
-        type: 'Steel',
+        material: 'Steel',
         // No extra fields
       },
       {
@@ -137,7 +137,7 @@ describe('fileParser - extra fields handling', () => {
         country: 'Country 2',
         manufacturer: 'Manufacturer 2',
         model: 'Model 2',
-        type: 'Wood',
+        material: 'Wood',
         // Extra fields
         height: '40',
         year: '2019',

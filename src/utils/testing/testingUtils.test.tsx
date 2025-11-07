@@ -19,7 +19,8 @@ const TestComponent = () => (
   <div>
     <h1>Test Component</h1>
     <button>Test Button</button>
-    <input type='text' autoComplete='name' />
+    <label htmlFor='test-input'>Test Input</label>
+    <input type='text' id='test-input' autoComplete='name' />
   </div>
 )
 

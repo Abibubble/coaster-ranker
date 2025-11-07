@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '../../utils/testing'
 import { axe } from 'jest-axe'
 import Accessibility from './Accessibility'
 
@@ -13,19 +13,17 @@ describe('Accessibility Page', () => {
     render(<Accessibility />)
 
     expect(screen.getByText('Accessibility Statement')).toBeInTheDocument()
+    expect(screen.getByText('Using Coaster Ranker')).toBeInTheDocument()
     expect(
-      screen.getByText('How to Use Coaster Ranker Accessibly')
+      screen.getByText('Supported assistive technologies')
     ).toBeInTheDocument()
-    expect(
-      screen.getByText('Supported Assistive Technologies')
-    ).toBeInTheDocument()
-    expect(screen.getByText('Browser Compatibility')).toBeInTheDocument()
+    expect(screen.getByText('Browser compatibility')).toBeInTheDocument()
   })
 
   it('includes keyboard navigation information', () => {
     render(<Accessibility />)
 
-    expect(screen.getByText('Keyboard Navigation')).toBeInTheDocument()
+    expect(screen.getByText('Keyboard navigation')).toBeInTheDocument()
     expect(screen.getByText('Tab')).toBeInTheDocument()
     expect(screen.getByText('Enter')).toBeInTheDocument()
     expect(screen.getByText('Space')).toBeInTheDocument()
@@ -43,7 +41,7 @@ describe('Accessibility Page', () => {
     render(<Accessibility />)
 
     expect(
-      screen.getByText('Supported Assistive Technologies')
+      screen.getByText('Supported assistive technologies')
     ).toBeInTheDocument()
     expect(
       screen.getByText('Screen readers (JAWS, NVDA, VoiceOver, TalkBack)')
@@ -53,10 +51,13 @@ describe('Accessibility Page', () => {
   it('lists browser compatibility', () => {
     render(<Accessibility />)
 
-    expect(screen.getByText('Browser Compatibility')).toBeInTheDocument()
-    expect(screen.getByText('Chrome')).toBeInTheDocument()
+    expect(screen.getByText('Browser compatibility')).toBeInTheDocument()
+    expect(
+      screen.getByText('Chrome (recommended for full feature support)')
+    ).toBeInTheDocument()
     expect(screen.getByText('Firefox')).toBeInTheDocument()
     expect(screen.getByText('Safari')).toBeInTheDocument()
+    expect(screen.getByText('Edge')).toBeInTheDocument()
   })
 
   it('includes external accessibility resource links', () => {

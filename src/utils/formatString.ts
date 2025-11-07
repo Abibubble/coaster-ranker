@@ -34,7 +34,9 @@ export const formatString = (
     spacedText = spacedText.replace(/^[-\s]+|[-\s]+$/g, '')
   }
 
-  spacedText = spacedText.replace(/(?!^)([A-Z])/g, ' $1')
+  if (!/\s/.test(spacedText) && !/^[A-Z\s]+$/.test(spacedText)) {
+    spacedText = spacedText.replace(/(?!^)([A-Z])/g, ' $1')
+  }
 
   switch (spacing) {
     case 'space':
@@ -70,10 +72,16 @@ export const formatString = (
         spacedText.charAt(0).toUpperCase() + spacedText.slice(1).toLowerCase()
       break
     case 'first-word':
-      formattedText = spacedText.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
+      // Convert to lowercase first, then capitalize first letter of each word
+      formattedText = spacedText
+        .toLowerCase()
+        .replace(/(?:^|\s)\S/g, a => a.toUpperCase())
       break
     default:
-      formattedText = spacedText.replace(/(?:^|\s)\S/g, a => a.toUpperCase())
+      // Convert to lowercase first, then capitalize first letter of each word
+      formattedText = spacedText
+        .toLowerCase()
+        .replace(/(?:^|\s)\S/g, a => a.toUpperCase())
       break
   }
 

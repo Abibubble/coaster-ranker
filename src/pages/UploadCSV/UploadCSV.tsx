@@ -6,6 +6,7 @@ import {
   InfoMessage,
   MainContent,
   PreRankingQuestion,
+  ScreenReaderOnly,
   Title,
   Text,
 } from '../../components'
@@ -116,6 +117,11 @@ export default function UploadCSV() {
                 Import from CSV Spreadsheet
               </Text>
             </>
+          )}
+          {existingCoasterCount === 0 && (
+            <ScreenReaderOnly as='h2'>
+              Import from CSV Spreadsheet
+            </ScreenReaderOnly>
           )}
           <Text as='p' colour='mediumGrey' mb='small'>
             Upload a CSV file containing your coaster data. Each row should

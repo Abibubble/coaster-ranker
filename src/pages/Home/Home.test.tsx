@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render } from '../../utils/testing'
 import { axe } from 'jest-axe'
 import Home from './Home'
 

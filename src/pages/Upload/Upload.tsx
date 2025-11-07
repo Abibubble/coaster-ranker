@@ -1,4 +1,10 @@
-import { MainContent, Title, Text, CurrentDataInfo } from '../../components'
+import {
+  CurrentDataInfo,
+  MainContent,
+  Text,
+  Title,
+  ScreenReaderOnly,
+} from '../../components'
 import { useData } from '../../contexts/DataContext'
 import { useNavigate } from 'react-router-dom'
 import * as Styled from './Upload.styled'
@@ -14,7 +20,7 @@ function Upload() {
 
   return (
     <MainContent>
-      <Title>Upload Your Coaster Data</Title>
+      <Title>Upload your coaster data</Title>
 
       <section>
         <Styled.Instructions>
@@ -22,9 +28,14 @@ function Upload() {
             <>
               <CurrentDataInfo coasterCount={coasterCount} />
               <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
-                Choose Your Upload Method
+                Choose your upload method
               </Text>
             </>
+          )}
+          {coasterCount === 0 && (
+            <ScreenReaderOnly as='h2'>
+              Choose your upload method
+            </ScreenReaderOnly>
           )}
           <Text as='p' colour='mediumGrey' mb='small'>
             Select how you'd like to add coasters to your collection. You can
@@ -45,7 +56,7 @@ function Upload() {
             >
               <Styled.UploadIcon>CSV</Styled.UploadIcon>
               <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
-                Upload CSV File
+                Upload CSV file
               </Text>
               <Text as='p' colour='mediumGrey' fontSize='small'>
                 Import coaster data from a CSV spreadsheet file
@@ -65,7 +76,7 @@ function Upload() {
             >
               <Styled.UploadIcon>JSON</Styled.UploadIcon>
               <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
-                Upload JSON Data
+                Upload JSON data
               </Text>
               <Text as='p' colour='mediumGrey' fontSize='small'>
                 Paste JSON data or upload a JSON file
@@ -85,7 +96,7 @@ function Upload() {
             >
               <Styled.UploadIcon>FORM</Styled.UploadIcon>
               <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
-                Enter Manually
+                Enter manually
               </Text>
               <Text as='p' colour='mediumGrey' fontSize='small'>
                 Add coasters one at a time using a form
