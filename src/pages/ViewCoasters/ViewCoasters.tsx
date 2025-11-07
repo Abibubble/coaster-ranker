@@ -139,10 +139,28 @@ export default function ViewCoasters() {
   const handleFieldClick = (field: keyof FilterOptions, value: string) => {
     // Only apply filter if the value exists and is not empty
     if (value && value.trim()) {
-      setFilters(prev => ({
-        ...prev,
-        [field]: value,
-      }))
+      // If clicking on the same value that's already filtered, clear all filters
+      if (filters[field] === value) {
+        setFilters({
+          park: '',
+          manufacturer: '',
+          model: '',
+          material: '',
+          thrillLevel: '',
+          country: '',
+        })
+      } else {
+        // Clear all filters and set only the clicked field
+        setFilters({
+          park: '',
+          manufacturer: '',
+          model: '',
+          material: '',
+          thrillLevel: '',
+          country: '',
+          [field]: value,
+        })
+      }
     }
   }
 

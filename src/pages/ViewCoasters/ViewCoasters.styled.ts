@@ -77,7 +77,7 @@ export const FiltersGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: ${spacing.medium};
-  margin-bottom: ${spacing.medium};
+  margin: ${spacing.medium} 0;
 
   @media (max-width: ${breakpoints.tablet}) {
     grid-template-columns: 1fr 1fr;
