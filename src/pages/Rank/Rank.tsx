@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   CoasterComparison,
   GroupRanking,
+  Link,
   MainContent,
   ProgressInfo,
   RankingComplete,
@@ -272,16 +273,16 @@ function Rank() {
     return (
       <MainContent>
         <Title>Rank Your Coasters</Title>
-        <section>
-          <p>
+        <Styled.NoDataSection>
+          <Text as='p'>
             No coaster data uploaded yet. Please visit the{' '}
-            <a href='/upload' aria-label='Go to upload page'>
+            <Link href='/upload' dark>
               Upload page
-            </a>{' '}
+            </Link>{' '}
             to upload your coaster experiences. You'll need at least 2 coasters
             to start ranking.
-          </p>
-        </section>
+          </Text>
+        </Styled.NoDataSection>
       </MainContent>
     )
   }

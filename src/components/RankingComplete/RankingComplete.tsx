@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Coaster } from '../../types/data'
 import { useData } from '../../contexts/DataContext'
 import { Button } from '../Button'
+import { Link } from '../Link'
 import { Text } from '../Text'
 import * as Styled from './RankingComplete.styled'
 
@@ -135,8 +136,10 @@ export default function RankingComplete({
         Ranking Complete!
       </Text>
       <Text as='p' colour='successGreen' mb='small'>
-        Your coasters have been ranked based on your preferences! Here's your
-        final ranking:
+        Your coasters have been ranked based on your preferences!{' '}
+        {displayCoasters.length > 10
+          ? "Here's your top 10:"
+          : "Here's your final ranking:"}
       </Text>
 
       {isEditing ? (
@@ -214,12 +217,14 @@ export default function RankingComplete({
                 <Text bold>{coaster.name}</Text> at {coaster.park}
               </li>
             ))}
-            {displayCoasters.length > 10 && (
-              <Text as='li' colour='mediumGrey' italic>
-                ...and {displayCoasters.length - 10} more
-              </Text>
-            )}
           </ol>
+          {displayCoasters.length > 10 && (
+            <Styled.ViewAllLink>
+              <Link href='/view-coasters'>
+                View all {displayCoasters.length} ranked coasters
+              </Link>
+            </Styled.ViewAllLink>
+          )}
         </Styled.ResultsList>
       )}
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, textSpacing } from '../../theme'
+import { breakpoints, colours, spacing, textSpacing } from '../../theme'
 
 export const HierarchicalFallbackNotice = styled.div`
   margin-top: ${textSpacing.small};
@@ -10,7 +10,11 @@ export const HierarchicalFallbackNotice = styled.div`
 `
 
 export const RankingContainer = styled.div`
-  margin-top: ${spacing.large};
+  margin: 0 0 ${spacing.small};
+
+  @media (min-width: ${breakpoints.tablet}) {
+    margin: ${spacing.medium} 0;
+  }
 `
 
 export const PreparingContainer = styled.div`
@@ -44,5 +48,32 @@ export const RankingInstructions = styled.div`
 
   p {
     margin: 0;
+  }
+`
+
+export const NoDataSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: ${textSpacing.large} ${textSpacing.medium};
+  margin: ${textSpacing.large} 0;
+  background: ${colours.veryLightBlue};
+  border: ${spacing.mini} solid ${colours.lightBlue};
+  border-radius: ${spacing.small};
+
+  @media (max-width: ${breakpoints.mobileSmall}) {
+    padding: ${textSpacing.medium} ${textSpacing.small};
+    margin: ${textSpacing.medium} 0;
+  }
+
+  @media (min-width: ${breakpoints.mobileSmall}) and (max-width: ${breakpoints.mobileMedium}) {
+    padding: ${textSpacing.large} ${textSpacing.small};
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    padding: ${textSpacing.huge} ${textSpacing.large};
+    max-width: 600px;
+    margin: ${textSpacing.large} auto;
   }
 `
