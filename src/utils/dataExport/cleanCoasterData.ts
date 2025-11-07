@@ -1,8 +1,8 @@
 import { Coaster, UploadedData } from '../../types/data'
 
 export interface CoasterWithRank
-  extends Omit<Partial<Coaster>, 'rankPosition'> {
-  id: string
+  extends Omit<Partial<Coaster>, 'rankPosition' | 'id'> {
+  rank?: number // The exported rank position (1 = best) - first field
   name: string
   park: string
   country: string
@@ -10,18 +10,17 @@ export interface CoasterWithRank
   model?: string
   material?: string
   thrillLevel?: string
-  rank?: number // The exported rank position (1 = best)
 }
 
 /**
  * Removes obsolete fields from coaster data to ensure clean exports
  * This helps maintain data consistency and removes legacy fields
+ * Excludes the id field for privacy and cleaner exports
  */
-export function cleanCoasterData(coasters: Coaster[]): Coaster[] {
+export function cleanCoasterData(coasters: Coaster[]): Partial<Coaster>[] {
   return coasters.map(coaster => {
-    // Create a new object with only the valid Coaster fields
-    const cleanCoaster: Coaster = {
-      id: coaster.id,
+    // Create a new object with only the valid Coaster fields (excluding id)
+    const cleanCoaster: Partial<Coaster> = {
       name: coaster.name,
       park: coaster.park,
       country: coaster.country,
@@ -31,7 +30,7 @@ export function cleanCoasterData(coasters: Coaster[]): Coaster[] {
       thrillLevel: coaster.thrillLevel,
     }
 
-    // Add optional fields if they exist
+    // Add optional fields if they exist (excluding id-related fields)
     if (coaster.isCurrentlyRanking !== undefined) {
       cleanCoaster.isCurrentlyRanking = coaster.isCurrentlyRanking
     }
@@ -48,7 +47,7 @@ export function cleanCoasterData(coasters: Coaster[]): Coaster[] {
       cleanCoaster.rankPosition = coaster.rankPosition
     }
 
-    // Note: This removes obsolete fields like 'location' and other legacy properties
+    // Note: This removes obsolete fields like 'location', 'id' and other legacy properties
 
     return cleanCoaster
   })
@@ -62,7 +61,6 @@ export function cleanCoasterDataForExport(
   coasters: Coaster[]
 ): Partial<Coaster>[] {
   return coasters.map(coaster => ({
-    id: coaster.id,
     name: coaster.name,
     park: coaster.park,
     country: coaster.country,
@@ -83,9 +81,8 @@ export function addRankingToCoasterData(
   rankingMetadata?: { rankedCoasters?: string[]; isRanked?: boolean }
 ): CoasterWithRank[] {
   return coasters.map(coaster => {
-    // Get base coaster data
+    // Get base coaster data with rank first
     const baseCoaster: CoasterWithRank = {
-      id: coaster.id,
       name: coaster.name,
       park: coaster.park,
       country: coaster.country,
@@ -104,6 +101,12 @@ export function addRankingToCoasterData(
       if (position >= 0) {
         baseCoaster.rank = position + 1 // Convert 0-based index to 1-based rank
       }
+    }
+
+    // Reorder to put rank first if it exists
+    if (baseCoaster.rank !== undefined) {
+      const { rank, ...rest } = baseCoaster
+      return { rank, ...rest }
     }
 
     return baseCoaster

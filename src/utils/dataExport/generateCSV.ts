@@ -47,16 +47,24 @@ export function generateCSV(params: GenerateCSVParams): GenerateCSVResult {
     headers ||
     (includeRanking
       ? [
-          'id',
+          'rank',
           'name',
           'park',
           'country',
           'manufacturer',
           'model',
-          'type',
-          'rank',
+          'material',
+          'thrillLevel',
         ]
-      : ['id', 'name', 'park', 'country', 'manufacturer', 'model', 'type'])
+      : [
+          'name',
+          'park',
+          'country',
+          'manufacturer',
+          'model',
+          'material',
+          'thrillLevel',
+        ])
 
   // Create CSV content with proper escaping
   const csvHeaderRow = csvHeaders.join(',')

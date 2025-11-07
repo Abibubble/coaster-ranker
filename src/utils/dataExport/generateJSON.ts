@@ -20,7 +20,7 @@ export interface GenerateJSONResult {
 }
 
 export interface JSONExportFormat {
-  coasters: Coaster[] | CoasterWithRank[]
+  coasters: Partial<Coaster>[] | CoasterWithRank[]
   exportedAt: string
   totalCount: number
   source: string
@@ -49,7 +49,7 @@ export function generateJSON(params: GenerateJSONParams): GenerateJSONResult {
   }
 
   // Clean the coaster data and optionally add ranking information
-  let processedCoasters: Coaster[] | CoasterWithRank[]
+  let processedCoasters: Partial<Coaster>[] | CoasterWithRank[]
 
   if (includeRanking) {
     processedCoasters = addRankingToCoasterData(coasters, rankingMetadata)
@@ -57,7 +57,7 @@ export function generateJSON(params: GenerateJSONParams): GenerateJSONResult {
     processedCoasters = cleanCoasterData(coasters)
   }
 
-  let exportData: JSONExportFormat | (Coaster[] | CoasterWithRank[])
+  let exportData: JSONExportFormat | (Partial<Coaster>[] | CoasterWithRank[])
 
   if (includeMetadata) {
     exportData = {
