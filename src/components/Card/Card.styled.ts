@@ -9,7 +9,6 @@ export const CardContainer = styled.div<{
   max-width: 100%;
   width: 100%;
   padding: ${spacing.small};
-  margin: 0 ${spacing.tiny};
   background: ${colours.paleGrey};
   border: ${spacing.mini} solid ${colours.softGrey};
   border-radius: ${spacing.small};

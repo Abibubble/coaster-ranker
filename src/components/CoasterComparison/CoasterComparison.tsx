@@ -14,63 +14,76 @@ interface CoasterComparisonProps {
   coaster2Label?: string
 }
 
+// Helper function to check if a value exists and is not empty
+const hasValue = (value: string | undefined): boolean => {
+  return value !== undefined && value !== null && value.trim() !== ''
+}
+
+// Helper function to render a field only if it has a value
+const renderField = (label: string, value: string | undefined) => {
+  if (!hasValue(value)) {
+    return null
+  }
+  return (
+    <p>
+      <Text bold>{label}:</Text> {value}
+    </p>
+  )
+}
+
 export default function CoasterComparison({
   coaster1,
   coaster2,
   onChoose1,
   onChoose2,
   clickable = true,
-  coaster1Label = coaster1.name,
-  coaster2Label = coaster2.name,
+  coaster1Label,
+  coaster2Label,
 }: CoasterComparisonProps) {
+  // Ensure we have labels for the cards, fallback to coaster name or a generic label
+  const coaster1DisplayLabel =
+    coaster1Label || (hasValue(coaster1.name) ? coaster1.name : 'Coaster 1')
+  const coaster2DisplayLabel =
+    coaster2Label || (hasValue(coaster2.name) ? coaster2.name : 'Coaster 2')
+
   return (
     <Styled.ComparisonArea>
       <Card
-        title={coaster1Label}
+        title={coaster1DisplayLabel}
         subtitle={`${coaster1.park}${formatCountry(coaster1.country)}`}
         clickable={clickable}
         aria-label={
-          clickable ? `Choose ${coaster1.name} as your favorite` : undefined
+          clickable
+            ? `Choose ${coaster1DisplayLabel} as your favorite`
+            : undefined
         }
         onClick={clickable ? onChoose1 : undefined}
       >
-        <p>
-          <Text bold>Manufacturer:</Text> {coaster1.manufacturer}
-        </p>
-        <p>
-          <Text bold>Model:</Text> {coaster1.model}
-        </p>
-        <p>
-          <Text bold>Material:</Text> {coaster1.material}
-        </p>
-        <p>
-          <Text bold>Country:</Text> {coaster1.country || 'Not specified'}
-        </p>
+        {renderField('Manufacturer', coaster1.manufacturer)}
+        {renderField('Model', coaster1.model)}
+        {renderField('Material', coaster1.material)}
+        {renderField('Thrill Level', coaster1.thrillLevel)}
+        {renderField('Country', coaster1.country)}
       </Card>
 
       <Styled.VersusText>VS</Styled.VersusText>
 
       <Card
-        title={coaster2Label}
+        title={coaster2DisplayLabel}
         subtitle={`${coaster2.park}${formatCountry(coaster2.country)}`}
         clickable={clickable}
         aria-label={
-          clickable ? `Choose ${coaster2.name} as your favorite` : undefined
+          clickable
+            ? `Choose ${coaster2DisplayLabel} as your favorite`
+            : undefined
         }
         onClick={clickable ? onChoose2 : undefined}
       >
-        <p>
-          <Text bold>Manufacturer:</Text> {coaster2.manufacturer}
-        </p>
-        <p>
-          <Text bold>Model:</Text> {coaster2.model}
-        </p>
-        <p>
-          <Text bold>Material:</Text> {coaster2.material}
-        </p>
-        <p>
-          <Text bold>Country:</Text> {coaster2.country || 'Not specified'}
-        </p>
+        {renderField('Manufacturer', coaster2.manufacturer)}
+        {renderField('Model', coaster2.model)}
+        {renderField('Material', coaster2.material)}
+        {renderField('Thrill Level', coaster2.thrillLevel)}
+        {renderField('Country', coaster2.country)}
       </Card>
     </Styled.ComparisonArea>
   )

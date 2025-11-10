@@ -238,3 +238,66 @@ export const MobileView: Story = {
     onChoose2: () => console.log('Mobile: Chose Fury 325'),
   },
 }
+
+export const MissingNamesAndFields: Story = {
+  args: {
+    coaster1: {
+      id: '9',
+      name: '', // Empty name should show fallback
+      park: 'Mystery Park',
+      country: 'Unknown Country',
+      manufacturer: 'Unknown Manufacturer',
+      model: '', // Empty model should not appear
+      material: 'Steel',
+      thrillLevel: '', // Empty thrill level should not appear
+    },
+    coaster2: {
+      id: '10',
+      name: 'Complete Coaster',
+      park: 'Complete Park',
+      country: 'Complete Country',
+      manufacturer: 'Complete Manufacturer',
+      model: 'Complete Model',
+      material: 'Steel',
+      thrillLevel: 'Thrill',
+    },
+    coaster1Label: undefined, // Should use fallback
+    coaster2Label: undefined, // Should use coaster name
+    onChoose1: () => console.log('Chose coaster with missing name'),
+    onChoose2: () => console.log('Chose complete coaster'),
+  },
+}
+
+export const CustomLabels: Story = {
+  args: {
+    coaster1: mockCoaster1,
+    coaster2: mockCoaster2,
+    coaster1Label: 'Existing Coaster',
+    coaster2Label: 'New Coaster',
+    onChoose1: () => console.log('Chose existing coaster'),
+    onChoose2: () => console.log('Chose new coaster'),
+  },
+}
+
+export const MinimalData: Story = {
+  args: {
+    coaster1: {
+      id: '11',
+      name: '',
+      park: 'Minimal Park 1',
+      country: 'Country 1',
+      manufacturer: 'Manufacturer 1',
+      // No model, material, or thrillLevel
+    },
+    coaster2: {
+      id: '12',
+      name: '',
+      park: 'Minimal Park 2',
+      country: 'Country 2',
+      manufacturer: 'Manufacturer 2',
+      // No model, material, or thrillLevel
+    },
+    onChoose1: () => console.log('Chose minimal coaster 1'),
+    onChoose2: () => console.log('Chose minimal coaster 2'),
+  },
+}

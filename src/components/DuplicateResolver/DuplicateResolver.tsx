@@ -59,10 +59,10 @@ export default function DuplicateResolver({
   return (
     <Styled.DuplicateContainer>
       <Styled.DuplicateHeader>
-        <Text as='h3' colour='warningYellow' fontSize='large' mb='tiny'>
+        <Text as='h3' colour='darkGrey' fontSize='large' mb='tiny'>
           Potential Duplicate Coasters Detected
         </Text>
-        <Text as='p' colour='warningYellow' fontSize='small'>
+        <Text as='p' colour='mediumGrey' fontSize='body'>
           We found {duplicates.length} potential duplicate
           {duplicates.length !== 1 ? 's' : ''} in your upload. Please review
           each match and choose how to handle them.
@@ -71,21 +71,29 @@ export default function DuplicateResolver({
 
       {duplicates.map((duplicate, index) => (
         <Styled.DuplicateItem key={index}>
-          <Styled.MatchInfo as='p' fontSize='small' mb='small' mt='small'>
-            <Text bold colour='darkerBlue'>
-              Match {index + 1}:
-            </Text>{' '}
-            {formatMatchingFields(duplicate.matchingFields)} match (
-            {duplicate.matchCount} of 4 fields)
+          <Styled.MatchInfo>
+            <Text bold colour='darkGrey' fontSize='body'>
+              Match {index + 1}:{' '}
+            </Text>
+            <Text colour='mediumGrey' fontSize='body'>
+              {formatMatchingFields(duplicate.matchingFields)} match (
+              {duplicate.matchCount} of 4 fields)
+            </Text>
           </Styled.MatchInfo>
 
-          <CoasterComparison
-            coaster1={duplicate.existingCoaster}
-            coaster2={duplicate.newCoaster}
-            clickable={false}
-            coaster1Label='Existing Coaster'
-            coaster2Label='New Coaster'
-          />
+          <Styled.ComparisonWrapper>
+            <CoasterComparison
+              coaster1={duplicate.existingCoaster}
+              coaster2={duplicate.newCoaster}
+              clickable={false}
+              coaster1Label={`${
+                duplicate.existingCoaster.name || 'Coaster 1'
+              } (Existing)`}
+              coaster2Label={`${
+                duplicate.newCoaster.name || 'Coaster 2'
+              } (New)`}
+            />
+          </Styled.ComparisonWrapper>
 
           <Styled.ButtonGroup>
             <Styled.DuplicateButton
@@ -107,29 +115,32 @@ export default function DuplicateResolver({
               $isSelected={resolutions.get(index) === 'keep-both'}
               variant='default'
             >
-              Keep Both (Different Experiences)
+              Keep Both
             </Styled.DuplicateButton>
           </Styled.ButtonGroup>
         </Styled.DuplicateItem>
       ))}
 
       <Styled.ActionButtons>
-        <Styled.DuplicateButton
-          aria-describedby={!canConfirm ? 'confirm-help-text' : undefined}
-          onClick={handleConfirm}
-          variant='default'
-        >
-          {canConfirm ? 'Confirm Choices' : 'Confirm Choices'}
-        </Styled.DuplicateButton>
         {!canConfirm && (
           <Styled.ProgressInfo id='confirm-help-text'>
             Please choose an action for {missingChoices} more duplicate
             {missingChoices !== 1 ? 's' : ''}
           </Styled.ProgressInfo>
         )}
-        <Styled.DuplicateButton onClick={onCancel} variant='disabled'>
-          Cancel Upload
-        </Styled.DuplicateButton>
+
+        <Styled.ActionButtonsRow>
+          <Styled.DuplicateButton
+            aria-describedby={!canConfirm ? 'confirm-help-text' : undefined}
+            onClick={handleConfirm}
+            variant='default'
+          >
+            Confirm Choices
+          </Styled.DuplicateButton>
+          <Styled.DuplicateButton onClick={onCancel} variant='disabled'>
+            Cancel Upload
+          </Styled.DuplicateButton>
+        </Styled.ActionButtonsRow>
       </Styled.ActionButtons>
     </Styled.DuplicateContainer>
   )
