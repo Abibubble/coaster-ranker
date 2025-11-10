@@ -42,6 +42,44 @@ describe('Data Export Functions', () => {
       expect(headers).toContain('park')
     })
 
+    it('should handle special characters correctly in coaster names', () => {
+      const coastersWithSpecialChars: Coaster[] = [
+        {
+          id: 'test-id-1',
+          name: 'Café Racer',
+          park: 'Parc Astérix',
+          country: 'França',
+          manufacturer: 'Intamin',
+          model: 'Multi-Launch',
+          material: 'Steel',
+          thrillLevel: 'High',
+        },
+        {
+          id: 'test-id-2',
+          name: 'Montaña Rusa',
+          park: 'Ciudad de México',
+          country: 'México',
+          manufacturer: 'Vekoma',
+          model: 'Boomerang',
+          material: 'Steel',
+          thrillLevel: 'Medium',
+        },
+      ]
+
+      const result = generateCSV({
+        coasters: coastersWithSpecialChars,
+        includeRanking: false,
+      })
+
+      // Check that special characters are preserved in the content
+      expect(result.content).toContain('Café Racer')
+      expect(result.content).toContain('Parc Astérix')
+      expect(result.content).toContain('França')
+      expect(result.content).toContain('Montaña Rusa')
+      expect(result.content).toContain('México')
+      expect(result.content).toContain('Ciudad de México')
+    })
+
     it('should include rank as first field when ranking is enabled', () => {
       const result = generateCSV({
         coasters: mockCoasters,

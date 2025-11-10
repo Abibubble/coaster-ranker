@@ -25,8 +25,10 @@ export function downloadFile(params: DownloadFileParams): DownloadFileResult {
       }
     }
 
-    // Create blob and download link
-    const blob = new Blob([content], { type: contentType })
+    // Create blob and download link with UTF-8 encoding
+    const blob = new Blob(['\ufeff' + content], {
+      type: contentType + ';charset=utf-8',
+    })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
 
