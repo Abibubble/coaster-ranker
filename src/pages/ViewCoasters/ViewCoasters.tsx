@@ -1,140 +1,144 @@
-import React, { useState, useMemo } from 'react'
-import { Button, MainContent, Title, Text, Link } from '../../components'
-import { useData } from '../../contexts/DataContext'
-import * as Styled from './ViewCoasters.styled'
+import React, { useState, useMemo } from "react";
+import { Button, MainContent, Title, Text, Link } from "../../components";
+import { useData } from "../../contexts/DataContext";
+import * as Styled from "./ViewCoasters.styled";
 
 interface FilterOptions {
-  park: string
-  manufacturer: string
-  model: string
-  material: string
-  thrillLevel: string
-  country: string
+  park: string;
+  manufacturer: string;
+  model: string;
+  material: string;
+  thrillLevel: string;
+  country: string;
 }
 
 export default function ViewCoasters() {
-  const { uploadedData, setUploadedData } = useData()
-  const [statusMessage, setStatusMessage] = useState<string>('')
-  const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false)
+  const { uploadedData, setUploadedData } = useData();
+  const [statusMessage, setStatusMessage] = useState<string>("");
+  const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
   const [filters, setFilters] = useState<FilterOptions>({
-    park: '',
-    manufacturer: '',
-    model: '',
-    material: '',
-    thrillLevel: '',
-    country: '',
-  })
+    park: "",
+    manufacturer: "",
+    model: "",
+    material: "",
+    thrillLevel: "",
+    country: "",
+  });
 
   const allCoasters = useMemo(
     () => uploadedData?.coasters || [],
     [uploadedData?.coasters]
-  )
+  );
 
   // Sort and filter coasters
   const coasters = useMemo(() => {
-    let filteredCoasters = [...allCoasters]
+    let filteredCoasters = [...allCoasters];
 
     // Apply filters
     if (filters.park) {
-      filteredCoasters = filteredCoasters.filter(coaster =>
+      filteredCoasters = filteredCoasters.filter((coaster) =>
         coaster.park.toLowerCase().includes(filters.park.toLowerCase())
-      )
+      );
     }
     if (filters.manufacturer) {
-      filteredCoasters = filteredCoasters.filter(coaster =>
+      filteredCoasters = filteredCoasters.filter((coaster) =>
         coaster.manufacturer
           .toLowerCase()
           .includes(filters.manufacturer.toLowerCase())
-      )
+      );
     }
     if (filters.model) {
-      filteredCoasters = filteredCoasters.filter(coaster =>
+      filteredCoasters = filteredCoasters.filter((coaster) =>
         coaster.model?.toLowerCase().includes(filters.model.toLowerCase())
-      )
+      );
     }
     if (filters.material) {
-      filteredCoasters = filteredCoasters.filter(coaster =>
+      filteredCoasters = filteredCoasters.filter((coaster) =>
         coaster.material?.toLowerCase().includes(filters.material.toLowerCase())
-      )
+      );
     }
     if (filters.thrillLevel) {
-      filteredCoasters = filteredCoasters.filter(coaster =>
+      filteredCoasters = filteredCoasters.filter((coaster) =>
         coaster.thrillLevel
           ?.toLowerCase()
           .includes(filters.thrillLevel.toLowerCase())
-      )
+      );
     }
     if (filters.country) {
-      filteredCoasters = filteredCoasters.filter(coaster =>
+      filteredCoasters = filteredCoasters.filter((coaster) =>
         coaster.country.toLowerCase().includes(filters.country.toLowerCase())
-      )
+      );
     }
 
     // Sort by ranking if available, otherwise maintain original order
     const isRanked =
       uploadedData?.rankingMetadata?.isRanked &&
-      uploadedData?.rankingMetadata?.rankedCoasters
+      uploadedData?.rankingMetadata?.rankedCoasters;
 
     if (isRanked) {
       // Sort by rank position (lower numbers = better rank)
       filteredCoasters.sort((a, b) => {
-        const rankA = a.rankPosition || Number.MAX_SAFE_INTEGER
-        const rankB = b.rankPosition || Number.MAX_SAFE_INTEGER
-        return rankA - rankB
-      })
+        const rankA = a.rankPosition || Number.MAX_SAFE_INTEGER;
+        const rankB = b.rankPosition || Number.MAX_SAFE_INTEGER;
+        return rankA - rankB;
+      });
     }
 
-    return filteredCoasters
-  }, [allCoasters, filters, uploadedData?.rankingMetadata])
+    return filteredCoasters;
+  }, [allCoasters, filters, uploadedData?.rankingMetadata]);
 
   // Get unique values for filter dropdowns
   const filterOptions = useMemo(() => {
     return {
-      parks: [...new Set(allCoasters.map(c => c.park))].sort(),
-      manufacturers: [...new Set(allCoasters.map(c => c.manufacturer))].sort(),
+      parks: [...new Set(allCoasters.map((c) => c.park))].sort(),
+      manufacturers: [
+        ...new Set(allCoasters.map((c) => c.manufacturer)),
+      ].sort(),
       models: [
-        ...new Set(allCoasters.map(c => c.model).filter(Boolean)),
+        ...new Set(allCoasters.map((c) => c.model).filter(Boolean)),
       ].sort(),
       materials: [
-        ...new Set(allCoasters.map(c => c.material).filter(Boolean)),
+        ...new Set(allCoasters.map((c) => c.material).filter(Boolean)),
       ].sort(),
       thrillLevels: [
-        ...new Set(allCoasters.map(c => c.thrillLevel).filter(Boolean)),
+        ...new Set(allCoasters.map((c) => c.thrillLevel).filter(Boolean)),
       ].sort(),
-      countries: [...new Set(allCoasters.map(c => c.country))].sort(),
-    }
-  }, [allCoasters])
+      countries: [...new Set(allCoasters.map((c) => c.country))].sort(),
+    };
+  }, [allCoasters]);
 
   // Check if any coasters have values for optional fields (use allCoasters for this check)
   const hasModel = allCoasters.some(
-    coaster => coaster.model && coaster.model.trim() !== ''
-  )
+    (coaster) => coaster.model && coaster.model.trim() !== ""
+  );
   const hasMaterial = allCoasters.some(
-    coaster => coaster.material && coaster.material.trim() !== ''
-  )
+    (coaster) => coaster.material && coaster.material.trim() !== ""
+  );
   const hasThrillLevel = allCoasters.some(
-    coaster => coaster.thrillLevel && coaster.thrillLevel.trim() !== ''
-  )
+    (coaster) => coaster.thrillLevel && coaster.thrillLevel.trim() !== ""
+  );
 
   const handleFilterChange = (field: keyof FilterOptions, value: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const clearAllFilters = () => {
     setFilters({
-      park: '',
-      manufacturer: '',
-      model: '',
-      material: '',
-      thrillLevel: '',
-      country: '',
-    })
-  }
+      park: "",
+      manufacturer: "",
+      model: "",
+      material: "",
+      thrillLevel: "",
+      country: "",
+    });
+  };
 
-  const hasActiveFilters = Object.values(filters).some(filter => filter !== '')
+  const hasActiveFilters = Object.values(filters).some(
+    (filter) => filter !== ""
+  );
 
   const handleFieldClick = (field: keyof FilterOptions, value: string) => {
     // Only apply filter if the value exists and is not empty
@@ -142,49 +146,51 @@ export default function ViewCoasters() {
       // If clicking on the same value that's already filtered, clear all filters
       if (filters[field] === value) {
         setFilters({
-          park: '',
-          manufacturer: '',
-          model: '',
-          material: '',
-          thrillLevel: '',
-          country: '',
-        })
+          park: "",
+          manufacturer: "",
+          model: "",
+          material: "",
+          thrillLevel: "",
+          country: "",
+        });
       } else {
         // Clear all filters and set only the clicked field
         setFilters({
-          park: '',
-          manufacturer: '',
-          model: '',
-          material: '',
-          thrillLevel: '',
-          country: '',
+          park: "",
+          manufacturer: "",
+          model: "",
+          material: "",
+          thrillLevel: "",
+          country: "",
           [field]: value,
-        })
+        });
       }
     }
-  }
+  };
 
   const handleRemoveCoaster = (coasterId: string) => {
-    if (!uploadedData) return
+    if (!uploadedData) return;
 
-    const coasterToRemove = uploadedData.coasters.find(c => c.id === coasterId)
-    const coasterName = coasterToRemove ? coasterToRemove.name : 'this coaster'
+    const coasterToRemove = uploadedData.coasters.find(
+      (c) => c.id === coasterId
+    );
+    const coasterName = coasterToRemove ? coasterToRemove.name : "this coaster";
 
     const confirmRemove = window.confirm(
       `Are you sure you want to remove "${coasterName}" from your collection? This action cannot be undone.`
-    )
-    if (!confirmRemove) return
+    );
+    if (!confirmRemove) return;
 
     const updatedCoasters = uploadedData.coasters.filter(
-      coaster => coaster.id !== coasterId
-    )
+      (coaster) => coaster.id !== coasterId
+    );
 
     // Update ranking metadata to remove references to the deleted coaster
-    let updatedRankingMetadata = uploadedData.rankingMetadata
+    let updatedRankingMetadata = uploadedData.rankingMetadata;
     if (updatedRankingMetadata && updatedRankingMetadata.rankedCoasters) {
       // Remove the coaster from the ranked list and update positions
       const filteredRankedCoasters =
-        updatedRankingMetadata.rankedCoasters.filter(id => id !== coasterId)
+        updatedRankingMetadata.rankedCoasters.filter((id) => id !== coasterId);
 
       // If ranking exists and we removed a coaster, mark as incomplete
       updatedRankingMetadata = {
@@ -196,46 +202,46 @@ export default function ViewCoasters() {
         // Clear completed comparisons that involved the removed coaster
         completedComparisons: new Set(
           Array.from(updatedRankingMetadata.completedComparisons || []).filter(
-            comparison => !comparison.includes(coasterId)
+            (comparison) => !comparison.includes(coasterId)
           )
         ),
-      }
+      };
     }
 
     setUploadedData({
       ...uploadedData,
       coasters: updatedCoasters,
       rankingMetadata: updatedRankingMetadata,
-    })
+    });
 
     // Announce removal to screen readers
-    setStatusMessage(`${coasterName} has been removed from your collection.`)
-    setTimeout(() => setStatusMessage(''), 3000)
-  }
+    setStatusMessage(`${coasterName} has been removed from your collection.`);
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
 
   const handleRemoveAllCoasters = () => {
-    if (!uploadedData || allCoasters.length === 0) return
+    if (!uploadedData || allCoasters.length === 0) return;
 
-    const coasterCount = allCoasters.length
+    const coasterCount = allCoasters.length;
     const confirmRemove = window.confirm(
       `Are you sure you want to remove all ${coasterCount} coaster${
-        coasterCount === 1 ? '' : 's'
+        coasterCount === 1 ? "" : "s"
       } from your collection? This action cannot be undone.`
-    )
+    );
 
-    if (!confirmRemove) return
+    if (!confirmRemove) return;
 
     // Completely clear all data from localStorage by setting to null
-    setUploadedData(null)
+    setUploadedData(null);
 
     // Announce removal to screen readers
     setStatusMessage(
       `All ${coasterCount} coaster${
-        coasterCount === 1 ? '' : 's'
+        coasterCount === 1 ? "" : "s"
       } have been removed from your collection.`
-    )
-    setTimeout(() => setStatusMessage(''), 3000)
-  }
+    );
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
 
   if (allCoasters.length === 0) {
     return (
@@ -243,20 +249,20 @@ export default function ViewCoasters() {
         <Title>Your Coasters</Title>
         <section>
           <Styled.EmptyState>
-            <Text as='h2' center colour='darkGrey' mb='medium' fontSize='large'>
+            <Text as="h2" center colour="darkGrey" mb="medium" fontSize="large">
               No coasters yet
             </Text>
-            <Text as='p' center colour='mediumGrey' mb='large'>
+            <Text as="p" center colour="mediumGrey" mb="large">
               You haven't uploaded any coasters yet. Use one of the upload
               methods to add some coasters to your collection.
             </Text>
-            <Link href='/upload' variant='button'>
+            <Link href="/upload" variant="button">
               Go to upload page
             </Link>
           </Styled.EmptyState>
         </section>
       </MainContent>
-    )
+    );
   }
 
   return (
@@ -265,14 +271,14 @@ export default function ViewCoasters() {
 
       {statusMessage && (
         <div
-          role='status'
-          aria-live='polite'
+          role="status"
+          aria-live="polite"
           style={{
-            position: 'absolute',
-            left: '-10000px',
-            width: '1px',
-            height: '1px',
-            overflow: 'hidden',
+            position: "absolute",
+            left: "-10000px",
+            width: "1px",
+            height: "1px",
+            overflow: "hidden",
           }}
         >
           {statusMessage}
@@ -281,18 +287,18 @@ export default function ViewCoasters() {
 
       <section>
         <Styled.CoastersSummary>
-          <Text as='p' colour='mediumGrey' mb='small'>
+          <Text as="p" colour="mediumGrey" mb="small">
             You have <Text bold>{allCoasters.length}</Text> coaster
-            {allCoasters.length === 1 ? '' : 's'} in your collection.
+            {allCoasters.length === 1 ? "" : "s"} in your collection.
             {coasters.length !== allCoasters.length && (
-              <Text colour='darkGrey'>
-                {' '}
+              <Text colour="darkGrey">
+                {" "}
                 (Showing {coasters.length} after filtering)
               </Text>
             )}
           </Text>
           {uploadedData?.uploadedAt && (
-            <Text as='p' colour='mutedGrey' fontSize='small' italic>
+            <Text as="p" colour="mutedGrey" fontSize="small" italic>
               Last updated: {uploadedData.uploadedAt.toLocaleDateString()}
             </Text>
           )}
@@ -301,16 +307,16 @@ export default function ViewCoasters() {
         <Styled.FiltersSection>
           <Styled.FilterHeading
             as={Text}
-            colour='charcoal'
-            fontSize='medium'
-            mb='small'
+            colour="charcoal"
+            fontSize="medium"
+            mb="small"
           >
             Filter coasters
           </Styled.FilterHeading>
           <Styled.FilterToggle
             onClick={() => setIsFiltersOpen(!isFiltersOpen)}
             aria-expanded={isFiltersOpen}
-            aria-label={`${isFiltersOpen ? 'Hide' : 'Show'} filter options`}
+            aria-label={`${isFiltersOpen ? "Hide" : "Show"} filter options`}
           >
             Filter coasters
             <Styled.FilterIcon $isOpen={isFiltersOpen} />
@@ -322,11 +328,11 @@ export default function ViewCoasters() {
                 <Styled.FilterSelect
                   value={filters.park}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    handleFilterChange('park', e.target.value)
+                    handleFilterChange("park", e.target.value)
                   }
                 >
-                  <option value=''>All Parks</option>
-                  {filterOptions.parks.map(park => (
+                  <option value="">All Parks</option>
+                  {filterOptions.parks.map((park) => (
                     <option key={park} value={park}>
                       {park}
                     </option>
@@ -339,11 +345,11 @@ export default function ViewCoasters() {
                 <Styled.FilterSelect
                   value={filters.manufacturer}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    handleFilterChange('manufacturer', e.target.value)
+                    handleFilterChange("manufacturer", e.target.value)
                   }
                 >
-                  <option value=''>All Manufacturers</option>
-                  {filterOptions.manufacturers.map(manufacturer => (
+                  <option value="">All Manufacturers</option>
+                  {filterOptions.manufacturers.map((manufacturer) => (
                     <option key={manufacturer} value={manufacturer}>
                       {manufacturer}
                     </option>
@@ -356,11 +362,11 @@ export default function ViewCoasters() {
                 <Styled.FilterSelect
                   value={filters.country}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    handleFilterChange('country', e.target.value)
+                    handleFilterChange("country", e.target.value)
                   }
                 >
-                  <option value=''>All Countries</option>
-                  {filterOptions.countries.map(country => (
+                  <option value="">All Countries</option>
+                  {filterOptions.countries.map((country) => (
                     <option key={country} value={country}>
                       {country}
                     </option>
@@ -374,11 +380,11 @@ export default function ViewCoasters() {
                   <Styled.FilterSelect
                     value={filters.model}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      handleFilterChange('model', e.target.value)
+                      handleFilterChange("model", e.target.value)
                     }
                   >
-                    <option value=''>All Models</option>
-                    {filterOptions.models.map(model => (
+                    <option value="">All Models</option>
+                    {filterOptions.models.map((model) => (
                       <option key={model} value={model}>
                         {model}
                       </option>
@@ -393,11 +399,11 @@ export default function ViewCoasters() {
                   <Styled.FilterSelect
                     value={filters.material}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      handleFilterChange('material', e.target.value)
+                      handleFilterChange("material", e.target.value)
                     }
                   >
-                    <option value=''>All Materials</option>
-                    {filterOptions.materials.map(material => (
+                    <option value="">All Materials</option>
+                    {filterOptions.materials.map((material) => (
                       <option key={material} value={material}>
                         {material}
                       </option>
@@ -412,11 +418,11 @@ export default function ViewCoasters() {
                   <Styled.FilterSelect
                     value={filters.thrillLevel}
                     onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      handleFilterChange('thrillLevel', e.target.value)
+                      handleFilterChange("thrillLevel", e.target.value)
                     }
                   >
-                    <option value=''>All Thrill Levels</option>
-                    {filterOptions.thrillLevels.map(level => (
+                    <option value="">All Thrill Levels</option>
+                    {filterOptions.thrillLevels.map((level) => (
                       <option key={level} value={level}>
                         {level}
                       </option>
@@ -428,7 +434,7 @@ export default function ViewCoasters() {
 
             {hasActiveFilters && (
               <Styled.FilterActions>
-                <Button variant='default' onClick={clearAllFilters}>
+                <Button variant="default" onClick={clearAllFilters}>
                   Clear all filters
                 </Button>
               </Styled.FilterActions>
@@ -437,17 +443,17 @@ export default function ViewCoasters() {
         </Styled.FiltersSection>
 
         <Styled.ActionsBar>
-          <Button as='a' href='/upload'>
+          <Button as="link" to="/upload">
             Add more coasters
           </Button>
-          <Button as='a' href='/rank'>
+          <Button as="link" to="/rank">
             Start ranking
           </Button>
           <Button
-            variant='destructive'
+            variant="destructive"
             onClick={handleRemoveAllCoasters}
             aria-label={`Remove all ${coasters.length} coaster${
-              coasters.length === 1 ? '' : 's'
+              coasters.length === 1 ? "" : "s"
             } from collection`}
           >
             Remove all coasters
@@ -455,17 +461,17 @@ export default function ViewCoasters() {
         </Styled.ActionsBar>
 
         <Styled.TableHelpText>
-          <Text as='p' colour='mediumGrey' fontSize='small' italic>
+          <Text as="p" colour="mediumGrey" fontSize="small" italic>
             Tip: Click on any park, manufacturer, model, material, or thrill
             level to filter by that value. On smaller screens, each coaster is
             shown as a card for easier viewing.
           </Text>
           <Styled.SkipTableLink
-            href='#table-end'
+            href="#table-end"
             onKeyDown={(e: React.KeyboardEvent) => {
-              if (e.key === 'Enter') {
-                e.preventDefault()
-                document.getElementById('table-end')?.focus()
+              if (e.key === "Enter") {
+                e.preventDefault();
+                document.getElementById("table-end")?.focus();
               }
             }}
           >
@@ -473,69 +479,69 @@ export default function ViewCoasters() {
           </Styled.SkipTableLink>
         </Styled.TableHelpText>
 
-        <Styled.CoastersTable role='table' aria-label='Coaster collection data'>
+        <Styled.CoastersTable role="table" aria-label="Coaster collection data">
           <Styled.TableHeader
-            role='row'
+            role="row"
             $hasRank={uploadedData?.rankingMetadata?.isRanked}
           >
             {uploadedData?.rankingMetadata?.isRanked && (
-              <Styled.HeaderCell role='columnheader'>Rank</Styled.HeaderCell>
+              <Styled.HeaderCell role="columnheader">Rank</Styled.HeaderCell>
             )}
-            <Styled.HeaderCell role='columnheader'>Name</Styled.HeaderCell>
-            <Styled.HeaderCell role='columnheader'>Park</Styled.HeaderCell>
-            <Styled.HeaderCell role='columnheader' $isHiddenOnTablet>
+            <Styled.HeaderCell role="columnheader">Name</Styled.HeaderCell>
+            <Styled.HeaderCell role="columnheader">Park</Styled.HeaderCell>
+            <Styled.HeaderCell role="columnheader" $isHiddenOnTablet>
               Manufacturer
             </Styled.HeaderCell>
             {hasModel && (
-              <Styled.HeaderCell role='columnheader' $isHiddenOnTablet>
+              <Styled.HeaderCell role="columnheader" $isHiddenOnTablet>
                 Model
               </Styled.HeaderCell>
             )}
             {hasMaterial && (
-              <Styled.HeaderCell role='columnheader' $isHiddenOnTablet>
+              <Styled.HeaderCell role="columnheader" $isHiddenOnTablet>
                 Material
               </Styled.HeaderCell>
             )}
             {hasThrillLevel && (
-              <Styled.HeaderCell role='columnheader' $isHiddenOnTablet>
+              <Styled.HeaderCell role="columnheader" $isHiddenOnTablet>
                 Thrill Level
               </Styled.HeaderCell>
             )}
-            <Styled.HeaderCell role='columnheader'>Actions</Styled.HeaderCell>
+            <Styled.HeaderCell role="columnheader">Actions</Styled.HeaderCell>
           </Styled.TableHeader>
 
-          <div role='rowgroup'>
-            {coasters.map(coaster => (
+          <div role="rowgroup">
+            {coasters.map((coaster) => (
               <Styled.TableRow
                 key={coaster.id}
-                role='row'
+                role="row"
                 $hasRank={uploadedData?.rankingMetadata?.isRanked}
               >
                 {uploadedData?.rankingMetadata?.isRanked && (
-                  <Styled.MobileRankCell role='cell'>
+                  <Styled.MobileRankCell role="cell">
                     <Styled.MobileFieldLabel>Rank</Styled.MobileFieldLabel>
                     {coaster.rankPosition && (
-                      <Text bold colour='charcoal'>
+                      <Text bold colour="charcoal">
                         #{coaster.rankPosition}
                       </Text>
                     )}
                   </Styled.MobileRankCell>
                 )}
-                <Styled.TableCell role='cell'>
+                <Styled.TableCell role="cell">
                   <Styled.MobileFieldLabel>Name</Styled.MobileFieldLabel>
                   <Styled.MobileFieldValue>
-                    <Text bold colour='charcoal' mb='tiny'>
+                    <Text bold colour="charcoal" mb="tiny">
                       {coaster.name}
                     </Text>
                   </Styled.MobileFieldValue>
                 </Styled.TableCell>
                 <Styled.ClickableTableCell
-                  role='button'
-                  onClick={() => handleFieldClick('park', coaster.park)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      handleFieldClick('park', coaster.park)
+                  role="button"
+                  onClick={() => handleFieldClick("park", coaster.park)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleFieldClick("park", coaster.park);
                     }
                   }}
                   tabIndex={0}
@@ -548,15 +554,15 @@ export default function ViewCoasters() {
                   </Styled.MobileFieldValueClickable>
                 </Styled.ClickableTableCell>
                 <Styled.ClickableTableCell
-                  role='button'
+                  role="button"
                   $isHiddenOnTablet
                   onClick={() =>
-                    handleFieldClick('manufacturer', coaster.manufacturer)
+                    handleFieldClick("manufacturer", coaster.manufacturer)
                   }
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      handleFieldClick('manufacturer', coaster.manufacturer)
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleFieldClick("manufacturer", coaster.manufacturer);
                     }
                   }}
                   tabIndex={0}
@@ -572,18 +578,18 @@ export default function ViewCoasters() {
                 </Styled.ClickableTableCell>
                 {hasModel && (
                   <Styled.ClickableTableCell
-                    role='button'
+                    role="button"
                     $isHiddenOnTablet
                     onClick={() =>
-                      coaster.model && handleFieldClick('model', coaster.model)
+                      coaster.model && handleFieldClick("model", coaster.model)
                     }
-                    onKeyDown={e => {
+                    onKeyDown={(e) => {
                       if (
-                        (e.key === 'Enter' || e.key === ' ') &&
+                        (e.key === "Enter" || e.key === " ") &&
                         coaster.model
                       ) {
-                        e.preventDefault()
-                        handleFieldClick('model', coaster.model)
+                        e.preventDefault();
+                        handleFieldClick("model", coaster.model);
                       }
                     }}
                     tabIndex={0}
@@ -606,19 +612,19 @@ export default function ViewCoasters() {
                 )}
                 {hasMaterial && (
                   <Styled.ClickableTableCell
-                    role='button'
+                    role="button"
                     $isHiddenOnTablet
                     onClick={() =>
                       coaster.material &&
-                      handleFieldClick('material', coaster.material)
+                      handleFieldClick("material", coaster.material)
                     }
-                    onKeyDown={e => {
+                    onKeyDown={(e) => {
                       if (
-                        (e.key === 'Enter' || e.key === ' ') &&
+                        (e.key === "Enter" || e.key === " ") &&
                         coaster.material
                       ) {
-                        e.preventDefault()
-                        handleFieldClick('material', coaster.material)
+                        e.preventDefault();
+                        handleFieldClick("material", coaster.material);
                       }
                     }}
                     tabIndex={0}
@@ -641,19 +647,19 @@ export default function ViewCoasters() {
                 )}
                 {hasThrillLevel && (
                   <Styled.ClickableTableCell
-                    role='button'
+                    role="button"
                     $isHiddenOnTablet
                     onClick={() =>
                       coaster.thrillLevel &&
-                      handleFieldClick('thrillLevel', coaster.thrillLevel)
+                      handleFieldClick("thrillLevel", coaster.thrillLevel)
                     }
-                    onKeyDown={e => {
+                    onKeyDown={(e) => {
                       if (
-                        (e.key === 'Enter' || e.key === ' ') &&
+                        (e.key === "Enter" || e.key === " ") &&
                         coaster.thrillLevel
                       ) {
-                        e.preventDefault()
-                        handleFieldClick('thrillLevel', coaster.thrillLevel)
+                        e.preventDefault();
+                        handleFieldClick("thrillLevel", coaster.thrillLevel);
                       }
                     }}
                     tabIndex={0}
@@ -676,9 +682,9 @@ export default function ViewCoasters() {
                     </Styled.MobileFieldValueClickable>
                   </Styled.ClickableTableCell>
                 )}
-                <Styled.TableCell role='cell'>
+                <Styled.TableCell role="cell">
                   <Button
-                    variant='destructive'
+                    variant="destructive"
                     onClick={() => handleRemoveCoaster(coaster.id)}
                     aria-label={`Remove ${coaster.name} from collection`}
                   >
@@ -690,20 +696,20 @@ export default function ViewCoasters() {
           </div>
         </Styled.CoastersTable>
 
-        <div id='table-end' tabIndex={-1}>
+        <div id="table-end" tabIndex={-1}>
           <Text
-            as='div'
+            as="div"
             center
-            colour='mutedGrey'
-            fontSize='small'
+            colour="mutedGrey"
+            fontSize="small"
             italic
-            mb='medium'
-            mt='medium'
+            mb="medium"
+            mt="medium"
           >
-            Showing {coasters.length} coaster{coasters.length === 1 ? '' : 's'}
+            Showing {coasters.length} coaster{coasters.length === 1 ? "" : "s"}
           </Text>
         </div>
       </section>
     </MainContent>
-  )
+  );
 }
