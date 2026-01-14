@@ -36,4 +36,5 @@ export type DataContextType = {
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   markRankingComplete: (finalRanking: Coaster[]) => void;
+  resetRanking: () => void;
 };

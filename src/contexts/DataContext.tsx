@@ -78,8 +78,27 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const markRankingComplete = (finalRanking: Coaster[]) => {
     if (!uploadedData) return;
 
+    console.log("=== MARK RANKING COMPLETE DEBUG ===");
+    console.log(
+      "Input finalRanking:",
+      finalRanking.map((c) => c.name)
+    );
+    console.log("finalRanking length:", finalRanking.length);
+
+    // Update coasters with their rank positions
+    const updatedCoasters = uploadedData.coasters.map((coaster) => {
+      const rankIndex = finalRanking.findIndex(
+        (ranked) => ranked.id === coaster.id
+      );
+      return {
+        ...coaster,
+        rankPosition: rankIndex >= 0 ? rankIndex + 1 : undefined,
+      };
+    });
+
     const updatedData = {
       ...uploadedData,
+      coasters: updatedCoasters, // Include updated coasters with rankPosition
       rankingMetadata: {
         ...uploadedData.rankingMetadata,
         isRanked: true,
@@ -87,6 +106,33 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         completedComparisons:
           uploadedData.rankingMetadata?.completedComparisons ||
           new Set<string>(),
+      },
+    };
+
+    console.log(
+      "rankedCoasters IDs being stored:",
+      updatedData.rankingMetadata.rankedCoasters
+    );
+    console.log(
+      "Updated coasters with rankPosition:",
+      updatedCoasters.slice(0, 5).map((c) => `${c.name}: ${c.rankPosition}`)
+    );
+    console.log("=== END MARK RANKING COMPLETE DEBUG ===");
+
+    setUploadedData(updatedData);
+  };
+
+  // Function to reset ranking state
+  const resetRanking = () => {
+    if (!uploadedData) return;
+
+    const updatedData = {
+      ...uploadedData,
+      rankingMetadata: {
+        ...uploadedData.rankingMetadata,
+        isRanked: false,
+        rankedCoasters: [],
+        completedComparisons: new Set<string>(),
       },
     };
 
@@ -101,6 +147,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         setIsLoading,
         markRankingComplete,
+        resetRanking,
       }}
     >
       {children}

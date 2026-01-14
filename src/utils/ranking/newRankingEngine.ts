@@ -36,15 +36,7 @@ export class RankingEngine {
       isComplete: false,
     };
 
-    console.log(
-      "RankingEngine: Initializing with coasters:",
-      unrankedCoasters.map((c) => c.name)
-    );
     this.generateNextComparison();
-    console.log(
-      "RankingEngine: Initial comparison set:",
-      this.state.currentComparison
-    );
   }
 
   getCurrentComparison(): RankingComparison | null {
@@ -92,7 +84,6 @@ export class RankingEngine {
           : "NONE"
       }`
     );
-    console.log(`Is complete: ${this.state.isComplete}`);
     console.log("=== END COMPARISON RESULT ===\n");
   }
 
@@ -100,12 +91,45 @@ export class RankingEngine {
     return { ...this.state };
   }
 
+  getCurrentRanking(): Coaster[] {
+    // Return current ranked coasters plus remaining unranked coasters
+    const ranked = this.state.rankedCoasterIds
+      .map((id) => this.allCoasters.find((c) => c.id === id))
+      .filter((c) => c !== undefined) as Coaster[];
+
+    const unranked = this.state.unrankedCoasters;
+
+    return [...ranked, ...unranked];
+  }
+
   getFinalRanking(): Coaster[] {
     if (!this.state.isComplete) return [];
 
-    return this.state.rankedCoasterIds
-      .map((id) => this.allCoasters.find((c) => c.id === id))
+    console.log("=== FINAL RANKING DEBUG ===");
+    console.log("rankedCoasterIds:", this.state.rankedCoasterIds);
+    console.log("allCoasters length:", this.allCoasters.length);
+    console.log(
+      "allCoasters names:",
+      this.allCoasters.map((c) => c.name)
+    );
+
+    const finalCoasters = this.state.rankedCoasterIds
+      .map((id) => {
+        const coaster = this.allCoasters.find((c) => c.id === id);
+        if (!coaster) {
+          console.error(`Coaster with ID ${id} not found in allCoasters!`);
+        }
+        return coaster;
+      })
       .filter((c) => c !== undefined) as Coaster[];
+
+    console.log(
+      "Final ranking coasters:",
+      finalCoasters.map((c) => c.name)
+    );
+    console.log("=== END FINAL RANKING DEBUG ===");
+
+    return finalCoasters;
   }
 
   // === SIMPLE, SINGLE-PURPOSE FUNCTIONS ===
@@ -265,17 +289,14 @@ export class RankingEngine {
     );
 
     if (this.isRankingComplete()) {
-      console.log("Ranking is complete!");
       this.state.currentComparison = null;
       this.state.isComplete = true;
       return;
     }
 
     if (this.needsFirstComparison()) {
-      console.log("Setting first comparison");
       this.setFirstComparison();
     } else {
-      console.log("Setting binary search comparison");
       this.setBinarySearchComparison();
     }
 
@@ -309,7 +330,6 @@ export class RankingEngine {
 
   private setBinarySearchComparison(): void {
     const nextCoaster = this.state.unrankedCoasters[0];
-    console.log(`Setting binary search for: ${nextCoaster.name}`);
     const comparison = this.getNextBinarySearchComparison(nextCoaster);
 
     if (!comparison) {
@@ -338,12 +358,9 @@ export class RankingEngine {
   private getNextBinarySearchComparison(
     newCoaster: Coaster
   ): RankingComparison | null {
-    console.log(
-      `\n=== FINDING BINARY SEARCH COMPARISON FOR ${newCoaster.name} ===`
-    );
+    console.log(`\n=== Comparing ${newCoaster.name} ===`);
     let left = 0;
     let right = this.state.rankedCoasterIds.length;
-    console.log(`Initial search range: ${left} to ${right}`);
 
     while (left < right) {
       const mid = this.calculateMiddleIndex(left, right);

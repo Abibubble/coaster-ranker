@@ -17,10 +17,8 @@ import { Coaster } from "../../types/data";
 import * as Styled from "./Rank.styled";
 
 export const Rank: React.FC = () => {
-  const { uploadedData, markRankingComplete } = useData();
+  const { uploadedData, markRankingComplete, resetRanking } = useData();
   const navigate = useNavigate();
-
-  console.log("Rank page rendering, uploadedData:", uploadedData);
 
   // Check if ranking is already complete
   const isAlreadyRanked = uploadedData?.rankingMetadata?.isRanked || false;
@@ -48,14 +46,6 @@ export const Rank: React.FC = () => {
     }
   }, [isComplete, finalRanking, markRankingComplete, isAlreadyRanked]);
 
-  console.log("Rank page state:", {
-    currentComparison,
-    isComplete,
-    finalRankingLength: finalRanking.length,
-    rankedCoasterCount,
-    progress,
-  });
-
   // If already ranked, show completion screen with existing ranking
   if (isAlreadyRanked && uploadedData?.rankingMetadata?.rankedCoasters) {
     const rankedCoasters = uploadedData.rankingMetadata.rankedCoasters
@@ -69,9 +59,16 @@ export const Rank: React.FC = () => {
           <RankingComplete
             rankedCoasters={rankedCoasters}
             onRankAgain={() => {
-              // Reset ranking state and reload
-              markRankingComplete([]);
-              window.location.reload();
+              // Confirm before resetting rankings
+              const confirmed = window.confirm(
+                "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch."
+              );
+
+              if (confirmed) {
+                // Reset ranking state and reload
+                resetRanking();
+                window.location.reload();
+              }
             }}
           />
         </Styled.RankingContainer>
@@ -140,9 +137,16 @@ export const Rank: React.FC = () => {
           <RankingComplete
             rankedCoasters={finalRanking}
             onRankAgain={() => {
-              // Reset ranking state and reload
-              markRankingComplete([]);
-              window.location.reload();
+              // Confirm before resetting rankings
+              const confirmed = window.confirm(
+                "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch"
+              );
+
+              if (confirmed) {
+                // Reset ranking state and reload
+                resetRanking();
+                window.location.reload();
+              }
             }}
           />
         </Styled.RankingContainer>

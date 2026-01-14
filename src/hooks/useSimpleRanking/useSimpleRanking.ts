@@ -26,13 +26,14 @@ export const useSimpleRanking = (
   // Initialize ranking engine
   const rankingEngine = useMemo(() => {
     if (coasters.length === 0) return null;
-    console.log(
-      "Initializing ranking engine with coasters:",
-      coasters.map((c) => c.name)
-    );
     try {
       const engine = new RankingEngine(coasters);
-      console.log("Initial comparison:", engine.getCurrentComparison());
+      console.log(
+        "Initial comparison:",
+        engine.getCurrentComparison()?.coasterA.name,
+        "vs",
+        engine.getCurrentComparison()?.coasterB.name
+      );
       return engine;
     } catch (error) {
       console.error("Error creating ranking engine:", error);
@@ -63,19 +64,11 @@ export const useSimpleRanking = (
   // Force re-render to get current state
   const currentComparison = rankingEngine?.getCurrentComparison() || null;
   const isComplete = rankingEngine?.getState().isComplete || false;
-  const finalRanking = rankingEngine?.getFinalRanking() || [];
+  const finalRanking = isComplete
+    ? rankingEngine?.getFinalRanking() || []
+    : rankingEngine?.getCurrentRanking() || [];
   const rankedCoasterCount =
     rankingEngine?.getState().rankedCoasterIds.length || 0;
-
-  console.log("Hook state:", {
-    hasEngine: !!rankingEngine,
-    currentComparison: currentComparison
-      ? `${currentComparison.coasterA.name} vs ${currentComparison.coasterB.name}`
-      : null,
-    isComplete,
-    finalRankingLength: finalRanking.length,
-    rankedCoasterCount,
-  });
 
   // Calculate progress
   const progress = useMemo(() => {
