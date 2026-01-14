@@ -1,31 +1,31 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Coaster } from '../../types/data'
-import { CoasterComparison } from '../CoasterComparison'
-import { ProgressInfo } from '../ProgressInfo'
-import { SimpleCoasterRanking } from '../SimpleCoasterRanking'
-import { Text } from '../Text'
+import { useCallback, useEffect, useState } from "react";
+import { Coaster } from "../../types/data";
+import { CoasterComparison } from "../CoasterComparison";
+import { ProgressInfo } from "../ProgressInfo";
+import { SimpleCoasterRanking } from "../SimpleCoasterRanking";
+import { Text } from "../Text";
 import {
   createCoasterGroups,
   finalizeGroupRanking,
   calculateGroupComparisons,
   type CoasterGroup,
   type GroupByType,
-} from '../../utils/ranking/groupRankingUtils'
-import * as Styled from './GroupRanking.styled'
+} from "../../utils/ranking/groupRankingUtils";
+import * as Styled from "./GroupRanking.styled";
 
 interface GroupComparison {
-  higherGroup: string
-  lowerGroup: string
-  higherGroupLowest: Coaster
-  lowerGroupHighest: Coaster
-  description: string
+  higherGroup: string;
+  lowerGroup: string;
+  higherGroupLowest: Coaster;
+  lowerGroupHighest: Coaster;
+  description: string;
 }
 
 interface GroupRankingProps {
-  coasters: Coaster[]
-  groupBy: GroupByType
-  onRankingComplete: (rankedCoasters: Coaster[]) => void
-  onHierarchicalFallback: (attemptedMode: GroupByType) => void
+  coasters: Coaster[];
+  groupBy: GroupByType;
+  onRankingComplete: (rankedCoasters: Coaster[]) => void;
+  onHierarchicalFallback: (attemptedMode: GroupByType) => void;
 }
 
 export default function GroupRanking({
@@ -34,120 +34,120 @@ export default function GroupRanking({
   onRankingComplete,
   onHierarchicalFallback,
 }: GroupRankingProps) {
-  const [groups, setGroups] = useState<Map<string, CoasterGroup>>(new Map())
+  const [groups, setGroups] = useState<Map<string, CoasterGroup>>(new Map());
   const [currentGroupRanking, setCurrentGroupRanking] = useState<string | null>(
     null
-  )
+  );
   const [currentComparison, setCurrentComparison] =
-    useState<GroupComparison | null>(null)
-  const [finalGroupOrder, setFinalGroupOrder] = useState<string[]>([])
+    useState<GroupComparison | null>(null);
+  const [finalGroupOrder, setFinalGroupOrder] = useState<string[]>([]);
   const [phase, setPhase] = useState<
-    'group-ranking' | 'hierarchical-comparison' | 'complete'
-  >('group-ranking')
+    "group-ranking" | "hierarchical-comparison" | "complete"
+  >("group-ranking");
 
   const finalizeRanking = useCallback(
     (groupOrder: string[], groupMap: Map<string, CoasterGroup>) => {
-      onRankingComplete(finalizeGroupRanking(groupOrder, groupMap))
+      onRankingComplete(finalizeGroupRanking(groupOrder, groupMap));
     },
     [onRankingComplete]
-  )
+  );
 
   // Initialize groups
   useEffect(() => {
-    const result = createCoasterGroups({ coasters, groupBy })
-    setGroups(result.groups)
-    setFinalGroupOrder(result.groupNames)
+    const result = createCoasterGroups({ coasters, groupBy });
+    setGroups(result.groups);
+    setFinalGroupOrder(result.groupNames);
 
     // Start with first group that has multiple coasters
     const firstGroupToRank = Array.from(result.groups.entries()).find(
       ([_, group]) => group.coasters.length > 1
-    )
+    );
 
     if (firstGroupToRank) {
-      setCurrentGroupRanking(firstGroupToRank[0])
+      setCurrentGroupRanking(firstGroupToRank[0]);
     } else {
       // All groups have single coasters, finalize immediately
-      setPhase('complete')
-      onRankingComplete(finalizeGroupRanking(result.groupNames, result.groups))
+      setPhase("complete");
+      onRankingComplete(finalizeGroupRanking(result.groupNames, result.groups));
     }
-  }, [coasters, groupBy, onRankingComplete])
+  }, [coasters, groupBy, onRankingComplete]);
 
   const handleGroupRankingComplete = (
     groupName: string,
     rankedCoasters: Coaster[]
   ) => {
-    const newGroups = new Map(groups)
-    const group = newGroups.get(groupName)!
+    const newGroups = new Map(groups);
+    const group = newGroups.get(groupName)!;
 
-    group.isRanked = true
-    group.coasters = rankedCoasters
+    group.isRanked = true;
+    group.coasters = rankedCoasters;
 
-    newGroups.set(groupName, group)
-    setGroups(newGroups)
+    newGroups.set(groupName, group);
+    setGroups(newGroups);
 
     // Find next group to rank
     const nextGroupToRank = Array.from(newGroups.entries()).find(
       ([_, group]) => !group.isRanked && group.coasters.length > 1
-    )
+    );
 
     if (nextGroupToRank) {
-      setCurrentGroupRanking(nextGroupToRank[0])
+      setCurrentGroupRanking(nextGroupToRank[0]);
     } else {
       // All groups ranked, finalize the ranking directly
-      setCurrentGroupRanking(null)
-      setPhase('complete')
+      setCurrentGroupRanking(null);
+      setPhase("complete");
 
-      onRankingComplete(finalizeGroupRanking(finalGroupOrder, newGroups))
+      onRankingComplete(finalizeGroupRanking(finalGroupOrder, newGroups));
     }
-  }
+  };
 
   const handleHierarchicalChoice = (chosenCoaster: Coaster) => {
-    if (!currentComparison) return
+    if (!currentComparison) return;
 
-    const { higherGroupLowest } = currentComparison
+    const { higherGroupLowest } = currentComparison;
 
     // Clear the current comparison immediately
-    setCurrentComparison(null)
+    setCurrentComparison(null);
 
     if (chosenCoaster.id === higherGroupLowest.id) {
       // Lower coaster from higher group is preferred - hierarchy is confirmed
 
       // Call validation after state updates
       setTimeout(() => {
-        setPhase('complete')
-        finalizeRanking(finalGroupOrder, groups)
-      }, 10)
+        setPhase("complete");
+        finalizeRanking(finalGroupOrder, groups);
+      }, 10);
     } else {
       // Higher coaster from lower group is preferred - hierarchy fails, fallback to individual ranking
 
       // Call fallback after state updates
       setTimeout(() => {
-        onHierarchicalFallback(groupBy)
-      }, 10)
+        onHierarchicalFallback(groupBy);
+      }, 10);
     }
-  }
+  };
 
-  if (phase === 'group-ranking' && currentGroupRanking) {
-    const currentGroup = groups.get(currentGroupRanking)!
+  if (phase === "group-ranking" && currentGroupRanking) {
+    const currentGroup = groups.get(currentGroupRanking)!;
 
     // Calculate total remaining comparisons across all groups
-    const totalRemainingComparisons = calculateGroupComparisons(groups)
+    const totalRemainingComparisons = calculateGroupComparisons(groups);
 
     return (
       <div>
         <ProgressInfo remainingComparisons={totalRemainingComparisons} />
         <SimpleCoasterRanking
           coasters={currentGroup.coasters}
-          onComplete={ranked =>
+          onComplete={(ranked) =>
             handleGroupRankingComplete(currentGroupRanking, ranked)
           }
           hideProgress={true}
         />
       </div>
-    )
+    );
   }
 
-  if (phase === 'hierarchical-comparison' && currentComparison) {
+  if (phase === "hierarchical-comparison" && currentComparison) {
     return (
       <div>
         <Styled.HierarchicalHeader>
@@ -166,32 +166,63 @@ export default function GroupRanking({
           }
         />
       </div>
-    )
+    );
   }
 
-  if (phase === 'complete') {
+  if (phase === "complete") {
+    // Get the final ranked coasters for display
+    const finalRankedCoasters = finalizeGroupRanking(finalGroupOrder, groups);
+
     return (
       <div>
-        <h3>Hierarchical Ranking Complete!</h3>
-        <p>
+        <Text as="h3" colour="successGreen" mb="small">
+          Hierarchical Ranking Complete!
+        </Text>
+        <Text as="p" colour="successGreen" mb="medium">
           Your coasters have been ranked using the {groupBy}-based hierarchy.
-        </p>
+        </Text>
+
         <Styled.CompletionContainer>
-          <h4>Group Order:</h4>
+          <Text as="h4" colour="charcoal" mb="small">
+            Group Order:
+          </Text>
           <ol>
             {finalGroupOrder.map((groupName, _index) => (
               <Styled.GroupOrderItem key={groupName}>
                 <Text bold>{groupName}</Text>
-                <Styled.GroupCount colour='mediumGrey' fontSize='small'>
+                <Styled.GroupCount colour="mediumGrey" fontSize="small">
                   ({groups.get(groupName)?.coasters.length || 0} coasters)
                 </Styled.GroupCount>
               </Styled.GroupOrderItem>
             ))}
           </ol>
         </Styled.CompletionContainer>
+
+        <Styled.CompletionContainer>
+          <Text as="h4" colour="charcoal" mb="small">
+            Final Ranking:
+          </Text>
+          <Styled.ResultsList>
+            <ol>
+              {finalRankedCoasters.slice(0, 10).map((coaster, _index) => (
+                <li key={coaster.id}>
+                  <Text bold>{coaster.name}</Text> at {coaster.park}
+                </li>
+              ))}
+              {finalRankedCoasters.length > 10 && (
+                <li>
+                  <Text italic colour="mediumGrey">
+                    ...and {finalRankedCoasters.length - 10} more coaster
+                    {finalRankedCoasters.length - 10 === 1 ? "" : "s"}
+                  </Text>
+                </li>
+              )}
+            </ol>
+          </Styled.ResultsList>
+        </Styled.CompletionContainer>
       </div>
-    )
+    );
   }
 
-  return <div>Initializing hierarchical ranking...</div>
+  return <div>Initializing hierarchical ranking...</div>;
 }
