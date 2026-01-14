@@ -1,6 +1,6 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {
   Accessibility,
   Download,
@@ -12,44 +12,44 @@ import {
   UploadJSON,
   UploadManual,
   ViewCoasters,
-} from './pages'
-import { Footer, Header, SkipLink } from './components'
-import { DataProvider } from './contexts/DataContext'
-import { useScrollToTop } from './hooks'
+} from "./pages";
+import { Footer, Header, SkipLink } from "./components";
+import { DataProvider } from "./contexts/DataContext";
+import { useScrollToTop } from "./hooks";
 
 // Simple component that uses the scroll to top hook
 function ScrollToTop() {
-  useScrollToTop()
-  return null
+  useScrollToTop();
+  return null;
 }
 
-const rootElement = document.getElementById('root')
-if (!rootElement) throw new Error('Failed to find the root element')
+const rootElement = document.getElementById("root");
+if (!rootElement) throw new Error("Failed to find the root element");
 
-const root = ReactDOM.createRoot(rootElement)
+const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <DataProvider>
-      <Router basename='/coaster-ranker'>
+      <Router basename="/coaster-ranker">
         <ScrollToTop />
         <SkipLink />
         <Header />
-        <main id='main-content'>
+        <main id="main-content">
           <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/accessibility' element={<Accessibility />} />
-            <Route path='/download' element={<Download />} />
-            <Route path='/privacy-policy' element={<PrivacyPolicy />} />
-            <Route path='/rank' element={<Rank />} />
-            <Route path='/upload' element={<Upload />} />
-            <Route path='/upload-csv' element={<UploadCSV />} />
-            <Route path='/upload-json' element={<UploadJSON />} />
-            <Route path='/upload-manual' element={<UploadManual />} />
-            <Route path='/view-coasters' element={<ViewCoasters />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/accessibility" element={<Accessibility />} />
+            <Route path="/download" element={<Download />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/rank" element={<Rank />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/upload-csv" element={<UploadCSV />} />
+            <Route path="/upload-json" element={<UploadJSON />} />
+            <Route path="/upload-manual" element={<UploadManual />} />
+            <Route path="/view-coasters" element={<ViewCoasters />} />
           </Routes>
         </main>
         <Footer />
       </Router>
     </DataProvider>
   </React.StrictMode>
-)
+);

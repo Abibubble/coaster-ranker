@@ -4,13 +4,33 @@ import { CoasterComparison } from "../CoasterComparison";
 import { ProgressInfo } from "../ProgressInfo";
 import { SimpleCoasterRanking } from "../SimpleCoasterRanking";
 import { Text } from "../Text";
-import {
-  createCoasterGroups,
-  finalizeGroupRanking,
-  calculateGroupComparisons,
-  type CoasterGroup,
-  type GroupByType,
-} from "../../utils/ranking/groupRankingUtils";
+// GroupRanking component disabled - old ranking system
+interface CoasterGroup {
+  coasters: Coaster[];
+  isRanked?: boolean;
+}
+type GroupByType = "park" | "model";
+interface CreateGroupsParams {
+  coasters: Coaster[];
+  groupBy: GroupByType;
+}
+interface CreateGroupsResult {
+  groups: Map<string, CoasterGroup>;
+  groupNames: string[];
+}
+const createCoasterGroups = (
+  _params: CreateGroupsParams
+): CreateGroupsResult => ({
+  groups: new Map<string, CoasterGroup>(),
+  groupNames: [],
+});
+const finalizeGroupRanking = (
+  _groupOrder: string[],
+  _groupMap: Map<string, CoasterGroup>
+): Coaster[] => [];
+const calculateGroupComparisons = (
+  _groups: Map<string, CoasterGroup>
+): number => 0;
 import * as Styled from "./GroupRanking.styled";
 
 interface GroupComparison {

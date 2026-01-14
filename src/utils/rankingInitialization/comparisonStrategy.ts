@@ -1,19 +1,26 @@
-import { Coaster } from '../../types/data'
-import {
-  generateComparisons,
-  generatePositionalComparisons,
-} from '../ranking/rankingUtils'
+import { Coaster } from "../../types/data";
+// Old ranking utilities no longer exist
+const generateComparisons = (
+  _coasters: Coaster[],
+  _completedComparisons: Set<string>
+): [Coaster, Coaster][] => [];
+const generatePositionalComparisons = (
+  _coasters: Coaster[],
+  _rankedCoasters: string[],
+  _completedComparisons: Set<string>,
+  _comparisonResults: Map<string, string>
+): [Coaster, Coaster][] => [];
 
 export interface ComparisonStrategy {
-  type: 'full' | 'positional'
-  reason: string
+  type: "full" | "positional";
+  reason: string;
 }
 
 export interface ComparisonStrategyParams {
-  coasters: Coaster[]
-  rankedCoasters: string[]
-  completedComparisons: Set<string>
-  comparisonResults: Map<string, string>
+  coasters: Coaster[];
+  rankedCoasters: string[];
+  completedComparisons: Set<string>;
+  comparisonResults: Map<string, string>;
 }
 
 /**
@@ -28,10 +35,10 @@ export const determineComparisonStrategy = ({
   // This implements sequential insertion: compare each coaster against
   // already-ranked coasters to find its position using binary search
   return {
-    type: 'positional',
-    reason: 'Sequential binary search insertion strategy for efficient ranking',
-  }
-}
+    type: "positional",
+    reason: "Sequential binary search insertion strategy for efficient ranking",
+  };
+};
 
 /**
  * Generate comparisons based on the selected strategy
@@ -41,24 +48,24 @@ export const generateComparisonsByStrategy = (
   params: ComparisonStrategyParams
 ): [Coaster, Coaster][] => {
   const { coasters, rankedCoasters, completedComparisons, comparisonResults } =
-    params
+    params;
 
   switch (strategy.type) {
-    case 'full':
-      return generateComparisons(coasters, completedComparisons)
+    case "full":
+      return generateComparisons(coasters, completedComparisons);
 
-    case 'positional':
+    case "positional":
       return generatePositionalComparisons(
         coasters,
         rankedCoasters,
         completedComparisons,
         comparisonResults
-      )
+      );
 
     default:
-      throw new Error(`Unknown comparison strategy: ${strategy.type}`)
+      throw new Error(`Unknown comparison strategy: ${strategy.type}`);
   }
-}
+};
 
 /**
  * Get comparison strategy and generate comparisons in one call
@@ -66,11 +73,11 @@ export const generateComparisonsByStrategy = (
 export const getOptimalComparisons = (
   params: ComparisonStrategyParams
 ): {
-  strategy: ComparisonStrategy
-  comparisons: [Coaster, Coaster][]
+  strategy: ComparisonStrategy;
+  comparisons: [Coaster, Coaster][];
 } => {
-  const strategy = determineComparisonStrategy(params)
-  const comparisons = generateComparisonsByStrategy(strategy, params)
+  const strategy = determineComparisonStrategy(params);
+  const comparisons = generateComparisonsByStrategy(strategy, params);
 
-  return { strategy, comparisons }
-}
+  return { strategy, comparisons };
+};

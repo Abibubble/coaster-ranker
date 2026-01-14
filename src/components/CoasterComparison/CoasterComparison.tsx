@@ -1,35 +1,39 @@
-import { Coaster } from '../../types/data'
-import { formatCountry } from '../../utils/ranking/rankingUtils'
-import * as Styled from './CoasterComparison.styled'
-import { Card } from '../Card'
-import { Text } from '../Text'
+import { Coaster } from "../../types/data";
+import * as Styled from "./CoasterComparison.styled";
+import { Card } from "../Card";
+import { Text } from "../Text";
+
+// Helper function to format country for display
+const formatCountry = (country: string | undefined): string => {
+  return country && country.trim() ? `, ${country}` : "";
+};
 
 interface CoasterComparisonProps {
-  coaster1: Coaster
-  coaster2: Coaster
-  onChoose1?: () => void
-  onChoose2?: () => void
-  clickable?: boolean
-  coaster1Label?: string
-  coaster2Label?: string
+  coaster1: Coaster;
+  coaster2: Coaster;
+  onChoose1?: () => void;
+  onChoose2?: () => void;
+  clickable?: boolean;
+  coaster1Label?: string;
+  coaster2Label?: string;
 }
 
 // Helper function to check if a value exists and is not empty
 const hasValue = (value: string | undefined): boolean => {
-  return value !== undefined && value !== null && value.trim() !== ''
-}
+  return value !== undefined && value !== null && value.trim() !== "";
+};
 
 // Helper function to render a field only if it has a value
 const renderField = (label: string, value: string | undefined) => {
   if (!hasValue(value)) {
-    return null
+    return null;
   }
   return (
     <p>
       <Text bold>{label}:</Text> {value}
     </p>
-  )
-}
+  );
+};
 
 export default function CoasterComparison({
   coaster1,
@@ -42,9 +46,9 @@ export default function CoasterComparison({
 }: CoasterComparisonProps) {
   // Ensure we have labels for the cards, fallback to coaster name or a generic label
   const coaster1DisplayLabel =
-    coaster1Label || (hasValue(coaster1.name) ? coaster1.name : 'Coaster 1')
+    coaster1Label || (hasValue(coaster1.name) ? coaster1.name : "Coaster 1");
   const coaster2DisplayLabel =
-    coaster2Label || (hasValue(coaster2.name) ? coaster2.name : 'Coaster 2')
+    coaster2Label || (hasValue(coaster2.name) ? coaster2.name : "Coaster 2");
 
   return (
     <Styled.ComparisonArea>
@@ -59,11 +63,11 @@ export default function CoasterComparison({
         }
         onClick={clickable ? onChoose1 : undefined}
       >
-        {renderField('Manufacturer', coaster1.manufacturer)}
-        {renderField('Model', coaster1.model)}
-        {renderField('Material', coaster1.material)}
-        {renderField('Thrill Level', coaster1.thrillLevel)}
-        {renderField('Country', coaster1.country)}
+        {renderField("Manufacturer", coaster1.manufacturer)}
+        {renderField("Model", coaster1.model)}
+        {renderField("Material", coaster1.material)}
+        {renderField("Thrill Level", coaster1.thrillLevel)}
+        {renderField("Country", coaster1.country)}
       </Card>
 
       <Styled.VersusText>VS</Styled.VersusText>
@@ -79,12 +83,12 @@ export default function CoasterComparison({
         }
         onClick={clickable ? onChoose2 : undefined}
       >
-        {renderField('Manufacturer', coaster2.manufacturer)}
-        {renderField('Model', coaster2.model)}
-        {renderField('Material', coaster2.material)}
-        {renderField('Thrill Level', coaster2.thrillLevel)}
-        {renderField('Country', coaster2.country)}
+        {renderField("Manufacturer", coaster2.manufacturer)}
+        {renderField("Model", coaster2.model)}
+        {renderField("Material", coaster2.material)}
+        {renderField("Thrill Level", coaster2.thrillLevel)}
+        {renderField("Country", coaster2.country)}
       </Card>
     </Styled.ComparisonArea>
-  )
+  );
 }

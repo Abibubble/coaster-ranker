@@ -1,3 +1,3 @@
-import Rank from './Rank'
+import { Rank } from './Rank'
 
 export { Rank }
