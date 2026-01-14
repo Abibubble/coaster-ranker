@@ -139,7 +139,7 @@ function Home() {
             rankings. Start building your ultimate coaster tier list today!
           </Text>
           <Styled.CTAButtonGroup>
-            <Button as='a' href='/upload' variant='success'>
+            <Button as='link' to='/upload' variant='success'>
               Start Ranking Now
             </Button>
           </Styled.CTAButtonGroup>
