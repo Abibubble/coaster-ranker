@@ -17,10 +17,13 @@ import { Coaster } from "../../types/data";
 import * as Styled from "./Rank.styled";
 
 export const Rank: React.FC = () => {
-  const { uploadedData } = useData();
+  const { uploadedData, markRankingComplete } = useData();
   const navigate = useNavigate();
 
   console.log("Rank page rendering, uploadedData:", uploadedData);
+
+  // Check if ranking is already complete
+  const isAlreadyRanked = uploadedData?.rankingMetadata?.isRanked || false;
 
   const {
     currentComparison,
@@ -38,6 +41,13 @@ export const Rank: React.FC = () => {
     progress: { totalComparisons: number; completedComparisons: number };
   } = useSimpleRanking(uploadedData?.coasters || []);
 
+  // Mark ranking as complete when ranking finishes
+  React.useEffect(() => {
+    if (isComplete && finalRanking.length > 0 && !isAlreadyRanked) {
+      markRankingComplete(finalRanking);
+    }
+  }, [isComplete, finalRanking, markRankingComplete, isAlreadyRanked]);
+
   console.log("Rank page state:", {
     currentComparison,
     isComplete,
@@ -45,6 +55,29 @@ export const Rank: React.FC = () => {
     rankedCoasterCount,
     progress,
   });
+
+  // If already ranked, show completion screen with existing ranking
+  if (isAlreadyRanked && uploadedData?.rankingMetadata?.rankedCoasters) {
+    const rankedCoasters = uploadedData.rankingMetadata.rankedCoasters
+      .map((id) => uploadedData.coasters.find((coaster) => coaster.id === id))
+      .filter(Boolean) as Coaster[];
+
+    return (
+      <MainContent>
+        <Title>Ranking Complete!</Title>
+        <Styled.RankingContainer>
+          <RankingComplete
+            rankedCoasters={rankedCoasters}
+            onRankAgain={() => {
+              // Reset ranking state and reload
+              markRankingComplete([]);
+              window.location.reload();
+            }}
+          />
+        </Styled.RankingContainer>
+      </MainContent>
+    );
+  }
 
   // Redirect if no data
   if (!uploadedData || !uploadedData.coasters.length) {
@@ -106,7 +139,11 @@ export const Rank: React.FC = () => {
         <Styled.RankingContainer>
           <RankingComplete
             rankedCoasters={finalRanking}
-            onRankAgain={() => window.location.reload()}
+            onRankAgain={() => {
+              // Reset ranking state and reload
+              markRankingComplete([]);
+              window.location.reload();
+            }}
           />
         </Styled.RankingContainer>
       </MainContent>
