@@ -12,7 +12,6 @@ export { MainContent } from "./MainContent";
 export { PreRankingQuestion } from "./PreRankingQuestion";
 export { ProgressInfo } from "./ProgressInfo";
 export { RankingComplete } from "./RankingComplete";
-export { RankingControls } from "./RankingControls";
 export { ScreenReaderOnly } from "./ScreenReaderOnly";
 export { SimpleCoasterRanking } from "./SimpleCoasterRanking";
 export { SkipLink } from "./SkipLink";
