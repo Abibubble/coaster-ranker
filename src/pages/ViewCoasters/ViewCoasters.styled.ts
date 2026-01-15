@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { breakpoints, colours, fonts, spacing } from '../../theme'
+import styled from "styled-components";
+import { breakpoints, colours, fonts, spacing } from "../../theme";
 
 export const EmptyState = styled.div`
   text-align: center;
@@ -8,11 +8,11 @@ export const EmptyState = styled.div`
   @media (max-width: ${breakpoints.tablet}) {
     padding: ${spacing.large};
   }
-`
+`;
 
 export const CoastersSummary = styled.div`
   margin-bottom: ${spacing.medium};
-`
+`;
 
 export const FiltersSection = styled.div`
   margin-bottom: ${spacing.medium};
@@ -20,13 +20,13 @@ export const FiltersSection = styled.div`
   background-color: ${colours.veryLightGrey};
   border-radius: ${spacing.tiny};
   border: ${spacing.micro} solid ${colours.borderGrey};
-`
+`;
 
 export const FilterHeading = styled.h3`
   @media (max-width: ${breakpoints.tablet}) {
     display: none;
   }
-`
+`;
 
 export const FilterToggle = styled.button`
   display: flex;
@@ -56,22 +56,22 @@ export const FilterToggle = styled.button`
   @media (min-width: ${breakpoints.tablet}) {
     display: none;
   }
-`
+`;
 
 export const FilterIcon = styled.span<{ $isOpen: boolean }>`
-  transform: ${({ $isOpen }) => ($isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transform: ${({ $isOpen }) => ($isOpen ? "rotate(180deg)" : "rotate(0deg)")};
   transition: transform 0.2s ease;
 
   &::after {
-    content: '▼';
+    content: "▼";
   }
-`
+`;
 
 export const FilterContent = styled.div<{ $isOpen: boolean }>`
   @media (max-width: ${breakpoints.tablet}) {
-    display: ${({ $isOpen }) => ($isOpen ? 'block' : 'none')};
+    display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   }
-`
+`;
 
 export const FiltersGrid = styled.div`
   display: grid;
@@ -86,13 +86,13 @@ export const FiltersGrid = styled.div`
   @media (max-width: ${breakpoints.mobileLarge}) {
     grid-template-columns: 1fr;
   }
-`
+`;
 
 export const FilterGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacing.tiny};
-`
+`;
 
 export const FilterLabel = styled.label`
   font-size: ${fonts.small};
@@ -100,7 +100,7 @@ export const FilterLabel = styled.label`
   color: ${colours.charcoal};
   text-transform: uppercase;
   letter-spacing: 0.5px;
-`
+`;
 
 export const FilterSelect = styled.select`
   padding: ${spacing.small};
@@ -121,18 +121,18 @@ export const FilterSelect = styled.select`
     border-color: ${colours.charcoal};
     box-shadow: 0 0 0 2px ${colours.paleGrey};
   }
-`
+`;
 
 export const FilterActions = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: ${spacing.small};
-`
+`;
 
 export const TableHelpText = styled.div`
   margin-bottom: ${spacing.medium};
   text-align: center;
-`
+`;
 
 export const SkipTableLink = styled.a`
   display: inline-block;
@@ -149,7 +149,7 @@ export const SkipTableLink = styled.a`
     outline: 2px solid ${colours.blue};
     outline-offset: 2px;
   }
-`
+`;
 
 export const ActionsBar = styled.div`
   display: flex;
@@ -160,7 +160,7 @@ export const ActionsBar = styled.div`
   @media (max-width: ${breakpoints.mobileLarge}) {
     flex-direction: column;
   }
-`
+`;
 
 export const CoastersTable = styled.div`
   overflow-x: auto;
@@ -172,7 +172,7 @@ export const CoastersTable = styled.div`
     overflow-x: visible;
     border: none;
   }
-`
+`;
 
 export const TableHeader = styled.div<{ $hasRank?: boolean }>`
   display: grid;
@@ -197,7 +197,7 @@ export const TableHeader = styled.div<{ $hasRank?: boolean }>`
   @media (max-width: ${breakpoints.tablet}) {
     display: none;
   }
-`
+`;
 
 export const HeaderCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
   padding: ${spacing.medium};
@@ -206,6 +206,9 @@ export const HeaderCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
   font-size: ${fonts.small};
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   @media (max-width: ${breakpoints.tablet}) {
     ${({ $isHiddenOnTablet }) =>
@@ -214,7 +217,7 @@ export const HeaderCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
       display: none;
     `}
   }
-`
+`;
 
 export const TableRow = styled.div<{ $hasRank?: boolean }>`
   display: grid;
@@ -263,13 +266,16 @@ export const TableRow = styled.div<{ $hasRank?: boolean }>`
       border-bottom: ${spacing.micro} solid ${colours.borderGrey};
     }
   }
-`
+`;
 
 export const TableCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
   padding: ${spacing.medium};
   color: ${colours.slateGrey};
   font-size: ${fonts.body};
   align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   @media (max-width: ${breakpoints.tablet}) {
     padding: 0;
@@ -278,6 +284,9 @@ export const TableCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
     grid-template-columns: 1fr 1fr;
     gap: ${spacing.small};
     align-items: start;
+    overflow: visible;
+    text-overflow: unset;
+    white-space: normal;
 
     &:last-child {
       margin-bottom: 0;
@@ -286,10 +295,10 @@ export const TableCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
       justify-items: center;
     }
   }
-`
+`;
 
 export const ClickableTableCell = styled(TableCell)<{
-  $isHiddenOnTablet?: boolean
+  $isHiddenOnTablet?: boolean;
 }>`
   cursor: pointer;
   transition: all 0.2s ease;
@@ -339,7 +348,7 @@ export const ClickableTableCell = styled(TableCell)<{
       justify-items: center;
     }
   }
-`
+`;
 
 export const MobileFieldLabel = styled.span`
   display: none;
@@ -354,7 +363,7 @@ export const MobileFieldLabel = styled.span`
     justify-self: start;
     align-self: center;
   }
-`
+`;
 
 export const MobileFieldValue = styled.div`
   @media (max-width: ${breakpoints.tablet}) {
@@ -363,7 +372,7 @@ export const MobileFieldValue = styled.div`
     justify-self: start;
     align-self: center;
   }
-`
+`;
 
 export const MobileFieldValueClickable = styled.div`
   @media (max-width: ${breakpoints.tablet}) {
@@ -378,7 +387,7 @@ export const MobileFieldValueClickable = styled.div`
       color: ${colours.blue};
     }
   }
-`
+`;
 
 export const MobileRankCell = styled(TableCell)`
   @media (max-width: ${breakpoints.tablet}) {
@@ -396,4 +405,213 @@ export const MobileRankCell = styled(TableCell)`
       justify-items: center;
     }
   }
-`
+`;
+
+export const CoastersGrid = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing.medium};
+  max-width: 1106px;
+`;
+
+export const CoasterCard = styled.div`
+  background: ${colours.white};
+  border: ${spacing.micro} solid ${colours.borderGrey};
+  border-radius: ${spacing.small};
+  padding: ${spacing.medium};
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+`;
+
+export const CoasterHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: ${spacing.medium};
+  gap: ${spacing.medium};
+`;
+
+export const CoasterTitle = styled.div`
+  flex: 1;
+`;
+
+export const CoasterActions = styled.div`
+  display: flex;
+  gap: ${spacing.small};
+  flex-shrink: 0;
+
+  @media (max-width: ${breakpoints.mobileLarge}) {
+    flex-direction: column;
+  }
+`;
+
+export const CoasterDetails = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: ${spacing.medium};
+  margin-bottom: ${spacing.medium};
+
+  @media (max-width: ${breakpoints.tablet}) {
+    grid-template-columns: 1fr;
+    gap: ${spacing.small};
+  }
+`;
+
+export const CoasterField = styled.div`
+  /* Desktop: flex column layout */
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing.tiny};
+
+  @media (max-width: 768px) {
+    /* Mobile: grid layout with labels on left, values on right */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: ${spacing.small};
+    align-items: start;
+    padding: 0;
+    margin-bottom: ${spacing.tiny};
+
+    &:last-child {
+      margin-bottom: 0;
+      margin-top: ${spacing.small};
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+  }
+`;
+
+export const FieldLabel = styled.span`
+  font-size: ${fonts.small};
+  font-weight: bold;
+  color: ${colours.mediumGrey};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+export const FieldValue = styled.span`
+  font-size: ${fonts.body};
+  color: ${colours.charcoal};
+  word-break: break-word;
+`;
+
+export const ClickableFieldValue = styled.button`
+  background: none;
+  border: none;
+  padding: ${spacing.tiny};
+  margin: -${spacing.tiny};
+  font-size: ${fonts.body};
+  color: ${colours.charcoal};
+  cursor: pointer;
+  text-align: left;
+  border-radius: ${spacing.micro};
+  word-break: break-word;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${colours.paleGrey};
+    color: ${colours.blue};
+  }
+
+  &:focus {
+    outline: 2px solid ${colours.blue};
+    outline-offset: 2px;
+  }
+`;
+
+export const RankBadge = styled.div`
+  background: ${colours.blue};
+  color: ${colours.white};
+  padding: ${spacing.tiny} ${spacing.small};
+  border-radius: ${spacing.small};
+  font-weight: bold;
+  font-size: ${fonts.small};
+  text-align: center;
+  min-width: 40px;
+`;
+
+export const EditForm = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: ${spacing.medium};
+  margin-bottom: ${spacing.medium};
+
+  @media (max-width: ${breakpoints.tablet}) {
+    grid-template-columns: 1fr;
+    gap: ${spacing.small};
+  }
+`;
+
+export const FormField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing.tiny};
+`;
+
+export const FormLabel = styled.label`
+  font-size: ${fonts.small};
+  font-weight: bold;
+  color: ${colours.charcoal};
+`;
+
+export const FormInput = styled.input`
+  padding: ${spacing.small};
+  border: ${spacing.micro} solid ${colours.borderGrey};
+  border-radius: ${spacing.tiny};
+  font-size: ${fonts.body};
+
+  &:focus {
+    outline: none;
+    border-color: ${colours.blue};
+    box-shadow: 0 0 0 2px ${colours.blue}20;
+  }
+`;
+
+export const FormActions = styled.div`
+  display: flex;
+  gap: ${spacing.small};
+  justify-content: flex-end;
+  margin-top: ${spacing.medium};
+
+  @media (max-width: ${breakpoints.mobileLarge}) {
+    flex-direction: column;
+  }
+`;
+
+export const MobileLayout = styled.div`
+  @media (min-width: 769px) {
+    display: none;
+  }
+`;
+
+export const DesktopLayout = styled.div`
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+export const MobileHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: ${spacing.medium};
+  padding: 0 ${spacing.small};
+`;
+
+export const MobileRank = styled.div`
+  position: absolute;
+  left: 0;
+`;
+
+export const MobileName = styled.div`
+  text-align: center;
+  font-weight: bold;
+  font-size: ${fonts.medium};
+  color: ${colours.charcoal};
+`;

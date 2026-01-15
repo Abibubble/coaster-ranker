@@ -72,8 +72,8 @@ describe('ViewCoasters', () => {
         </DataProvider>
       )
 
-      expect(screen.getByText('Steel Vengeance')).toBeInTheDocument()
-      expect(screen.getByText('Fury 325')).toBeInTheDocument()
+      expect(screen.getAllByText('Steel Vengeance')[0]).toBeInTheDocument()
+      expect(screen.getAllByText('Fury 325')[0]).toBeInTheDocument()
       expect(screen.getByText(/2.*coasters/)).toBeInTheDocument()
     })
   })

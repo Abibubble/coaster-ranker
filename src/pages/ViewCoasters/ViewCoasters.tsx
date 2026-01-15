@@ -1,9 +1,20 @@
 import React, { useState, useMemo } from "react";
 import { Button, MainContent, Title, Text, Link } from "../../components";
 import { useData } from "../../contexts/DataContext";
+import { Coaster } from "../../types/data";
 import * as Styled from "./ViewCoasters.styled";
 
 interface FilterOptions {
+  park: string;
+  manufacturer: string;
+  model: string;
+  material: string;
+  thrillLevel: string;
+  country: string;
+}
+
+interface EditableCoaster {
+  name: string;
   park: string;
   manufacturer: string;
   model: string;
@@ -16,6 +27,16 @@ export default function ViewCoasters() {
   const { uploadedData, setUploadedData } = useData();
   const [statusMessage, setStatusMessage] = useState<string>("");
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
+  const [editingCoasterId, setEditingCoasterId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<EditableCoaster>({
+    name: "",
+    park: "",
+    manufacturer: "",
+    model: "",
+    material: "",
+    thrillLevel: "",
+    country: "",
+  });
   const [filters, setFilters] = useState<FilterOptions>({
     park: "",
     manufacturer: "",
@@ -243,6 +264,92 @@ export default function ViewCoasters() {
     setTimeout(() => setStatusMessage(""), 3000);
   };
 
+  const handleEditCoaster = (coaster: Coaster) => {
+    setEditingCoasterId(coaster.id);
+    setEditForm({
+      name: coaster.name,
+      park: coaster.park,
+      manufacturer: coaster.manufacturer,
+      model: coaster.model || "",
+      material: coaster.material || "",
+      thrillLevel: coaster.thrillLevel || "",
+      country: coaster.country,
+    });
+  };
+
+  const handleSaveEdit = () => {
+    if (!uploadedData || !editingCoasterId) return;
+
+    // Validate required fields
+    if (
+      !editForm.name.trim() ||
+      !editForm.park.trim() ||
+      !editForm.manufacturer.trim()
+    ) {
+      alert("Please fill in all required fields (Name, Park, Manufacturer).");
+      return;
+    }
+
+    const updatedCoasters = uploadedData.coasters.map((coaster) => {
+      if (coaster.id === editingCoasterId) {
+        return {
+          ...coaster,
+          name: editForm.name.trim(),
+          park: editForm.park.trim(),
+          manufacturer: editForm.manufacturer.trim(),
+          model: editForm.model.trim() || undefined,
+          material: editForm.material.trim() || undefined,
+          thrillLevel: editForm.thrillLevel.trim() || undefined,
+          country: editForm.country.trim(),
+        };
+      }
+      return coaster;
+    });
+
+    setUploadedData({
+      ...uploadedData,
+      coasters: updatedCoasters,
+    });
+
+    // Reset edit state
+    setEditingCoasterId(null);
+    setEditForm({
+      name: "",
+      park: "",
+      manufacturer: "",
+      model: "",
+      material: "",
+      thrillLevel: "",
+      country: "",
+    });
+
+    setStatusMessage("Coaster updated successfully.");
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCoasterId(null);
+    setEditForm({
+      name: "",
+      park: "",
+      manufacturer: "",
+      model: "",
+      material: "",
+      thrillLevel: "",
+      country: "",
+    });
+  };
+
+  const handleEditFormChange = (
+    field: keyof EditableCoaster,
+    value: string
+  ) => {
+    setEditForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   if (allCoasters.length === 0) {
     return (
       <MainContent>
@@ -463,240 +570,543 @@ export default function ViewCoasters() {
         <Styled.TableHelpText>
           <Text as="p" colour="mediumGrey" fontSize="small" italic>
             Tip: Click on any park, manufacturer, model, material, or thrill
-            level to filter by that value. On smaller screens, each coaster is
-            shown as a card for easier viewing.
+            level to filter by that value.
           </Text>
-          <Styled.SkipTableLink
-            href="#table-end"
-            onKeyDown={(e: React.KeyboardEvent) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                document.getElementById("table-end")?.focus();
-              }
-            }}
-          >
-            Skip table navigation
-          </Styled.SkipTableLink>
         </Styled.TableHelpText>
 
-        <Styled.CoastersTable role="table" aria-label="Coaster collection data">
-          <Styled.TableHeader
-            role="row"
-            $hasRank={uploadedData?.rankingMetadata?.isRanked}
-          >
-            {uploadedData?.rankingMetadata?.isRanked && (
-              <Styled.HeaderCell role="columnheader">Rank</Styled.HeaderCell>
-            )}
-            <Styled.HeaderCell role="columnheader">Name</Styled.HeaderCell>
-            <Styled.HeaderCell role="columnheader">Park</Styled.HeaderCell>
-            <Styled.HeaderCell role="columnheader" $isHiddenOnTablet>
-              Manufacturer
-            </Styled.HeaderCell>
-            {hasModel && (
-              <Styled.HeaderCell role="columnheader" $isHiddenOnTablet>
-                Model
-              </Styled.HeaderCell>
-            )}
-            {hasMaterial && (
-              <Styled.HeaderCell role="columnheader" $isHiddenOnTablet>
-                Material
-              </Styled.HeaderCell>
-            )}
-            {hasThrillLevel && (
-              <Styled.HeaderCell role="columnheader" $isHiddenOnTablet>
-                Thrill Level
-              </Styled.HeaderCell>
-            )}
-            <Styled.HeaderCell role="columnheader">Actions</Styled.HeaderCell>
-          </Styled.TableHeader>
+        <Styled.CoastersGrid>
+          {coasters.map((coaster) => (
+            <Styled.CoasterCard key={coaster.id}>
+              {editingCoasterId === coaster.id ? (
+                // Edit mode
+                <>
+                  {/* Desktop Edit Layout */}
+                  <Styled.DesktopLayout>
+                    <Styled.CoasterHeader>
+                      <Styled.CoasterTitle>
+                        <Text
+                          as="h3"
+                          fontSize="large"
+                          colour="charcoal"
+                          mb="tiny"
+                        >
+                          Editing: {coaster.name}
+                        </Text>
+                      </Styled.CoasterTitle>
+                      {uploadedData?.rankingMetadata?.isRanked &&
+                        coaster.rankPosition && (
+                          <Styled.RankBadge>
+                            #{coaster.rankPosition}
+                          </Styled.RankBadge>
+                        )}
+                    </Styled.CoasterHeader>
 
-          <div role="rowgroup">
-            {coasters.map((coaster) => (
-              <Styled.TableRow
-                key={coaster.id}
-                role="row"
-                $hasRank={uploadedData?.rankingMetadata?.isRanked}
-              >
-                {uploadedData?.rankingMetadata?.isRanked && (
-                  <Styled.MobileRankCell role="cell">
-                    <Styled.MobileFieldLabel>Rank</Styled.MobileFieldLabel>
-                    {coaster.rankPosition && (
-                      <Text bold colour="charcoal">
-                        #{coaster.rankPosition}
-                      </Text>
+                    <Styled.EditForm>
+                      <Styled.FormField>
+                        <Styled.FormLabel>Name *</Styled.FormLabel>
+                        <Styled.FormInput
+                          type="text"
+                          value={editForm.name}
+                          onChange={(e) =>
+                            handleEditFormChange("name", e.target.value)
+                          }
+                          required
+                        />
+                      </Styled.FormField>
+
+                      <Styled.FormField>
+                        <Styled.FormLabel>Park *</Styled.FormLabel>
+                        <Styled.FormInput
+                          type="text"
+                          value={editForm.park}
+                          onChange={(e) =>
+                            handleEditFormChange("park", e.target.value)
+                          }
+                          required
+                        />
+                      </Styled.FormField>
+
+                      <Styled.FormField>
+                        <Styled.FormLabel>Manufacturer *</Styled.FormLabel>
+                        <Styled.FormInput
+                          type="text"
+                          value={editForm.manufacturer}
+                          onChange={(e) =>
+                            handleEditFormChange("manufacturer", e.target.value)
+                          }
+                          required
+                        />
+                      </Styled.FormField>
+
+                      <Styled.FormField>
+                        <Styled.FormLabel>Country</Styled.FormLabel>
+                        <Styled.FormInput
+                          type="text"
+                          value={editForm.country}
+                          onChange={(e) =>
+                            handleEditFormChange("country", e.target.value)
+                          }
+                        />
+                      </Styled.FormField>
+
+                      {hasModel && (
+                        <Styled.FormField>
+                          <Styled.FormLabel>Model</Styled.FormLabel>
+                          <Styled.FormInput
+                            type="text"
+                            value={editForm.model}
+                            onChange={(e) =>
+                              handleEditFormChange("model", e.target.value)
+                            }
+                          />
+                        </Styled.FormField>
+                      )}
+
+                      {hasMaterial && (
+                        <Styled.FormField>
+                          <Styled.FormLabel>Material</Styled.FormLabel>
+                          <Styled.FormInput
+                            type="text"
+                            value={editForm.material}
+                            onChange={(e) =>
+                              handleEditFormChange("material", e.target.value)
+                            }
+                          />
+                        </Styled.FormField>
+                      )}
+
+                      {hasThrillLevel && (
+                        <Styled.FormField>
+                          <Styled.FormLabel>Thrill Level</Styled.FormLabel>
+                          <Styled.FormInput
+                            type="text"
+                            value={editForm.thrillLevel}
+                            onChange={(e) =>
+                              handleEditFormChange(
+                                "thrillLevel",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </Styled.FormField>
+                      )}
+                    </Styled.EditForm>
+
+                    <Styled.FormActions>
+                      <Button
+                        variant="default"
+                        onClick={handleCancelEdit}
+                        aria-label="Cancel editing"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="default"
+                        onClick={handleSaveEdit}
+                        aria-label="Save changes"
+                      >
+                        Save
+                      </Button>
+                    </Styled.FormActions>
+                  </Styled.DesktopLayout>
+
+                  {/* Mobile Edit Layout */}
+                  <Styled.MobileLayout>
+                    {uploadedData?.rankingMetadata?.isRanked &&
+                      coaster.rankPosition && (
+                        <Styled.CoasterField>
+                          <Styled.FieldLabel>Rank</Styled.FieldLabel>
+                          <Styled.RankBadge>
+                            #{coaster.rankPosition}
+                          </Styled.RankBadge>
+                        </Styled.CoasterField>
+                      )}
+
+                    <Styled.CoasterField>
+                      <Styled.FieldLabel>Name *</Styled.FieldLabel>
+                      <Styled.FormInput
+                        type="text"
+                        value={editForm.name}
+                        onChange={(e) =>
+                          handleEditFormChange("name", e.target.value)
+                        }
+                        required
+                      />
+                    </Styled.CoasterField>
+
+                    <Styled.CoasterField>
+                      <Styled.FieldLabel>Park *</Styled.FieldLabel>
+                      <Styled.FormInput
+                        type="text"
+                        value={editForm.park}
+                        onChange={(e) =>
+                          handleEditFormChange("park", e.target.value)
+                        }
+                        required
+                      />
+                    </Styled.CoasterField>
+
+                    <Styled.CoasterField>
+                      <Styled.FieldLabel>Manufacturer *</Styled.FieldLabel>
+                      <Styled.FormInput
+                        type="text"
+                        value={editForm.manufacturer}
+                        onChange={(e) =>
+                          handleEditFormChange("manufacturer", e.target.value)
+                        }
+                        required
+                      />
+                    </Styled.CoasterField>
+
+                    <Styled.CoasterField>
+                      <Styled.FieldLabel>Country</Styled.FieldLabel>
+                      <Styled.FormInput
+                        type="text"
+                        value={editForm.country}
+                        onChange={(e) =>
+                          handleEditFormChange("country", e.target.value)
+                        }
+                      />
+                    </Styled.CoasterField>
+
+                    {hasModel && (
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Model</Styled.FieldLabel>
+                        <Styled.FormInput
+                          type="text"
+                          value={editForm.model}
+                          onChange={(e) =>
+                            handleEditFormChange("model", e.target.value)
+                          }
+                        />
+                      </Styled.CoasterField>
                     )}
-                  </Styled.MobileRankCell>
-                )}
-                <Styled.TableCell role="cell">
-                  <Styled.MobileFieldLabel>Name</Styled.MobileFieldLabel>
-                  <Styled.MobileFieldValue>
-                    <Text bold colour="charcoal" mb="tiny">
-                      {coaster.name}
-                    </Text>
-                  </Styled.MobileFieldValue>
-                </Styled.TableCell>
-                <Styled.ClickableTableCell
-                  role="button"
-                  onClick={() => handleFieldClick("park", coaster.park)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleFieldClick("park", coaster.park);
-                    }
-                  }}
-                  tabIndex={0}
-                  title={`Filter by park: ${coaster.park}`}
-                  aria-label={`Filter by park: ${coaster.park}`}
-                >
-                  <Styled.MobileFieldLabel>Park</Styled.MobileFieldLabel>
-                  <Styled.MobileFieldValueClickable>
-                    {coaster.park}
-                  </Styled.MobileFieldValueClickable>
-                </Styled.ClickableTableCell>
-                <Styled.ClickableTableCell
-                  role="button"
-                  $isHiddenOnTablet
-                  onClick={() =>
-                    handleFieldClick("manufacturer", coaster.manufacturer)
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleFieldClick("manufacturer", coaster.manufacturer);
-                    }
-                  }}
-                  tabIndex={0}
-                  title={`Filter by manufacturer: ${coaster.manufacturer}`}
-                  aria-label={`Filter by manufacturer: ${coaster.manufacturer}`}
-                >
-                  <Styled.MobileFieldLabel>
-                    Manufacturer
-                  </Styled.MobileFieldLabel>
-                  <Styled.MobileFieldValueClickable>
-                    {coaster.manufacturer}
-                  </Styled.MobileFieldValueClickable>
-                </Styled.ClickableTableCell>
-                {hasModel && (
-                  <Styled.ClickableTableCell
-                    role="button"
-                    $isHiddenOnTablet
-                    onClick={() =>
-                      coaster.model && handleFieldClick("model", coaster.model)
-                    }
-                    onKeyDown={(e) => {
-                      if (
-                        (e.key === "Enter" || e.key === " ") &&
-                        coaster.model
-                      ) {
-                        e.preventDefault();
-                        handleFieldClick("model", coaster.model);
-                      }
-                    }}
-                    tabIndex={0}
-                    title={
-                      coaster.model
-                        ? `Filter by model: ${coaster.model}`
-                        : undefined
-                    }
-                    aria-label={
-                      coaster.model
-                        ? `Filter by model: ${coaster.model}`
-                        : undefined
-                    }
-                  >
-                    <Styled.MobileFieldLabel>Model</Styled.MobileFieldLabel>
-                    <Styled.MobileFieldValueClickable>
-                      {coaster.model}
-                    </Styled.MobileFieldValueClickable>
-                  </Styled.ClickableTableCell>
-                )}
-                {hasMaterial && (
-                  <Styled.ClickableTableCell
-                    role="button"
-                    $isHiddenOnTablet
-                    onClick={() =>
-                      coaster.material &&
-                      handleFieldClick("material", coaster.material)
-                    }
-                    onKeyDown={(e) => {
-                      if (
-                        (e.key === "Enter" || e.key === " ") &&
-                        coaster.material
-                      ) {
-                        e.preventDefault();
-                        handleFieldClick("material", coaster.material);
-                      }
-                    }}
-                    tabIndex={0}
-                    title={
-                      coaster.material
-                        ? `Filter by material: ${coaster.material}`
-                        : undefined
-                    }
-                    aria-label={
-                      coaster.material
-                        ? `Filter by material: ${coaster.material}`
-                        : undefined
-                    }
-                  >
-                    <Styled.MobileFieldLabel>Material</Styled.MobileFieldLabel>
-                    <Styled.MobileFieldValueClickable>
-                      {coaster.material}
-                    </Styled.MobileFieldValueClickable>
-                  </Styled.ClickableTableCell>
-                )}
-                {hasThrillLevel && (
-                  <Styled.ClickableTableCell
-                    role="button"
-                    $isHiddenOnTablet
-                    onClick={() =>
-                      coaster.thrillLevel &&
-                      handleFieldClick("thrillLevel", coaster.thrillLevel)
-                    }
-                    onKeyDown={(e) => {
-                      if (
-                        (e.key === "Enter" || e.key === " ") &&
-                        coaster.thrillLevel
-                      ) {
-                        e.preventDefault();
-                        handleFieldClick("thrillLevel", coaster.thrillLevel);
-                      }
-                    }}
-                    tabIndex={0}
-                    title={
-                      coaster.thrillLevel
-                        ? `Filter by thrill level: ${coaster.thrillLevel}`
-                        : undefined
-                    }
-                    aria-label={
-                      coaster.thrillLevel
-                        ? `Filter by thrill level: ${coaster.thrillLevel}`
-                        : undefined
-                    }
-                  >
-                    <Styled.MobileFieldLabel>
-                      Thrill Level
-                    </Styled.MobileFieldLabel>
-                    <Styled.MobileFieldValueClickable>
-                      {coaster.thrillLevel}
-                    </Styled.MobileFieldValueClickable>
-                  </Styled.ClickableTableCell>
-                )}
-                <Styled.TableCell role="cell">
-                  <Button
-                    variant="destructive"
-                    onClick={() => handleRemoveCoaster(coaster.id)}
-                    aria-label={`Remove ${coaster.name} from collection`}
-                  >
-                    Remove
-                  </Button>
-                </Styled.TableCell>
-              </Styled.TableRow>
-            ))}
-          </div>
-        </Styled.CoastersTable>
 
-        <div id="table-end" tabIndex={-1}>
+                    {hasMaterial && (
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Material</Styled.FieldLabel>
+                        <Styled.FormInput
+                          type="text"
+                          value={editForm.material}
+                          onChange={(e) =>
+                            handleEditFormChange("material", e.target.value)
+                          }
+                        />
+                      </Styled.CoasterField>
+                    )}
+
+                    {hasThrillLevel && (
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Thrill Level</Styled.FieldLabel>
+                        <Styled.FormInput
+                          type="text"
+                          value={editForm.thrillLevel}
+                          onChange={(e) =>
+                            handleEditFormChange("thrillLevel", e.target.value)
+                          }
+                        />
+                      </Styled.CoasterField>
+                    )}
+
+                    <Styled.CoasterField>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Button
+                          variant="default"
+                          onClick={handleSaveEdit}
+                          aria-label="Save changes"
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          variant="default"
+                          onClick={handleCancelEdit}
+                          aria-label="Cancel editing"
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </Styled.CoasterField>
+                  </Styled.MobileLayout>
+                </>
+              ) : (
+                // View mode
+                <>
+                  {/* Desktop View Layout */}
+                  <Styled.DesktopLayout>
+                    <Styled.CoasterHeader>
+                      <Styled.CoasterTitle>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            marginBottom: "4px",
+                          }}
+                        >
+                          {uploadedData?.rankingMetadata?.isRanked &&
+                            coaster.rankPosition && (
+                              <Styled.RankBadge>
+                                #{coaster.rankPosition}
+                              </Styled.RankBadge>
+                            )}
+                          <Text as="h3" fontSize="large" colour="charcoal">
+                            {coaster.name}
+                          </Text>
+                        </div>
+                        <Text colour="mediumGrey" fontSize="small">
+                          {coaster.park}
+                        </Text>
+                      </Styled.CoasterTitle>
+                      <Styled.CoasterActions>
+                        <Button
+                          variant="default"
+                          onClick={() => handleEditCoaster(coaster)}
+                          aria-label={`Edit ${coaster.name}`}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => handleRemoveCoaster(coaster.id)}
+                          aria-label={`Remove ${coaster.name} from collection`}
+                        >
+                          Remove
+                        </Button>
+                      </Styled.CoasterActions>
+                    </Styled.CoasterHeader>
+
+                    <Styled.CoasterDetails>
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Park</Styled.FieldLabel>
+                        <Styled.ClickableFieldValue
+                          onClick={() => handleFieldClick("park", coaster.park)}
+                          title={`Filter by park: ${coaster.park}`}
+                          aria-label={`Filter by park: ${coaster.park}`}
+                        >
+                          {coaster.park}
+                        </Styled.ClickableFieldValue>
+                      </Styled.CoasterField>
+
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Manufacturer</Styled.FieldLabel>
+                        <Styled.ClickableFieldValue
+                          onClick={() =>
+                            handleFieldClick(
+                              "manufacturer",
+                              coaster.manufacturer
+                            )
+                          }
+                          title={`Filter by manufacturer: ${coaster.manufacturer}`}
+                          aria-label={`Filter by manufacturer: ${coaster.manufacturer}`}
+                        >
+                          {coaster.manufacturer}
+                        </Styled.ClickableFieldValue>
+                      </Styled.CoasterField>
+
+                      {coaster.country && (
+                        <Styled.CoasterField>
+                          <Styled.FieldLabel>Country</Styled.FieldLabel>
+                          <Styled.ClickableFieldValue
+                            onClick={() =>
+                              handleFieldClick("country", coaster.country)
+                            }
+                            title={`Filter by country: ${coaster.country}`}
+                            aria-label={`Filter by country: ${coaster.country}`}
+                          >
+                            {coaster.country}
+                          </Styled.ClickableFieldValue>
+                        </Styled.CoasterField>
+                      )}
+
+                      {hasModel && coaster.model && (
+                        <Styled.CoasterField>
+                          <Styled.FieldLabel>Model</Styled.FieldLabel>
+                          <Styled.ClickableFieldValue
+                            onClick={() =>
+                              handleFieldClick("model", coaster.model!)
+                            }
+                            title={`Filter by model: ${coaster.model}`}
+                            aria-label={`Filter by model: ${coaster.model}`}
+                          >
+                            {coaster.model}
+                          </Styled.ClickableFieldValue>
+                        </Styled.CoasterField>
+                      )}
+
+                      {hasMaterial && coaster.material && (
+                        <Styled.CoasterField>
+                          <Styled.FieldLabel>Material</Styled.FieldLabel>
+                          <Styled.ClickableFieldValue
+                            onClick={() =>
+                              handleFieldClick("material", coaster.material!)
+                            }
+                            title={`Filter by material: ${coaster.material}`}
+                            aria-label={`Filter by material: ${coaster.material}`}
+                          >
+                            {coaster.material}
+                          </Styled.ClickableFieldValue>
+                        </Styled.CoasterField>
+                      )}
+
+                      {hasThrillLevel && coaster.thrillLevel && (
+                        <Styled.CoasterField>
+                          <Styled.FieldLabel>Thrill Level</Styled.FieldLabel>
+                          <Styled.ClickableFieldValue
+                            onClick={() =>
+                              handleFieldClick(
+                                "thrillLevel",
+                                coaster.thrillLevel!
+                              )
+                            }
+                            title={`Filter by thrill level: ${coaster.thrillLevel}`}
+                            aria-label={`Filter by thrill level: ${coaster.thrillLevel}`}
+                          >
+                            {coaster.thrillLevel}
+                          </Styled.ClickableFieldValue>
+                        </Styled.CoasterField>
+                      )}
+                    </Styled.CoasterDetails>
+                  </Styled.DesktopLayout>
+
+                  {/* Mobile View Layout */}
+                  <Styled.MobileLayout>
+                    <Styled.MobileHeader>
+                      {uploadedData?.rankingMetadata?.isRanked &&
+                        coaster.rankPosition && (
+                          <Styled.MobileRank>
+                            <Styled.RankBadge>
+                              #{coaster.rankPosition}
+                            </Styled.RankBadge>
+                          </Styled.MobileRank>
+                        )}
+                      <Styled.MobileName>{coaster.name}</Styled.MobileName>
+                    </Styled.MobileHeader>
+
+                    <Styled.CoasterField>
+                      <Styled.FieldLabel>Park</Styled.FieldLabel>
+                      <Styled.ClickableFieldValue
+                        onClick={() => handleFieldClick("park", coaster.park)}
+                        title={`Filter by park: ${coaster.park}`}
+                        aria-label={`Filter by park: ${coaster.park}`}
+                      >
+                        {coaster.park}
+                      </Styled.ClickableFieldValue>
+                    </Styled.CoasterField>
+
+                    <Styled.CoasterField>
+                      <Styled.FieldLabel>Manufacturer</Styled.FieldLabel>
+                      <Styled.ClickableFieldValue
+                        onClick={() =>
+                          handleFieldClick("manufacturer", coaster.manufacturer)
+                        }
+                        title={`Filter by manufacturer: ${coaster.manufacturer}`}
+                        aria-label={`Filter by manufacturer: ${coaster.manufacturer}`}
+                      >
+                        {coaster.manufacturer}
+                      </Styled.ClickableFieldValue>
+                    </Styled.CoasterField>
+
+                    {coaster.country && (
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Country</Styled.FieldLabel>
+                        <Styled.ClickableFieldValue
+                          onClick={() =>
+                            handleFieldClick("country", coaster.country)
+                          }
+                          title={`Filter by country: ${coaster.country}`}
+                          aria-label={`Filter by country: ${coaster.country}`}
+                        >
+                          {coaster.country}
+                        </Styled.ClickableFieldValue>
+                      </Styled.CoasterField>
+                    )}
+
+                    {hasModel && coaster.model && (
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Model</Styled.FieldLabel>
+                        <Styled.ClickableFieldValue
+                          onClick={() =>
+                            handleFieldClick("model", coaster.model!)
+                          }
+                          title={`Filter by model: ${coaster.model}`}
+                          aria-label={`Filter by model: ${coaster.model}`}
+                        >
+                          {coaster.model}
+                        </Styled.ClickableFieldValue>
+                      </Styled.CoasterField>
+                    )}
+
+                    {hasMaterial && coaster.material && (
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Material</Styled.FieldLabel>
+                        <Styled.ClickableFieldValue
+                          onClick={() =>
+                            handleFieldClick("material", coaster.material!)
+                          }
+                          title={`Filter by material: ${coaster.material}`}
+                          aria-label={`Filter by material: ${coaster.material}`}
+                        >
+                          {coaster.material}
+                        </Styled.ClickableFieldValue>
+                      </Styled.CoasterField>
+                    )}
+
+                    {hasThrillLevel && coaster.thrillLevel && (
+                      <Styled.CoasterField>
+                        <Styled.FieldLabel>Thrill Level</Styled.FieldLabel>
+                        <Styled.ClickableFieldValue
+                          onClick={() =>
+                            handleFieldClick(
+                              "thrillLevel",
+                              coaster.thrillLevel!
+                            )
+                          }
+                          title={`Filter by thrill level: ${coaster.thrillLevel}`}
+                          aria-label={`Filter by thrill level: ${coaster.thrillLevel}`}
+                        >
+                          {coaster.thrillLevel}
+                        </Styled.ClickableFieldValue>
+                      </Styled.CoasterField>
+                    )}
+
+                    <Styled.CoasterField>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Button
+                          variant="default"
+                          onClick={() => handleEditCoaster(coaster)}
+                          aria-label={`Edit ${coaster.name}`}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => handleRemoveCoaster(coaster.id)}
+                          aria-label={`Remove ${coaster.name} from collection`}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    </Styled.CoasterField>
+                  </Styled.MobileLayout>
+                </>
+              )}
+            </Styled.CoasterCard>
+          ))}
+        </Styled.CoastersGrid>
+
+        <div>
           <Text
             as="div"
             center
