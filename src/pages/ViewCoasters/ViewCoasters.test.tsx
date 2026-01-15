@@ -1,5 +1,10 @@
 import React from "react";
-import { render, screen, testAxeCompliance } from "../../utils/testing";
+import {
+  render,
+  screen,
+  testAxeCompliance,
+  runBasicWCAG22Tests,
+} from "../../utils/testing";
 import { vi } from "vitest";
 import { DataProvider } from "../../contexts/DataContext";
 import ViewCoasters from "./ViewCoasters";

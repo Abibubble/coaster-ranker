@@ -1,18 +1,26 @@
-import { render, screen } from '../../utils/testing'
-import { axe } from 'jest-axe'
-import Link from './Link'
+import {
+  render,
+  screen,
+  testAxeCompliance,
+  runBasicWCAG22Tests,
+} from "../../utils/testing";
+import Link from "./Link";
 
-describe('Link', () => {
-  it('renders a link with text', () => {
-    render(<Link href='/test'>Test Link</Link>)
+describe("Link", () => {
+  it("has no accessibility violations", async () => {
+    const { container } = render(<Link href="/test">Test Link</Link>);
+    await testAxeCompliance(container);
+  });
 
-    expect(screen.getByText('Test Link')).toBeInTheDocument()
-    expect(screen.getByRole('link')).toHaveAttribute('href', '/test')
-  })
+  it("meets WCAG 2.2 Level AA requirements", async () => {
+    const { container } = render(<Link href="/test">Test Link</Link>);
+    await runBasicWCAG22Tests(container);
+  });
 
-  it('has no accessibility violations', async () => {
-    const { container } = render(<Link href='/test'>Test Link</Link>)
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
-  })
-})
+  it("renders a link with text", () => {
+    render(<Link href="/test">Test Link</Link>);
+
+    expect(screen.getByText("Test Link")).toBeInTheDocument();
+    expect(screen.getByRole("link")).toHaveAttribute("href", "/test");
+  });
+});

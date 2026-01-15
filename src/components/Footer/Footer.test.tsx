@@ -1,23 +1,31 @@
-import { render, screen } from '../../utils/testing'
-import { axe } from 'jest-axe'
-import Footer from './Footer'
+import {
+  render,
+  screen,
+  testAxeCompliance,
+  runBasicWCAG22Tests,
+} from "../../utils/testing";
+import Footer from "./Footer";
 
-describe('Footer', () => {
-  it('has no accessibility violations', async () => {
-    const { container } = render(<Footer />)
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
-  })
+describe("Footer", () => {
+  it("has no accessibility violations", async () => {
+    const { container } = render(<Footer />);
+    await testAxeCompliance(container);
+  });
 
-  it('renders copyright text and navigation links', () => {
-    render(<Footer />)
+  it("meets WCAG 2.2 Level AA requirements", async () => {
+    const { container } = render(<Footer />);
+    await runBasicWCAG22Tests(container);
+  });
 
-    expect(screen.getByText('© Bubble & Squeak')).toBeInTheDocument()
+  it("renders copyright text and navigation links", () => {
+    render(<Footer />);
+
+    expect(screen.getByText("© Bubble & Squeak")).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: 'Accessibility' })
-    ).toBeInTheDocument()
+      screen.getByRole("link", { name: "Accessibility" })
+    ).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: 'Privacy Policy' })
-    ).toBeInTheDocument()
-  })
-})
+      screen.getByRole("link", { name: "Privacy Policy" })
+    ).toBeInTheDocument();
+  });
+});

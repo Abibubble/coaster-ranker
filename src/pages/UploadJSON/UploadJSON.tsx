@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from "react";
 import {
   Button,
   CodeBlock,
@@ -10,24 +10,24 @@ import {
   ScreenReaderOnly,
   Title,
   Text,
-} from '../../components'
-import { useData } from '../../contexts/DataContext'
+} from "../../components";
+import { useData } from "../../contexts/DataContext";
 import {
   useUploadState,
   handlePreRankingAnswer as handlePreRankingAnswerUtil,
   handlePreRankingCancel as handlePreRankingCancelUtil,
   handleUploadDuplicateResolution,
   processUploadWorkflow,
-} from '../../utils/uploadState'
-import type { DuplicateResolution } from '../../components/DuplicateResolver'
-import * as Styled from './UploadJSON.styled'
+} from "../../utils/uploadState";
+import type { DuplicateResolution } from "../../components/DuplicateResolver";
+import * as Styled from "./UploadJSON.styled";
 
 export default function UploadJSON() {
-  const { uploadedData, setUploadedData, isLoading, setIsLoading } = useData()
-  const uploadState = useUploadState()
-  const [jsonInput, setJsonInput] = useState('')
+  const { uploadedData, setUploadedData, isLoading, setIsLoading } = useData();
+  const uploadState = useUploadState();
+  const [jsonInput, setJsonInput] = useState("");
 
-  const existingCoasterCount = uploadedData?.coasters?.length || 0
+  const existingCoasterCount = uploadedData?.coasters?.length || 0;
 
   const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
     handleUploadDuplicateResolution({
@@ -38,16 +38,16 @@ export default function UploadJSON() {
       uploadedData,
       uploadStateActions: uploadState,
       setUploadedData,
-      successMessagePrefix: 'Successfully processed JSON data!',
-      onAdditionalCleanup: () => setJsonInput(''),
-    })
-  }
+      successMessagePrefix: "Successfully processed JSON data!",
+      onAdditionalCleanup: () => setJsonInput(""),
+    });
+  };
 
   const handleDuplicateCancel = () => {
-    uploadState.clearPendingData()
-    uploadState.setError('Upload cancelled.')
-    setJsonInput('')
-  }
+    uploadState.clearPendingData();
+    uploadState.setError("Upload cancelled.");
+    setJsonInput("");
+  };
 
   const handlePreRankingAnswer = (isPreRanked: boolean) => {
     handlePreRankingAnswerUtil({
@@ -57,23 +57,23 @@ export default function UploadJSON() {
       uploadedData,
       uploadStateActions: uploadState,
       setUploadedData,
-      successMessagePrefix: 'Successfully processed JSON data!',
-      onAdditionalCleanup: () => setJsonInput(''),
-    })
-  }
+      successMessagePrefix: "Successfully processed JSON data!",
+      onAdditionalCleanup: () => setJsonInput(""),
+    });
+  };
 
   const handlePreRankingCancel = () => {
-    handlePreRankingCancelUtil({ uploadStateActions: uploadState })
-    setJsonInput('')
-  }
+    handlePreRankingCancelUtil({ uploadStateActions: uploadState });
+    setJsonInput("");
+  };
 
   const processJsonData = async (
     jsonString: string,
-    filename = 'pasted-data.json'
+    filename = "pasted-data.json"
   ) => {
-    uploadState.setError('')
-    uploadState.setSuccess('')
-    setIsLoading(true)
+    uploadState.setError("");
+    uploadState.setSuccess("");
+    setIsLoading(true);
 
     try {
       await processUploadWorkflow({
@@ -83,43 +83,43 @@ export default function UploadJSON() {
         uploadStateActions: uploadState,
         setUploadedData,
         setIsLoading,
-        successMessagePrefix: 'Successfully processed JSON data!',
-        onAdditionalCleanup: () => setJsonInput(''),
-      })
+        successMessagePrefix: "Successfully processed JSON data!",
+        onAdditionalCleanup: () => setJsonInput(""),
+      });
     } catch (err) {
       uploadState.setError(
         `Error processing JSON: ${
-          err instanceof Error ? err.message : 'Unknown error'
+          err instanceof Error ? err.message : "Unknown error"
         }`
-      )
-      setIsLoading(false)
+      );
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleFileInput = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
+      const file = e.target.files[0];
 
-      if (!file.name.toLowerCase().endsWith('.json')) {
-        uploadState.setError('Please select a JSON file.')
-        return
+      if (!file.name.toLowerCase().endsWith(".json")) {
+        uploadState.setError("Please select a JSON file.");
+        return;
       }
 
       try {
-        const content = await file.text()
-        await processJsonData(content, file.name)
+        const content = await file.text();
+        await processJsonData(content, file.name);
       } catch {
-        uploadState.setError('Error reading file.')
+        uploadState.setError("Error reading file.");
       }
     }
-  }
+  };
 
   const handleJsonSubmit = (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (jsonInput.trim()) {
-      processJsonData(jsonInput.trim())
+      processJsonData(jsonInput.trim());
     }
-  }
+  };
 
   return (
     <MainContent>
@@ -130,15 +130,15 @@ export default function UploadJSON() {
           {existingCoasterCount > 0 && (
             <>
               <CurrentDataInfo coasterCount={existingCoasterCount} />
-              <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
+              <Text as="h2" colour="charcoal" fontSize="medium" mb="small">
                 Import JSON Data
               </Text>
             </>
           )}
           {existingCoasterCount === 0 && (
-            <ScreenReaderOnly as='h2'>Import JSON Data</ScreenReaderOnly>
+            <ScreenReaderOnly as="h2">Import JSON Data</ScreenReaderOnly>
           )}
-          <Text as='p' colour='mediumGrey' mb='small'>
+          <Text as="p" colour="mediumGrey" mb="small">
             Paste your coaster data as JSON or upload a JSON file. Your data
             should be an array of coaster objects.
           </Text>
@@ -146,56 +146,56 @@ export default function UploadJSON() {
 
         {/* Required Fields Info */}
         <Styled.RequiredFields>
-          <Text as='h3' colour='darkBlue' mb='small'>
+          <Text as="h3" colour="darkBlue" mb="small">
             Required Fields:
           </Text>
           <ul>
-            <Text as='li' colour='slateGrey'>
-              <Text bold colour='charcoal'>
+            <Text as="li" colour="slateGrey">
+              <Text bold colour="charcoal">
                 name:
-              </Text>{' '}
+              </Text>{" "}
               Coaster name
             </Text>
-            <Text as='li' colour='slateGrey'>
-              <Text bold colour='charcoal'>
+            <Text as="li" colour="slateGrey">
+              <Text bold colour="charcoal">
                 park:
-              </Text>{' '}
+              </Text>{" "}
               Theme park
             </Text>
-            <Text as='li' colour='slateGrey'>
-              <Text bold colour='charcoal'>
+            <Text as="li" colour="slateGrey">
+              <Text bold colour="charcoal">
                 manufacturer:
-              </Text>{' '}
+              </Text>{" "}
               Builder company
             </Text>
           </ul>
 
-          <Text as='h3' colour='darkBlue' mb='small' mt='medium'>
+          <Text as="h3" colour="darkBlue" mb="small" mt="medium">
             Optional Fields:
           </Text>
           <ul>
-            <Text as='li' colour='slateGrey'>
-              <Text bold colour='charcoal'>
+            <Text as="li" colour="slateGrey">
+              <Text bold colour="charcoal">
                 model:
-              </Text>{' '}
+              </Text>{" "}
               Model name
             </Text>
-            <Text as='li' colour='slateGrey'>
-              <Text bold colour='charcoal'>
+            <Text as="li" colour="slateGrey">
+              <Text bold colour="charcoal">
                 material:
-              </Text>{' '}
+              </Text>{" "}
               Steel/Wood/Hybrid
             </Text>
-            <Text as='li' colour='slateGrey'>
-              <Text bold colour='charcoal'>
+            <Text as="li" colour="slateGrey">
+              <Text bold colour="charcoal">
                 thrillLevel:
-              </Text>{' '}
+              </Text>{" "}
               Kiddie/Family/Family Thrill/Thrill
             </Text>
-            <Text as='li' colour='slateGrey'>
-              <Text bold colour='charcoal'>
+            <Text as="li" colour="slateGrey">
+              <Text bold colour="charcoal">
                 country:
-              </Text>{' '}
+              </Text>{" "}
               Country location
             </Text>
           </ul>
@@ -204,7 +204,7 @@ export default function UploadJSON() {
         {/* JSON Format Example */}
         <Styled.ExampleFiles>
           <details>
-            <Text as='summary' bold colour='orange'>
+            <Text as="summary" bold colour="orange">
               JSON Format Example
             </Text>
 
@@ -235,52 +235,53 @@ export default function UploadJSON() {
 
         {/* JSON Paste Area */}
         <Styled.Section>
-          <Text as='h3' colour='charcoal' mb='small'>
+          <Text as="h3" colour="charcoal" mb="small">
             Paste JSON Data
           </Text>
           <form onSubmit={handleJsonSubmit}>
-            <ScreenReaderOnly as='label' htmlFor='json-textarea'>
+            <ScreenReaderOnly as="label" htmlFor="json-textarea">
               JSON data input area
             </ScreenReaderOnly>
             <Styled.JsonTextarea
-              id='json-textarea'
+              id="json-textarea"
               value={jsonInput}
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                 setJsonInput(e.target.value)
               }
-              placeholder='Paste your JSON data here...'
+              placeholder="Paste your JSON data here..."
               disabled={isLoading}
+              autoComplete="off"
             />
-            <Button type='submit' variant={isLoading ? 'disabled' : 'default'}>
-              {isLoading ? 'Processing...' : 'Process JSON'}
+            <Button type="submit" variant={isLoading ? "disabled" : "default"}>
+              {isLoading ? "Processing..." : "Process JSON"}
             </Button>
           </form>
         </Styled.Section>
 
         <Styled.Divider>
-          <Text colour='mediumGrey' italic>
+          <Text colour="mediumGrey" italic>
             or
           </Text>
         </Styled.Divider>
 
         {/* File Upload */}
         <Styled.Section>
-          <Text as='h3' colour='charcoal' mb='small'>
+          <Text as="h3" colour="charcoal" mb="small">
             Upload JSON File
           </Text>
           <Styled.FileInputWrapper>
             <Styled.FileInput
-              type='file'
-              id='json-file-upload'
-              accept='.json,application/json'
+              type="file"
+              id="json-file-upload"
+              accept=".json,application/json"
               onChange={handleFileInput}
               disabled={isLoading}
             />
-            <Styled.FileLabel htmlFor='json-file-upload' $disabled={isLoading}>
-              {isLoading ? 'Processing...' : 'Choose JSON File'}
+            <Styled.FileLabel htmlFor="json-file-upload" $disabled={isLoading}>
+              {isLoading ? "Processing..." : "Choose JSON File"}
             </Styled.FileLabel>
           </Styled.FileInputWrapper>
-          <Text as='p' center colour='mutedGrey' fontSize='small' mt='tiny'>
+          <Text as="p" center colour="mutedGrey" fontSize="small" mt="tiny">
             Only JSON files are accepted. File should contain an array of
             coaster objects.
           </Text>
@@ -298,22 +299,22 @@ export default function UploadJSON() {
 
         {/* Status Messages */}
         {uploadState.error && (
-          <InfoMessage variant='error' role='alert' aria-live='assertive'>
-            <Text as='span' bold colour='errorText' fontSize='small'>
+          <InfoMessage variant="error" role="alert" aria-live="assertive">
+            <Text as="span" bold colour="errorText" fontSize="small">
               ERROR:
             </Text>
-            <Text as='span' colour='errorText' fontSize='small'>
+            <Text as="span" colour="errorText" fontSize="small">
               {uploadState.error}
             </Text>
           </InfoMessage>
         )}
 
         {uploadState.success && (
-          <InfoMessage variant='success' role='status' aria-live='polite'>
-            <Text as='span' bold colour='successGreen' fontSize='small'>
+          <InfoMessage variant="success" role="status" aria-live="polite">
+            <Text as="span" bold colour="successGreen" fontSize="small">
               SUCCESS:
             </Text>
-            <Text as='span' colour='successGreen' fontSize='small'>
+            <Text as="span" colour="successGreen" fontSize="small">
               {uploadState.success}
             </Text>
           </InfoMessage>
@@ -334,5 +335,5 @@ export default function UploadJSON() {
         />
       )}
     </MainContent>
-  )
+  );
 }

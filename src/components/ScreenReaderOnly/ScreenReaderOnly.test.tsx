@@ -1,19 +1,28 @@
-import { render, screen } from '@testing-library/react'
-import { axe } from 'jest-axe'
-import ScreenReaderOnly from './ScreenReaderOnly'
+import {
+  render,
+  screen,
+  testAxeCompliance,
+  runBasicWCAG22Tests,
+} from "../../utils/testing";
+import ScreenReaderOnly from "./ScreenReaderOnly";
 
-describe('ScreenReaderOnly', () => {
-  it('has no accessibility violations', async () => {
+describe("ScreenReaderOnly", () => {
+  it("has no accessibility violations", async () => {
     const { container } = render(
-      <ScreenReaderOnly>Hidden text</ScreenReaderOnly>
-    )
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
-  })
+      <ScreenReaderOnly>Test content</ScreenReaderOnly>
+    );
+    await testAxeCompliance(container);
+  });
 
-  it('renders content', () => {
-    render(<ScreenReaderOnly>Hidden text</ScreenReaderOnly>)
+  it("meets WCAG 2.2 Level AA requirements", async () => {
+    const { container } = render(
+      <ScreenReaderOnly>Test content</ScreenReaderOnly>
+    );
+    await runBasicWCAG22Tests(container);
+  });
 
-    expect(screen.getByText('Hidden text')).toBeInTheDocument()
-  })
-})
+  it("renders content", () => {
+    render(<ScreenReaderOnly>Hidden text</ScreenReaderOnly>);
+    expect(screen.getByText("Hidden text")).toBeInTheDocument();
+  });
+});

@@ -1,18 +1,26 @@
-import { render, screen } from '@testing-library/react'
-import { axe } from 'jest-axe'
-import Title from './Title'
+import {
+  render,
+  screen,
+  testAxeCompliance,
+  runBasicWCAG22Tests,
+} from "../../utils/testing";
+import Title from "./Title";
 
-describe('Title', () => {
-  it('has no accessibility violations', async () => {
-    const { container } = render(<Title>Test Title</Title>)
-    const results = await axe(container)
-    expect(results).toHaveNoViolations()
-  })
+describe("Title", () => {
+  it("has no accessibility violations", async () => {
+    const { container } = render(<Title>Test Title</Title>);
+    await testAxeCompliance(container);
+  });
 
-  it('renders text', () => {
-    render(<Title>Test Title</Title>)
+  it("meets WCAG 2.2 Level AA requirements", async () => {
+    const { container } = render(<Title>Test Title</Title>);
+    await runBasicWCAG22Tests(container);
+  });
 
-    expect(screen.getByText('Test Title')).toBeInTheDocument()
-    expect(screen.getByRole('heading')).toHaveTextContent('Test Title')
-  })
-})
+  it("renders text", () => {
+    render(<Title>Test Title</Title>);
+
+    expect(screen.getByText("Test Title")).toBeInTheDocument();
+    expect(screen.getByRole("heading")).toHaveTextContent("Test Title");
+  });
+});

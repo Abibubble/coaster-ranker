@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   Button,
   CurrentDataInfo,
@@ -8,235 +8,235 @@ import {
   ScreenReaderOnly,
   Title,
   Text,
-} from '../../components'
-import { useData } from '../../contexts/DataContext'
-import { Coaster } from '../../types/data'
-import { detectDuplicates, DuplicateMatch, formatString } from '../../utils'
-import type { DuplicateResolution } from '../../components/DuplicateResolver'
-import * as Styled from './UploadManual.styled'
+} from "../../components";
+import { useData } from "../../contexts/DataContext";
+import { Coaster } from "../../types/data";
+import { detectDuplicates, DuplicateMatch, formatString } from "../../utils";
+import type { DuplicateResolution } from "../../components/DuplicateResolver";
+import * as Styled from "./UploadManual.styled";
 
 interface CoasterFormData {
-  name: string
-  park: string
-  manufacturer: string
-  model?: string
-  material?: string
-  thrillLevel?: string
-  country: string
+  name: string;
+  park: string;
+  manufacturer: string;
+  model?: string;
+  material?: string;
+  thrillLevel?: string;
+  country: string;
 }
 
 export default function UploadManual() {
-  const { uploadedData, setUploadedData } = useData()
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-  const [duplicates, setDuplicates] = useState<DuplicateMatch[]>([])
-  const [pendingCoaster, setPendingCoaster] = useState<Coaster | null>(null)
-  const [showDuplicateResolver, setShowDuplicateResolver] = useState(false)
+  const { uploadedData, setUploadedData } = useData();
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [duplicates, setDuplicates] = useState<DuplicateMatch[]>([]);
+  const [pendingCoaster, setPendingCoaster] = useState<Coaster | null>(null);
+  const [showDuplicateResolver, setShowDuplicateResolver] = useState(false);
 
   const [formData, setFormData] = useState<CoasterFormData>({
-    name: '',
-    park: '',
-    manufacturer: '',
-    model: '',
-    material: '',
-    thrillLevel: '',
-    country: '',
-  })
+    name: "",
+    park: "",
+    manufacturer: "",
+    model: "",
+    material: "",
+    thrillLevel: "",
+    country: "",
+  });
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const generateId = () => {
-    return Math.random().toString(36).substr(2, 9)
-  }
+    return Math.random().toString(36).substr(2, 9);
+  };
 
   const addCoasterToCollection = (coasterToAdd: Coaster) => {
     // Add to existing data
-    const existingCoasters = uploadedData?.coasters || []
+    const existingCoasters = uploadedData?.coasters || [];
     const updatedData = {
       coasters: [...existingCoasters, coasterToAdd],
       uploadedAt: uploadedData?.uploadedAt || new Date(),
-      filename: uploadedData?.filename || 'manual-entry',
+      filename: uploadedData?.filename || "manual-entry",
       rankingMetadata: uploadedData?.rankingMetadata || {
         completedComparisons: new Set<string>(),
         rankedCoasters: [],
         isRanked: false,
       },
-    }
+    };
 
-    setUploadedData(updatedData)
-    setSuccess(`Successfully added "${coasterToAdd.name}" to your collection!`)
+    setUploadedData(updatedData);
+    setSuccess(`Successfully added "${coasterToAdd.name}" to your collection!`);
 
     // Reset form
     setFormData({
-      name: '',
-      park: '',
-      manufacturer: '',
-      model: '',
-      material: '',
-      thrillLevel: '',
-      country: '',
-    })
-  }
+      name: "",
+      park: "",
+      manufacturer: "",
+      model: "",
+      material: "",
+      thrillLevel: "",
+      country: "",
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setSuccess(null)
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
 
     // Validate required fields
     const requiredFields: (keyof CoasterFormData)[] = [
-      'name',
-      'park',
-      'manufacturer',
-    ]
+      "name",
+      "park",
+      "manufacturer",
+    ];
     const missingFields = requiredFields.filter(
-      field => !formData[field]?.trim()
-    )
+      (field) => !formData[field]?.trim()
+    );
 
     if (missingFields.length > 0) {
       setError(
-        `Please fill in all required fields: ${missingFields.join(', ')}`
-      )
-      return
+        `Please fill in all required fields: ${missingFields.join(", ")}`
+      );
+      return;
     }
 
     // Create new coaster object
     const newCoaster: Coaster = {
       id: generateId(),
-      name: formatString(formData.name.trim(), 'space', 'first-word', false),
-      park: formatString(formData.park.trim(), 'space', 'first-word', false),
+      name: formatString(formData.name.trim(), "space", "first-word", false),
+      park: formatString(formData.park.trim(), "space", "first-word", false),
       manufacturer: formatString(
         formData.manufacturer.trim(),
-        'space',
-        'first-word',
+        "space",
+        "first-word",
         false
       ),
       model: formData.model?.trim()
-        ? formatString(formData.model.trim(), 'space', 'first-word', false)
+        ? formatString(formData.model.trim(), "space", "first-word", false)
         : undefined,
       material: formData.material?.trim()
-        ? formatString(formData.material.trim(), 'space', 'first-word', false)
+        ? formatString(formData.material.trim(), "space", "first-word", false)
         : undefined,
       thrillLevel: formData.thrillLevel?.trim()
         ? formatString(
             formData.thrillLevel.trim(),
-            'space',
-            'first-word',
+            "space",
+            "first-word",
             false
           )
         : undefined,
       country: formatString(
         formData.country.trim(),
-        'space',
-        'first-word',
+        "space",
+        "first-word",
         false
       ),
       isNewCoaster: true,
-    }
+    };
 
     // Check for duplicates
-    const existingCoasters = uploadedData?.coasters || []
-    const duplicateCheck = detectDuplicates(existingCoasters, [newCoaster])
+    const existingCoasters = uploadedData?.coasters || [];
+    const duplicateCheck = detectDuplicates(existingCoasters, [newCoaster]);
 
     if (duplicateCheck.hasDuplicates) {
-      setDuplicates(duplicateCheck.duplicates)
-      setPendingCoaster(newCoaster)
-      setShowDuplicateResolver(true)
+      setDuplicates(duplicateCheck.duplicates);
+      setPendingCoaster(newCoaster);
+      setShowDuplicateResolver(true);
     } else {
-      addCoasterToCollection(newCoaster)
+      addCoasterToCollection(newCoaster);
     }
-  }
+  };
 
   const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
-    if (!pendingCoaster) return
+    if (!pendingCoaster) return;
 
-    const existingCoasters = uploadedData?.coasters || []
-    let updatedCoasters = [...existingCoasters]
+    const existingCoasters = uploadedData?.coasters || [];
+    let updatedCoasters = [...existingCoasters];
 
     // Process each resolution
     resolutions.forEach((resolution, index) => {
-      const duplicate = duplicates[index]
+      const duplicate = duplicates[index];
 
       switch (resolution.action) {
-        case 'keep-existing':
+        case "keep-existing":
           // Do nothing - new coaster is not added
-          break
-        case 'keep-new':
+          break;
+        case "keep-new":
           // Remove existing coaster and add new one
           updatedCoasters = updatedCoasters.filter(
-            c => c.id !== duplicate.existingCoaster.id
-          )
-          updatedCoasters.push(pendingCoaster)
-          break
-        case 'keep-both':
+            (c) => c.id !== duplicate.existingCoaster.id
+          );
+          updatedCoasters.push(pendingCoaster);
+          break;
+        case "keep-both":
           // Add new coaster alongside existing one
-          updatedCoasters.push(pendingCoaster)
-          break
+          updatedCoasters.push(pendingCoaster);
+          break;
       }
-    })
+    });
 
     // If all resolutions were "keep-existing", add new coaster if it wasn't already processed
     const hasNewCoaster = resolutions.some(
-      r => r.action === 'keep-new' || r.action === 'keep-both'
-    )
+      (r) => r.action === "keep-new" || r.action === "keep-both"
+    );
     if (
       !hasNewCoaster &&
       resolutions.length > 0 &&
-      resolutions[0].action === 'keep-existing'
+      resolutions[0].action === "keep-existing"
     ) {
       // Only the first duplicate matters for single coaster addition
       // Don't add the new coaster
     } else if (!hasNewCoaster) {
-      updatedCoasters.push(pendingCoaster)
+      updatedCoasters.push(pendingCoaster);
     }
 
     const updatedData = {
       coasters: updatedCoasters,
       uploadedAt: uploadedData?.uploadedAt || new Date(),
-      filename: uploadedData?.filename || 'manual-entry',
+      filename: uploadedData?.filename || "manual-entry",
       rankingMetadata: uploadedData?.rankingMetadata || {
         completedComparisons: new Set<string>(),
         rankedCoasters: [],
         isRanked: false,
       },
-    }
+    };
 
-    setUploadedData(updatedData)
-    setSuccess(`Successfully processed coaster: "${pendingCoaster.name}"!`)
+    setUploadedData(updatedData);
+    setSuccess(`Successfully processed coaster: "${pendingCoaster.name}"!`);
 
     // Reset states
-    setShowDuplicateResolver(false)
-    setDuplicates([])
-    setPendingCoaster(null)
+    setShowDuplicateResolver(false);
+    setDuplicates([]);
+    setPendingCoaster(null);
 
     // Reset form
     setFormData({
-      name: '',
-      park: '',
-      manufacturer: '',
-      model: '',
-      material: '',
-      thrillLevel: '',
-      country: '',
-    })
-  }
+      name: "",
+      park: "",
+      manufacturer: "",
+      model: "",
+      material: "",
+      thrillLevel: "",
+      country: "",
+    });
+  };
 
   const handleDuplicateCancel = () => {
-    setShowDuplicateResolver(false)
-    setDuplicates([])
-    setPendingCoaster(null)
-    setError('Upload cancelled due to potential duplicates.')
-  }
+    setShowDuplicateResolver(false);
+    setDuplicates([]);
+    setPendingCoaster(null);
+    setError("Upload cancelled due to potential duplicates.");
+  };
 
-  const coasterCount = uploadedData?.coasters?.length || 0
+  const coasterCount = uploadedData?.coasters?.length || 0;
 
   return (
     <MainContent>
@@ -246,15 +246,15 @@ export default function UploadManual() {
         {coasterCount > 0 && (
           <>
             <CurrentDataInfo coasterCount={coasterCount} />
-            <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
+            <Text as="h2" colour="charcoal" fontSize="medium" mb="small">
               Enter Coaster Details
             </Text>
           </>
         )}
         {coasterCount === 0 && (
-          <ScreenReaderOnly as='h2'>Enter Coaster Details</ScreenReaderOnly>
+          <ScreenReaderOnly as="h2">Enter Coaster Details</ScreenReaderOnly>
         )}
-        <Text as='p' colour='mediumGrey' mb='small'>
+        <Text as="p" colour="mediumGrey" mb="small">
           Add a single coaster to your collection by filling out the form below.
           You can add multiple coasters by submitting the form multiple times.
         </Text>
@@ -269,42 +269,44 @@ export default function UploadManual() {
               <Styled.FormRow>
                 <Styled.FormGroup>
                   <Text
-                    as='label'
+                    as="label"
                     bold
-                    colour='charcoal'
-                    fontSize='small'
-                    htmlFor='name'
+                    colour="charcoal"
+                    fontSize="small"
+                    htmlFor="name"
                   >
                     Name *
                   </Text>
                   <Styled.Input
-                    type='text'
-                    id='name'
-                    name='name'
-                    value={formData.name || ''}
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name || ""}
                     onChange={handleInputChange}
-                    placeholder='e.g. The Smiler'
+                    placeholder="e.g. The Smiler"
+                    autoComplete="name"
                     required
                   />
                 </Styled.FormGroup>
 
                 <Styled.FormGroup>
                   <Text
-                    as='label'
+                    as="label"
                     bold
-                    colour='charcoal'
-                    fontSize='small'
-                    htmlFor='park'
+                    colour="charcoal"
+                    fontSize="small"
+                    htmlFor="park"
                   >
                     Theme Park *
                   </Text>
                   <Styled.Input
-                    type='text'
-                    id='park'
-                    name='park'
-                    value={formData.park || ''}
+                    type="text"
+                    id="park"
+                    name="park"
+                    value={formData.park || ""}
                     onChange={handleInputChange}
-                    placeholder='e.g. Alton Towers'
+                    placeholder="e.g. Alton Towers"
+                    autoComplete="organization"
                     required
                   />
                 </Styled.FormGroup>
@@ -313,115 +315,120 @@ export default function UploadManual() {
               <Styled.FormRow>
                 <Styled.FormGroup>
                   <Text
-                    as='label'
+                    as="label"
                     bold
-                    colour='charcoal'
-                    fontSize='small'
-                    htmlFor='manufacturer'
+                    colour="charcoal"
+                    fontSize="small"
+                    htmlFor="manufacturer"
                   >
                     Manufacturer *
                   </Text>
                   <Styled.Input
-                    type='text'
-                    id='manufacturer'
-                    name='manufacturer'
-                    value={formData.manufacturer || ''}
+                    type="text"
+                    id="manufacturer"
+                    name="manufacturer"
+                    value={formData.manufacturer || ""}
                     onChange={handleInputChange}
-                    placeholder='e.g. Gerstlauer'
+                    placeholder="e.g. Gerstlauer"
+                    autoComplete="off"
                     required
                   />
                 </Styled.FormGroup>
 
                 <Styled.FormGroup>
                   <Text
-                    as='label'
+                    as="label"
                     bold
-                    colour='charcoal'
-                    fontSize='small'
-                    htmlFor='model'
+                    colour="charcoal"
+                    fontSize="small"
+                    htmlFor="model"
                   >
                     Model
                   </Text>
                   <Styled.Input
-                    type='text'
-                    id='model'
-                    name='model'
-                    value={formData.model || ''}
+                    type="text"
+                    id="model"
+                    name="model"
+                    value={formData.model || ""}
                     onChange={handleInputChange}
-                    placeholder='e.g. Euro-Fighter'
+                    placeholder="e.g. Euro-Fighter"
+                    autoComplete="off"
                   />
                 </Styled.FormGroup>
               </Styled.FormRow>
 
               <Styled.FormGroup>
                 <Text
-                  as='label'
+                  as="label"
                   bold
-                  colour='charcoal'
-                  fontSize='small'
-                  htmlFor='material'
+                  colour="charcoal"
+                  fontSize="small"
+                  htmlFor="material"
                 >
                   Material
                 </Text>
                 <Styled.Select
-                  id='material'
-                  name='material'
-                  value={formData.material || ''}
+                  id="material"
+                  name="material"
+                  value={formData.material || ""}
                   onChange={handleInputChange}
+                  autoComplete="off"
                 >
-                  <option value=''>Select material...</option>
-                  <option value='Steel'>Steel</option>
-                  <option value='Wood'>Wood</option>
-                  <option value='Hybrid'>Hybrid</option>
+                  <option value="">Select material...</option>
+                  <option value="Steel">Steel</option>
+                  <option value="Wood">Wood</option>
+                  <option value="Hybrid">Hybrid</option>
                 </Styled.Select>
               </Styled.FormGroup>
 
               <Styled.FormGroup>
                 <Text
-                  as='label'
+                  as="label"
                   bold
-                  colour='charcoal'
-                  fontSize='small'
-                  htmlFor='thrillLevel'
+                  colour="charcoal"
+                  fontSize="small"
+                  htmlFor="thrillLevel"
                 >
                   Thrill Level
                 </Text>
                 <Styled.Select
-                  id='thrillLevel'
-                  name='thrillLevel'
-                  value={formData.thrillLevel || ''}
+                  id="thrillLevel"
+                  name="thrillLevel"
+                  value={formData.thrillLevel || ""}
                   onChange={handleInputChange}
+                  autoComplete="off"
                 >
-                  <option value=''>Select thrill level...</option>
-                  <option value='Kiddie'>Kiddie</option>
-                  <option value='Family'>Family</option>
-                  <option value='Family Thrill'>Family Thrill</option>
-                  <option value='Thrill'>Thrill</option>
+                  <option value="">Select thrill level...</option>
+                  <option value="Kiddie">Kiddie</option>
+                  <option value="Family">Family</option>
+                  <option value="Family Thrill">Family Thrill</option>
+                  <option value="Thrill">Thrill</option>
                 </Styled.Select>
               </Styled.FormGroup>
 
               <Styled.FormGroup>
                 <Text
-                  as='label'
+                  as="label"
                   bold
-                  colour='charcoal'
-                  fontSize='small'
-                  htmlFor='country'
+                  colour="charcoal"
+                  fontSize="small"
+                  htmlFor="country"
                 >
                   Country
                 </Text>
                 <Styled.Input
-                  type='text'
-                  id='country'
-                  name='country'
-                  value={formData.country || ''}
+                  type="text"
+                  id="country"
+                  name="country"
+                  value={formData.country || ""}
                   onChange={handleInputChange}
-                  placeholder='e.g. United Kingdom'
+                  placeholder="e.g. United Kingdom"
+                  autoComplete="country"
                 />
               </Styled.FormGroup>
             </div>
 
-            <Button type='submit'>Add Coaster to Collection</Button>
+            <Button type="submit">Add Coaster to Collection</Button>
           </Styled.Form>
 
           {/* Duplicate Resolution */}
@@ -435,22 +442,22 @@ export default function UploadManual() {
 
           {/* Status Messages */}
           {error && (
-            <InfoMessage variant='error' role='alert' aria-live='assertive'>
-              <Text as='span' bold colour='errorText' fontSize='small'>
+            <InfoMessage variant="error" role="alert" aria-live="assertive">
+              <Text as="span" bold colour="errorText" fontSize="small">
                 ERROR:
               </Text>
-              <Text as='span' colour='errorText' fontSize='small'>
+              <Text as="span" colour="errorText" fontSize="small">
                 {error}
               </Text>
             </InfoMessage>
           )}
 
           {success && (
-            <InfoMessage variant='success' role='status' aria-live='polite'>
-              <Text as='span' bold colour='successGreen' fontSize='small'>
+            <InfoMessage variant="success" role="status" aria-live="polite">
+              <Text as="span" bold colour="successGreen" fontSize="small">
                 SUCCESS:
               </Text>
-              <Text as='span' colour='successGreen' fontSize='small'>
+              <Text as="span" colour="successGreen" fontSize="small">
                 {success}
               </Text>
             </InfoMessage>
@@ -458,5 +465,5 @@ export default function UploadManual() {
         </section>
       </section>
     </MainContent>
-  )
+  );
 }
