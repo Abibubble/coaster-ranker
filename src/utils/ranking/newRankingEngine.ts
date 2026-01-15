@@ -7,7 +7,6 @@ export interface RankingComparison {
 
 export interface RankingState {
   rankedCoasterIds: string[]; // IDs in rank order (index 0 = #1, index 1 = #2, etc.)
-  comparisonResults: Map<string, string>; // key: "coasterA-coasterB", value: winnerId
   unrankedCoasters: Coaster[];
   currentComparison: RankingComparison | null;
   isComplete: boolean;
@@ -18,23 +17,66 @@ export class RankingEngine {
   private allCoasters: Coaster[];
 
   constructor(coasters: Coaster[]) {
-    const unrankedCoasters = coasters.filter((c) => !c.isPreRanked);
+    // Separate coasters into already ranked and unranked
+    const rankedCoasters = coasters
+      .filter((c) => !c.isPreRanked && c.rankPosition !== undefined)
+      .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0));
 
-    if (unrankedCoasters.length < 2) {
+    const unrankedCoasters = coasters.filter(
+      (c) => !c.isPreRanked && c.rankPosition === undefined
+    );
+
+    console.log(
+      `Found ${rankedCoasters.length} already ranked coasters and ${unrankedCoasters.length} unranked coasters`
+    );
+
+    // If we have no unranked coasters, we can't do any ranking
+    if (unrankedCoasters.length === 0 && rankedCoasters.length === 0) {
+      throw new Error("No coasters available for ranking");
+    }
+
+    // If we have only ranked coasters, ranking is already complete
+    if (unrankedCoasters.length === 0) {
+      this.allCoasters = [...rankedCoasters];
+      this.state = {
+        rankedCoasterIds: rankedCoasters.map((c) => c.id),
+        unrankedCoasters: [],
+        currentComparison: null,
+        isComplete: true,
+      };
+      return;
+    }
+
+    // If we have no ranked coasters, require at least 2 unranked
+    if (rankedCoasters.length === 0 && unrankedCoasters.length < 2) {
       throw new Error(
         `Need at least 2 coasters to rank, got ${unrankedCoasters.length}`
       );
     }
 
-    this.allCoasters = [...unrankedCoasters];
+    // Include both ranked and unranked coasters in allCoasters
+    this.allCoasters = [...rankedCoasters, ...unrankedCoasters];
 
     this.state = {
-      rankedCoasterIds: [],
-      comparisonResults: new Map(),
+      rankedCoasterIds: rankedCoasters.map((c) => c.id),
       unrankedCoasters: [...unrankedCoasters],
       currentComparison: null,
       isComplete: false,
     };
+
+    console.log(
+      `Ranking engine initialized with ${rankedCoasters.length} already ranked and ${unrankedCoasters.length} unranked coasters`
+    );
+    if (rankedCoasters.length > 0) {
+      console.log(
+        "Already ranked coasters:",
+        rankedCoasters.map((c) => `${c.name} (pos: ${c.rankPosition})`)
+      );
+    }
+    console.log(
+      "Unranked coasters:",
+      unrankedCoasters.map((c) => c.name)
+    );
 
     this.generateNextComparison();
   }
@@ -58,7 +100,6 @@ export class RankingEngine {
       `Before: ranked=${this.state.rankedCoasterIds.length}, unranked=${this.state.unrankedCoasters.length}`
     );
 
-    this.storeComparisonResult(coasterA, coasterB, winner);
     this.updateRankingAfterComparison();
 
     console.log(
@@ -133,15 +174,6 @@ export class RankingEngine {
   }
 
   // === SIMPLE, SINGLE-PURPOSE FUNCTIONS ===
-
-  private storeComparisonResult(
-    coasterA: Coaster,
-    coasterB: Coaster,
-    winner: Coaster
-  ): void {
-    const comparisonKey = this.getComparisonKey(coasterA, coasterB);
-    this.state.comparisonResults.set(comparisonKey, winner.id);
-  }
 
   private updateRankingAfterComparison(): void {
     if (this.isFirstComparison()) {
@@ -409,17 +441,33 @@ export class RankingEngine {
     coasterA: Coaster,
     coasterB: Coaster
   ): Coaster {
-    const comparisonKey = this.getComparisonKey(coasterA, coasterB);
-    const winnerId = this.state.comparisonResults.get(comparisonKey)!;
-    return winnerId === coasterA.id ? coasterA : coasterB;
+    // For ranked coasters, determine winner by rank position (lower position = better rank = winner)
+    const aPosition = coasterA.rankPosition;
+    const bPosition = coasterB.rankPosition;
+
+    if (aPosition !== undefined && bPosition !== undefined) {
+      return aPosition < bPosition ? coasterA : coasterB;
+    }
+
+    // This shouldn't happen in our current logic, but fallback to coasterA
+    console.warn("getWinnerFromComparison called with non-ranked coasters");
+    return coasterA;
   }
 
   private getComparisonResult(
     coasterA: Coaster,
     coasterB: Coaster
   ): string | null {
-    const comparisonKey = this.getComparisonKey(coasterA, coasterB);
-    return this.state.comparisonResults.get(comparisonKey) || null;
+    // For ranked coasters, determine winner by rank position
+    const aPosition = coasterA.rankPosition;
+    const bPosition = coasterB.rankPosition;
+
+    if (aPosition !== undefined && bPosition !== undefined) {
+      return aPosition < bPosition ? coasterA.id : coasterB.id;
+    }
+
+    // No comparison result available for unranked coasters
+    return null;
   }
 
   private findCoasterById(id: string): Coaster | undefined {

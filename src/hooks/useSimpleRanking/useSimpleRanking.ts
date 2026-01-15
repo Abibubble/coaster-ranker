@@ -19,6 +19,7 @@ export interface UseSimpleRankingReturn {
 
 /**
  * Hook to manage simple binary search ranking
+ * Supports incremental ranking when coasters have existing rankPosition values
  */
 export const useSimpleRanking = (
   coasters: Coaster[]
@@ -27,6 +28,11 @@ export const useSimpleRanking = (
   const rankingEngine = useMemo(() => {
     if (coasters.length === 0) return null;
     try {
+      console.log(
+        "Creating ranking engine with",
+        coasters.filter((c) => c.rankPosition !== undefined).length,
+        "pre-ranked coasters"
+      );
       const engine = new RankingEngine(coasters);
       console.log(
         "Initial comparison:",
@@ -77,7 +83,7 @@ export const useSimpleRanking = (
     }
 
     const state = rankingEngine.getState();
-    const completedComparisons = state.comparisonResults.size;
+    const completedComparisons = state.rankedCoasterIds.length;
 
     // Estimate total comparisons needed for binary search ranking
     // For n coasters, we need approximately n * log2(n) comparisons
