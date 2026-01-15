@@ -126,8 +126,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const resetRanking = () => {
     if (!uploadedData) return;
 
+    // Reset rankPosition for all coasters to undefined
+    const resetCoasters = uploadedData.coasters.map((coaster) => ({
+      ...coaster,
+      rankPosition: undefined,
+    }));
+
     const updatedData = {
       ...uploadedData,
+      coasters: resetCoasters,
       rankingMetadata: {
         ...uploadedData.rankingMetadata,
         isRanked: false,
