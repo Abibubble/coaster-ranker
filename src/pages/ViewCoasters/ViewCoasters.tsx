@@ -111,9 +111,11 @@ export default function ViewCoasters() {
   // Get unique values for filter dropdowns
   const filterOptions = useMemo(() => {
     return {
-      parks: [...new Set(allCoasters.map((c) => c.park))].sort(),
+      parks: [
+        ...new Set(allCoasters.map((c) => c.park).filter(Boolean)),
+      ].sort(),
       manufacturers: [
-        ...new Set(allCoasters.map((c) => c.manufacturer)),
+        ...new Set(allCoasters.map((c) => c.manufacturer).filter(Boolean)),
       ].sort(),
       models: [
         ...new Set(allCoasters.map((c) => c.model).filter(Boolean)),
@@ -124,7 +126,9 @@ export default function ViewCoasters() {
       thrillLevels: [
         ...new Set(allCoasters.map((c) => c.thrillLevel).filter(Boolean)),
       ].sort(),
-      countries: [...new Set(allCoasters.map((c) => c.country))].sort(),
+      countries: [
+        ...new Set(allCoasters.map((c) => c.country).filter(Boolean)),
+      ].sort(),
     };
   }, [allCoasters]);
 
