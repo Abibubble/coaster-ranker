@@ -206,9 +206,25 @@ export default function ViewCoasters() {
     );
     if (!confirmRemove) return;
 
-    const updatedCoasters = uploadedData.coasters.filter(
-      (coaster) => coaster.id !== coasterId
-    );
+    const removedCoasterRankPosition = coasterToRemove?.rankPosition;
+
+    const updatedCoasters = uploadedData.coasters
+      .filter((coaster) => coaster.id !== coasterId)
+      .map((coaster) => {
+        // If this coaster has a ranking and the removed coaster also had a ranking,
+        // adjust positions to close the gap
+        if (
+          coaster.rankPosition !== undefined &&
+          removedCoasterRankPosition !== undefined &&
+          coaster.rankPosition > removedCoasterRankPosition
+        ) {
+          return {
+            ...coaster,
+            rankPosition: coaster.rankPosition - 1,
+          };
+        }
+        return coaster;
+      });
 
     // Update ranking metadata to remove references to the deleted coaster
     let updatedRankingMetadata = uploadedData.rankingMetadata;
