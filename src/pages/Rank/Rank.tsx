@@ -20,8 +20,15 @@ export const Rank: React.FC = () => {
   const { uploadedData, markRankingComplete, resetRanking } = useData();
   const navigate = useNavigate();
 
-  // Check if ranking is already complete
-  const isAlreadyRanked = uploadedData?.rankingMetadata?.isRanked || false;
+  // Check if ranking is needed - should rank if there are any unranked coasters
+  const hasUnrankedCoasters =
+    uploadedData?.coasters?.some(
+      (c) => !c.isPreRanked && c.rankPosition === undefined
+    ) || false;
+
+  // Only consider ranking complete if metadata says ranked AND no unranked coasters exist
+  const isAlreadyRanked =
+    uploadedData?.rankingMetadata?.isRanked && !hasUnrankedCoasters;
 
   const {
     currentComparison,

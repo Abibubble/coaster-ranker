@@ -83,7 +83,7 @@ export const useSimpleRanking = (
     }
 
     const state = rankingEngine.getState();
-    const completedComparisons = state.rankedCoasterIds.length;
+    const completedComparisons = state.comparisonResults.size;
 
     // Estimate total comparisons needed for binary search ranking
     // For n coasters, we need approximately n * log2(n) comparisons
