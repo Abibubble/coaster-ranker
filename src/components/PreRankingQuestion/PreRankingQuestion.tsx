@@ -11,6 +11,19 @@ interface PreRankingQuestionProps {
   hasExistingRankedData?: boolean;
 }
 
+/**
+ * A modal component that asks users whether their uploaded coaster data is already ranked or needs to be ranked.
+ *
+ * @param coasterCount - The number of coasters being uploaded
+ * @param onAnswer - Callback function called with the user's answer about whether data is pre-ranked
+ * @param onCancel - Callback function called when the user cancels the operation
+ * @param existingCoasterCount - Optional count of coasters already in the user's collection
+ * @param filename - Optional name of the file being uploaded
+ * @param hasExistingRankedData - Whether the user already has ranked coaster data. Defaults to false
+ *
+ * @returns A modal interface for determining how to handle uploaded coaster data
+ */
+
 export default function PreRankingQuestion({
   coasterCount,
   onAnswer,

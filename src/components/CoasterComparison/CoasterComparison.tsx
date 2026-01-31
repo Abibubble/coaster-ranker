@@ -17,6 +17,20 @@ interface CoasterComparisonProps {
   coaster2Label?: string;
 }
 
+/**
+ * A component that displays two coasters side by side for comparison and selection.
+ *
+ * @param coaster1 - The first coaster object to display
+ * @param coaster2 - The second coaster object to display
+ * @param onChoose1 - Optional callback function when the first coaster is selected
+ * @param onChoose2 - Optional callback function when the second coaster is selected
+ * @param clickable - Whether the coaster cards can be clicked. Defaults to true
+ * @param coaster1Label - Custom label for the first coaster selection
+ * @param coaster2Label - Custom label for the second coaster selection
+ *
+ * @returns A side-by-side comparison interface displaying coaster details in clickable cards
+ */
+
 const hasValue = (value?: string): boolean => {
   return Boolean(value?.trim());
 };

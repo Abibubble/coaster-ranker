@@ -14,6 +14,22 @@ export interface ButtonProps {
   external?: boolean;
 }
 
+/**
+ * A flexible button component that can render as a button, anchor tag, or React Router Link.
+ *
+ * @param children - The content to be displayed inside the button
+ * @param onClick - Optional click handler function
+ * @param variant - Visual style variant of the button. Defaults to "default"
+ * @param as - The HTML element or component type to render as. Can be "button", "a", or "link"
+ * @param href - URL for anchor tags when `as` is "a"
+ * @param to - Route path for React Router Links when `as` is "link"
+ * @param type - HTML button type attribute when `as` is "button"
+ * @param className - Additional CSS classes to apply
+ * @param external - Whether the link is external (used with anchor tags)
+ * @param props - Additional props passed to the underlying component
+ *
+ * @returns A styled button component that renders as the specified element type
+ */
 export default function Button({
   children,
   onClick,

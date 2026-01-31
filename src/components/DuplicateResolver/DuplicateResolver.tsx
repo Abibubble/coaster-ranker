@@ -18,6 +18,16 @@ interface DuplicateResolverProps {
   onCancel: () => void;
 }
 
+/**
+ * A component that helps users resolve duplicate coaster entries by choosing which version to keep.
+ *
+ * @param duplicates - Array of duplicate matches that need to be resolved
+ * @param onResolve - Callback function called when the user confirms their duplicate resolutions
+ * @param onCancel - Callback function called when the user cancels the duplicate resolution process
+ *
+ * @returns An interactive interface for resolving duplicate coaster entries with comparison views and action buttons
+ */
+
 export default function DuplicateResolver({
   duplicates,
   onResolve,

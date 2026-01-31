@@ -19,6 +19,27 @@ export interface TextProps {
   "aria-live"?: "off" | "assertive" | "polite";
 }
 
+/**
+ * A flexible text component that can render as various HTML elements with comprehensive styling and accessibility options.
+ *
+ * @param children - The text content to be displayed
+ * @param as - The HTML element type to render as. Defaults to "span"
+ * @param bold - Whether the text should be bold. Defaults to false
+ * @param center - Whether the text should be centre-aligned. Defaults to false
+ * @param className - Additional CSS classes to apply
+ * @param colour - Text colour from the theme palette. Defaults to "black"
+ * @param fontSize - Font size from the theme typography scale. Defaults to "body"
+ * @param htmlFor - HTML for attribute when rendering as label
+ * @param id - ID attribute for the element
+ * @param italic - Whether the text should be italicised. Defaults to false
+ * @param mb - Bottom margin from the theme spacing scale
+ * @param mt - Top margin from the theme spacing scale
+ * @param role - ARIA role attribute for accessibility
+ * @param aria-live - ARIA live region setting for screen readers
+ *
+ * @returns A styled text element with comprehensive theming and accessibility support
+ */
+
 export function Text({
   children,
   as = "span",

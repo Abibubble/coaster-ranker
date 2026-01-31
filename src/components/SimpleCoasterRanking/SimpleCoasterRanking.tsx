@@ -10,6 +10,16 @@ export interface SimpleCoasterRankingProps {
   hideProgress?: boolean;
 }
 
+/**
+ * A component that facilitates coaster ranking through pairwise comparisons using a tournament-style algorithm.
+ *
+ * @param coasters - Array of coasters to be ranked
+ * @param onComplete - Callback function called with the final ranked coaster array
+ * @param hideProgress - Whether to hide the progress indicator. Defaults to false
+ *
+ * @returns An interactive ranking interface that presents coaster pairs for comparison until ranking is complete
+ */
+
 export default function SimpleCoasterRanking({
   coasters,
   onComplete,

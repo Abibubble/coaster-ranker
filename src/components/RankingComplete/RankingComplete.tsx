@@ -11,6 +11,15 @@ interface RankingCompleteProps {
   onRankAgain: () => void;
 }
 
+/**
+ * A component that displays the final ranking results with options to view, edit, or export the ranked coasters.
+ *
+ * @param rankedCoasters - Array of coasters in their final ranked order
+ * @param onRankAgain - Callback function called when the user wants to start a new ranking
+ *
+ * @returns A comprehensive results view with ranked coaster list and action buttons for further operations
+ */
+
 export default function RankingComplete({
   rankedCoasters,
   onRankAgain,
