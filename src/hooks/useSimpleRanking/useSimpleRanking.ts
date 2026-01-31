@@ -3,6 +3,7 @@ import { Coaster } from "../../types/data";
 import {
   RankingEngine,
   RankingComparison,
+  ComparisonResult,
 } from "../../utils/ranking/newRankingEngine";
 
 export interface UseSimpleRankingReturn {
@@ -15,6 +16,9 @@ export interface UseSimpleRankingReturn {
     totalComparisons: number;
     completedComparisons: number;
   };
+  lastComparison: ComparisonResult | null;
+  canUndo: boolean;
+  undo: () => void;
 }
 
 /**
@@ -22,7 +26,7 @@ export interface UseSimpleRankingReturn {
  * Supports incremental ranking when coasters have existing rankPosition values
  */
 export const useSimpleRanking = (
-  coasters: Coaster[]
+  coasters: Coaster[],
 ): UseSimpleRankingReturn => {
   // Initialize ranking engine
   const rankingEngine = useMemo(() => {
@@ -31,14 +35,14 @@ export const useSimpleRanking = (
       console.log(
         "Creating ranking engine with",
         coasters.filter((c) => c.rankPosition !== undefined).length,
-        "pre-ranked coasters"
+        "pre-ranked coasters",
       );
       const engine = new RankingEngine(coasters);
       console.log(
         "Initial comparison:",
         engine.getCurrentComparison()?.coasterA.name,
         "vs",
-        engine.getCurrentComparison()?.coasterB.name
+        engine.getCurrentComparison()?.coasterB.name,
       );
       return engine;
     } catch (error) {
@@ -64,7 +68,7 @@ export const useSimpleRanking = (
         console.error("Error recording comparison result:", error);
       }
     },
-    [rankingEngine]
+    [rankingEngine],
   );
 
   // Force re-render to get current state
@@ -90,7 +94,7 @@ export const useSimpleRanking = (
     const totalCoasters = coasters.filter((c) => !c.isPreRanked).length;
     const estimatedTotal = Math.max(
       1,
-      Math.ceil(totalCoasters * Math.log2(totalCoasters + 1))
+      Math.ceil(totalCoasters * Math.log2(totalCoasters + 1)),
     );
 
     return {
@@ -99,6 +103,25 @@ export const useSimpleRanking = (
     };
   }, [rankingEngine, coasters]);
 
+  // Undo functionality
+  const lastComparison = rankingEngine?.getLastComparison() || null;
+  const canUndo = rankingEngine?.canUndo() || false;
+
+  const undo = useCallback(() => {
+    if (!rankingEngine) {
+      console.error("No ranking engine available for undo");
+      return;
+    }
+
+    try {
+      console.log("Performing undo...");
+      rankingEngine.undo();
+      setForceUpdate((prev) => prev + 1); // Force re-render
+    } catch (error) {
+      console.error("Error undoing last comparison:", error);
+    }
+  }, [rankingEngine]);
+
   return {
     currentComparison,
     recordWinner,
@@ -106,5 +129,8 @@ export const useSimpleRanking = (
     finalRanking,
     rankedCoasterCount,
     progress,
+    lastComparison,
+    canUndo,
+    undo,
   };
 };

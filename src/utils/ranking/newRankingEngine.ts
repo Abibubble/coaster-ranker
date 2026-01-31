@@ -5,17 +5,25 @@ export interface RankingComparison {
   coasterB: Coaster;
 }
 
+export interface ComparisonResult {
+  comparison: RankingComparison;
+  winner: Coaster;
+  loser: Coaster;
+}
+
 export interface RankingState {
   rankedCoasterIds: string[]; // IDs in rank order (index 0 = #1, index 1 = #2, etc.)
   comparisonResults: Map<string, string>; // key: "coasterA-coasterB", value: winnerId (for current insertion)
   unrankedCoasters: Coaster[];
   currentComparison: RankingComparison | null;
   isComplete: boolean;
+  lastComparison: ComparisonResult | null;
 }
 
 export class RankingEngine {
   private state: RankingState;
   private allCoasters: Coaster[];
+  private stateHistory: RankingState[];
 
   constructor(coasters: Coaster[]) {
     // Separate coasters into already ranked and unranked
@@ -24,11 +32,11 @@ export class RankingEngine {
       .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0));
 
     const unrankedCoasters = coasters.filter(
-      (c) => !c.isPreRanked && c.rankPosition === undefined
+      (c) => !c.isPreRanked && c.rankPosition === undefined,
     );
 
     console.log(
-      `Found ${rankedCoasters.length} already ranked coasters and ${unrankedCoasters.length} unranked coasters`
+      `Found ${rankedCoasters.length} already ranked coasters and ${unrankedCoasters.length} unranked coasters`,
     );
 
     // If we have no unranked coasters, we can't do any ranking
@@ -45,14 +53,16 @@ export class RankingEngine {
         unrankedCoasters: [],
         currentComparison: null,
         isComplete: true,
+        lastComparison: null,
       };
+      this.stateHistory = [];
       return;
     }
 
     // If we have no ranked coasters, require at least 2 unranked
     if (rankedCoasters.length === 0 && unrankedCoasters.length < 2) {
       throw new Error(
-        `Need at least 2 coasters to rank, got ${unrankedCoasters.length}`
+        `Need at least 2 coasters to rank, got ${unrankedCoasters.length}`,
       );
     }
 
@@ -65,20 +75,23 @@ export class RankingEngine {
       unrankedCoasters: [...unrankedCoasters],
       currentComparison: null,
       isComplete: false,
+      lastComparison: null,
     };
 
+    this.stateHistory = [];
+
     console.log(
-      `Ranking engine initialized with ${rankedCoasters.length} already ranked and ${unrankedCoasters.length} unranked coasters`
+      `Ranking engine initialized with ${rankedCoasters.length} already ranked and ${unrankedCoasters.length} unranked coasters`,
     );
     if (rankedCoasters.length > 0) {
       console.log(
         "Already ranked coasters:",
-        rankedCoasters.map((c) => `${c.name} (pos: ${c.rankPosition})`)
+        rankedCoasters.map((c) => `${c.name} (pos: ${c.rankPosition})`),
       );
     }
     console.log(
       "Unranked coasters:",
-      unrankedCoasters.map((c) => c.name)
+      unrankedCoasters.map((c) => c.name),
     );
 
     this.generateNextComparison();
@@ -95,31 +108,40 @@ export class RankingEngine {
 
     console.log("=== RECORDING COMPARISON RESULT ===");
     const { coasterA, coasterB } = this.state.currentComparison;
+    const loser = winner.id === coasterA.id ? coasterB : coasterA;
     console.log(`Winner: ${winner.name}`);
+    console.log(`Loser: ${loser.name}`);
     console.log(
-      `Loser: ${winner.id === coasterA.id ? coasterB.name : coasterA.name}`
+      `Before: ranked=${this.state.rankedCoasterIds.length}, unranked=${this.state.unrankedCoasters.length}`,
     );
-    console.log(
-      `Before: ranked=${this.state.rankedCoasterIds.length}, unranked=${this.state.unrankedCoasters.length}`
-    );
+
+    // Save current state for undo
+    this.saveCurrentState();
 
     // Store the comparison result for binary search
     this.storeComparisonResult(coasterA, coasterB, winner);
 
+    // Store the last comparison for undo display
+    this.state.lastComparison = {
+      comparison: { ...this.state.currentComparison },
+      winner: winner,
+      loser: loser,
+    };
+
     this.updateRankingAfterComparison();
 
     console.log(
-      `After: ranked=${this.state.rankedCoasterIds.length}, unranked=${this.state.unrankedCoasters.length}`
+      `After: ranked=${this.state.rankedCoasterIds.length}, unranked=${this.state.unrankedCoasters.length}`,
     );
     console.log(
       `Current ranking: ${this.state.rankedCoasterIds
         .map((id) => this.findCoasterById(id)?.name)
-        .join(", ")}`
+        .join(", ")}`,
     );
     console.log(
       `Remaining unranked: ${this.state.unrankedCoasters
         .map((c) => c.name)
-        .join(", ")}`
+        .join(", ")}`,
     );
 
     this.generateNextComparison();
@@ -129,7 +151,7 @@ export class RankingEngine {
         this.state.currentComparison
           ? `${this.state.currentComparison.coasterA.name} vs ${this.state.currentComparison.coasterB.name}`
           : "NONE"
-      }`
+      }`,
     );
     console.log("=== END COMPARISON RESULT ===\n");
   }
@@ -157,7 +179,7 @@ export class RankingEngine {
     console.log("allCoasters length:", this.allCoasters.length);
     console.log(
       "allCoasters names:",
-      this.allCoasters.map((c) => c.name)
+      this.allCoasters.map((c) => c.name),
     );
 
     const finalCoasters = this.state.rankedCoasterIds
@@ -172,19 +194,77 @@ export class RankingEngine {
 
     console.log(
       "Final ranking coasters:",
-      finalCoasters.map((c) => c.name)
+      finalCoasters.map((c) => c.name),
     );
     console.log("=== END FINAL RANKING DEBUG ===");
 
     return finalCoasters;
   }
 
+  getLastComparison(): ComparisonResult | null {
+    return this.state.lastComparison;
+  }
+
+  canUndo(): boolean {
+    return this.stateHistory.length > 0;
+  }
+
+  undo(): void {
+    if (!this.canUndo()) {
+      throw new Error("No previous state to undo to");
+    }
+
+    console.log("=== UNDOING LAST COMPARISON ===");
+    const previousState = this.stateHistory.pop()!;
+
+    // Restore the previous state
+    this.state = {
+      ...previousState,
+      // Create new Maps to avoid reference issues
+      comparisonResults: new Map(previousState.comparisonResults),
+    };
+
+    console.log("State restored to previous comparison");
+    console.log(
+      `Current ranking: ${this.state.rankedCoasterIds
+        .map((id) => this.findCoasterById(id)?.name)
+        .join(", ")}`,
+    );
+    console.log(
+      `Unranked coasters: ${this.state.unrankedCoasters
+        .map((c) => c.name)
+        .join(", ")}`,
+    );
+    console.log("=== END UNDO ===\n");
+  }
+
   // === SIMPLE, SINGLE-PURPOSE FUNCTIONS ===
+
+  private saveCurrentState(): void {
+    // Create a deep copy of the current state for undo
+    this.stateHistory.push({
+      rankedCoasterIds: [...this.state.rankedCoasterIds],
+      comparisonResults: new Map(this.state.comparisonResults),
+      unrankedCoasters: [...this.state.unrankedCoasters],
+      currentComparison: this.state.currentComparison
+        ? { ...this.state.currentComparison }
+        : null,
+      isComplete: this.state.isComplete,
+      lastComparison: this.state.lastComparison
+        ? { ...this.state.lastComparison }
+        : null,
+    });
+
+    // Limit history size to prevent memory issues
+    if (this.stateHistory.length > 50) {
+      this.stateHistory.shift();
+    }
+  }
 
   private storeComparisonResult(
     coasterA: Coaster,
     coasterB: Coaster,
-    winner: Coaster
+    winner: Coaster,
   ): void {
     const comparisonKey = this.getComparisonKey(coasterA, coasterB);
     this.state.comparisonResults.set(comparisonKey, winner.id);
@@ -217,10 +297,10 @@ export class RankingEngine {
 
     // Determine which coaster is being ranked (unranked)
     const coasterAIsUnranked = this.state.unrankedCoasters.some(
-      (c) => c.id === coasterA.id
+      (c) => c.id === coasterA.id,
     );
     const coasterBIsUnranked = this.state.unrankedCoasters.some(
-      (c) => c.id === coasterB.id
+      (c) => c.id === coasterB.id,
     );
 
     if (coasterAIsUnranked && !coasterBIsUnranked) {
@@ -247,7 +327,7 @@ export class RankingEngine {
 
   private placeCoasterInRanking(
     coaster: Coaster,
-    insertionIndex: number
+    insertionIndex: number,
   ): void {
     console.log(`\n=== PLACING COASTER: ${coaster.name} ===`);
     console.log(`Inserting ${coaster.name} at position ${insertionIndex}`);
@@ -259,19 +339,19 @@ export class RankingEngine {
     console.log(
       `  New ranking: ${this.state.rankedCoasterIds
         .map((id) => this.findCoasterById(id)?.name)
-        .join(", ")}`
+        .join(", ")}`,
     );
     console.log(
       `  Remaining unranked: ${this.state.unrankedCoasters
         .map((c) => c.name)
-        .join(", ")}`
+        .join(", ")}`,
     );
     console.log(`=== END PLACEMENT ===\n`);
   }
 
   private findInsertionPosition(newCoaster: Coaster): number {
     console.log(
-      `\nFinding insertion position for ${newCoaster.name} using binary search`
+      `\nFinding insertion position for ${newCoaster.name} using binary search`,
     );
 
     if (this.state.rankedCoasterIds.length === 0) {
@@ -292,12 +372,12 @@ export class RankingEngine {
       const comparisonResult = this.getComparisonResult(newCoaster, midCoaster);
 
       console.log(
-        `  Comparing ${newCoaster.name} vs ${midCoaster.name} (pos ${mid}) - result: ${comparisonResult}`
+        `  Comparing ${newCoaster.name} vs ${midCoaster.name} (pos ${mid}) - result: ${comparisonResult}`,
       );
 
       if (!comparisonResult) {
         console.log(
-          `  No comparison data between ${newCoaster.name} and ${midCoaster.name} - cannot place yet`
+          `  No comparison data between ${newCoaster.name} and ${midCoaster.name} - cannot place yet`,
         );
         return -1; // Need more comparisons
       }
@@ -305,7 +385,7 @@ export class RankingEngine {
       if (comparisonResult === newCoaster.id) {
         // New coaster beats mid coaster, search upper half (better positions)
         console.log(
-          `  ${newCoaster.name} beats ${midCoaster.name} - searching positions 0 to ${mid}`
+          `  ${newCoaster.name} beats ${midCoaster.name} - searching positions 0 to ${mid}`,
         );
         right = mid;
       } else {
@@ -313,14 +393,14 @@ export class RankingEngine {
         console.log(
           `  ${midCoaster.name} beats ${
             newCoaster.name
-          } - searching positions ${mid + 1} to ${right}`
+          } - searching positions ${mid + 1} to ${right}`,
         );
         left = mid + 1;
       }
     }
 
     console.log(
-      `Binary search complete - ${newCoaster.name} should be placed at position ${left}`
+      `Binary search complete - ${newCoaster.name} should be placed at position ${left}`,
     );
     return left;
   }
@@ -332,7 +412,7 @@ export class RankingEngine {
     console.log(
       `Unranked names: ${this.state.unrankedCoasters
         .map((c) => c.name)
-        .join(", ")}`
+        .join(", ")}`,
     );
 
     if (this.isRankingComplete()) {
@@ -352,7 +432,7 @@ export class RankingEngine {
         this.state.currentComparison
           ? `${this.state.currentComparison.coasterA.name} vs ${this.state.currentComparison.coasterB.name}`
           : "NONE"
-      }`
+      }`,
     );
     console.log("--- END GENERATE COMPARISON ---\n");
   }
@@ -381,7 +461,7 @@ export class RankingEngine {
 
     if (!comparison) {
       console.log(
-        `No comparison needed for ${nextCoaster.name}, placing directly`
+        `No comparison needed for ${nextCoaster.name}, placing directly`,
       );
       // Calculate the correct insertion position using existing comparison data
       const insertionIndex = this.findInsertionPosition(nextCoaster);
@@ -391,19 +471,19 @@ export class RankingEngine {
         this.generateNextComparison(); // Recursively generate next comparison
       } else {
         console.log(
-          `ERROR: Cannot place ${nextCoaster.name} - this should not happen`
+          `ERROR: Cannot place ${nextCoaster.name} - this should not happen`,
         );
       }
     } else {
       this.state.currentComparison = comparison;
       console.log(
-        `Set comparison: ${comparison.coasterA.name} vs ${comparison.coasterB.name}`
+        `Set comparison: ${comparison.coasterA.name} vs ${comparison.coasterB.name}`,
       );
     }
   }
 
   private getNextBinarySearchComparison(
-    newCoaster: Coaster
+    newCoaster: Coaster,
   ): RankingComparison | null {
     console.log(`\n=== Comparing ${newCoaster.name} ===`);
     let left = 0;
@@ -421,7 +501,7 @@ export class RankingEngine {
       if (!existingResult) {
         // This is the comparison we need
         console.log(
-          `  FOUND NEEDED COMPARISON: ${newCoaster.name} vs ${midCoaster.name}`
+          `  FOUND NEEDED COMPARISON: ${newCoaster.name} vs ${midCoaster.name}`,
         );
         return { coasterA: newCoaster, coasterB: midCoaster };
       }
@@ -429,12 +509,12 @@ export class RankingEngine {
       // Continue binary search based on previous result
       if (existingResult === newCoaster.id) {
         console.log(
-          `  ${newCoaster.name} beats ${midCoaster.name} - searching left half`
+          `  ${newCoaster.name} beats ${midCoaster.name} - searching left half`,
         );
         right = mid;
       } else {
         console.log(
-          `  ${midCoaster.name} beats ${newCoaster.name} - searching right half`
+          `  ${midCoaster.name} beats ${newCoaster.name} - searching right half`,
         );
         left = mid + 1;
       }
@@ -454,7 +534,7 @@ export class RankingEngine {
 
   private getWinnerFromComparison(
     coasterA: Coaster,
-    coasterB: Coaster
+    coasterB: Coaster,
   ): Coaster {
     // For ranked coasters, determine winner by rank position (lower position = better rank = winner)
     const aPosition = coasterA.rankPosition;
@@ -471,7 +551,7 @@ export class RankingEngine {
 
   private getComparisonResult(
     coasterA: Coaster,
-    coasterB: Coaster
+    coasterB: Coaster,
   ): string | null {
     // First check stored comparison results
     const comparisonKey = this.getComparisonKey(coasterA, coasterB);
@@ -498,7 +578,7 @@ export class RankingEngine {
 
   private removeFromUnranked(coasterId: string): void {
     this.state.unrankedCoasters = this.state.unrankedCoasters.filter(
-      (c) => c.id !== coasterId
+      (c) => c.id !== coasterId,
     );
   }
 

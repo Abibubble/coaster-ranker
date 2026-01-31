@@ -9,10 +9,14 @@ import {
   RankingComplete,
   Text,
   Title,
+  UndoLastChoice,
 } from "../../components";
 import { useData } from "../../contexts/DataContext";
 import { useSimpleRanking } from "../../hooks/useSimpleRanking";
-import { RankingComparison } from "../../utils/ranking/newRankingEngine";
+import {
+  RankingComparison,
+  ComparisonResult,
+} from "../../utils/ranking/newRankingEngine";
 import { Coaster } from "../../types/data";
 import * as Styled from "./Rank.styled";
 
@@ -23,7 +27,7 @@ export const Rank: React.FC = () => {
   // Check if ranking is needed - should rank if there are any unranked coasters
   const hasUnrankedCoasters =
     uploadedData?.coasters?.some(
-      (c) => !c.isPreRanked && c.rankPosition === undefined
+      (c) => !c.isPreRanked && c.rankPosition === undefined,
     ) || false;
 
   // Only consider ranking complete if metadata says ranked AND no unranked coasters exist
@@ -37,6 +41,9 @@ export const Rank: React.FC = () => {
     finalRanking,
     rankedCoasterCount,
     progress,
+    lastComparison,
+    canUndo,
+    undo,
   }: {
     currentComparison: RankingComparison | null;
     recordWinner: (winner: Coaster) => void;
@@ -44,6 +51,9 @@ export const Rank: React.FC = () => {
     finalRanking: Coaster[];
     rankedCoasterCount: number;
     progress: { totalComparisons: number; completedComparisons: number };
+    lastComparison: ComparisonResult | null;
+    canUndo: boolean;
+    undo: () => void;
   } = useSimpleRanking(uploadedData?.coasters || []);
 
   // Mark ranking as complete when ranking finishes
@@ -68,7 +78,7 @@ export const Rank: React.FC = () => {
             onRankAgain={() => {
               // Confirm before resetting rankings
               const confirmed = window.confirm(
-                "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch."
+                "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch.",
               );
 
               if (confirmed) {
@@ -146,7 +156,7 @@ export const Rank: React.FC = () => {
             onRankAgain={() => {
               // Confirm before resetting rankings
               const confirmed = window.confirm(
-                "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch"
+                "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch",
               );
 
               if (confirmed) {
@@ -183,6 +193,12 @@ export const Rank: React.FC = () => {
             coaster2={currentComparison.coasterB}
             onChoose1={() => recordWinner(currentComparison.coasterA)}
             onChoose2={() => recordWinner(currentComparison.coasterB)}
+          />
+
+          <UndoLastChoice
+            lastComparison={lastComparison}
+            canUndo={canUndo}
+            onUndo={undo}
           />
         </Styled.RankingContainer>
       </MainContent>

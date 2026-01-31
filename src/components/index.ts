@@ -17,3 +17,4 @@ export { SimpleCoasterRanking } from "./SimpleCoasterRanking";
 export { SkipLink } from "./SkipLink";
 export { Text } from "./Text";
 export { Title } from "./Title";
+export { UndoLastChoice } from "./UndoLastChoice";
