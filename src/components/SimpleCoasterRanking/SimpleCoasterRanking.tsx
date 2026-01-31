@@ -1,124 +1,115 @@
-import { useEffect, useState } from 'react'
-import { Coaster } from '../../types/data'
-import { CoasterComparison } from '../CoasterComparison'
-import { Text } from '../Text'
-import * as Styled from './SimpleCoasterRanking.styled'
+import { useEffect, useState } from "react";
+import { Coaster } from "../../types/data";
+import { CoasterComparison } from "../CoasterComparison";
+import { Text } from "../Text";
+import * as Styled from "./SimpleCoasterRanking.styled";
 
 export interface SimpleCoasterRankingProps {
-  coasters: Coaster[]
-  onComplete: (ranked: Coaster[]) => void
-  hideProgress?: boolean
+  coasters: Coaster[];
+  onComplete: (ranked: Coaster[]) => void;
+  hideProgress?: boolean;
 }
 
-/**
- * Simple coaster ranking component for ranking coasters within a group
- * Uses a round-robin comparison system where each coaster is compared against every other
- */
 export default function SimpleCoasterRanking({
   coasters,
   onComplete,
   hideProgress = false,
 }: SimpleCoasterRankingProps) {
   const [currentPair, setCurrentPair] = useState<[Coaster, Coaster] | null>(
-    null
-  )
+    null,
+  );
   const [remainingComparisons, setRemainingComparisons] = useState<
     [Coaster, Coaster][]
-  >([])
-  const [rankings, setRankings] = useState<Map<string, number>>(new Map())
-  const [totalComparisons, setTotalComparisons] = useState(0)
+  >([]);
+  const [rankings, setRankings] = useState<Map<string, number>>(new Map());
+  const [totalComparisons, setTotalComparisons] = useState(0);
 
   useEffect(() => {
     if (coasters.length < 2) {
-      onComplete(coasters)
-      return
+      onComplete(coasters);
+      return;
     }
 
-    // Generate all possible pairs for comparison
-    const pairs: [Coaster, Coaster][] = []
+    const pairs: [Coaster, Coaster][] = [];
     for (let i = 0; i < coasters.length - 1; i++) {
       for (let j = i + 1; j < coasters.length; j++) {
-        pairs.push([coasters[i], coasters[j]])
+        pairs.push([coasters[i], coasters[j]]);
       }
     }
 
-    setRemainingComparisons(pairs)
-    setTotalComparisons(pairs.length)
-    setCurrentPair(pairs[0] || null)
+    setRemainingComparisons(pairs);
+    setTotalComparisons(pairs.length);
+    setCurrentPair(pairs[0] || null);
 
-    // Initialize rankings with zero comparison scores for each coaster
-    const initialRankings = new Map<string, number>()
-    coasters.forEach(coaster => {
-      initialRankings.set(coaster.id, 0)
-    })
-    setRankings(initialRankings)
-  }, [coasters, onComplete])
+    const initialRankings = new Map<string, number>();
+    coasters.forEach((coaster) => {
+      initialRankings.set(coaster.id, 0);
+    });
+    setRankings(initialRankings);
+  }, [coasters, onComplete]);
 
   const handleChoice = (chosenCoaster: Coaster) => {
-    if (!currentPair) return
+    if (!currentPair) return;
 
-    // Update comparison scores - chosen coaster gets a point
-    const newRankings = new Map(rankings)
-    const currentScore = newRankings.get(chosenCoaster.id) || 0
-    newRankings.set(chosenCoaster.id, currentScore + 1)
-    setRankings(newRankings)
+    const newRankings = new Map(rankings);
+    const currentScore = newRankings.get(chosenCoaster.id) || 0;
+    newRankings.set(chosenCoaster.id, currentScore + 1);
+    setRankings(newRankings);
 
-    // Move to next comparison
-    const nextComparisons = remainingComparisons.slice(1)
-    setRemainingComparisons(nextComparisons)
+    const nextComparisons = remainingComparisons.slice(1);
+    setRemainingComparisons(nextComparisons);
 
     if (nextComparisons.length > 0) {
-      setCurrentPair(nextComparisons[0])
+      setCurrentPair(nextComparisons[0]);
     } else {
-      // Ranking complete - sort by comparison score, with ties broken by ID
       const sortedCoasters = [...coasters].sort((a, b) => {
-        const aScore = newRankings.get(a.id) || 0
-        const bScore = newRankings.get(b.id) || 0
+        const aScore = newRankings.get(a.id) || 0;
+        const bScore = newRankings.get(b.id) || 0;
 
         if (aScore !== bScore) {
-          return bScore - aScore // Higher score first
+          return bScore - aScore;
         }
-        return a.id.localeCompare(b.id) // Stable tie-breaking
-      })
+        return a.id.localeCompare(b.id);
+      });
 
-      onComplete(sortedCoasters)
+      onComplete(sortedCoasters);
     }
-  }
+  };
 
   if (!currentPair) {
-    return <div>Completing ranking...</div>
+    return <div>Completing ranking...</div>;
   }
 
   return (
     <div>
       {!hideProgress && (
         <Styled.ComparisonProgress>
-          <Text as='h4' bold colour='navyBlue' fontSize='large' mb='small'>
+          <Text as="h4" bold colour="navyBlue" fontSize="large" mb="small">
             Which coaster do you prefer?
           </Text>
 
           <Styled.ProgressStats>
             <Styled.ProgressStat>
-              <Styled.ProgressNumber bold colour='lightBlue' fontSize='large'>
+              <Styled.ProgressNumber bold colour="lightBlue" fontSize="large">
                 {remainingComparisons.length}
               </Styled.ProgressNumber>
               <Styled.ProgressLabel
-                colour='mutedGrey'
-                fontSize='small'
-                mt='fine'
+                colour="mutedGrey"
+                fontSize="small"
+                mt="fine"
               >
                 Comparisons Remaining
               </Styled.ProgressLabel>
             </Styled.ProgressStat>
 
             <Styled.ProgressStat>
-              <Styled.ProgressNumber bold colour='lightBlue' fontSize='large'>
+              <Styled.ProgressNumber bold colour="lightBlue" fontSize="large">
                 {totalComparisons - remainingComparisons.length}
               </Styled.ProgressNumber>
               <Styled.ProgressLabel
-                colour='mutedGrey'
-                fontSize='small'
-                mt='fine'
+                colour="mutedGrey"
+                fontSize="small"
+                mt="fine"
               >
                 Completed
               </Styled.ProgressLabel>
@@ -129,18 +120,18 @@ export default function SimpleCoasterRanking({
             const progress = Math.round(
               ((totalComparisons - remainingComparisons.length) /
                 totalComparisons) *
-                100
-            )
+                100,
+            );
             return (
               <>
                 <Styled.ProgressBarContainer>
                   <Styled.ProgressBar $progress={progress} />
                 </Styled.ProgressBarContainer>
-                <Text as='p' colour='slateGrey' fontSize='small' mt='tiny'>
+                <Text as="p" colour="slateGrey" fontSize="small" mt="tiny">
                   {progress}% Complete
                 </Text>
               </>
-            )
+            );
           })()}
         </Styled.ComparisonProgress>
       )}
@@ -152,5 +143,5 @@ export default function SimpleCoasterRanking({
         onChoose2={() => handleChoice(currentPair[1])}
       />
     </div>
-  )
+  );
 }

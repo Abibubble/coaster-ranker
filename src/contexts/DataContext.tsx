@@ -7,32 +7,28 @@ const STORAGE_KEY = "coaster-ranker-data";
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const [uploadedData, setUploadedDataState] = useState<UploadedData | null>(
-    null
+    null,
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load data from localStorage on component mount
   useEffect(() => {
     try {
       const savedData = localStorage.getItem(STORAGE_KEY);
       if (savedData) {
         const parsedData = JSON.parse(savedData);
-        // Convert uploadedAt back to Date object
         if (parsedData.uploadedAt) {
           parsedData.uploadedAt = new Date(parsedData.uploadedAt);
         }
 
-        // Convert ranking metadata back to proper types
         if (parsedData.rankingMetadata) {
           const metadata = parsedData.rankingMetadata;
 
-          // Convert completedComparisons array back to Set
           if (
             metadata.completedComparisons &&
             Array.isArray(metadata.completedComparisons)
           ) {
             metadata.completedComparisons = new Set(
-              metadata.completedComparisons
+              metadata.completedComparisons,
             );
           } else {
             metadata.completedComparisons = new Set<string>();
@@ -43,26 +39,22 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error("Error loading data from localStorage:", error);
-      // If there's an error, clear the corrupted data
       localStorage.removeItem(STORAGE_KEY);
     }
   }, []);
 
-  // Custom setter that also saves to localStorage
   const setUploadedData = (data: UploadedData | null) => {
     setUploadedDataState(data);
 
     try {
       if (data) {
-        // Prepare data for JSON serialization
         const dataToSave = JSON.parse(
           JSON.stringify(data, (key, value) => {
-            // Custom serialization for Set and Map
             if (key === "completedComparisons" && value instanceof Set) {
               return Array.from(value);
             }
             return value;
-          })
+          }),
         );
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
@@ -74,21 +66,19 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Function to mark ranking as complete
   const markRankingComplete = (finalRanking: Coaster[]) => {
     if (!uploadedData) return;
 
     console.log("=== MARK RANKING COMPLETE DEBUG ===");
     console.log(
       "Input finalRanking:",
-      finalRanking.map((c) => c.name)
+      finalRanking.map((c) => c.name),
     );
     console.log("finalRanking length:", finalRanking.length);
 
-    // Update coasters with their rank positions
     const updatedCoasters = uploadedData.coasters.map((coaster) => {
       const rankIndex = finalRanking.findIndex(
-        (ranked) => ranked.id === coaster.id
+        (ranked) => ranked.id === coaster.id,
       );
       return {
         ...coaster,
@@ -98,7 +88,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
     const updatedData = {
       ...uploadedData,
-      coasters: updatedCoasters, // Include updated coasters with rankPosition
+      coasters: updatedCoasters,
       rankingMetadata: {
         ...uploadedData.rankingMetadata,
         isRanked: true,
@@ -111,22 +101,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
     console.log(
       "rankedCoasters IDs being stored:",
-      updatedData.rankingMetadata.rankedCoasters
+      updatedData.rankingMetadata.rankedCoasters,
     );
     console.log(
       "Updated coasters with rankPosition:",
-      updatedCoasters.slice(0, 5).map((c) => `${c.name}: ${c.rankPosition}`)
+      updatedCoasters.slice(0, 5).map((c) => `${c.name}: ${c.rankPosition}`),
     );
     console.log("=== END MARK RANKING COMPLETE DEBUG ===");
 
     setUploadedData(updatedData);
   };
 
-  // Function to reset ranking state
   const resetRanking = () => {
     if (!uploadedData) return;
 
-    // Reset rankPosition for all coasters to undefined
     const resetCoasters = uploadedData.coasters.map((coaster) => ({
       ...coaster,
       rankPosition: undefined,

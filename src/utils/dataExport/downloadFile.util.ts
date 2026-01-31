@@ -1,3 +1,8 @@
+/**
+ * Utility functions for triggering file downloads in the browser.
+ * Handles blob creation, URL generation, and cleanup for downloading generated data files.
+ */
+
 export interface DownloadFileParams {
   content: string;
   filename: string;
@@ -9,15 +14,10 @@ export interface DownloadFileResult {
   error?: string;
 }
 
-/**
- * Download content as a file in the browser
- * Creates a blob, generates a download link, and triggers the download
- */
 export function downloadFile(params: DownloadFileParams): DownloadFileResult {
   const { content, filename, contentType } = params;
 
   try {
-    // Validate inputs
     if (!content || !filename) {
       return {
         success: false,
@@ -25,7 +25,6 @@ export function downloadFile(params: DownloadFileParams): DownloadFileResult {
       };
     }
 
-    // Create blob and download link with UTF-8 encoding
     const blob = new Blob(["\ufeff" + content], {
       type: contentType + ";charset=utf-8",
     });
@@ -35,12 +34,10 @@ export function downloadFile(params: DownloadFileParams): DownloadFileResult {
     link.href = url;
     link.download = filename;
 
-    // Temporarily add to DOM, click, and remove
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // Clean up the object URL
     URL.revokeObjectURL(url);
 
     return {

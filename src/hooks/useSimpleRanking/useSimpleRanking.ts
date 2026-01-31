@@ -4,7 +4,7 @@ import {
   RankingEngine,
   RankingComparison,
   ComparisonResult,
-} from "../../utils/ranking/newRankingEngine";
+} from "../../utils/ranking/newRankingEngine.util";
 
 export interface UseSimpleRankingReturn {
   currentComparison: RankingComparison | null;
@@ -21,14 +21,9 @@ export interface UseSimpleRankingReturn {
   undo: () => void;
 }
 
-/**
- * Hook to manage simple binary search ranking
- * Supports incremental ranking when coasters have existing rankPosition values
- */
 export const useSimpleRanking = (
   coasters: Coaster[],
 ): UseSimpleRankingReturn => {
-  // Initialize ranking engine
   const rankingEngine = useMemo(() => {
     if (coasters.length === 0) return null;
     try {
@@ -63,7 +58,7 @@ export const useSimpleRanking = (
       try {
         console.log("Recording winner:", winner.name);
         rankingEngine.recordComparisonResult(winner);
-        setForceUpdate((prev) => prev + 1); // Force re-render
+        setForceUpdate((prev) => prev + 1);
       } catch (error) {
         console.error("Error recording comparison result:", error);
       }
@@ -71,7 +66,6 @@ export const useSimpleRanking = (
     [rankingEngine],
   );
 
-  // Force re-render to get current state
   const currentComparison = rankingEngine?.getCurrentComparison() || null;
   const isComplete = rankingEngine?.getState().isComplete || false;
   const finalRanking = isComplete
@@ -80,7 +74,6 @@ export const useSimpleRanking = (
   const rankedCoasterCount =
     rankingEngine?.getState().rankedCoasterIds.length || 0;
 
-  // Calculate progress
   const progress = useMemo(() => {
     if (!rankingEngine) {
       return { totalComparisons: 0, completedComparisons: 0 };
@@ -89,8 +82,6 @@ export const useSimpleRanking = (
     const state = rankingEngine.getState();
     const completedComparisons = state.comparisonResults.size;
 
-    // Estimate total comparisons needed for binary search ranking
-    // For n coasters, we need approximately n * log2(n) comparisons
     const totalCoasters = coasters.filter((c) => !c.isPreRanked).length;
     const estimatedTotal = Math.max(
       1,
@@ -103,7 +94,6 @@ export const useSimpleRanking = (
     };
   }, [rankingEngine, coasters]);
 
-  // Undo functionality
   const lastComparison = rankingEngine?.getLastComparison() || null;
   const canUndo = rankingEngine?.canUndo() || false;
 
@@ -116,7 +106,7 @@ export const useSimpleRanking = (
     try {
       console.log("Performing undo...");
       rankingEngine.undo();
-      setForceUpdate((prev) => prev + 1); // Force re-render
+      setForceUpdate((prev) => prev + 1);
     } catch (error) {
       console.error("Error undoing last comparison:", error);
     }

@@ -8,8 +8,8 @@ import {
 import { vi } from "vitest";
 import { DataProvider } from "../../contexts/DataContext";
 import ViewCoasters from "./ViewCoasters";
+import { steelVengeance, fury325 } from "../../mocks";
 
-// Mock localStorage
 const mockLocalStorage = {
   getItem: vi.fn(),
   setItem: vi.fn(),
@@ -23,10 +23,7 @@ Object.defineProperty(window, "localStorage", {
 const mockCoasterData = {
   coasters: [
     {
-      id: "1",
-      name: "Steel Vengeance",
-      park: "Cedar Point",
-      manufacturer: "Rocky Mountain Construction",
+      ...steelVengeance,
       country: "USA",
       model: "I-Box",
       material: "Wood/Steel Hybrid",
@@ -34,13 +31,9 @@ const mockCoasterData = {
       rank: 1,
     },
     {
-      id: "2",
-      name: "Fury 325",
-      park: "Carowinds",
-      manufacturer: "Bolliger & Mabillard",
+      ...fury325,
       country: "USA",
       model: "Giga Coaster",
-      material: "Steel",
       thrillLevel: "High",
       rank: 2,
     },
@@ -61,7 +54,7 @@ describe("ViewCoasters", () => {
       render(
         <DataProvider>
           <ViewCoasters />
-        </DataProvider>
+        </DataProvider>,
       );
 
       expect(screen.getByText("Your Coasters")).toBeInTheDocument();
@@ -74,7 +67,7 @@ describe("ViewCoasters", () => {
       render(
         <DataProvider>
           <ViewCoasters />
-        </DataProvider>
+        </DataProvider>,
       );
 
       expect(screen.getAllByText("Steel Vengeance")[0]).toBeInTheDocument();
@@ -90,25 +83,10 @@ describe("ViewCoasters", () => {
       const { container } = render(
         <DataProvider>
           <ViewCoasters />
-        </DataProvider>
+        </DataProvider>,
       );
 
       await testAxeCompliance(container);
     });
-
-    // TODO: Fix accessibility violations in component:
-    // - Select elements need proper labels
-    // - Table rows with role="button" children need proper structure
-    // it('has no accessibility violations with coaster data', async () => {
-    //   mockLocalStorage.getItem.mockReturnValue(JSON.stringify(mockCoasterData))
-    //
-    //   const { container } = render(
-    //     <DataProvider>
-    //       <ViewCoasters />
-    //     </DataProvider>
-    //   )
-    //
-    //   await testAxeCompliance(container)
-    // })
   });
 });

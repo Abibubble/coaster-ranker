@@ -3,8 +3,7 @@ import * as Styled from "./CoasterComparison.styled";
 import { Card } from "../Card";
 import { Text } from "../Text";
 
-// Helper function to format country for display
-const formatCountry = (country: string | undefined): string => {
+const formatCountry = (country?: string): string => {
   return country && country.trim() ? `, ${country}` : "";
 };
 
@@ -18,13 +17,11 @@ interface CoasterComparisonProps {
   coaster2Label?: string;
 }
 
-// Helper function to check if a value exists and is not empty
-const hasValue = (value: string | undefined): boolean => {
-  return value !== undefined && value !== null && value.trim() !== "";
+const hasValue = (value?: string): boolean => {
+  return Boolean(value?.trim());
 };
 
-// Helper function to render a field only if it has a value
-const renderField = (label: string, value: string | undefined) => {
+const renderField = (label: string, value?: string) => {
   if (!hasValue(value)) {
     return null;
   }
@@ -44,7 +41,6 @@ export default function CoasterComparison({
   coaster1Label,
   coaster2Label,
 }: CoasterComparisonProps) {
-  // Ensure we have labels for the cards, fallback to coaster name or a generic label
   const coaster1DisplayLabel =
     coaster1Label || (hasValue(coaster1.name) ? coaster1.name : "Coaster 1");
   const coaster2DisplayLabel =
@@ -56,12 +52,10 @@ export default function CoasterComparison({
         title={coaster1DisplayLabel}
         subtitle={`${coaster1.park}${formatCountry(coaster1.country)}`}
         clickable={clickable}
-        aria-label={
-          clickable
-            ? `Choose ${coaster1DisplayLabel} as your favorite`
-            : undefined
-        }
-        onClick={clickable ? onChoose1 : undefined}
+        {...(clickable && {
+          "aria-label": `Choose ${coaster1DisplayLabel} as your favorite`,
+          onClick: onChoose1,
+        })}
       >
         {renderField("Manufacturer", coaster1.manufacturer)}
         {renderField("Model", coaster1.model)}
@@ -76,12 +70,10 @@ export default function CoasterComparison({
         title={coaster2DisplayLabel}
         subtitle={`${coaster2.park}${formatCountry(coaster2.country)}`}
         clickable={clickable}
-        aria-label={
-          clickable
-            ? `Choose ${coaster2DisplayLabel} as your favorite`
-            : undefined
-        }
-        onClick={clickable ? onChoose2 : undefined}
+        {...(clickable && {
+          "aria-label": `Choose ${coaster2DisplayLabel} as your favorite`,
+          onClick: onChoose2,
+        })}
       >
         {renderField("Manufacturer", coaster2.manufacturer)}
         {renderField("Model", coaster2.model)}

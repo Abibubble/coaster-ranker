@@ -11,7 +11,13 @@ import {
 } from "../../components";
 import { useData } from "../../contexts/DataContext";
 import { Coaster } from "../../types/data";
-import { detectDuplicates, DuplicateMatch, formatString } from "../../utils";
+import {
+  detectDuplicates,
+  DuplicateMatch,
+  formatString,
+  mergeCoasterData,
+  getMergedFields,
+} from "../../utils";
 import type { DuplicateResolution } from "../../components/DuplicateResolver";
 import * as Styled from "./UploadManual.styled";
 
@@ -44,7 +50,7 @@ export default function UploadManual() {
   });
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -58,7 +64,6 @@ export default function UploadManual() {
   };
 
   const addCoasterToCollection = (coasterToAdd: Coaster) => {
-    // Add to existing data
     const existingCoasters = uploadedData?.coasters || [];
     const updatedData = {
       coasters: [...existingCoasters, coasterToAdd],
@@ -74,7 +79,6 @@ export default function UploadManual() {
     setUploadedData(updatedData);
     setSuccess(`Successfully added "${coasterToAdd.name}" to your collection!`);
 
-    // Reset form
     setFormData({
       name: "",
       park: "",
@@ -91,24 +95,22 @@ export default function UploadManual() {
     setError(null);
     setSuccess(null);
 
-    // Validate required fields
     const requiredFields: (keyof CoasterFormData)[] = [
       "name",
       "park",
       "manufacturer",
     ];
     const missingFields = requiredFields.filter(
-      (field) => !formData[field]?.trim()
+      (field) => !formData[field]?.trim(),
     );
 
     if (missingFields.length > 0) {
       setError(
-        `Please fill in all required fields: ${missingFields.join(", ")}`
+        `Please fill in all required fields: ${missingFields.join(", ")}`,
       );
       return;
     }
 
-    // Create new coaster object
     const newCoaster: Coaster = {
       id: generateId(),
       name: formatString(formData.name.trim(), "space", "first-word", false),
@@ -117,34 +119,94 @@ export default function UploadManual() {
         formData.manufacturer.trim(),
         "space",
         "first-word",
-        false
+        false,
       ),
-      model: formData.model?.trim()
-        ? formatString(formData.model.trim(), "space", "first-word", false)
-        : undefined,
-      material: formData.material?.trim()
-        ? formatString(formData.material.trim(), "space", "first-word", false)
-        : undefined,
-      thrillLevel: formData.thrillLevel?.trim()
-        ? formatString(
-            formData.thrillLevel.trim(),
-            "space",
-            "first-word",
-            false
-          )
-        : undefined,
+      ...(formData.model?.trim() && {
+        model: formatString(
+          formData.model.trim(),
+          "space",
+          "first-word",
+          false,
+        ),
+      }),
+      ...(formData.material?.trim() && {
+        material: formatString(
+          formData.material.trim(),
+          "space",
+          "first-word",
+          false,
+        ),
+      }),
+      ...(formData.thrillLevel?.trim() && {
+        thrillLevel: formatString(
+          formData.thrillLevel.trim(),
+          "space",
+          "first-word",
+          false,
+        ),
+      }),
       country: formatString(
         formData.country.trim(),
         "space",
         "first-word",
-        false
+        false,
       ),
       isNewCoaster: true,
     };
 
-    // Check for duplicates
     const existingCoasters = uploadedData?.coasters || [];
     const duplicateCheck = detectDuplicates(existingCoasters, [newCoaster]);
+
+    if (duplicateCheck.autoMerges.length > 0) {
+      const autoMerge = duplicateCheck.autoMerges[0];
+      const mergedCoaster = mergeCoasterData(
+        autoMerge.existingCoaster,
+        newCoaster,
+      );
+      const mergedFields = getMergedFields(
+        autoMerge.existingCoaster,
+        newCoaster,
+      );
+
+      const updatedCoasters = existingCoasters.map((coaster) =>
+        coaster.id === autoMerge.existingCoaster.id ? mergedCoaster : coaster,
+      );
+
+      const updatedData = {
+        coasters: updatedCoasters,
+        uploadedAt: uploadedData?.uploadedAt || new Date(),
+        filename: uploadedData?.filename || "manual-entry",
+        rankingMetadata: uploadedData?.rankingMetadata || {
+          completedComparisons: new Set<string>(),
+          rankedCoasters: [],
+          isRanked: false,
+        },
+      };
+
+      setUploadedData(updatedData);
+
+      if (mergedFields.length > 0) {
+        setSuccess(
+          `Successfully merged "${newCoaster.name}" with existing data! Added: ${mergedFields.join(", ")}.`,
+        );
+      } else {
+        setSuccess(
+          `"${newCoaster.name}" already exists with all the same data. No changes made.`,
+        );
+      }
+
+      setFormData({
+        name: "",
+        park: "",
+        manufacturer: "",
+        model: "",
+        material: "",
+        thrillLevel: "",
+        country: "",
+      });
+
+      return;
+    }
 
     if (duplicateCheck.hasDuplicates) {
       setDuplicates(duplicateCheck.duplicates);
@@ -161,42 +223,21 @@ export default function UploadManual() {
     const existingCoasters = uploadedData?.coasters || [];
     let updatedCoasters = [...existingCoasters];
 
-    // Process each resolution
     resolutions.forEach((resolution, index) => {
       const duplicate = duplicates[index];
 
       switch (resolution.action) {
-        case "keep-existing":
-          // Do nothing - new coaster is not added
-          break;
         case "keep-new":
-          // Remove existing coaster and add new one
           updatedCoasters = updatedCoasters.filter(
-            (c) => c.id !== duplicate.existingCoaster.id
+            (c) => c.id !== duplicate.existingCoaster.id,
           );
           updatedCoasters.push(pendingCoaster);
           break;
         case "keep-both":
-          // Add new coaster alongside existing one
           updatedCoasters.push(pendingCoaster);
           break;
       }
     });
-
-    // If all resolutions were "keep-existing", add new coaster if it wasn't already processed
-    const hasNewCoaster = resolutions.some(
-      (r) => r.action === "keep-new" || r.action === "keep-both"
-    );
-    if (
-      !hasNewCoaster &&
-      resolutions.length > 0 &&
-      resolutions[0].action === "keep-existing"
-    ) {
-      // Only the first duplicate matters for single coaster addition
-      // Don't add the new coaster
-    } else if (!hasNewCoaster) {
-      updatedCoasters.push(pendingCoaster);
-    }
 
     const updatedData = {
       coasters: updatedCoasters,
@@ -212,12 +253,10 @@ export default function UploadManual() {
     setUploadedData(updatedData);
     setSuccess(`Successfully processed coaster: "${pendingCoaster.name}"!`);
 
-    // Reset states
     setShowDuplicateResolver(false);
     setDuplicates([]);
     setPendingCoaster(null);
 
-    // Reset form
     setFormData({
       name: "",
       park: "",
@@ -262,10 +301,6 @@ export default function UploadManual() {
         <section>
           <Styled.Form onSubmit={handleSubmit}>
             <div>
-              {/* <Styled.FormTitle as='h3' colour='charcoal' mb='small'>
-                Required Information
-              </Styled.FormTitle> */}
-
               <Styled.FormRow>
                 <Styled.FormGroup>
                   <Text
@@ -431,7 +466,6 @@ export default function UploadManual() {
             <Button type="submit">Add Coaster to Collection</Button>
           </Styled.Form>
 
-          {/* Duplicate Resolution */}
           {showDuplicateResolver && duplicates.length > 0 && (
             <DuplicateResolver
               duplicates={duplicates}
@@ -440,7 +474,6 @@ export default function UploadManual() {
             />
           )}
 
-          {/* Status Messages */}
           {error && (
             <InfoMessage variant="error" role="alert" aria-live="assertive">
               <Text as="span" bold colour="errorText" fontSize="small">

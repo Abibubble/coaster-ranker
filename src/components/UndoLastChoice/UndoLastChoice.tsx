@@ -1,5 +1,5 @@
 import React from "react";
-import { ComparisonResult } from "../../utils/ranking/newRankingEngine";
+import { ComparisonResult } from "../../utils/ranking/newRankingEngine.util";
 import * as Styled from "./UndoLastChoice.styled";
 
 export interface UndoLastChoiceProps {

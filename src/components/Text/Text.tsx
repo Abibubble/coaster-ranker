@@ -1,54 +1,52 @@
-import React from 'react'
-import { StyledText } from './Text.styled'
-import { colours, fonts, spacing } from '../../theme'
+import React from "react";
+import { StyledText } from "./Text.styled";
+import { colours, fonts, spacing } from "../../theme";
 
 export interface TextProps {
-  children: React.ReactNode
-  as?: React.ElementType
-  bold?: boolean
-  center?: boolean
-  className?: string
-  colour?: keyof typeof colours
-  fontSize?: keyof typeof fonts
-  htmlFor?: string
-  id?: string
-  italic?: boolean
-  mb?: keyof typeof spacing
-  mt?: keyof typeof spacing
-  role?: string
-  'aria-live'?: 'off' | 'assertive' | 'polite'
+  children: React.ReactNode;
+  as?: React.ElementType;
+  bold?: boolean;
+  center?: boolean;
+  className?: string;
+  colour?: keyof typeof colours;
+  fontSize?: keyof typeof fonts;
+  htmlFor?: string;
+  id?: string;
+  italic?: boolean;
+  mb?: keyof typeof spacing;
+  mt?: keyof typeof spacing;
+  role?: string;
+  "aria-live"?: "off" | "assertive" | "polite";
 }
 
 export function Text({
   children,
-  as = 'span',
+  as = "span",
   bold = false,
   center = false,
   className,
-  colour = 'black',
-  fontSize = 'body',
+  colour = "black",
+  fontSize = "body",
   htmlFor,
   id,
   italic = false,
   mb,
   mt,
   role,
-  'aria-live': ariaLive,
+  "aria-live": ariaLive,
 }: TextProps) {
-  // Create filtered props object excluding custom Text props
-  const domProps: Record<string, unknown> = {}
+  const htmlAttributes: Record<string, unknown> = {};
 
-  // Only add props that are valid DOM attributes
-  if (as) domProps.as = as
-  if (className) domProps.className = className
-  if (htmlFor) domProps.htmlFor = htmlFor
-  if (id) domProps.id = id
-  if (role) domProps.role = role
-  if (ariaLive) domProps['aria-live'] = ariaLive
+  if (as) htmlAttributes.as = as;
+  if (className) htmlAttributes.className = className;
+  if (htmlFor) htmlAttributes.htmlFor = htmlFor;
+  if (id) htmlAttributes.id = id;
+  if (role) htmlAttributes.role = role;
+  if (ariaLive) htmlAttributes["aria-live"] = ariaLive;
 
   return (
     <StyledText
-      {...domProps}
+      {...htmlAttributes}
       $bold={bold}
       $center={center}
       $colour={colour}
@@ -59,5 +57,5 @@ export function Text({
     >
       {children}
     </StyledText>
-  )
+  );
 }

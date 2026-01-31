@@ -1,45 +1,45 @@
 /// <reference types="vitest/config" />
 /// <reference types="vitest" />
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
-import { playwright } from '@vitest/browser-playwright'
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
+import { playwright } from "@vitest/browser-playwright";
 const dirname =
-  typeof __dirname !== 'undefined'
+  typeof __dirname !== "undefined"
     ? __dirname
-    : path.dirname(fileURLToPath(import.meta.url))
+    : path.dirname(fileURLToPath(import.meta.url));
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [react()],
-  base: '/coaster-ranker/',
+  base: "/coaster-ranker/",
   server: {
     port: 3000,
     open: true,
   },
   build: {
-    outDir: 'build',
+    outDir: "build",
   },
   test: {
     globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/setupTests.ts'],
+    environment: "jsdom",
+    setupFiles: ["./src/setupTests.ts"],
     projects: [
       // Unit tests project
       {
         test: {
-          name: 'unit',
+          name: "unit",
           globals: true,
-          environment: 'jsdom',
-          setupFiles: ['./src/setupTests.ts'],
-          include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+          environment: "jsdom",
+          setupFiles: ["./src/setupTests.ts"],
+          include: ["src/**/*.{test,spec}.{js,ts,jsx,tsx}"],
           exclude: [
-            'src/**/*.stories.{js,ts,jsx,tsx}',
-            'src/**/*.story.{js,ts,jsx,tsx}',
+            "src/**/*.stories.{js,ts,jsx,tsx}",
+            "src/**/*.story.{js,ts,jsx,tsx}",
           ],
         },
       },
@@ -50,25 +50,24 @@ export default defineConfig({
           // The plugin will run tests for the stories defined in your Storybook config
           // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
           storybookTest({
-            configDir: path.join(dirname, '.storybook'),
+            configDir: path.join(dirname, ".storybook"),
           }),
         ],
         test: {
-          name: 'storybook',
-          include: ['src/**/*.stories.{js,ts,jsx,tsx}'],
+          name: "storybook",
           browser: {
             enabled: true,
             headless: true,
             provider: playwright({}),
             instances: [
               {
-                browser: 'chromium',
+                browser: "chromium",
               },
             ],
           },
-          setupFiles: ['.storybook/vitest.setup.ts'],
+          setupFiles: [".storybook/vitest.setup.ts"],
         },
       },
     ],
   },
-})
+});

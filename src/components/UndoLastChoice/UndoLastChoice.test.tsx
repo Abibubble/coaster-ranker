@@ -3,26 +3,20 @@ import { render, screen } from "@testing-library/react";
 import { fireEvent } from "@testing-library/react";
 import UndoLastChoice from "./UndoLastChoice";
 import { Coaster } from "../../types/data";
-import { ComparisonResult } from "../../utils/ranking/newRankingEngine";
+import { ComparisonResult } from "../../utils/ranking/newRankingEngine.util";
+import { steelVengeance, theVoyage } from "../../mocks";
 
-// Mock data
 const mockCoaster1: Coaster = {
-  id: "1",
-  name: "Steel Vengeance",
-  park: "Cedar Point",
+  ...steelVengeance,
   country: "USA",
-  manufacturer: "Rocky Mountain Construction",
   model: "I-Box Track",
   material: "Steel",
   thrillLevel: "Extreme",
 };
 
 const mockCoaster2: Coaster = {
-  id: "2",
-  name: "The Voyage",
-  park: "Holiday World",
+  ...theVoyage,
   country: "USA",
-  manufacturer: "The Gravity Group",
   model: "Custom",
   material: "Wood",
   thrillLevel: "High",
@@ -101,16 +95,13 @@ describe("UndoLastChoice", () => {
       />,
     );
 
-    // Check for proper ARIA attributes
     expect(screen.getByRole("region")).toBeInTheDocument();
     expect(screen.getByRole("button")).toHaveAttribute("aria-label");
     expect(screen.getByRole("button")).toHaveAttribute("aria-describedby");
     expect(screen.getByRole("button")).toHaveAttribute("type", "button");
 
-    // Check for proper heading structure
     expect(screen.getByRole("heading", { level: 3 })).toBeInTheDocument();
 
-    // Check for live region for dynamic content
     expect(screen.getByText(/was ranked above/)).toHaveAttribute(
       "aria-live",
       "polite",
@@ -126,7 +117,6 @@ describe("UndoLastChoice", () => {
       />,
     );
 
-    // Check that both coaster names are mentioned
     expect(screen.getByText(/Steel Vengeance/)).toBeInTheDocument();
     expect(screen.getByText(/The Voyage/)).toBeInTheDocument();
   });

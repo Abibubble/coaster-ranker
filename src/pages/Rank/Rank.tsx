@@ -16,7 +16,7 @@ import { useSimpleRanking } from "../../hooks/useSimpleRanking";
 import {
   RankingComparison,
   ComparisonResult,
-} from "../../utils/ranking/newRankingEngine";
+} from "../../utils/ranking/newRankingEngine.util";
 import { Coaster } from "../../types/data";
 import * as Styled from "./Rank.styled";
 
@@ -24,13 +24,11 @@ export const Rank: React.FC = () => {
   const { uploadedData, markRankingComplete, resetRanking } = useData();
   const navigate = useNavigate();
 
-  // Check if ranking is needed - should rank if there are any unranked coasters
   const hasUnrankedCoasters =
     uploadedData?.coasters?.some(
       (c) => !c.isPreRanked && c.rankPosition === undefined,
     ) || false;
 
-  // Only consider ranking complete if metadata says ranked AND no unranked coasters exist
   const isAlreadyRanked =
     uploadedData?.rankingMetadata?.isRanked && !hasUnrankedCoasters;
 
@@ -56,14 +54,12 @@ export const Rank: React.FC = () => {
     undo: () => void;
   } = useSimpleRanking(uploadedData?.coasters || []);
 
-  // Mark ranking as complete when ranking finishes
   React.useEffect(() => {
     if (isComplete && finalRanking.length > 0 && !isAlreadyRanked) {
       markRankingComplete(finalRanking);
     }
   }, [isComplete, finalRanking, markRankingComplete, isAlreadyRanked]);
 
-  // If already ranked, show completion screen with existing ranking
   if (isAlreadyRanked && uploadedData?.rankingMetadata?.rankedCoasters) {
     const rankedCoasters = uploadedData.rankingMetadata.rankedCoasters
       .map((id) => uploadedData.coasters.find((coaster) => coaster.id === id))
@@ -76,13 +72,11 @@ export const Rank: React.FC = () => {
           <RankingComplete
             rankedCoasters={rankedCoasters}
             onRankAgain={() => {
-              // Confirm before resetting rankings
               const confirmed = window.confirm(
                 "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch.",
               );
 
               if (confirmed) {
-                // Reset ranking state and reload
                 resetRanking();
                 window.location.reload();
               }
@@ -93,7 +87,6 @@ export const Rank: React.FC = () => {
     );
   }
 
-  // Redirect if no data
   if (!uploadedData || !uploadedData.coasters.length) {
     return (
       <MainContent>
@@ -114,7 +107,6 @@ export const Rank: React.FC = () => {
 
   const { coasters, filename, uploadedAt } = uploadedData;
 
-  // Show single coaster message if only 1 coaster
   if (coasters.length === 1) {
     return (
       <MainContent>
@@ -145,7 +137,6 @@ export const Rank: React.FC = () => {
     );
   }
 
-  // Show completion screen
   if (isComplete && finalRanking.length > 0) {
     return (
       <MainContent>
@@ -154,13 +145,11 @@ export const Rank: React.FC = () => {
           <RankingComplete
             rankedCoasters={finalRanking}
             onRankAgain={() => {
-              // Confirm before resetting rankings
               const confirmed = window.confirm(
                 "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch",
               );
 
               if (confirmed) {
-                // Reset ranking state and reload
                 resetRanking();
                 window.location.reload();
               }
@@ -171,7 +160,6 @@ export const Rank: React.FC = () => {
     );
   }
 
-  // Show current comparison
   if (currentComparison) {
     return (
       <MainContent>
@@ -205,7 +193,6 @@ export const Rank: React.FC = () => {
     );
   }
 
-  // Show preparing screen
   return (
     <MainContent>
       <Title>Rank Your Coasters</Title>

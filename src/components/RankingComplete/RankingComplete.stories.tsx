@@ -1,99 +1,70 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import RankingComplete from './RankingComplete'
-import { Coaster } from '../../types/data'
-import { DataProvider } from '../../contexts/DataContext'
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import RankingComplete from "./RankingComplete";
+import { Coaster } from "../../types/data";
+import { DataProvider } from "../../contexts/DataContext";
+import { rankedCoasters } from "../../mocks";
 
-// Mock coaster data for stories
-const mockCoasters: Coaster[] = [
+const extendedRankedCoasters: Coaster[] = [
+  ...rankedCoasters,
   {
-    id: '1',
-    name: 'Steel Vengeance',
-    park: 'Cedar Point',
-    country: 'United States',
-    manufacturer: 'Rocky Mountain Construction',
-    model: 'I-Box',
-    material: 'Hybrid',
-    rankPosition: 1,
-  },
-  {
-    id: '2',
-    name: 'Fury 325',
-    park: 'Carowinds',
-    country: 'United States',
-    manufacturer: 'Bolliger & Mabillard',
-    model: 'Giga',
-    material: 'Steel',
-    rankPosition: 2,
-  },
-  {
-    id: '3',
-    name: 'Lightning Rod',
-    park: 'Dollywood',
-    country: 'United States',
-    manufacturer: 'Rocky Mountain Construction',
-    model: 'Launch',
-    material: 'Wood',
-    rankPosition: 3,
-  },
-  {
-    id: '4',
-    name: 'Maverick',
-    park: 'Cedar Point',
-    country: 'United States',
-    manufacturer: 'Intamin',
-    model: 'Blitz',
-    material: 'Steel',
-    rankPosition: 4,
-  },
-  {
-    id: '5',
-    name: 'Skyrush',
-    park: 'Hersheypark',
-    country: 'United States',
-    manufacturer: 'Intamin',
-    model: 'Mega',
-    material: 'Steel',
+    id: "5",
+    name: "Hyperion",
+    park: "Energylandia",
+    country: "Poland",
+    manufacturer: "Intamin",
+    model: "Mega",
+    material: "Steel",
     rankPosition: 5,
   },
-]
+  {
+    id: "6",
+    name: "Skyrush",
+    park: "Hersheypark",
+    country: "United States",
+    manufacturer: "Intamin",
+    model: "Mega",
+    material: "Steel",
+    rankPosition: 6,
+  },
+];
 
 const meta: Meta<typeof RankingComplete> = {
-  title: 'Components/RankingComplete',
+  title: "Components/RankingComplete",
   component: RankingComplete,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
   argTypes: {
-    onRankAgain: { action: 'rank again clicked' },
+    onRankAgain: { action: "rank again clicked" },
   },
   decorators: [
-    Story => (
+    (Story) => (
       <BrowserRouter>
         <DataProvider>
-          <div style={{ minHeight: '400px', width: '100%', maxWidth: '600px' }}>
+          <div style={{ minHeight: "400px", width: "100%", maxWidth: "600px" }}>
             <Story />
           </div>
         </DataProvider>
       </BrowserRouter>
     ),
   ],
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    rankedCoasters: mockCoasters,
-    onRankAgain: () => console.log('Rank again clicked'),
+    rankedCoasters: extendedRankedCoasters,
+    onRankAgain: () => console.log("Rank again clicked"),
   },
-}
+};
 
 export const SingleCoaster: Story = {
   args: {
-    rankedCoasters: [mockCoasters[0]],
-    onRankAgain: () => console.log('Rank again clicked'),
+    rankedCoasters: [rankedCoasters[0]],
+    onRankAgain: () => console.log("Rank again clicked"),
   },
-}
+};

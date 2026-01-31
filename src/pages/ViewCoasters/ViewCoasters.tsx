@@ -48,56 +48,54 @@ export default function ViewCoasters() {
 
   const allCoasters = useMemo(
     () => uploadedData?.coasters || [],
-    [uploadedData?.coasters]
+    [uploadedData?.coasters],
   );
 
-  // Sort and filter coasters
   const coasters = useMemo(() => {
     let filteredCoasters = [...allCoasters];
 
-    // Apply filters
     if (filters.park) {
       filteredCoasters = filteredCoasters.filter((coaster) =>
-        coaster.park.toLowerCase().includes(filters.park.toLowerCase())
+        coaster.park.toLowerCase().includes(filters.park.toLowerCase()),
       );
     }
     if (filters.manufacturer) {
       filteredCoasters = filteredCoasters.filter((coaster) =>
         coaster.manufacturer
           .toLowerCase()
-          .includes(filters.manufacturer.toLowerCase())
+          .includes(filters.manufacturer.toLowerCase()),
       );
     }
     if (filters.model) {
       filteredCoasters = filteredCoasters.filter((coaster) =>
-        coaster.model?.toLowerCase().includes(filters.model.toLowerCase())
+        coaster.model?.toLowerCase().includes(filters.model.toLowerCase()),
       );
     }
     if (filters.material) {
       filteredCoasters = filteredCoasters.filter((coaster) =>
-        coaster.material?.toLowerCase().includes(filters.material.toLowerCase())
+        coaster.material
+          ?.toLowerCase()
+          .includes(filters.material.toLowerCase()),
       );
     }
     if (filters.thrillLevel) {
       filteredCoasters = filteredCoasters.filter((coaster) =>
         coaster.thrillLevel
           ?.toLowerCase()
-          .includes(filters.thrillLevel.toLowerCase())
+          .includes(filters.thrillLevel.toLowerCase()),
       );
     }
     if (filters.country) {
       filteredCoasters = filteredCoasters.filter((coaster) =>
-        coaster.country.toLowerCase().includes(filters.country.toLowerCase())
+        coaster.country.toLowerCase().includes(filters.country.toLowerCase()),
       );
     }
 
-    // Sort by ranking if available, otherwise maintain original order
     const isRanked =
       uploadedData?.rankingMetadata?.isRanked &&
       uploadedData?.rankingMetadata?.rankedCoasters;
 
     if (isRanked) {
-      // Sort by rank position (lower numbers = better rank)
       filteredCoasters.sort((a, b) => {
         const rankA = a.rankPosition || Number.MAX_SAFE_INTEGER;
         const rankB = b.rankPosition || Number.MAX_SAFE_INTEGER;
@@ -108,7 +106,6 @@ export default function ViewCoasters() {
     return filteredCoasters;
   }, [allCoasters, filters, uploadedData?.rankingMetadata]);
 
-  // Get unique values for filter dropdowns
   const filterOptions = useMemo(() => {
     return {
       parks: [
@@ -132,15 +129,14 @@ export default function ViewCoasters() {
     };
   }, [allCoasters]);
 
-  // Check if any coasters have values for optional fields (use allCoasters for this check)
   const hasModel = allCoasters.some(
-    (coaster) => coaster.model && coaster.model.trim() !== ""
+    (coaster) => coaster.model && coaster.model.trim() !== "",
   );
   const hasMaterial = allCoasters.some(
-    (coaster) => coaster.material && coaster.material.trim() !== ""
+    (coaster) => coaster.material && coaster.material.trim() !== "",
   );
   const hasThrillLevel = allCoasters.some(
-    (coaster) => coaster.thrillLevel && coaster.thrillLevel.trim() !== ""
+    (coaster) => coaster.thrillLevel && coaster.thrillLevel.trim() !== "",
   );
 
   const handleFilterChange = (field: keyof FilterOptions, value: string) => {
@@ -162,13 +158,11 @@ export default function ViewCoasters() {
   };
 
   const hasActiveFilters = Object.values(filters).some(
-    (filter) => filter !== ""
+    (filter) => filter !== "",
   );
 
   const handleFieldClick = (field: keyof FilterOptions, value: string) => {
-    // Only apply filter if the value exists and is not empty
     if (value && value.trim()) {
-      // If clicking on the same value that's already filtered, clear all filters
       if (filters[field] === value) {
         setFilters({
           park: "",
@@ -179,7 +173,6 @@ export default function ViewCoasters() {
           country: "",
         });
       } else {
-        // Clear all filters and set only the clicked field
         setFilters({
           park: "",
           manufacturer: "",
@@ -197,12 +190,12 @@ export default function ViewCoasters() {
     if (!uploadedData) return;
 
     const coasterToRemove = uploadedData.coasters.find(
-      (c) => c.id === coasterId
+      (c) => c.id === coasterId,
     );
     const coasterName = coasterToRemove ? coasterToRemove.name : "this coaster";
 
     const confirmRemove = window.confirm(
-      `Are you sure you want to remove "${coasterName}" from your collection? This action cannot be undone.`
+      `Are you sure you want to remove "${coasterName}" from your collection? This action cannot be undone.`,
     );
     if (!confirmRemove) return;
 
@@ -211,8 +204,6 @@ export default function ViewCoasters() {
     const updatedCoasters = uploadedData.coasters
       .filter((coaster) => coaster.id !== coasterId)
       .map((coaster) => {
-        // If this coaster has a ranking and the removed coaster also had a ranking,
-        // adjust positions to close the gap
         if (
           coaster.rankPosition !== undefined &&
           removedCoasterRankPosition !== undefined &&
@@ -226,25 +217,21 @@ export default function ViewCoasters() {
         return coaster;
       });
 
-    // Update ranking metadata to remove references to the deleted coaster
     let updatedRankingMetadata = uploadedData.rankingMetadata;
     if (updatedRankingMetadata && updatedRankingMetadata.rankedCoasters) {
-      // Remove the coaster from the ranked list and update positions
       const filteredRankedCoasters =
         updatedRankingMetadata.rankedCoasters.filter((id) => id !== coasterId);
 
-      // If ranking exists and we removed a coaster, mark as incomplete
       updatedRankingMetadata = {
         ...updatedRankingMetadata,
         rankedCoasters: filteredRankedCoasters,
         isRanked:
           filteredRankedCoasters.length === updatedCoasters.length &&
           updatedCoasters.length > 0,
-        // Clear completed comparisons that involved the removed coaster
         completedComparisons: new Set(
           Array.from(updatedRankingMetadata.completedComparisons || []).filter(
-            (comparison) => !comparison.includes(coasterId)
-          )
+            (comparison) => !comparison.includes(coasterId),
+          ),
         ),
       };
     }
@@ -255,7 +242,6 @@ export default function ViewCoasters() {
       rankingMetadata: updatedRankingMetadata,
     });
 
-    // Announce removal to screen readers
     setStatusMessage(`${coasterName} has been removed from your collection.`);
     setTimeout(() => setStatusMessage(""), 3000);
   };
@@ -267,19 +253,17 @@ export default function ViewCoasters() {
     const confirmRemove = window.confirm(
       `Are you sure you want to remove all ${coasterCount} coaster${
         coasterCount === 1 ? "" : "s"
-      } from your collection? This action cannot be undone.`
+      } from your collection? This action cannot be undone.`,
     );
 
     if (!confirmRemove) return;
 
-    // Completely clear all data from localStorage by setting to null
     setUploadedData(null);
 
-    // Announce removal to screen readers
     setStatusMessage(
       `All ${coasterCount} coaster${
         coasterCount === 1 ? "" : "s"
-      } have been removed from your collection.`
+      } have been removed from your collection.`,
     );
     setTimeout(() => setStatusMessage(""), 3000);
   };
@@ -300,7 +284,6 @@ export default function ViewCoasters() {
   const handleSaveEdit = () => {
     if (!uploadedData || !editingCoasterId) return;
 
-    // Validate required fields
     if (
       !editForm.name.trim() ||
       !editForm.park.trim() ||
@@ -317,9 +300,13 @@ export default function ViewCoasters() {
           name: editForm.name.trim(),
           park: editForm.park.trim(),
           manufacturer: editForm.manufacturer.trim(),
-          model: editForm.model.trim() || undefined,
-          material: editForm.material.trim() || undefined,
-          thrillLevel: editForm.thrillLevel.trim() || undefined,
+          ...(editForm.model.trim() && { model: editForm.model.trim() }),
+          ...(editForm.material.trim() && {
+            material: editForm.material.trim(),
+          }),
+          ...(editForm.thrillLevel.trim() && {
+            thrillLevel: editForm.thrillLevel.trim(),
+          }),
           country: editForm.country.trim(),
         };
       }
@@ -331,7 +318,6 @@ export default function ViewCoasters() {
       coasters: updatedCoasters,
     });
 
-    // Reset edit state
     setEditingCoasterId(null);
     setEditForm({
       name: "",
@@ -362,7 +348,7 @@ export default function ViewCoasters() {
 
   const handleEditFormChange = (
     field: keyof EditableCoaster,
-    value: string
+    value: string,
   ) => {
     setEditForm((prev) => ({
       ...prev,
@@ -598,9 +584,7 @@ export default function ViewCoasters() {
           {coasters.map((coaster) => (
             <Styled.CoasterCard key={coaster.id}>
               {editingCoasterId === coaster.id ? (
-                // Edit mode
                 <>
-                  {/* Desktop Edit Layout */}
                   <Styled.DesktopLayout>
                     <Styled.CoasterHeader>
                       <Styled.CoasterTitle>
@@ -704,7 +688,7 @@ export default function ViewCoasters() {
                             onChange={(e) =>
                               handleEditFormChange(
                                 "thrillLevel",
-                                e.target.value
+                                e.target.value,
                               )
                             }
                           />
@@ -730,7 +714,6 @@ export default function ViewCoasters() {
                     </Styled.FormActions>
                   </Styled.DesktopLayout>
 
-                  {/* Mobile Edit Layout */}
                   <Styled.MobileLayout>
                     {uploadedData?.rankingMetadata?.isRanked &&
                       coaster.rankPosition && (
@@ -855,9 +838,7 @@ export default function ViewCoasters() {
                   </Styled.MobileLayout>
                 </>
               ) : (
-                // View mode
                 <>
-                  {/* Desktop View Layout */}
                   <Styled.DesktopLayout>
                     <Styled.CoasterHeader>
                       <Styled.CoasterTitle>
@@ -919,7 +900,7 @@ export default function ViewCoasters() {
                           onClick={() =>
                             handleFieldClick(
                               "manufacturer",
-                              coaster.manufacturer
+                              coaster.manufacturer,
                             )
                           }
                           title={`Filter by manufacturer: ${coaster.manufacturer}`}
@@ -981,7 +962,7 @@ export default function ViewCoasters() {
                             onClick={() =>
                               handleFieldClick(
                                 "thrillLevel",
-                                coaster.thrillLevel!
+                                coaster.thrillLevel!,
                               )
                             }
                             title={`Filter by thrill level: ${coaster.thrillLevel}`}
@@ -994,7 +975,6 @@ export default function ViewCoasters() {
                     </Styled.CoasterDetails>
                   </Styled.DesktopLayout>
 
-                  {/* Mobile View Layout */}
                   <Styled.MobileLayout>
                     <Styled.MobileHeader>
                       {uploadedData?.rankingMetadata?.isRanked &&
@@ -1084,7 +1064,7 @@ export default function ViewCoasters() {
                           onClick={() =>
                             handleFieldClick(
                               "thrillLevel",
-                              coaster.thrillLevel!
+                              coaster.thrillLevel!,
                             )
                           }
                           title={`Filter by thrill level: ${coaster.thrillLevel}`}

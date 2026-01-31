@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   Link,
   CurrentDataInfo,
@@ -6,78 +6,77 @@ import {
   MainContent,
   Text,
   Title,
-} from '../../components'
-import { useData } from '../../contexts/DataContext'
+} from "../../components";
+import { useData } from "../../contexts/DataContext";
 import {
   generateCSV,
   generateJSON,
   downloadFile,
   hasRankingDataForExport,
-} from '../../utils/dataExport'
-import * as Styled from './Download.styled'
+} from "../../utils/dataExport";
+import * as Styled from "./Download.styled";
 
 export default function Download() {
-  const { uploadedData } = useData()
-  const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
+  const { uploadedData } = useData();
+  const [downloadStatus, setDownloadStatus] = useState<string | null>(null);
 
-  const coasters = uploadedData?.coasters || []
+  const coasters = uploadedData?.coasters || [];
 
-  // Check if ranking data exists - either in individual coasters or in ranking metadata
-  const hasRankingData = hasRankingDataForExport(uploadedData)
+  const hasRankingData = hasRankingDataForExport(uploadedData);
 
   const generateFilename = (
     basename: string,
-    format: 'csv' | 'json'
+    format: "csv" | "json",
   ): string => {
-    const timestamp = new Date().toISOString().split('T')[0]
-    return `${basename}-${timestamp}.${format}`
-  }
+    const timestamp = new Date().toISOString().split("T")[0];
+    return `${basename}-${timestamp}.${format}`;
+  };
 
-  const handleDownload = (format: 'csv' | 'json') => {
+  const handleDownload = (format: "csv" | "json") => {
     try {
-      let result
-      let contentType: string
+      let result;
+      let contentType: string;
 
-      if (format === 'csv') {
+      if (format === "csv") {
         result = generateCSV({
           coasters,
           includeRanking: hasRankingData,
           rankingMetadata: uploadedData?.rankingMetadata,
-        })
-        contentType = 'text/csv'
+        });
+        contentType = "text/csv";
       } else {
         result = generateJSON({
           coasters,
           includeRanking: hasRankingData,
           rankingMetadata: uploadedData?.rankingMetadata,
-        })
-        contentType = 'application/json'
+        });
+        contentType = "application/json";
       }
 
       if (result.content && !result.isEmpty) {
-        const filename = generateFilename('coaster-ranker', format)
+        const filename = generateFilename("coaster-ranker", format);
         const downloadResult = downloadFile({
           content: result.content,
           filename,
           contentType,
-        })
+        });
 
         if (downloadResult.success) {
-          setDownloadStatus(`${format.toUpperCase()} downloaded successfully!`)
+          setDownloadStatus(`${format.toUpperCase()} downloaded successfully!`);
         } else {
           setDownloadStatus(
             downloadResult.error ||
-              `Error downloading ${format.toUpperCase()} file`
-          )
+              `Error downloading ${format.toUpperCase()} file`,
+          );
         }
 
-        setTimeout(() => setDownloadStatus(null), 3000)
+        setTimeout(() => setDownloadStatus(null), 3000);
       }
     } catch {
-      setDownloadStatus(`Error generating ${format.toUpperCase()} file`)
-      setTimeout(() => setDownloadStatus(null), 3000)
+      setDownloadStatus(`Error generating ${format.toUpperCase()} file`);
+      setTimeout(() => setDownloadStatus(null), 3000);
     }
-  }
+  };
 
   if (coasters.length === 0) {
     return (
@@ -85,20 +84,20 @@ export default function Download() {
         <Title>Download Your Collection</Title>
         <section>
           <Styled.EmptyState>
-            <Text as='h2' center colour='darkGrey' mb='small'>
+            <Text as="h2" center colour="darkGrey" mb="small">
               No Coasters Yet
             </Text>
-            <Text as='p' center colour='mediumGrey' mb='large'>
+            <Text as="p" center colour="mediumGrey" mb="large">
               Upload some coasters to download your collection in CSV or JSON
               format.
             </Text>
-            <Link href='/upload' variant='button'>
+            <Link href="/upload" variant="button">
               Upload Coasters
             </Link>
           </Styled.EmptyState>
         </section>
       </MainContent>
-    )
+    );
   }
 
   return (
@@ -111,60 +110,60 @@ export default function Download() {
 
           <Styled.Section>
             <Styled.SectionHeader>
-              <Text as='h3' colour='darkGrey' mb='tiny'>
+              <Text as="h3" colour="darkGrey" mb="tiny">
                 Choose your format:
               </Text>
             </Styled.SectionHeader>
 
             <Styled.DownloadOptions>
               <Styled.DownloadButton
-                onClick={() => handleDownload('csv')}
-                aria-describedby='csv-description'
+                onClick={() => handleDownload("csv")}
+                aria-describedby="csv-description"
               >
                 <Styled.ButtonContent>
                   <Text
-                    as='h4'
+                    as="h4"
                     bold
-                    colour='darkGrey'
-                    fontSize='large'
-                    mb='fine'
+                    colour="darkGrey"
+                    fontSize="large"
+                    mb="fine"
                   >
                     Download as CSV
                   </Text>
                   <Styled.ButtonDescription
-                    as='p'
-                    colour='mediumGrey'
-                    fontSize='small'
-                    id='csv-description'
+                    as="p"
+                    colour="mediumGrey"
+                    fontSize="small"
+                    id="csv-description"
                   >
                     For Excel, Google Sheets, and other spreadsheet apps
-                    {hasRankingData && ' (includes rank column)'}
+                    {hasRankingData && " (includes rank column)"}
                   </Styled.ButtonDescription>
                 </Styled.ButtonContent>
               </Styled.DownloadButton>
 
               <Styled.DownloadButton
-                onClick={() => handleDownload('json')}
-                aria-describedby='json-description'
+                onClick={() => handleDownload("json")}
+                aria-describedby="json-description"
               >
                 <Styled.ButtonContent>
                   <Text
-                    as='h4'
+                    as="h4"
                     bold
-                    colour='darkGrey'
-                    fontSize='large'
-                    mb='fine'
+                    colour="darkGrey"
+                    fontSize="large"
+                    mb="fine"
                   >
                     Download as JSON
                   </Text>
                   <Styled.ButtonDescription
-                    as='p'
-                    colour='mediumGrey'
-                    fontSize='small'
-                    id='json-description'
+                    as="p"
+                    colour="mediumGrey"
+                    fontSize="small"
+                    id="json-description"
                   >
                     Developer-friendly format for importing into other apps
-                    {hasRankingData && ' (includes rank field)'}
+                    {hasRankingData && " (includes rank field)"}
                   </Styled.ButtonDescription>
                 </Styled.ButtonContent>
               </Styled.DownloadButton>
@@ -174,27 +173,27 @@ export default function Download() {
           {downloadStatus && (
             <InfoMessage
               variant={
-                downloadStatus.includes('successfully') ? 'success' : 'error'
+                downloadStatus.includes("successfully") ? "success" : "error"
               }
-              role='status'
-              aria-live='polite'
+              role="status"
+              aria-live="polite"
             >
               {downloadStatus}
             </InfoMessage>
           )}
 
           <Styled.InfoSection>
-            <Text as='p' colour='mediumGrey' fontSize='small'>
+            <Text as="p" colour="mediumGrey" fontSize="small">
               Files are generated locally in your browser - your data stays
               private.
             </Text>
           </Styled.InfoSection>
 
-          <Link href='/view-coasters' variant='back'>
+          <Link href="/view-coasters" variant="back">
             Back to View Coasters
           </Link>
         </Styled.DownloadContent>
       </section>
     </MainContent>
-  )
+  );
 }

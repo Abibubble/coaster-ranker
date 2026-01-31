@@ -17,7 +17,6 @@ import { Footer, Header, SkipLink } from "./components";
 import { DataProvider } from "./contexts/DataContext";
 import { useScrollToTop } from "./hooks";
 
-// Simple component that uses the scroll to top hook
 function ScrollToTop() {
   useScrollToTop();
   return null;
@@ -51,5 +50,5 @@ root.render(
         <Footer />
       </Router>
     </DataProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
