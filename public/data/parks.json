@@ -1,0 +1,402 @@
+[
+  {
+    "name": "Dreamworld",
+    "country": "Australia"
+  },
+  {
+    "name": "Luna Park Melbourne",
+    "country": "Australia"
+  },
+  {
+    "name": "Movie World",
+    "country": "Australia"
+  },
+  {
+    "name": "Sea World Gold Coast",
+    "country": "Australia"
+  },
+  {
+    "name": "Fantasiana",
+    "country": "Austria"
+  },
+  {
+    "name": "Wiener Prater",
+    "country": "Austria"
+  },
+  {
+    "name": "Bobbejaanland",
+    "country": "Belgium"
+  },
+  {
+    "name": "Walibi Belgium",
+    "country": "Belgium"
+  },
+  {
+    "name": "Beto Carrero World",
+    "country": "Brazil"
+  },
+  {
+    "name": "Hopi Hari",
+    "country": "Brazil"
+  },
+  {
+    "name": "Calaway Park",
+    "country": "Canada"
+  },
+  {
+    "name": "Canada's Wonderland",
+    "country": "Canada"
+  },
+  {
+    "name": "La Ronde",
+    "country": "Canada"
+  },
+  {
+    "name": "Playland",
+    "country": "Canada"
+  },
+  {
+    "name": "Chimelong Paradise",
+    "country": "China"
+  },
+  {
+    "name": "Happy Valley Shanghai",
+    "country": "China"
+  },
+  {
+    "name": "Shanghai Disneyland",
+    "country": "China"
+  },
+  {
+    "name": "Universal Beijing Resort",
+    "country": "China"
+  },
+  {
+    "name": "Bakken",
+    "country": "Denmark"
+  },
+  {
+    "name": "BonBon-Land",
+    "country": "Denmark"
+  },
+  {
+    "name": "Tivoli Gardens",
+    "country": "Denmark"
+  },
+  {
+    "name": "Linnanmäki",
+    "country": "Finland"
+  },
+  {
+    "name": "Disneyland Paris",
+    "country": "France"
+  },
+  {
+    "name": "Futuroscope",
+    "country": "France"
+  },
+  {
+    "name": "Le Pal",
+    "country": "France"
+  },
+  {
+    "name": "Parc Astérix",
+    "country": "France"
+  },
+  {
+    "name": "Parc Du Bocasse",
+    "country": "France"
+  },
+  {
+    "name": "Parc Saint Paul",
+    "country": "France"
+  },
+  {
+    "name": "Walibi Rhône Alpes",
+    "country": "France"
+  },
+  {
+    "name": "Walt Disney Studios Park",
+    "country": "France"
+  },
+  {
+    "name": "Bayern Park",
+    "country": "Germany"
+  },
+  {
+    "name": "Europa-Park",
+    "country": "Germany"
+  },
+  {
+    "name": "Hansa-Park",
+    "country": "Germany"
+  },
+  {
+    "name": "Heide Park",
+    "country": "Germany"
+  },
+  {
+    "name": "Legoland Deutschland",
+    "country": "Germany"
+  },
+  {
+    "name": "Movie Park Germany",
+    "country": "Germany"
+  },
+  {
+    "name": "Phantasialand",
+    "country": "Germany"
+  },
+  {
+    "name": "Skyline Park",
+    "country": "Germany"
+  },
+  {
+    "name": "Tripsdrill",
+    "country": "Germany"
+  },
+  {
+    "name": "Hong Kong Disneyland",
+    "country": "Hong Kong"
+  },
+  {
+    "name": "Ocean Park Hong Kong",
+    "country": "Hong Kong"
+  },
+  {
+    "name": "Emerald Park",
+    "country": "Ireland"
+  },
+  {
+    "name": "Gardaland",
+    "country": "Italy"
+  },
+  {
+    "name": "Mirabilandia",
+    "country": "Italy"
+  },
+  {
+    "name": "Rainbow MagicLand",
+    "country": "Italy"
+  },
+  {
+    "name": "Fuji-Q Highland",
+    "country": "Japan"
+  },
+  {
+    "name": "Nagashima Spa Land",
+    "country": "Japan"
+  },
+  {
+    "name": "Tokyo Disneyland",
+    "country": "Japan"
+  },
+  {
+    "name": "Tokyo DisneySea",
+    "country": "Japan"
+  },
+  {
+    "name": "Universal Studios Japan",
+    "country": "Japan"
+  },
+  {
+    "name": "Six Flags México",
+    "country": "Mexico"
+  },
+  {
+    "name": "Xcaret Park",
+    "country": "Mexico"
+  },
+  {
+    "name": "Efteling",
+    "country": "Netherlands"
+  },
+  {
+    "name": "Toverland",
+    "country": "Netherlands"
+  },
+  {
+    "name": "Walibi Holland",
+    "country": "Netherlands"
+  },
+  {
+    "name": "Tusenfryd",
+    "country": "Norway"
+  },
+  {
+    "name": "Energylandia",
+    "country": "Poland"
+  },
+  {
+    "name": "Legendia",
+    "country": "Poland"
+  },
+  {
+    "name": "Universal Studios Singapore",
+    "country": "Singapore"
+  },
+  {
+    "name": "Everland",
+    "country": "South Korea"
+  },
+  {
+    "name": "Lotte World",
+    "country": "South Korea"
+  },
+  {
+    "name": "Ferrari Land",
+    "country": "Spain"
+  },
+  {
+    "name": "Isla Mágica",
+    "country": "Spain"
+  },
+  {
+    "name": "Parque de Atracciones de Madrid",
+    "country": "Spain"
+  },
+  {
+    "name": "Parque Warner Madrid",
+    "country": "Spain"
+  },
+  {
+    "name": "PortAventura Park",
+    "country": "Spain"
+  },
+  {
+    "name": "Gröna Lund",
+    "country": "Sweden"
+  },
+  {
+    "name": "Kolmården",
+    "country": "Sweden"
+  },
+  {
+    "name": "Liseberg",
+    "country": "Sweden"
+  },
+  {
+    "name": "Alton Towers",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Blackpool Pleasure Beach",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Chessington World of Adventures",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Flamingo Land",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Great Yarmouth Pleasure Beach",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Joyland",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Legoland Windsor",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Oakwood Theme Park",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Poulton's Park",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Thorpe Park",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Busch Gardens Tampa Bay",
+    "country": "United States"
+  },
+  {
+    "name": "Busch Gardens Williamsburg",
+    "country": "United States"
+  },
+  {
+    "name": "Carowinds",
+    "country": "United States"
+  },
+  {
+    "name": "Cedar Point",
+    "country": "United States"
+  },
+  {
+    "name": "Disney California Adventure",
+    "country": "United States"
+  },
+  {
+    "name": "Disneyland Park",
+    "country": "United States"
+  },
+  {
+    "name": "Dollywood",
+    "country": "United States"
+  },
+  {
+    "name": "Hersheypark",
+    "country": "United States"
+  },
+  {
+    "name": "Kings Island",
+    "country": "United States"
+  },
+  {
+    "name": "Knott's Berry Farm",
+    "country": "United States"
+  },
+  {
+    "name": "SeaWorld Orlando",
+    "country": "United States"
+  },
+  {
+    "name": "Silver Dollar City",
+    "country": "United States"
+  },
+  {
+    "name": "Six Flags Magic Mountain",
+    "country": "United States"
+  },
+  {
+    "name": "Six Flags Over Texas",
+    "country": "United States"
+  },
+  {
+    "name": "Universal Studios Florida",
+    "country": "United States"
+  },
+  {
+    "name": "Universal Studios Hollywood",
+    "country": "United States"
+  },
+  {
+    "name": "Universal's Islands of Adventure",
+    "country": "United States"
+  },
+  {
+    "name": "Walt Disney World - Animal Kingdom",
+    "country": "United States"
+  },
+  {
+    "name": "Walt Disney World - EPCOT",
+    "country": "United States"
+  },
+  {
+    "name": "Walt Disney World - Hollywood Studios",
+    "country": "United States"
+  },
+  {
+    "name": "Walt Disney World - Magic Kingdom",
+    "country": "United States"
+  }
+]

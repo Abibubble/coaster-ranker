@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import {
+  ParkAutocompleteInput,
+  CountryAutocompleteInput,
+  ManufacturerAutocompleteInput,
   Button,
   CurrentDataInfo,
   DuplicateResolver,
@@ -10,6 +13,11 @@ import {
   Text,
 } from "../../components";
 import { useData } from "../../contexts/DataContext";
+import {
+  useParkAutocomplete,
+  useCountryAutocomplete,
+  useManufacturerAutocomplete,
+} from "../../hooks";
 import { Coaster } from "../../types/data";
 import {
   detectDuplicates,
@@ -49,13 +57,99 @@ export default function UploadManual() {
     country: "",
   });
 
+  // Park autocomplete functionality
+  const {
+    suggestions,
+    isLoading: isLoadingParks,
+    error: parkError,
+    hasMinCharacters,
+  } = useParkAutocomplete(formData.park);
+
+  // Country autocomplete functionality
+  const {
+    suggestions: countrySuggestions,
+    isLoading: isLoadingCountries,
+    error: countryError,
+    hasMinCharacters: hasMinCharactersCountry,
+  } = useCountryAutocomplete(formData.country);
+
+  // Manufacturer autocomplete functionality
+  const {
+    suggestions: manufacturerSuggestions,
+    isLoading: isLoadingManufacturers,
+    error: manufacturerError,
+    hasMinCharacters: hasMinCharactersManufacturer,
+  } = useManufacturerAutocomplete(formData.manufacturer);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
+
+    // Map generic field names back to form data properties
+    const fieldNameMap: Record<string, string> = {
+      coasterName: "name",
+      themePark: "park",
+      rideManufacturer: "manufacturer",
+      rideModel: "model",
+      trackMaterial: "material",
+      intensityLevel: "thrillLevel",
+      parkLocation: "country",
+    };
+
+    const formFieldName = fieldNameMap[name] || name;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [formFieldName]: value,
+    }));
+  };
+
+  const handleParkChange = (parkName: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      park: parkName,
+    }));
+  };
+
+  const handleParkSelection = (suggestion: {
+    name: string;
+    country: string;
+  }) => {
+    setFormData((prev) => ({
+      ...prev,
+      park: suggestion.name,
+      country: suggestion.country,
+    }));
+  };
+
+  const handleCountryChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      country: value,
+    }));
+  };
+
+  const handleCountrySelection = (suggestion: { country: string }) => {
+    setFormData((prev) => ({
+      ...prev,
+      country: suggestion.country,
+    }));
+  };
+
+  const handleManufacturerChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      manufacturer: value,
+    }));
+  };
+
+  const handleManufacturerSelection = (suggestion: {
+    manufacturer: string;
+  }) => {
+    setFormData((prev) => ({
+      ...prev,
+      manufacturer: suggestion.manufacturer,
     }));
   };
 
@@ -308,65 +402,60 @@ export default function UploadManual() {
                     bold
                     colour="charcoal"
                     fontSize="small"
-                    htmlFor="name"
+                    htmlFor="coaster-name"
                   >
                     Name *
                   </Text>
                   <Styled.Input
                     type="text"
-                    id="name"
-                    name="name"
+                    id="coaster-name"
+                    name="coasterName"
                     value={formData.name || ""}
                     onChange={handleInputChange}
                     placeholder="e.g. The Smiler"
-                    autoComplete="name"
+                    autoComplete="off"
+                    data-form-type="other"
                     required
                   />
                 </Styled.FormGroup>
 
                 <Styled.FormGroup>
-                  <Text
-                    as="label"
-                    bold
-                    colour="charcoal"
-                    fontSize="small"
-                    htmlFor="park"
-                  >
-                    Theme Park *
-                  </Text>
-                  <Styled.Input
-                    type="text"
-                    id="park"
-                    name="park"
-                    value={formData.park || ""}
-                    onChange={handleInputChange}
+                  <ParkAutocompleteInput
+                    value={formData.park}
+                    onChange={handleParkChange}
+                    onSuggestionSelect={handleParkSelection}
+                    suggestions={suggestions}
                     placeholder="e.g. Alton Towers"
-                    autoComplete="organization"
+                    label="Theme Park"
                     required
+                    id="theme-park"
+                    name="themePark"
+                    autoComplete="off"
+                    data-form-type="other"
+                    isLoading={isLoadingParks}
+                    error={parkError}
+                    hasMinCharacters={hasMinCharacters}
                   />
                 </Styled.FormGroup>
               </Styled.FormRow>
 
               <Styled.FormRow>
                 <Styled.FormGroup>
-                  <Text
-                    as="label"
-                    bold
-                    colour="charcoal"
-                    fontSize="small"
-                    htmlFor="manufacturer"
-                  >
-                    Manufacturer *
-                  </Text>
-                  <Styled.Input
-                    type="text"
-                    id="manufacturer"
-                    name="manufacturer"
-                    value={formData.manufacturer || ""}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Gerstlauer"
-                    autoComplete="off"
+                  <ManufacturerAutocompleteInput
+                    value={formData.manufacturer}
+                    onChange={handleManufacturerChange}
+                    onSuggestionSelect={handleManufacturerSelection}
+                    suggestions={manufacturerSuggestions}
+                    placeholder="e.g. Steel Company"
+                    label="Manufacturer"
                     required
+                    id="ride-manufacturer"
+                    name="rideManufacturer"
+                    autoComplete="off"
+                    data-form-type="other"
+                    isLoading={isLoadingManufacturers}
+                    error={manufacturerError}
+                    hasMinCharacters={hasMinCharactersManufacturer}
                   />
                 </Styled.FormGroup>
 
@@ -376,18 +465,19 @@ export default function UploadManual() {
                     bold
                     colour="charcoal"
                     fontSize="small"
-                    htmlFor="model"
+                    htmlFor="ride-model"
                   >
                     Model
                   </Text>
                   <Styled.Input
                     type="text"
-                    id="model"
-                    name="model"
+                    id="ride-model"
+                    name="rideModel"
                     value={formData.model || ""}
                     onChange={handleInputChange}
                     placeholder="e.g. Euro-Fighter"
                     autoComplete="off"
+                    data-form-type="other"
                   />
                 </Styled.FormGroup>
               </Styled.FormRow>
@@ -398,13 +488,13 @@ export default function UploadManual() {
                   bold
                   colour="charcoal"
                   fontSize="small"
-                  htmlFor="material"
+                  htmlFor="track-material"
                 >
                   Material
                 </Text>
                 <Styled.Select
-                  id="material"
-                  name="material"
+                  id="track-material"
+                  name="trackMaterial"
                   value={formData.material || ""}
                   onChange={handleInputChange}
                   autoComplete="off"
@@ -422,13 +512,13 @@ export default function UploadManual() {
                   bold
                   colour="charcoal"
                   fontSize="small"
-                  htmlFor="thrillLevel"
+                  htmlFor="intensity-level"
                 >
                   Thrill Level
                 </Text>
                 <Styled.Select
-                  id="thrillLevel"
-                  name="thrillLevel"
+                  id="intensity-level"
+                  name="intensityLevel"
                   value={formData.thrillLevel || ""}
                   onChange={handleInputChange}
                   autoComplete="off"
@@ -442,23 +532,20 @@ export default function UploadManual() {
               </Styled.FormGroup>
 
               <Styled.FormGroup>
-                <Text
-                  as="label"
-                  bold
-                  colour="charcoal"
-                  fontSize="small"
-                  htmlFor="country"
-                >
-                  Country
-                </Text>
-                <Styled.Input
-                  type="text"
-                  id="country"
-                  name="country"
-                  value={formData.country || ""}
-                  onChange={handleInputChange}
-                  placeholder="e.g. United Kingdom"
-                  autoComplete="country"
+                <CountryAutocompleteInput
+                  value={formData.country}
+                  onChange={handleCountryChange}
+                  onSuggestionSelect={handleCountrySelection}
+                  suggestions={countrySuggestions}
+                  placeholder="e.g. Europe"
+                  label="Location"
+                  id="park-location"
+                  name="parkLocation"
+                  autoComplete="off"
+                  data-form-type="other"
+                  isLoading={isLoadingCountries}
+                  error={countryError}
+                  hasMinCharacters={hasMinCharactersCountry}
                 />
               </Styled.FormGroup>
             </div>
