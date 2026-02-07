@@ -43,6 +43,7 @@ export default function AutocompleteInput({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const justSelectedRef = useRef<boolean>(false);
 
   // Generate unique ID if none provided
   const inputId = id || `autocomplete-input-${++idCounter}`;
@@ -86,6 +87,12 @@ export default function AutocompleteInput({
     onSuggestionSelect?.(suggestion);
     setIsOpen(false);
     setHighlightedIndex(-1);
+    justSelectedRef.current = true;
+
+    // Reset the flag after a brief delay
+    setTimeout(() => {
+      justSelectedRef.current = false;
+    }, 100);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +108,11 @@ export default function AutocompleteInput({
   };
 
   const handleInputFocus = () => {
+    // Don't reopen dropdown if we just selected a suggestion
+    if (justSelectedRef.current) {
+      return;
+    }
+
     if (hasMinCharacters) {
       setIsOpen(true);
     }

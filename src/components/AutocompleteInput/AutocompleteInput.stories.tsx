@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import AutocompleteInput, { AutocompleteInputProps } from "./AutocompleteInput";
+import { mockParkSuggestions } from "../../mocks";
 
 const meta: Meta<typeof AutocompleteInput> = {
   title: "Components/AutocompleteInput",
@@ -38,24 +39,6 @@ const meta: Meta<typeof AutocompleteInput> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-const mockSuggestions = [
-  {
-    id: "disneyland-park-united-states",
-    name: "Disneyland Park",
-    country: "United States",
-  },
-  {
-    id: "disney-california-adventure-united-states",
-    name: "Disney California Adventure",
-    country: "United States",
-  },
-  {
-    id: "disneyland-paris-france",
-    name: "Disneyland Paris",
-    country: "France",
-  },
-];
 
 const AutocompleteWrapper = (args: AutocompleteInputProps) => {
   const [value, setValue] = useState(args.value || "");
@@ -108,7 +91,7 @@ export const WithSuggestions: Story = {
     label: "Park Name",
     placeholder: "Enter park name...",
     value: "disney",
-    suggestions: mockSuggestions,
+    suggestions: mockParkSuggestions,
     hasMinCharacters: true,
   },
 };

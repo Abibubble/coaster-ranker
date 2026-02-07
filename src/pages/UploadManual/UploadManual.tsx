@@ -3,6 +3,7 @@ import {
   ParkAutocompleteInput,
   CountryAutocompleteInput,
   ManufacturerAutocompleteInput,
+  ModelAutocompleteInput,
   Button,
   CurrentDataInfo,
   DuplicateResolver,
@@ -17,6 +18,7 @@ import {
   useParkAutocomplete,
   useCountryAutocomplete,
   useManufacturerAutocomplete,
+  useModelAutocomplete,
 } from "../../hooks";
 import { Coaster } from "../../types/data";
 import {
@@ -81,6 +83,15 @@ export default function UploadManual() {
     hasMinCharacters: hasMinCharactersManufacturer,
   } = useManufacturerAutocomplete(formData.manufacturer);
 
+  // Model autocomplete functionality
+  const {
+    suggestions: modelSuggestions,
+    isLoading: isLoadingModels,
+    error: modelError,
+    hasMinCharacters: hasMinCharactersModel,
+    hasManufacturer,
+  } = useModelAutocomplete(formData.model || "", formData.manufacturer);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -141,6 +152,8 @@ export default function UploadManual() {
     setFormData((prev) => ({
       ...prev,
       manufacturer: value,
+      // Clear model when manufacturer changes
+      model: "",
     }));
   };
 
@@ -150,6 +163,22 @@ export default function UploadManual() {
     setFormData((prev) => ({
       ...prev,
       manufacturer: suggestion.manufacturer,
+      // Clear model when manufacturer changes
+      model: "",
+    }));
+  };
+
+  const handleModelChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      model: value,
+    }));
+  };
+
+  const handleModelSelection = (suggestion: { model: string }) => {
+    setFormData((prev) => ({
+      ...prev,
+      model: suggestion.model,
     }));
   };
 
@@ -460,24 +489,24 @@ export default function UploadManual() {
                 </Styled.FormGroup>
 
                 <Styled.FormGroup>
-                  <Text
-                    as="label"
-                    bold
-                    colour="charcoal"
-                    fontSize="small"
-                    htmlFor="ride-model"
-                  >
-                    Model
-                  </Text>
-                  <Styled.Input
-                    type="text"
+                  <ModelAutocompleteInput
+                    value={formData.model || ""}
+                    onChange={handleModelChange}
+                    onSuggestionSelect={handleModelSelection}
+                    suggestions={modelSuggestions}
+                    placeholder={
+                      hasManufacturer
+                        ? "e.g. Euro-Fighter"
+                        : "Select manufacturer first"
+                    }
+                    label="Model"
                     id="ride-model"
                     name="rideModel"
-                    value={formData.model || ""}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Euro-Fighter"
                     autoComplete="off"
                     data-form-type="other"
+                    isLoading={isLoadingModels}
+                    error={modelError}
+                    hasMinCharacters={hasMinCharactersModel}
                   />
                 </Styled.FormGroup>
               </Styled.FormRow>

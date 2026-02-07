@@ -45,6 +45,7 @@ export default function CountryAutocompleteInput({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const justSelectedRef = useRef<boolean>(false);
 
   // Generate unique ID if none provided
   const inputId = id || `country-autocomplete-input-${++idCounter}`;
@@ -99,8 +100,14 @@ export default function CountryAutocompleteInput({
     onChange(suggestion.country);
     setIsOpen(false);
     setHighlightedIndex(-1);
+    justSelectedRef.current = true;
     onSuggestionSelect?.(suggestion);
     inputRef.current?.focus();
+
+    // Reset the flag after a brief delay
+    setTimeout(() => {
+      justSelectedRef.current = false;
+    }, 100);
   };
 
   const handleFocus = () => {
@@ -108,6 +115,11 @@ export default function CountryAutocompleteInput({
     if (blurTimeoutRef.current) {
       clearTimeout(blurTimeoutRef.current);
       blurTimeoutRef.current = null;
+    }
+
+    // Don't reopen dropdown if we just selected a suggestion
+    if (justSelectedRef.current) {
+      return;
     }
 
     // Open dropdown if we have suggestions

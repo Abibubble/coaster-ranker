@@ -1,11 +1,10 @@
-// New unified autocomplete system
 export {
   ParkAutocompleteInput,
   CountryAutocompleteInput,
   ManufacturerAutocompleteInput,
+  ModelAutocompleteInput,
 } from "./AutocompleteInputs";
 
-// Legacy components (keep for backward compatibility if needed elsewhere)
 export { default as AutocompleteInputLegacy } from "./AutocompleteInput";
 export { default as CountryAutocompleteInputLegacy } from "./CountryAutocompleteInput";
 export { default as ManufacturerAutocompleteInputLegacy } from "./ManufacturerAutocompleteInput";

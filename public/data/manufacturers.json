@@ -1,818 +1,304 @@
 [
   {
-    "manufacturer": "A Brinquedos"
+    "manufacturer": "Arrow Dynamics",
+    "models": [
+      "Loop Screw",
+      "Hypercoaster",
+      "Suspended Coaster",
+      "Mine Train",
+      "Corkscrew",
+      "4th Dimension"
+    ]
   },
   {
-    "manufacturer": "A.R.M."
+    "manufacturer": "ART Engineering GmbH",
+    "models": ["Suspended Coaster", "Family Coaster"]
   },
   {
-    "manufacturer": "abc rides"
+    "manufacturer": "Barbieri Rides",
+    "models": ["Spinning Coaster", "Mini Coaster", "Family Coaster"]
   },
   {
-    "manufacturer": "ACA"
+    "manufacturer": "Bolliger & Mabillard",
+    "models": [
+      "Inverted",
+      "Hyper",
+      "Dive",
+      "Wing",
+      "Floorless",
+      "Flying",
+      "Stand-Up",
+      "Surf Coaster"
+    ]
   },
   {
-    "manufacturer": "Aerial Tramway Construction Co."
+    "manufacturer": "Custom Coasters International, Inc.",
+    "models": ["Custom Wooden Coaster"]
   },
   {
-    "manufacturer": "Akron Scenic Railway Company"
+    "manufacturer": "Fabbri",
+    "models": ["Power Mouse", "Spinning Coaster", "Family Coaster"]
   },
   {
-    "manufacturer": "Allan Herschell Company"
+    "manufacturer": "Gerstlauer",
+    "models": [
+      "Euro-Fighter",
+      "Infinity Coaster",
+      "Bobsled Coaster",
+      "Family Coaster",
+      "Spinning Coaster"
+    ]
   },
   {
-    "manufacturer": "American Construction Co."
+    "manufacturer": "Giovanola",
+    "models": ["Hyper Coaster", "Inverted Coaster"]
   },
   {
-    "manufacturer": "Analog"
+    "manufacturer": "The Gravity Group",
+    "models": ["Wooden Coaster", "Family Wooden Coaster"]
   },
   {
-    "manufacturer": "Apple"
+    "manufacturer": "Great Coasters International",
+    "models": ["Wooden Coaster", "Big Dipper Wood"]
   },
   {
-    "manufacturer": "Aquatic Development Group"
+    "manufacturer": "Intamin Amusement",
+    "models": [
+      "Blitz",
+      "Giga",
+      "Strata",
+      "Mega",
+      "Accelerator",
+      "Wing Coaster",
+      "Suspended Catapult",
+      "Wooden Coaster (Prefab)"
+    ]
   },
   {
-    "manufacturer": "Arrow Dynamics"
+    "manufacturer": "Mack Rides",
+    "models": [
+      "Wild Mouse",
+      "Powered Coaster",
+      "YoungStar Coaster",
+      "Bobsled",
+      "BigDipper",
+      "Xtreme Spinning Coaster",
+      "Hypercoaster",
+      "Launch Coaster"
+    ]
   },
   {
-    "manufacturer": "ART Engineering GmbH"
+    "manufacturer": "Maurer Rides",
+    "models": ["Spinning Coaster", "Wild Mouse", "X-Car"]
   },
   {
-    "manufacturer": "Ascot Design & Development"
+    "manufacturer": "Philadelphia Toboggan Coasters, Inc.",
+    "models": ["Custom Wooden Coaster"]
   },
   {
-    "manufacturer": "Atraksion.Uz"
+    "manufacturer": "Pinfari",
+    "models": ["Zyklon", "RC40", "Super Train"]
   },
   {
-    "manufacturer": "B. A. Schiff & Associates"
+    "manufacturer": "Preston & Barbieri",
+    "models": ["Wild Mouse", "Spinning Coaster", "Family Coaster"]
   },
   {
-    "manufacturer": "Bachmann + Co"
+    "manufacturer": "Rocky Mountain Construction",
+    "models": [
+      "I-Box Hybrid",
+      "Topper Track",
+      "Raptor Single Rail",
+      "Wild Moose"
+    ]
   },
   {
-    "manufacturer": "Bailey Rides, Inc."
+    "manufacturer": "Roller Coaster Corporation of America",
+    "models": ["Wooden Coaster"]
   },
   {
-    "manufacturer": "Baoding Hengrui Youle Juxie Co., Ltd"
+    "manufacturer": "S&S Sansei / S&S Worldwide",
+    "models": [
+      "4D Free Spin",
+      "El Loco",
+      "Air Launch",
+      "Screamin' Squirrel",
+      "Axis Coaster",
+      "Wooden Coaster"
+    ]
   },
   {
-    "manufacturer": "Baoding Kaishuo Amusement Facilities Manufacturing Co., Ltd."
+    "manufacturer": "SBF Visa Group",
+    "models": ["Spinning Coaster (MX608)", "Big Air", "Family Coaster"]
   },
   {
-    "manufacturer": "Barbieri Rides"
+    "manufacturer": "Schwarzkopf",
+    "models": [
+      "Wildcat",
+      "Jet Star",
+      "Looping Star",
+      "Shuttle Loop",
+      "Jumbo Jet",
+      "Silverarrow"
+    ]
   },
   {
-    "manufacturer": "Barbisan"
+    "manufacturer": "Togo",
+    "models": ["Hypercoaster", "Stand-up Coaster", "Ultra Twister"]
   },
   {
-    "manufacturer": "Bartling"
+    "manufacturer": "Vekoma",
+    "models": [
+      "Boomerang",
+      "Invertigo",
+      "Giant Inverted Boomerang",
+      "SLC (Suspended Looping Coaster)",
+      "Junior Coaster",
+      "Suspended Family Coaster",
+      "Family Boomerang",
+      "Motorbike Coaster",
+      "Corkscrew",
+      "Mine Train",
+      "Flying Dutchman",
+      "Launch Coaster"
+    ]
   },
   {
-    "manufacturer": "Beijing Chen Jinying Amusement Equipment"
+    "manufacturer": "Zamperla",
+    "models": [
+      "Volare",
+      "Twister Coaster",
+      "Powered Coaster",
+      "Thunderbolt",
+      "MotoCoaster",
+      "Windstorm",
+      "Family Gravity Coaster"
+    ]
   },
   {
-    "manufacturer": "Beijing Jiuhua Amusement Rides Manufacturing Co., Ltd."
+    "manufacturer": "Zierer",
+    "models": ["Tivoli", "Force", "Flitzer", "Elevated Seating Coaster"]
   },
   {
-    "manufacturer": "Beijing North Rongda Amusement Equipment Co.,Ltd"
+    "manufacturer": "Premier Rides",
+    "models": ["Sky Rocket", "LIM Launch", "Spaghetti Bowl"]
   },
   {
-    "manufacturer": "Beijing Shibaolai Amusement Equipment"
+    "manufacturer": "Wiegand",
+    "models": ["Alpine Coaster", "Bobkart"]
   },
   {
-    "manufacturer": "Belmont Construction Co."
+    "manufacturer": "E&F Miler Industries",
+    "models": ["Family Coaster", "Kiddie Coaster"]
   },
   {
-    "manufacturer": "BHS"
+    "manufacturer": "Reverchon Industries",
+    "models": ["Spinning Coaster", "Wild Mouse", "Gliding Coaster"]
   },
   {
-    "manufacturer": "Big Country Motioneering"
+    "manufacturer": "Soquet",
+    "models": ["Big Apple", "Family Coaster"]
   },
   {
-    "manufacturer": "Blackpool Leisure Amusement Consultancy"
+    "manufacturer": "John Miller",
+    "models": ["Friction Wooden Coaster"]
   },
   {
-    "manufacturer": "Bolliger & Mabillard"
+    "manufacturer": "WGH Transportation Engineering",
+    "models": ["Monorail Coaster", "Transport Coaster"]
   },
   {
-    "manufacturer": "Bombay Amusement Ride, Limited"
+    "manufacturer": "L&T Systems",
+    "models": ["Wild Mouse", "Family Coaster"]
   },
   {
-    "manufacturer": "Bradley and Kaye"
+    "manufacturer": "Charles Paige",
+    "models": ["Custom Wooden Coaster"]
   },
   {
-    "manufacturer": "Brandauer"
+    "manufacturer": "Chance Rides",
+    "models": ["Toboggan", "Hyper GT-X", "Big Dipper", "Family Coaster"]
   },
   {
-    "manufacturer": "Breinig Construction Company"
+    "manufacturer": "DAL Amusement Rides",
+    "models": ["Wild Mouse", "Family Coaster"]
   },
   {
-    "manufacturer": "Butlin"
+    "manufacturer": "Knoebels",
+    "models": ["Custom Wooden Coaster", "Wooden Flying Turns"]
   },
   {
-    "manufacturer": "C&S"
+    "manufacturer": "Morgan",
+    "models": ["Hyper Coaster"]
   },
   {
-    "manufacturer": "CAM Baby Kart"
+    "manufacturer": "Martin & Vleminckx",
+    "models": ["Wooden Coaster"]
   },
   {
-    "manufacturer": "Caripro"
+    "manufacturer": "Kings Island",
+    "models": ["Custom Wooden Coaster"]
   },
   {
-    "manufacturer": "Carll & Ramagosa"
+    "manufacturer": "S.D.C.",
+    "models": ["Galaxi"]
   },
   {
-    "manufacturer": "Cavazza Diego"
+    "manufacturer": "Kumbak",
+    "models": ["Coaster Upgrade / Retrofit"]
   },
   {
-    "manufacturer": "Cedeal Rides"
+    "manufacturer": "Guven",
+    "models": ["Wild Mouse", "Family Coaster"]
   },
   {
-    "manufacturer": "Centrifugal Roller Coaster Company"
+    "manufacturer": "EOS",
+    "models": ["Spinning Coaster", "Family Coaster"]
   },
   {
-    "manufacturer": "CETI"
+    "manufacturer": "Wisdom Rides",
+    "models": ["Orient Express", "Miner Mike"]
   },
   {
-    "manufacturer": "Cezary Borowiak"
+    "manufacturer": "Cavazza Diego",
+    "models": ["Wild Mouse", "Family Coaster"]
   },
   {
-    "manufacturer": "Chance Rides"
+    "manufacturer": "Gosetto",
+    "models": ["Wild Mouse", "Big Apple"]
   },
   {
-    "manufacturer": "Chang Long"
+    "manufacturer": "Big Country Motioneering",
+    "models": ["Custom Steel Coaster"]
   },
   {
-    "manufacturer": "Changhong Entertainment Machinery Co., Ltd."
+    "manufacturer": "International Coasters, Inc.",
+    "models": ["Wooden Coaster"]
   },
   {
-    "manufacturer": "Chengdu Xindu Xin'an Playingment"
+    "manufacturer": "Dinn Corporation",
+    "models": ["Custom Wooden Coaster"]
   },
   {
-    "manufacturer": "Chicago Coaster Co"
+    "manufacturer": "KECO (Taft Broadcasting Company)",
+    "models": ["Custom Wooden Coaster"]
   },
   {
-    "manufacturer": "Childress Coaster"
+    "manufacturer": "Molina & Sons",
+    "models": ["Galaxi", "Family Coaster"]
   },
   {
-    "manufacturer": "Chuangyi Amusement"
+    "manufacturer": "Setpoint",
+    "models": ["Suspended Family Coaster", "Swing Thing"]
   },
   {
-    "manufacturer": "Cincinnati Amusement Co."
-  },
-  {
-    "manufacturer": "Coaster Works, Inc."
-  },
-  {
-    "manufacturer": "Cordes Holzbau"
-  },
-  {
-    "manufacturer": "Credible"
-  },
-  {
-    "manufacturer": "Custom Coasters International, Inc."
-  },
-  {
-    "manufacturer": "D.H. Morgan Manufacturing, Inc."
-  },
-  {
-    "manufacturer": "D.P.V. Rides"
-  },
-  {
-    "manufacturer": "DAL Amusement Rides Company"
-  },
-  {
-    "manufacturer": "Dambroz"
-  },
-  {
-    "manufacturer": "DeBrinquedo"
-  },
-  {
-    "manufacturer": "Dinn Corporation"
-  },
-  {
-    "manufacturer": "Divermax Entretenimento"
-  },
-  {
-    "manufacturer": "Doppelmayr"
-  },
-  {
-    "manufacturer": "Double Grip Tubular Steel Amusement Devices Ltd."
-  },
-  {
-    "manufacturer": "Dynamic Attractions"
-  },
-  {
-    "manufacturer": "E&F Miler Industries"
-  },
-  {
-    "manufacturer": "E&S Rides"
-  },
-  {
-    "manufacturer": "EOS Rides"
-  },
-  {
-    "manufacturer": "Erbschloe Fun Construct"
-  },
-  {
-    "manufacturer": "Extreme Engineering"
-  },
-  {
-    "manufacturer": "FAB"
-  },
-  {
-    "manufacturer": "Fabbri"
-  },
-  {
-    "manufacturer": "Fajume"
-  },
-  {
-    "manufacturer": "Federal Engineering Co."
-  },
-  {
-    "manufacturer": "Foshan Huanshi Nanfang Amusement Machine Factory"
-  },
-  {
-    "manufacturer": "Frontier Construction Company"
-  },
-  {
-    "manufacturer": "Fun Rides Tech"
-  },
-  {
-    "manufacturer": "Fun Xian Machinery Manufacturing Ranger Company"
-  },
-  {
-    "manufacturer": "Garcia Brinquedos"
-  },
-  {
-    "manufacturer": "Gerstlauer Amusement Rides GmbH"
-  },
-  {
-    "manufacturer": "Giovanola"
-  },
-  {
-    "manufacturer": "Girvan Bros"
-  },
-  {
-    "manufacturer": "Golden Dragon Amusement Group"
-  },
-  {
-    "manufacturer": "Golden Koala Amusement Equipment Co. Ltd."
-  },
-  {
-    "manufacturer": "Gosetto"
-  },
-  {
-    "manufacturer": "Grant Engineering"
-  },
-  {
-    "manufacturer": "Gravitykraft Corporation"
-  },
-  {
-    "manufacturer": "Great Coasters International"
-  },
-  {
-    "manufacturer": "Gros"
-  },
-  {
-    "manufacturer": "Guangdong Zhongshan Kangle Entertainment Co. Ltd"
-  },
-  {
-    "manufacturer": "Guangzhou Kapachi Industrial Co., Ltd."
-  },
-  {
-    "manufacturer": "Guohui Machinery"
-  },
-  {
-    "manufacturer": "Güven Amusement Rides Factory"
-  },
-  {
-    "manufacturer": "Havraysan Mountain Slide"
-  },
-  {
-    "manufacturer": "Hebei H&S Amusement Equipment Co, LTD."
-  },
-  {
-    "manufacturer": "Hebei Tianhong Amusement Equipment Company"
-  },
-  {
-    "manufacturer": "Hebei Zhongye Metallurgical Equipment Manufacturing Co., Ltd"
-  },
-  {
-    "manufacturer": "Henan Beston"
-  },
-  {
-    "manufacturer": "Hensel Phelps Construction Co."
-  },
-  {
-    "manufacturer": "Hindustan Amusement Machines"
-  },
-  {
-    "manufacturer": "Hoei Sangyo Co., Ltd."
-  },
-  {
-    "manufacturer": "Hopkins"
-  },
-  {
-    "manufacturer": "Huatong Taike Amusement Equipment Co., Ltd."
-  },
-  {
-    "manufacturer": "I.E. Park"
-  },
-  {
-    "manufacturer": "Ikeda Works"
-  },
-  {
-    "manufacturer": "Inno-Heege GmbH & Co. KG"
-  },
-  {
-    "manufacturer": "Intamin Amusement Rides"
-  },
-  {
-    "manufacturer": "Interlink"
-  },
-  {
-    "manufacturer": "International Amusement Devices, Inc."
-  },
-  {
-    "manufacturer": "International Coasters, Inc."
-  },
-  {
-    "manufacturer": "Interpark"
-  },
-  {
-    "manufacturer": "InterTech"
-  },
-  {
-    "manufacturer": "Inverted Technologies"
-  },
-  {
-    "manufacturer": "Iran Park"
-  },
-  {
-    "manufacturer": "Jahn Construction Co."
-  },
-  {
-    "manufacturer": "Jinfeng"
-  },
-  {
-    "manufacturer": "Jingbei Amusement Equipment Co., Ltd."
-  },
-  {
-    "manufacturer": "Jinma Rides"
-  },
-  {
-    "manufacturer": "Jinxin Credit"
-  },
-  {
-    "manufacturer": "JJ Rose & Sons"
-  },
-  {
-    "manufacturer": "Jung-Max Rides"
-  },
-  {
-    "manufacturer": "Kangyuan Amusement Equipment"
-  },
-  {
-    "manufacturer": "King Amusement Rides"
-  },
-  {
-    "manufacturer": "Kılıç Lunapark"
-  },
-  {
-    "manufacturer": "KumbaK The Amusement Engineers"
-  },
-  {
-    "manufacturer": "L.A. Thompson Scenic Railway Company"
-  },
-  {
-    "manufacturer": "L&T Systems"
-  },
-  {
-    "manufacturer": "Lang Wheels"
-  },
-  {
-    "manufacturer": "Levent Lunapark"
-  },
-  {
-    "manufacturer": "Lucrezia Di Cartoceto"
-  },
-  {
-    "manufacturer": "Lynn Welcher Construction Co."
-  },
-  {
-    "manufacturer": "Mack Rides GmbH & Co KG"
-  },
-  {
-    "manufacturer": "Madhu Amusements & Leisure Concepts"
-  },
-  {
-    "manufacturer": "Manorplan Leisure"
-  },
-  {
-    "manufacturer": "Marathon Amusement Co."
-  },
-  {
-    "manufacturer": "Martin & Vleminckx"
-  },
-  {
-    "manufacturer": "Masago Industrial"
-  },
-  {
-    "manufacturer": "Master Park"
-  },
-  {
-    "manufacturer": "Maurer Rides GmbH"
-  },
-  {
-    "manufacturer": "Maxwell & Sons"
-  },
-  {
-    "manufacturer": "McKay Construction"
-  },
-  {
-    "manufacturer": "Mecpower"
-  },
-  {
-    "manufacturer": "Meisho Amusement Machines"
-  },
-  {
-    "manufacturer": "Meiwa Komuten"
-  },
-  {
-    "manufacturer": "Metal Park"
-  },
-  {
-    "manufacturer": "Michael Black and Associates"
-  },
-  {
-    "manufacturer": "Midgety Engineering Co., Ltd."
-  },
-  {
-    "manufacturer": "Miler Manufacturing"
-  },
-  {
-    "manufacturer": "MND Group"
-  },
-  {
-    "manufacturer": "Modern Amusement Group"
-  },
-  {
-    "manufacturer": "Molina & Son's"
-  },
-  {
-    "manufacturer": "Mondial Rides"
-  },
-  {
-    "manufacturer": "Mountain Innovations GmbH"
-  },
-  {
-    "manufacturer": "Mountain Systems GmbH"
-  },
-  {
-    "manufacturer": "Mundial Park, s.r.l."
-  },
-  {
-    "manufacturer": "Nanfang Amusement Rides Co."
-  },
-  {
-    "manufacturer": "National Amusement Device Company"
-  },
-  {
-    "manufacturer": "New Horse"
-  },
-  {
-    "manufacturer": "Nitto Fun"
-  },
-  {
-    "manufacturer": "Nova Atrações"
-  },
-  {
-    "manufacturer": "OCT Vision"
-  },
-  {
-    "manufacturer": "Okamoto Co., Ltd."
-  },
-  {
-    "manufacturer": "Okoboji Coaster Company"
-  },
-  {
-    "manufacturer": "Opus Group"
-  },
-  {
-    "manufacturer": "Outdoor Amusement Enterprise, Inc."
-  },
-  {
-    "manufacturer": "Overland Amusements"
-  },
-  {
-    "manufacturer": "Park Style S.R.L."
-  },
-  {
-    "manufacturer": "Parkash Amusements"
-  },
-  {
-    "manufacturer": "Pax Company"
-  },
-  {
-    "manufacturer": "Peter Petz"
-  },
-  {
-    "manufacturer": "Philadelphia Toboggan Coasters, Inc."
-  },
-  {
-    "manufacturer": "Pinfari"
-  },
-  {
-    "manufacturer": "Pinto Brothers"
-  },
-  {
-    "manufacturer": "Poonan Amusement Rides Industries"
-  },
-  {
-    "manufacturer": "Premier Rides"
-  },
-  {
-    "manufacturer": "Preston & Barbieri"
-  },
-  {
-    "manufacturer": "Princeton Machine"
-  },
-  {
-    "manufacturer": "Qin Long"
-  },
-  {
-    "manufacturer": "R&C Entertainment"
-  },
-  {
-    "manufacturer": "R&R"
-  },
-  {
-    "manufacturer": "Radar Play"
-  },
-  {
-    "manufacturer": "Rainbow Rides"
-  },
-  {
-    "manufacturer": "RES Rides AG"
-  },
-  {
-    "manufacturer": "Reverchon"
-  },
-  {
-    "manufacturer": "RIDE Technic s.r.o."
-  },
-  {
-    "manufacturer": "Risheng Amusement Rides"
-  },
-  {
-    "manufacturer": "River Rides"
-  },
-  {
-    "manufacturer": "Robles Bouso Atracciones"
-  },
-  {
-    "manufacturer": "Rocky Mountain Construction"
-  },
-  {
-    "manufacturer": "Roller Coaster Corporation of America"
-  },
-  {
-    "manufacturer": "S.D.C."
-  },
-  {
-    "manufacturer": "S&MC"
-  },
-  {
-    "manufacturer": "S&S Worldwide"
-  },
-  {
-    "manufacturer": "Saeki"
-  },
-  {
-    "manufacturer": "Sameco"
-  },
-  {
-    "manufacturer": "Sansei Technologies"
-  },
-  {
-    "manufacturer": "Sartori Rides"
-  },
-  {
-    "manufacturer": "Sấu Con"
-  },
-  {
-    "manufacturer": "SBF Visa Group"
-  },
-  {
-    "manufacturer": "Schwarzkopf"
-  },
-  {
-    "manufacturer": "Second Avenue Traction Company"
-  },
-  {
-    "manufacturer": "Select Contracts"
-  },
-  {
-    "manufacturer": "Senyo Kogyo Co., Ltd."
-  },
-  {
-    "manufacturer": "Setpoint"
-  },
-  {
-    "manufacturer": "Shadi Sazan Dornegan"
-  },
-  {
-    "manufacturer": "Shandong Huaye"
-  },
-  {
-    "manufacturer": "Shangang Rides"
-  },
-  {
-    "manufacturer": "Shanghai Qingpu"
-  },
-  {
-    "manufacturer": "Sinorides"
-  },
-  {
-    "manufacturer": "Sky Park"
-  },
-  {
-    "manufacturer": "Skyline Attractions"
-  },
-  {
-    "manufacturer": "SkyRider Thrills"
-  },
-  {
-    "manufacturer": "Skytrak International"
-  },
-  {
-    "manufacturer": "Soquet"
-  },
-  {
-    "manufacturer": "Spillman Engineering"
-  },
-  {
-    "manufacturer": "Spiral Wheel Operating Corporation"
-  },
-  {
-    "manufacturer": "Stahl-Hacksteiner-Metall GmbH"
-  },
-  {
-    "manufacturer": "Stein"
-  },
-  {
-    "manufacturer": "Sul Park"
-  },
-  {
-    "manufacturer": "Sun Shiyoule"
-  },
-  {
-    "manufacturer": "Sunkid GmbH"
-  },
-  {
-    "manufacturer": "Supercar"
-  },
-  {
-    "manufacturer": "Taizhou Baolu Machinery"
-  },
-  {
-    "manufacturer": "Takahashi Kikai Sangyo"
-  },
-  {
-    "manufacturer": "Taniguchi Seisakusho"
-  },
-  {
-    "manufacturer": "Tasco"
-  },
-  {
-    "manufacturer": "Technical Park"
-  },
-  {
-    "manufacturer": "Technika Kultury LLC"
-  },
-  {
-    "manufacturer": "Tekin Amusement Rides Factory"
-  },
-  {
-    "manufacturer": "TM Harton Company"
-  },
-  {
-    "manufacturer": "Togo"
-  },
-  {
-    "manufacturer": "Top Fun"
-  },
-  {
-    "manufacturer": "Traver Engineering Company"
-  },
-  {
-    "manufacturer": "Três Eixos"
-  },
-  {
-    "manufacturer": "U.S. Amusement Company"
-  },
-  {
-    "manufacturer": "Vafaei Rides"
-  },
-  {
-    "manufacturer": "Vekoma"
-  },
-  {
-    "manufacturer": "Vostok"
-  },
-  {
-    "manufacturer": "W.F. Mangels Company"
-  },
-  {
-    "manufacturer": "Wanle"
-  },
-  {
-    "manufacturer": "Weifang Youxin Machinery"
-  },
-  {
-    "manufacturer": "Westech"
-  },
-  {
-    "manufacturer": "WGH Transportation"
-  },
-  {
-    "manufacturer": "Wiegand"
-  },
-  {
-    "manufacturer": "Williams Amusement Device Company"
-  },
-  {
-    "manufacturer": "Wisdom Rides"
-  },
-  {
-    "manufacturer": "Wuhan Fute Amusement Rides"
-  },
-  {
-    "manufacturer": "Xi'an Baoliu Playground Equipment Factory"
-  },
-  {
-    "manufacturer": "Xi'An Jimi Amusement Equipment Co. Ltd."
-  },
-  {
-    "manufacturer": "Xi'an Shuobo Amusement Equipment"
-  },
-  {
-    "manufacturer": "Yamasakutalab"
-  },
-  {
-    "manufacturer": "Yaqiao Machine"
-  },
-  {
-    "manufacturer": "Yeisk Plant Attraction"
-  },
-  {
-    "manufacturer": "Yunhai Youyi"
-  },
-  {
-    "manufacturer": "Zamperla"
-  },
-  {
-    "manufacturer": "Zhejiang Juma Amusement Equipment Co., Ltd."
-  },
-  {
-    "manufacturer": "Zhejiang Pengming Amusement Equipment Co., Ltd."
-  },
-  {
-    "manufacturer": "Zhengzhou Limeiqi Amusement Equipment Co., Ltd"
-  },
-  {
-    "manufacturer": "Zhengzhou Qiangli Amusement Machine Co., Ltd."
-  },
-  {
-    "manufacturer": "Zhengzhou Sanqgroup"
-  },
-  {
-    "manufacturer": "Zhengzhou Shangdian Machinery Equipment Co., Ltd."
-  },
-  {
-    "manufacturer": "Zhipao"
-  },
-  {
-    "manufacturer": "Zhongshan Guangyi Machinery Manufacturing Co., Ltd."
-  },
-  {
-    "manufacturer": "Zhongshan Jinbo Recreation Equipment Co."
-  },
-  {
-    "manufacturer": "Zhongshan Jinxin Amusement Equipment Co."
-  },
-  {
-    "manufacturer": "Zhongshan Playground Equipment Engineering Co., Ltd."
-  },
-  {
-    "manufacturer": "Zhongshan Supergame Amusement Machine Co., LTD"
-  },
-  {
-    "manufacturer": "Zhuji Jinhou Amusement Equipment Manufacturing Co., Ltd."
-  },
-  {
-    "manufacturer": "Zierer"
+    "manufacturer": "Kılıç Lunapark",
+    "models": [
+      "Brucomela (Apple Coaster)",
+      "Shark Trip",
+      "Dragon",
+      "Runaway Train",
+      "Spinning Brucomela"
+    ]
   }
 ]

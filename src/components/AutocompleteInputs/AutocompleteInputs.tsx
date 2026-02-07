@@ -18,6 +18,12 @@ export interface ManufacturerSuggestion {
   manufacturer: string;
 }
 
+export interface ModelSuggestion {
+  id: string;
+  model: string;
+  manufacturer: string;
+}
+
 export const parkConfig: AutocompleteConfig<
   ParkSuggestion,
   { name: string; country: string }
@@ -60,6 +66,18 @@ export const manufacturerConfig: AutocompleteConfig<
   ariaLabel: "Manufacturer suggestions",
   noResultsMessage:
     "No manufacturers found. You can still enter a custom manufacturer name.",
+};
+
+export const modelConfig: AutocompleteConfig<
+  ModelSuggestion,
+  { model: string }
+> = {
+  primaryText: (item: ModelSuggestion) => item.model,
+  getValue: (item: ModelSuggestion) => item.model,
+  getSelectionData: (item: ModelSuggestion) => ({ model: item.model }),
+  getId: (item: ModelSuggestion) => item.id,
+  ariaLabel: "Model suggestions",
+  noResultsMessage: "No models found. You can still enter a custom model name.",
 };
 
 export interface ParkAutocompleteInputProps {
@@ -132,4 +150,28 @@ export const ManufacturerAutocompleteInput: React.FC<
   ManufacturerAutocompleteInputProps
 > = (props) => {
   return <GenericAutocompleteInput {...props} config={manufacturerConfig} />;
+};
+
+export interface ModelAutocompleteInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  onSuggestionSelect?: (suggestion: { model: string }) => void;
+  suggestions: ModelSuggestion[];
+  placeholder?: string;
+  label?: string;
+  required?: boolean;
+  id?: string;
+  name?: string;
+  autoComplete?: string;
+  isLoading?: boolean;
+  error?: string | null;
+  hasMinCharacters?: boolean;
+  "aria-label"?: string;
+  "data-form-type"?: string;
+}
+
+export const ModelAutocompleteInput: React.FC<ModelAutocompleteInputProps> = (
+  props,
+) => {
+  return <GenericAutocompleteInput {...props} config={modelConfig} />;
 };

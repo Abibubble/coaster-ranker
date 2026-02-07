@@ -62,6 +62,7 @@ export default function GenericAutocompleteInput<
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const justSelectedRef = useRef<boolean>(false);
 
   const inputId = id || `generic-autocomplete-input-${++idCounter}`;
 
@@ -114,14 +115,25 @@ export default function GenericAutocompleteInput<
     onChange(value);
     setIsOpen(false);
     setHighlightedIndex(-1);
+    justSelectedRef.current = true;
     onSuggestionSelect?.(selectionData);
     inputRef.current?.focus();
+
+    // Reset the flag after a brief delay
+    setTimeout(() => {
+      justSelectedRef.current = false;
+    }, 100);
   };
 
   const handleFocus = () => {
     if (blurTimeoutRef.current) {
       clearTimeout(blurTimeoutRef.current);
       blurTimeoutRef.current = null;
+    }
+
+    // Don't reopen dropdown if we just selected a suggestion
+    if (justSelectedRef.current) {
+      return;
     }
 
     if (value.trim() && suggestions.length > 0) {

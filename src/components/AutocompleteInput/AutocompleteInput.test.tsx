@@ -4,24 +4,7 @@ import userEvent from "@testing-library/user-event";
 import React, { useState } from "react";
 import { testAxeCompliance, runBasicWCAG22Tests } from "../../utils/testing";
 import AutocompleteInput from "./AutocompleteInput";
-
-const mockSuggestions = [
-  {
-    id: "disneyland-park-united-states",
-    name: "Disneyland Park",
-    country: "United States",
-  },
-  {
-    id: "disney-california-adventure-united-states",
-    name: "Disney California Adventure",
-    country: "United States",
-  },
-  {
-    id: "disneyland-paris-france",
-    name: "Disneyland Paris",
-    country: "France",
-  },
-];
+import { mockParkSuggestions } from "../../mocks";
 
 describe("AutocompleteInput", () => {
   const defaultProps = {
@@ -117,7 +100,7 @@ describe("AutocompleteInput", () => {
       <AutocompleteInput
         {...defaultProps}
         value="disney"
-        suggestions={mockSuggestions}
+        suggestions={mockParkSuggestions}
         hasMinCharacters={true}
         label="Park Name"
       />,
@@ -130,8 +113,8 @@ describe("AutocompleteInput", () => {
     await waitFor(() => {
       expect(screen.getByText("Disneyland Park")).toBeInTheDocument();
     });
-    expect(screen.getByText("Disney California Adventure")).toBeInTheDocument();
-    expect(screen.getByText("Disneyland Paris")).toBeInTheDocument();
+    expect(screen.getByText("Alton Towers")).toBeInTheDocument();
+    expect(screen.getByText("Europa Park")).toBeInTheDocument();
   });
 
   it("does not display suggestions when hasMinCharacters is false", () => {
@@ -139,7 +122,7 @@ describe("AutocompleteInput", () => {
       <AutocompleteInput
         {...defaultProps}
         value="disney"
-        suggestions={mockSuggestions}
+        suggestions={mockParkSuggestions}
         hasMinCharacters={false}
         label="Park Name"
       />,
@@ -156,7 +139,7 @@ describe("AutocompleteInput", () => {
       <AutocompleteInput
         {...defaultProps}
         value="disney"
-        suggestions={mockSuggestions}
+        suggestions={mockParkSuggestions}
         hasMinCharacters={true}
         onSuggestionSelect={onSuggestionSelect}
         label="Park Name"
@@ -171,7 +154,7 @@ describe("AutocompleteInput", () => {
     await user.click(suggestion);
 
     expect(onSuggestionSelect).toHaveBeenCalledWith({
-      id: "disneyland-park-united-states",
+      id: "disneyland-park",
       name: "Disneyland Park",
       country: "United States",
     });
@@ -184,7 +167,7 @@ describe("AutocompleteInput", () => {
       <AutocompleteInput
         {...defaultProps}
         value="disney"
-        suggestions={mockSuggestions}
+        suggestions={mockParkSuggestions}
         hasMinCharacters={true}
         label="Park Name"
       />,
@@ -210,7 +193,7 @@ describe("AutocompleteInput", () => {
       <AutocompleteInput
         {...defaultProps}
         value="disney"
-        suggestions={mockSuggestions}
+        suggestions={mockParkSuggestions}
         hasMinCharacters={true}
         onSuggestionSelect={onSuggestionSelect}
         label="Park Name"
@@ -222,7 +205,7 @@ describe("AutocompleteInput", () => {
     await user.keyboard("{ArrowDown}");
     await user.keyboard("{Enter}");
 
-    expect(onSuggestionSelect).toHaveBeenCalledWith(mockSuggestions[0]);
+    expect(onSuggestionSelect).toHaveBeenCalledWith(mockParkSuggestions[0]);
   });
 
   it("closes suggestions with Escape key", async () => {
@@ -232,7 +215,7 @@ describe("AutocompleteInput", () => {
       <AutocompleteInput
         {...defaultProps}
         value="disney"
-        suggestions={mockSuggestions}
+        suggestions={mockParkSuggestions}
         hasMinCharacters={true}
         label="Park Name"
       />,
@@ -301,7 +284,7 @@ describe("AutocompleteInput", () => {
       <AutocompleteInput
         {...defaultProps}
         value="disney"
-        suggestions={mockSuggestions}
+        suggestions={mockParkSuggestions}
         hasMinCharacters={true}
         label="Park Name"
       />,
@@ -331,7 +314,7 @@ describe("AutocompleteInput", () => {
         <AutocompleteInput
           {...defaultProps}
           value="disney"
-          suggestions={mockSuggestions}
+          suggestions={mockParkSuggestions}
           hasMinCharacters={true}
           label="Park Name"
         />
