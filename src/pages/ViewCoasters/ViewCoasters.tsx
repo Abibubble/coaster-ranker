@@ -1,5 +1,14 @@
 import React, { useState, useMemo } from "react";
-import { Button, MainContent, Title, Text, Link } from "../../components";
+import {
+  Button,
+  MainContent,
+  Title,
+  Text,
+  Link,
+  SortModal,
+  SortField,
+  SortDirection,
+} from "../../components";
 import { useData } from "../../contexts/DataContext";
 import { Coaster } from "../../types/data";
 import * as Styled from "./ViewCoasters.styled";
@@ -27,6 +36,11 @@ export default function ViewCoasters() {
   const { uploadedData, setUploadedData } = useData();
   const [statusMessage, setStatusMessage] = useState<string>("");
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
+  const [isSortModalOpen, setIsSortModalOpen] = useState<boolean>(false);
+  const [currentSort, setCurrentSort] = useState<{
+    field: SortField;
+    direction: SortDirection;
+  } | null>(null);
   const [editingCoasterId, setEditingCoasterId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<EditableCoaster>({
     name: "",
@@ -91,20 +105,48 @@ export default function ViewCoasters() {
       );
     }
 
-    const isRanked =
-      uploadedData?.rankingMetadata?.isRanked &&
-      uploadedData?.rankingMetadata?.rankedCoasters;
-
-    if (isRanked) {
+    // Apply sorting
+    if (currentSort) {
       filteredCoasters.sort((a, b) => {
-        const rankA = a.rankPosition || Number.MAX_SAFE_INTEGER;
-        const rankB = b.rankPosition || Number.MAX_SAFE_INTEGER;
-        return rankA - rankB;
+        const { field, direction } = currentSort;
+        let valueA: string | number | undefined;
+        let valueB: string | number | undefined;
+
+        if (field === "rankPosition") {
+          valueA = a.rankPosition || Number.MAX_SAFE_INTEGER;
+          valueB = b.rankPosition || Number.MAX_SAFE_INTEGER;
+        } else {
+          valueA = a[field] || "";
+          valueB = b[field] || "";
+          if (typeof valueA === "string") valueA = valueA.toLowerCase();
+          if (typeof valueB === "string") valueB = valueB.toLowerCase();
+        }
+
+        if (valueA < valueB) {
+          return direction === "asc" ? -1 : 1;
+        }
+        if (valueA > valueB) {
+          return direction === "asc" ? 1 : -1;
+        }
+        return 0;
       });
+    } else {
+      // Default sorting by rank if available
+      const isRanked =
+        uploadedData?.rankingMetadata?.isRanked &&
+        uploadedData?.rankingMetadata?.rankedCoasters;
+
+      if (isRanked) {
+        filteredCoasters.sort((a, b) => {
+          const rankA = a.rankPosition || Number.MAX_SAFE_INTEGER;
+          const rankB = b.rankPosition || Number.MAX_SAFE_INTEGER;
+          return rankA - rankB;
+        });
+      }
     }
 
     return filteredCoasters;
-  }, [allCoasters, filters, uploadedData?.rankingMetadata]);
+  }, [allCoasters, filters, uploadedData?.rankingMetadata, currentSort]);
 
   const filterOptions = useMemo(() => {
     return {
@@ -184,6 +226,14 @@ export default function ViewCoasters() {
         });
       }
     }
+  };
+
+  const handleSort = (field: SortField, direction: SortDirection) => {
+    setCurrentSort({ field, direction });
+  };
+
+  const handleClearSort = () => {
+    setCurrentSort(null);
   };
 
   const handleRemoveCoaster = (coasterId: string) => {
@@ -416,6 +466,32 @@ export default function ViewCoasters() {
             </Text>
           )}
         </Styled.CoastersSummary>
+
+        <Styled.SortSection>
+          <Button
+            variant="default"
+            onClick={() => setIsSortModalOpen(true)}
+            aria-label="Open sort options"
+          >
+            Sort by
+            {currentSort && (
+              <Styled.SortBadge>
+                {currentSort.field === "rankPosition"
+                  ? `Rankings (${currentSort.direction === "asc" ? "Top to Bottom" : "Bottom to Top"})`
+                  : `Ride Name (${currentSort.direction === "asc" ? "A-Z" : "Z-A"})`}
+              </Styled.SortBadge>
+            )}
+          </Button>
+          {currentSort && (
+            <Button
+              variant="default"
+              onClick={handleClearSort}
+              aria-label="Clear sorting"
+            >
+              Clear sort
+            </Button>
+          )}
+        </Styled.SortSection>
 
         <Styled.FiltersSection>
           <Styled.FilterHeading
@@ -1120,6 +1196,17 @@ export default function ViewCoasters() {
           </Text>
         </div>
       </section>
+
+      <SortModal
+        isOpen={isSortModalOpen}
+        onClose={() => setIsSortModalOpen(false)}
+        onSort={handleSort}
+        currentSort={currentSort}
+        hasRanking={Boolean(
+          uploadedData?.rankingMetadata?.isRanked &&
+          uploadedData?.rankingMetadata?.rankedCoasters,
+        )}
+      />
     </MainContent>
   );
 }

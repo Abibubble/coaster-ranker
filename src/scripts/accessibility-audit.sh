@@ -117,4 +117,3 @@ echo "   - [ ] Test keyboard-only navigation"
 
 echo ""
 echo "🏁 Accessibility audit complete!"
-echo "   For comprehensive testing, run: npm run test:a11y"

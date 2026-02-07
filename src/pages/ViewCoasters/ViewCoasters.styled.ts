@@ -14,6 +14,33 @@ export const CoastersSummary = styled.div`
   margin-bottom: ${spacing.medium};
 `;
 
+export const SortSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${spacing.small};
+  margin-bottom: ${spacing.medium};
+
+  @media (max-width: ${breakpoints.mobileLarge}) {
+    flex-direction: column;
+    align-items: stretch;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+`;
+
+export const SortBadge = styled.span`
+  margin-left: ${spacing.small};
+  padding: ${spacing.micro} ${spacing.tiny};
+  background-color: ${colours.lightBlue};
+  color: ${colours.white};
+  font-size: ${fonts.small};
+  border-radius: ${spacing.micro};
+  font-weight: normal;
+`;
+
 export const FiltersSection = styled.div`
   margin-bottom: ${spacing.medium};
   padding: ${spacing.medium};
