@@ -1,4 +1,4 @@
-import { Coaster, UploadedData } from "../../types/data";
+import { Coaster, UploadedData, RideType } from "../../types/data";
 import { processUploadedFile } from "./fileParser.util";
 import {
   handleDuplicateDetection,
@@ -17,6 +17,7 @@ export interface ProcessFileUploadParams {
   fileContent: string;
   filename: string;
   existingData: UploadedData | null;
+  rideType?: RideType;
 }
 
 export interface ProcessFileUploadResult {
@@ -72,7 +73,7 @@ export interface HandleDuplicateResolutionResult {
 export async function processFileUpload(
   params: ProcessFileUploadParams,
 ): Promise<ProcessFileUploadResult> {
-  const { fileContent, filename, existingData } = params;
+  const { fileContent, filename, existingData, rideType = "coaster" } = params;
 
   try {
     const fakeFile = new File([fileContent], filename, {
@@ -81,7 +82,11 @@ export async function processFileUpload(
         : "text/csv",
     });
 
-    const parseResult = await processUploadedFile(fakeFile, fileContent);
+    const parseResult = await processUploadedFile(
+      fakeFile,
+      fileContent,
+      rideType,
+    );
 
     if (parseResult.coasters.length === 1) {
       const duplicateResult = handleDuplicateDetection({

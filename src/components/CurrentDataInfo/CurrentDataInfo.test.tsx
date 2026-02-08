@@ -5,7 +5,6 @@ import { MemoryRouter } from "react-router-dom";
 import { testAxeCompliance, runBasicWCAG22Tests } from "../../utils/testing";
 import CurrentDataInfo from "./CurrentDataInfo";
 
-// Helper to render component with Router context
 const renderWithRouter = (component: React.ReactElement) => {
   return render(
     <MemoryRouter initialEntries={["/"]}>{component}</MemoryRouter>,
@@ -33,7 +32,7 @@ describe("CurrentDataInfo", () => {
     it("displays correct coaster count for zero coasters", () => {
       renderWithRouter(<CurrentDataInfo coasterCount={0} />);
 
-      expect(screen.getByText("0 coasters")).toBeInTheDocument();
+      expect(screen.getByText("no rides")).toBeInTheDocument();
       expect(
         screen.getByText(/You currently have.*in your collection/),
       ).toBeInTheDocument();
@@ -42,7 +41,7 @@ describe("CurrentDataInfo", () => {
     it("displays correct coaster count for single coaster", () => {
       renderWithRouter(<CurrentDataInfo coasterCount={1} />);
 
-      expect(screen.getByText("1 coasters")).toBeInTheDocument();
+      expect(screen.getByText("1 coaster")).toBeInTheDocument();
       expect(
         screen.getByText(/You currently have.*in your collection/),
       ).toBeInTheDocument();

@@ -17,10 +17,11 @@ import {
 import * as Styled from "./Download.styled";
 
 export default function Download() {
-  const { uploadedData } = useData();
+  const { uploadedData, darkRideData } = useData();
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null);
 
   const coasters = uploadedData?.coasters || [];
+  const darkRides = darkRideData?.coasters || [];
 
   const hasRankingData = hasRankingDataForExport(uploadedData);
 
@@ -106,7 +107,10 @@ export default function Download() {
 
       <section>
         <Styled.DownloadContent>
-          <CurrentDataInfo coasterCount={coasters.length} />
+          <CurrentDataInfo
+            coasterCount={coasters.length}
+            darkRideCount={darkRides.length}
+          />
 
           <Styled.Section>
             <Styled.SectionHeader>

@@ -24,6 +24,9 @@ export const Rank: React.FC = () => {
   const { uploadedData, markRankingComplete, resetRanking } = useData();
   const navigate = useNavigate();
 
+  // Determine ride type from the first coaster
+  const rideType = uploadedData?.coasters?.[0]?.type || "coaster";
+
   const hasUnrankedCoasters =
     uploadedData?.coasters?.some(
       (c) => !c.isPreRanked && c.rankPosition === undefined,
@@ -56,9 +59,15 @@ export const Rank: React.FC = () => {
 
   React.useEffect(() => {
     if (isComplete && finalRanking.length > 0 && !isAlreadyRanked) {
-      markRankingComplete(finalRanking);
+      markRankingComplete(finalRanking, rideType);
     }
-  }, [isComplete, finalRanking, markRankingComplete, isAlreadyRanked]);
+  }, [
+    isComplete,
+    finalRanking,
+    markRankingComplete,
+    isAlreadyRanked,
+    rideType,
+  ]);
 
   if (isAlreadyRanked && uploadedData?.rankingMetadata?.rankedCoasters) {
     const rankedCoasters = uploadedData.rankingMetadata.rankedCoasters
@@ -77,7 +86,7 @@ export const Rank: React.FC = () => {
               );
 
               if (confirmed) {
-                resetRanking();
+                resetRanking(rideType);
                 window.location.reload();
               }
             }}
@@ -150,7 +159,7 @@ export const Rank: React.FC = () => {
               );
 
               if (confirmed) {
-                resetRanking();
+                resetRanking(rideType);
                 window.location.reload();
               }
             }}

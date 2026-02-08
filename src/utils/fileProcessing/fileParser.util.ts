@@ -1,4 +1,4 @@
-import { Coaster, UploadedData } from "../../types/data";
+import { Coaster, UploadedData, RideType } from "../../types/data";
 import { formatString } from "../formatString.util";
 
 /**
@@ -72,7 +72,10 @@ function parseCSVLine(line: string): string[] {
   return result;
 }
 
-export function validateCoasterData(data: RawCoasterData[]): Coaster[] {
+export function validateCoasterData(
+  data: RawCoasterData[],
+  rideType: RideType = "coaster",
+): Coaster[] {
   return data.map((item, index) => {
     if (!item.name) {
       throw new Error(`Row ${index + 1}: Coaster name is required`);
@@ -107,6 +110,7 @@ export function validateCoasterData(data: RawCoasterData[]): Coaster[] {
       thrillLevel: item.thrillLevel
         ? formatString(item.thrillLevel, "space", "first-word", false)
         : undefined,
+      type: rideType,
     };
   });
 }
@@ -114,6 +118,7 @@ export function validateCoasterData(data: RawCoasterData[]): Coaster[] {
 export function processUploadedFile(
   file: File,
   content: string,
+  rideType: RideType = "coaster",
 ): Promise<UploadedData> {
   return new Promise((resolve, reject) => {
     try {
@@ -157,7 +162,7 @@ export function processUploadedFile(
         );
       }
 
-      const coasters = validateCoasterData(data);
+      const coasters = validateCoasterData(data, rideType);
 
       const result: UploadedData = {
         coasters,

@@ -7,11 +7,13 @@ import {
   InfoMessage,
   MainContent,
   PreRankingQuestion,
+  RideTypeToggle,
   ScreenReaderOnly,
   Title,
   Text,
 } from "../../components";
 import { useData } from "../../contexts/DataContext";
+import { RideType } from "../../types/data";
 import {
   useUploadState,
   handlePreRankingAnswer as handlePreRankingAnswerUtil,
@@ -23,11 +25,25 @@ import type { DuplicateResolution } from "../../components/DuplicateResolver";
 import * as Styled from "./UploadJSON.styled";
 
 export default function UploadJSON() {
-  const { uploadedData, setUploadedData, isLoading, setIsLoading } = useData();
+  const {
+    uploadedData,
+    setUploadedData,
+    darkRideData,
+    setDarkRideData,
+    isLoading,
+    setIsLoading,
+  } = useData();
   const uploadState = useUploadState();
   const [jsonInput, setJsonInput] = useState("");
+  const [rideType, setRideType] = useState<RideType>("coaster");
 
-  const existingCoasterCount = uploadedData?.coasters?.length || 0;
+  // Get current data based on ride type
+  const currentData = rideType === "coaster" ? uploadedData : darkRideData;
+  const setCurrentData =
+    rideType === "coaster" ? setUploadedData : setDarkRideData;
+  const coasterCount = uploadedData?.coasters?.length || 0;
+  const darkRideCount = darkRideData?.coasters?.length || 0;
+  const existingCoasterCount = currentData?.coasters?.length || 0;
 
   const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
     handleUploadDuplicateResolution({
@@ -35,10 +51,10 @@ export default function UploadJSON() {
       duplicates: uploadState.duplicates,
       pendingCoasters: uploadState.pendingCoasters,
       pendingFilename: uploadState.pendingFilename,
-      uploadedData,
+      uploadedData: currentData,
       uploadStateActions: uploadState,
-      setUploadedData,
-      successMessagePrefix: "Successfully processed JSON data!",
+      setUploadedData: setCurrentData,
+      successMessagePrefix: `Successfully processed JSON data! Added to ${rideType === "coaster" ? "coaster" : "dark ride"} collection.`,
       onAdditionalCleanup: () => setJsonInput(""),
     });
   };
@@ -54,10 +70,10 @@ export default function UploadJSON() {
       isPreRanked,
       pendingCoasters: uploadState.pendingCoasters,
       pendingFilename: uploadState.pendingFilename,
-      uploadedData,
+      uploadedData: currentData,
       uploadStateActions: uploadState,
-      setUploadedData,
-      successMessagePrefix: "Successfully processed JSON data!",
+      setUploadedData: setCurrentData,
+      successMessagePrefix: `Successfully processed JSON data! Added to ${rideType === "coaster" ? "coaster" : "dark ride"} collection.`,
       onAdditionalCleanup: () => setJsonInput(""),
     });
   };
@@ -69,7 +85,7 @@ export default function UploadJSON() {
 
   const processJsonData = async (
     jsonString: string,
-    filename = "pasted-data.json"
+    filename = "pasted-data.json",
   ) => {
     uploadState.setError("");
     uploadState.setSuccess("");
@@ -79,18 +95,19 @@ export default function UploadJSON() {
       await processUploadWorkflow({
         fileContent: jsonString,
         filename,
-        uploadedData,
+        uploadedData: currentData,
         uploadStateActions: uploadState,
-        setUploadedData,
+        setUploadedData: setCurrentData,
         setIsLoading,
-        successMessagePrefix: "Successfully processed JSON data!",
+        successMessagePrefix: `Successfully processed JSON data! Added to ${rideType === "coaster" ? "coaster" : "dark ride"} collection.`,
         onAdditionalCleanup: () => setJsonInput(""),
+        rideType,
       });
     } catch (err) {
       uploadState.setError(
         `Error processing JSON: ${
           err instanceof Error ? err.message : "Unknown error"
-        }`
+        }`,
       );
       setIsLoading(false);
     }
@@ -127,21 +144,38 @@ export default function UploadJSON() {
 
       <section>
         <Styled.Section>
-          {existingCoasterCount > 0 && (
+          {(coasterCount > 0 || darkRideCount > 0) && (
             <>
-              <CurrentDataInfo coasterCount={existingCoasterCount} />
+              <CurrentDataInfo
+                coasterCount={coasterCount}
+                darkRideCount={darkRideCount}
+                rideType={rideType}
+              />
               <Text as="h2" colour="charcoal" fontSize="medium" mb="small">
-                Import JSON Data
+                Import JSON Data -{" "}
+                {rideType === "coaster" ? "Coasters" : "Dark Rides"}
               </Text>
             </>
           )}
           {existingCoasterCount === 0 && (
-            <ScreenReaderOnly as="h2">Import JSON Data</ScreenReaderOnly>
+            <ScreenReaderOnly as="h2">
+              Import JSON Data -{" "}
+              {rideType === "coaster" ? "Coasters" : "Dark Rides"}
+            </ScreenReaderOnly>
           )}
           <Text as="p" colour="mediumGrey" mb="small">
-            Paste your coaster data as JSON or upload a JSON file. Your data
-            should be an array of coaster objects.
+            Paste your {rideType === "coaster" ? "coaster" : "dark ride"} data
+            as JSON or upload a JSON file. Your data should be an array of{" "}
+            {rideType === "coaster" ? "coaster" : "dark ride"} objects.
           </Text>
+        </Styled.Section>
+
+        {/* Ride Type Toggle */}
+        <Styled.Section>
+          <RideTypeToggle
+            value={rideType}
+            onChange={(newRideType) => setRideType(newRideType)}
+          />
         </Styled.Section>
 
         {/* Required Fields Info */}
@@ -180,18 +214,22 @@ export default function UploadJSON() {
               </Text>{" "}
               Model name
             </Text>
-            <Text as="li" colour="slateGrey">
-              <Text bold colour="charcoal">
-                material:
-              </Text>{" "}
-              Steel/Wood/Hybrid
-            </Text>
-            <Text as="li" colour="slateGrey">
-              <Text bold colour="charcoal">
-                thrillLevel:
-              </Text>{" "}
-              Kiddie/Family/Family Thrill/Thrill
-            </Text>
+            {rideType === "coaster" && (
+              <>
+                <Text as="li" colour="slateGrey">
+                  <Text bold colour="charcoal">
+                    material:
+                  </Text>{" "}
+                  Steel/Wood/Hybrid
+                </Text>
+                <Text as="li" colour="slateGrey">
+                  <Text bold colour="charcoal">
+                    thrillLevel:
+                  </Text>{" "}
+                  Kiddie/Family/Family Thrill/Thrill
+                </Text>
+              </>
+            )}
             <Text as="li" colour="slateGrey">
               <Text bold colour="charcoal">
                 country:
@@ -209,7 +247,8 @@ export default function UploadJSON() {
             </Text>
 
             <CodeBlock>
-              {`[
+              {rideType === "coaster"
+                ? `[
   {
     "name": "The Smiler",
     "park": "Alton Towers",
@@ -227,6 +266,22 @@ export default function UploadJSON() {
     "material": "Steel",
     "thrillLevel": "Family Thrill",
     "country": "United Kingdom"
+  }
+]`
+                : `[
+  {
+    "name": "Haunted Mansion",
+    "park": "Magic Kingdom",
+    "manufacturer": "Disney Imagineering",
+    "model": "Omnimover",
+    "country": "United States"
+  },
+  {
+    "name": "Spider-Man",
+    "park": "Universal Studios",
+    "manufacturer": "Universal Creative",
+    "model": "Trackless Dark Ride",
+    "country": "United States"
   }
 ]`}
             </CodeBlock>

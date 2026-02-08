@@ -1,19 +1,32 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { DataContextType, UploadedData, Coaster } from "../types/data";
+import {
+  DataContextType,
+  UploadedData,
+  Coaster,
+  RideType,
+} from "../types/data";
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const STORAGE_KEY = "coaster-ranker-data";
+const COASTER_STORAGE_KEY = "coaster-ranker-data";
+const DARK_RIDE_STORAGE_KEY = "coaster-ranker-dark-rides";
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const [uploadedData, setUploadedDataState] = useState<UploadedData | null>(
     null,
   );
+  const [darkRideData, setDarkRideDataState] = useState<UploadedData | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
+  // Helper function to load data from localStorage
+  const loadDataFromStorage = (
+    key: string,
+    setState: (data: UploadedData | null) => void,
+  ) => {
     try {
-      const savedData = localStorage.getItem(STORAGE_KEY);
+      const savedData = localStorage.getItem(key);
       if (savedData) {
         const parsedData = JSON.parse(savedData);
         if (parsedData.uploadedAt) {
@@ -35,17 +48,21 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        setUploadedDataState(parsedData);
+        setState(parsedData);
       }
     } catch (error) {
-      console.error("Error loading data from localStorage:", error);
-      localStorage.removeItem(STORAGE_KEY);
+      console.error(`Error loading data from localStorage (${key}):`, error);
+      localStorage.removeItem(key);
     }
+  };
+
+  useEffect(() => {
+    loadDataFromStorage(COASTER_STORAGE_KEY, setUploadedDataState);
+    loadDataFromStorage(DARK_RIDE_STORAGE_KEY, setDarkRideDataState);
   }, []);
 
-  const setUploadedData = (data: UploadedData | null) => {
-    setUploadedDataState(data);
-
+  // Helper function to save data to localStorage
+  const saveDataToStorage = (data: UploadedData | null, key: string) => {
     try {
       if (data) {
         const dataToSave = JSON.parse(
@@ -57,17 +74,29 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           }),
         );
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+        localStorage.setItem(key, JSON.stringify(dataToSave));
       } else {
-        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(key);
       }
     } catch (error) {
-      console.error("Error saving data to localStorage:", error);
+      console.error(`Error saving data to localStorage (${key}):`, error);
     }
   };
 
-  const markRankingComplete = (finalRanking: Coaster[]) => {
-    if (!uploadedData) return;
+  const setUploadedData = (data: UploadedData | null) => {
+    setUploadedDataState(data);
+    saveDataToStorage(data, COASTER_STORAGE_KEY);
+  };
+
+  const setDarkRideData = (data: UploadedData | null) => {
+    setDarkRideDataState(data);
+    saveDataToStorage(data, DARK_RIDE_STORAGE_KEY);
+  };
+
+  const markRankingComplete = (finalRanking: Coaster[], rideType: RideType) => {
+    const currentData = rideType === "coaster" ? uploadedData : darkRideData;
+    const setData = rideType === "coaster" ? setUploadedData : setDarkRideData;
+    if (!currentData) return;
 
     console.log("=== MARK RANKING COMPLETE DEBUG ===");
     console.log(
@@ -76,7 +105,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     );
     console.log("finalRanking length:", finalRanking.length);
 
-    const updatedCoasters = uploadedData.coasters.map((coaster) => {
+    const updatedCoasters = currentData.coasters.map((coaster) => {
       const rankIndex = finalRanking.findIndex(
         (ranked) => ranked.id === coaster.id,
       );
@@ -87,14 +116,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     });
 
     const updatedData = {
-      ...uploadedData,
+      ...currentData,
       coasters: updatedCoasters,
       rankingMetadata: {
-        ...uploadedData.rankingMetadata,
+        ...currentData.rankingMetadata,
         isRanked: true,
         rankedCoasters: finalRanking.map((coaster) => coaster.id),
         completedComparisons:
-          uploadedData.rankingMetadata?.completedComparisons ||
+          currentData.rankingMetadata?.completedComparisons ||
           new Set<string>(),
       },
     };
@@ -109,29 +138,31 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     );
     console.log("=== END MARK RANKING COMPLETE DEBUG ===");
 
-    setUploadedData(updatedData);
+    setData(updatedData);
   };
 
-  const resetRanking = () => {
-    if (!uploadedData) return;
+  const resetRanking = (rideType: RideType) => {
+    const currentData = rideType === "coaster" ? uploadedData : darkRideData;
+    const setData = rideType === "coaster" ? setUploadedData : setDarkRideData;
+    if (!currentData) return;
 
-    const resetCoasters = uploadedData.coasters.map((coaster) => ({
+    const resetCoasters = currentData.coasters.map((coaster) => ({
       ...coaster,
       rankPosition: undefined,
     }));
 
     const updatedData = {
-      ...uploadedData,
+      ...currentData,
       coasters: resetCoasters,
       rankingMetadata: {
-        ...uploadedData.rankingMetadata,
+        ...currentData.rankingMetadata,
         isRanked: false,
         rankedCoasters: [],
         completedComparisons: new Set<string>(),
       },
     };
 
-    setUploadedData(updatedData);
+    setData(updatedData);
   };
 
   return (
@@ -139,6 +170,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       value={{
         uploadedData,
         setUploadedData,
+        darkRideData,
+        setDarkRideData,
         isLoading,
         setIsLoading,
         markRankingComplete,

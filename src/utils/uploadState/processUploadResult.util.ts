@@ -1,6 +1,6 @@
 import { processFileUpload, ProcessFileUploadResult } from "../fileProcessing";
 import { UploadStateActions } from "./useUploadState.util";
-import { UploadedData } from "../../types/data";
+import { UploadedData, RideType } from "../../types/data";
 
 /**
  * Utility functions for processing file upload results and managing upload workflows.
@@ -118,6 +118,7 @@ export interface ProcessUploadWorkflowParams {
   setIsLoading: (loading: boolean) => void;
   successMessagePrefix?: string;
   onAdditionalCleanup?: () => void;
+  rideType?: RideType;
 }
 
 export async function processUploadWorkflow(
@@ -132,6 +133,7 @@ export async function processUploadWorkflow(
     setIsLoading,
     successMessagePrefix,
     onAdditionalCleanup,
+    rideType = "coaster",
   } = params;
 
   const { setError, setSuccess } = uploadStateActions;
@@ -145,6 +147,7 @@ export async function processUploadWorkflow(
       fileContent,
       filename,
       existingData: uploadedData,
+      rideType,
     });
 
     const processResult = processUploadResult({

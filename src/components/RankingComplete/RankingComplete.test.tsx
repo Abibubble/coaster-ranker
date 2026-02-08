@@ -13,7 +13,7 @@ const mockCoasters = [
     park: "Test Park 1",
     manufacturer: "Test Manufacturer",
     model: "Test Model",
-    type: "Steel",
+    type: "coaster" as const,
     country: "UK",
   },
   {
@@ -22,7 +22,7 @@ const mockCoasters = [
     park: "Test Park 2",
     manufacturer: "Test Manufacturer",
     model: "Test Model",
-    type: "Steel",
+    type: "coaster" as const,
     country: "UK",
   },
 ];

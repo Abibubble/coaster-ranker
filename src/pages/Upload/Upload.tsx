@@ -4,19 +4,20 @@ import {
   Text,
   Title,
   ScreenReaderOnly,
-} from '../../components'
-import { useData } from '../../contexts/DataContext'
-import { useNavigate } from 'react-router-dom'
-import * as Styled from './Upload.styled'
+} from "../../components";
+import { useData } from "../../contexts/DataContext";
+import { useNavigate } from "react-router-dom";
+import * as Styled from "./Upload.styled";
 
 function Upload() {
-  const { uploadedData } = useData()
-  const navigate = useNavigate()
-  const coasterCount = uploadedData?.coasters?.length || 0
+  const { uploadedData, darkRideData } = useData();
+  const navigate = useNavigate();
+  const coasterCount = uploadedData?.coasters?.length || 0;
+  const darkRideCount = darkRideData?.coasters?.length || 0;
 
   const handleNavigation = (path: string) => {
-    navigate(path)
-  }
+    navigate(path);
+  };
 
   return (
     <MainContent>
@@ -24,20 +25,23 @@ function Upload() {
 
       <section>
         <Styled.Instructions>
-          {coasterCount > 0 && (
+          {(coasterCount > 0 || darkRideCount > 0) && (
             <>
-              <CurrentDataInfo coasterCount={coasterCount} />
-              <Text as='h2' colour='charcoal' fontSize='medium' mb='small'>
+              <CurrentDataInfo
+                coasterCount={coasterCount}
+                darkRideCount={darkRideCount}
+              />
+              <Text as="h2" colour="charcoal" fontSize="medium" mb="small">
                 Choose your upload method
               </Text>
             </>
           )}
-          {coasterCount === 0 && (
-            <ScreenReaderOnly as='h2'>
+          {coasterCount === 0 && darkRideCount === 0 && (
+            <ScreenReaderOnly as="h2">
               Choose your upload method
             </ScreenReaderOnly>
           )}
-          <Text as='p' colour='mediumGrey' mb='small'>
+          <Text as="p" colour="mediumGrey" mb="small">
             Select how you'd like to add coasters to your collection. You can
             use multiple methods - all data will be combined together.
           </Text>
@@ -46,19 +50,19 @@ function Upload() {
         <Styled.UploadOptions>
           <div>
             <Styled.UploadButton
-              onClick={() => handleNavigation('/upload-csv')}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  handleNavigation('/upload-csv')
+              onClick={() => handleNavigation("/upload-csv")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleNavigation("/upload-csv");
                 }
               }}
             >
               <Styled.UploadIcon>CSV</Styled.UploadIcon>
-              <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
+              <Text as="h3" colour="charcoal" mb="tiny" mt="small">
                 Upload CSV file
               </Text>
-              <Text as='p' colour='mediumGrey' fontSize='small'>
+              <Text as="p" colour="mediumGrey" fontSize="small">
                 Import coaster data from a CSV spreadsheet file
               </Text>
             </Styled.UploadButton>
@@ -66,19 +70,19 @@ function Upload() {
 
           <div>
             <Styled.UploadButton
-              onClick={() => handleNavigation('/upload-json')}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  handleNavigation('/upload-json')
+              onClick={() => handleNavigation("/upload-json")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleNavigation("/upload-json");
                 }
               }}
             >
               <Styled.UploadIcon>JSON</Styled.UploadIcon>
-              <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
+              <Text as="h3" colour="charcoal" mb="tiny" mt="small">
                 Upload JSON data
               </Text>
-              <Text as='p' colour='mediumGrey' fontSize='small'>
+              <Text as="p" colour="mediumGrey" fontSize="small">
                 Paste JSON data or upload a JSON file
               </Text>
             </Styled.UploadButton>
@@ -86,19 +90,19 @@ function Upload() {
 
           <div>
             <Styled.UploadButton
-              onClick={() => handleNavigation('/upload-manual')}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  handleNavigation('/upload-manual')
+              onClick={() => handleNavigation("/upload-manual")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleNavigation("/upload-manual");
                 }
               }}
             >
               <Styled.UploadIcon>FORM</Styled.UploadIcon>
-              <Text as='h3' colour='charcoal' mb='tiny' mt='small'>
+              <Text as="h3" colour="charcoal" mb="tiny" mt="small">
                 Enter manually
               </Text>
-              <Text as='p' colour='mediumGrey' fontSize='small'>
+              <Text as="p" colour="mediumGrey" fontSize="small">
                 Add coasters one at a time using a form
               </Text>
             </Styled.UploadButton>
@@ -106,7 +110,7 @@ function Upload() {
         </Styled.UploadOptions>
       </section>
     </MainContent>
-  )
+  );
 }
 
-export default Upload
+export default Upload;

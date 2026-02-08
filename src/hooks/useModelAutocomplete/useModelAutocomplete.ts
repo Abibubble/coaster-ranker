@@ -11,6 +11,7 @@ const normalizeForSearch = (text: string): string => {
 export interface ManufacturerData {
   manufacturer: string;
   models: string[];
+  darkRideModels?: string[];
 }
 
 export interface ModelSuggestion {
@@ -24,9 +25,12 @@ interface UseModelAutocompleteOptions {
   maxSuggestions?: number;
 }
 
+export type RideType = "coaster" | "dark-ride";
+
 export default function useModelAutocomplete(
   value: string,
   selectedManufacturer: string,
+  rideType: RideType = "coaster",
   options: UseModelAutocompleteOptions = {},
 ) {
   const { minCharacters = 1, maxSuggestions = 5 } = options;
@@ -82,7 +86,17 @@ export default function useModelAutocomplete(
       return normalizedMfgName === normalizedManufacturer;
     });
 
-    if (!manufacturerData || !manufacturerData.models) {
+    if (!manufacturerData) {
+      return [];
+    }
+
+    // Get the appropriate models array based on ride type
+    const modelsArray =
+      rideType === "dark-ride"
+        ? manufacturerData.darkRideModels || []
+        : manufacturerData.models || [];
+
+    if (modelsArray.length === 0) {
       return [];
     }
 
@@ -92,7 +106,7 @@ export default function useModelAutocomplete(
 
     const matches: ModelSuggestion[] = [];
 
-    for (const model of manufacturerData.models) {
+    for (const model of modelsArray) {
       const modelName = normalizeForSearch(model);
       const modelWords = modelName
         .split(/[\s-]+/)
@@ -199,6 +213,7 @@ export default function useModelAutocomplete(
     manufacturers,
     minCharacters,
     maxSuggestions,
+    rideType,
   ]);
 
   const hasMinCharacters = value.length >= minCharacters;

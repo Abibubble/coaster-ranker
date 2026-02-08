@@ -1,5 +1,13 @@
 [
   {
+    "manufacturer": "ART Engineering GmbH",
+    "models": ["Suspended Coaster", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Alterface",
+    "darkRideModels": ["Salto!"]
+  },
+  {
     "manufacturer": "Arrow Dynamics",
     "models": [
       "Loop Screw",
@@ -8,15 +16,20 @@
       "Mine Train",
       "Corkscrew",
       "4th Dimension"
+    ],
+    "darkRideModels": [
+      "Omnimover",
+      "Water Dark Ride (Batch Loading)",
+      "Water Dark Ride"
     ]
-  },
-  {
-    "manufacturer": "ART Engineering GmbH",
-    "models": ["Suspended Coaster", "Family Coaster"]
   },
   {
     "manufacturer": "Barbieri Rides",
     "models": ["Spinning Coaster", "Mini Coaster", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Big Country Motioneering",
+    "models": ["Custom Steel Coaster"]
   },
   {
     "manufacturer": "Bolliger & Mabillard",
@@ -32,8 +45,48 @@
     ]
   },
   {
+    "manufacturer": "BHS / Translift",
+    "darkRideModels": ["Suspended Dark Ride"]
+  },
+  {
+    "manufacturer": "Cavazza Diego",
+    "models": ["Wild Mouse", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Chance Rides",
+    "models": ["Toboggan", "Hyper GT-X", "Big Dipper", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Charles Paige",
+    "models": ["Custom Wooden Coaster"]
+  },
+  {
     "manufacturer": "Custom Coasters International, Inc.",
     "models": ["Custom Wooden Coaster"]
+  },
+  {
+    "manufacturer": "DAL Amusement Rides",
+    "models": ["Wild Mouse", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Dinn Corporation",
+    "models": ["Custom Wooden Coaster"]
+  },
+  {
+    "manufacturer": "Dynamic Attractions",
+    "darkRideModels": ["Slot Car / Test Track System"]
+  },
+  {
+    "manufacturer": "E&F Miler Industries",
+    "models": ["Family Coaster", "Kiddie Coaster"]
+  },
+  {
+    "manufacturer": "EOS",
+    "models": ["Spinning Coaster", "Family Coaster"]
+  },
+  {
+    "manufacturer": "ETF Ride Systems",
+    "darkRideModels": ["Mystic Mover (Trackless)", "Multi Mover (Trackless)"]
   },
   {
     "manufacturer": "Fabbri",
@@ -54,6 +107,10 @@
     "models": ["Hyper Coaster", "Inverted Coaster"]
   },
   {
+    "manufacturer": "Gosetto",
+    "models": ["Wild Mouse", "Big Apple"]
+  },
+  {
     "manufacturer": "The Gravity Group",
     "models": ["Wooden Coaster", "Family Wooden Coaster"]
   },
@@ -62,7 +119,11 @@
     "models": ["Wooden Coaster", "Big Dipper Wood"]
   },
   {
-    "manufacturer": "Intamin Amusement",
+    "manufacturer": "Guven",
+    "models": ["Wild Mouse", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Intamin",
     "models": [
       "Blitz",
       "Giga",
@@ -72,7 +133,59 @@
       "Wing Coaster",
       "Suspended Catapult",
       "Wooden Coaster (Prefab)"
+    ],
+    "darkRideModels": [
+      "Dynamic Motion Stage",
+      "Water Dark Ride / Spillwater",
+      "Indoor Flume / Spillwater",
+      "Tow Boat Ride"
     ]
+  },
+  {
+    "manufacturer": "International Coasters, Inc.",
+    "models": ["Wooden Coaster"]
+  },
+  {
+    "manufacturer": "John Miller",
+    "models": ["Friction Wooden Coaster"]
+  },
+  {
+    "manufacturer": "KECO (Taft Broadcasting Company)",
+    "models": ["Custom Wooden Coaster"]
+  },
+  {
+    "manufacturer": "Kılıç Lunapark",
+    "models": [
+      "Brucomela (Apple Coaster)",
+      "Shark Trip",
+      "Dragon",
+      "Runaway Train",
+      "Spinning Brucomela"
+    ]
+  },
+  {
+    "manufacturer": "Kings Island",
+    "models": ["Custom Wooden Coaster"]
+  },
+  {
+    "manufacturer": "Knoebels",
+    "models": ["Custom Wooden Coaster", "Wooden Flying Turns"]
+  },
+  {
+    "manufacturer": "Kumbak",
+    "models": ["Coaster Upgrade / Retrofit"]
+  },
+  {
+    "manufacturer": "KUKA / Dynamic Structures",
+    "darkRideModels": ["RoboCoaster G2"]
+  },
+  {
+    "manufacturer": "L&T Systems",
+    "models": ["Wild Mouse", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Lagotronics",
+    "darkRideModels": ["GameChanger"]
   },
   {
     "manufacturer": "Mack Rides",
@@ -85,11 +198,35 @@
       "Xtreme Spinning Coaster",
       "Hypercoaster",
       "Launch Coaster"
-    ]
+    ],
+    "darkRideModels": ["Water Dark Ride", "Endless Train"]
+  },
+  {
+    "manufacturer": "Martin & Vleminckx",
+    "models": ["Wooden Coaster"]
   },
   {
     "manufacturer": "Maurer Rides",
     "models": ["Spinning Coaster", "Wild Mouse", "X-Car"]
+  },
+  {
+    "manufacturer": "Molina & Sons",
+    "models": ["Galaxi", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Oceaneering",
+    "darkRideModels": ["The SCOOP", "Trackless Dark Ride"]
+  },
+  {
+    "manufacturer": "Morgan",
+    "models": ["Hyper Coaster"]
+  },
+  {
+    "manufacturer": "MTS Systems / Disney",
+    "darkRideModels": [
+      "EMV (Enhanced Motion Vehicle)",
+      "Custom Spinning Motion Base"
+    ]
   },
   {
     "manufacturer": "Philadelphia Toboggan Coasters, Inc.",
@@ -100,8 +237,16 @@
     "models": ["Zyklon", "RC40", "Super Train"]
   },
   {
+    "manufacturer": "Premier Rides",
+    "models": ["Sky Rocket", "LIM Launch", "Spaghetti Bowl"]
+  },
+  {
     "manufacturer": "Preston & Barbieri",
     "models": ["Wild Mouse", "Spinning Coaster", "Family Coaster"]
+  },
+  {
+    "manufacturer": "Reverchon Industries",
+    "models": ["Spinning Coaster", "Wild Mouse", "Gliding Coaster"]
   },
   {
     "manufacturer": "Rocky Mountain Construction",
@@ -115,6 +260,14 @@
   {
     "manufacturer": "Roller Coaster Corporation of America",
     "models": ["Wooden Coaster"]
+  },
+  {
+    "manufacturer": "S.D.C.",
+    "models": ["Galaxi"]
+  },
+  {
+    "manufacturer": "Sansei Technologies",
+    "darkRideModels": ["Magnetic Wire-Guided Boat"]
   },
   {
     "manufacturer": "S&S Sansei / S&S Worldwide",
@@ -143,8 +296,20 @@
     ]
   },
   {
+    "manufacturer": "Setpoint",
+    "models": ["Suspended Family Coaster", "Swing Thing"]
+  },
+  {
+    "manufacturer": "Soquet",
+    "models": ["Big Apple", "Family Coaster"]
+  },
+  {
     "manufacturer": "Togo",
     "models": ["Hypercoaster", "Stand-up Coaster", "Ultra Twister"]
+  },
+  {
+    "manufacturer": "Triotech",
+    "darkRideModels": ["Maestro"]
   },
   {
     "manufacturer": "Vekoma",
@@ -161,7 +326,24 @@
       "Mine Train",
       "Flying Dutchman",
       "Launch Coaster"
-    ]
+    ],
+    "darkRideModels": ["Omnimover"]
+  },
+  {
+    "manufacturer": "WGH Transportation Engineering",
+    "models": ["Monorail Coaster", "Transport Coaster"]
+  },
+  {
+    "manufacturer": "Walt Disney Imagineering",
+    "darkRideModels": ["Trackless Dark Ride"]
+  },
+  {
+    "manufacturer": "Wiegand",
+    "models": ["Alpine Coaster", "Bobkart"]
+  },
+  {
+    "manufacturer": "Wisdom Rides",
+    "models": ["Orient Express", "Miner Mike"]
   },
   {
     "manufacturer": "Zamperla",
@@ -178,127 +360,5 @@
   {
     "manufacturer": "Zierer",
     "models": ["Tivoli", "Force", "Flitzer", "Elevated Seating Coaster"]
-  },
-  {
-    "manufacturer": "Premier Rides",
-    "models": ["Sky Rocket", "LIM Launch", "Spaghetti Bowl"]
-  },
-  {
-    "manufacturer": "Wiegand",
-    "models": ["Alpine Coaster", "Bobkart"]
-  },
-  {
-    "manufacturer": "E&F Miler Industries",
-    "models": ["Family Coaster", "Kiddie Coaster"]
-  },
-  {
-    "manufacturer": "Reverchon Industries",
-    "models": ["Spinning Coaster", "Wild Mouse", "Gliding Coaster"]
-  },
-  {
-    "manufacturer": "Soquet",
-    "models": ["Big Apple", "Family Coaster"]
-  },
-  {
-    "manufacturer": "John Miller",
-    "models": ["Friction Wooden Coaster"]
-  },
-  {
-    "manufacturer": "WGH Transportation Engineering",
-    "models": ["Monorail Coaster", "Transport Coaster"]
-  },
-  {
-    "manufacturer": "L&T Systems",
-    "models": ["Wild Mouse", "Family Coaster"]
-  },
-  {
-    "manufacturer": "Charles Paige",
-    "models": ["Custom Wooden Coaster"]
-  },
-  {
-    "manufacturer": "Chance Rides",
-    "models": ["Toboggan", "Hyper GT-X", "Big Dipper", "Family Coaster"]
-  },
-  {
-    "manufacturer": "DAL Amusement Rides",
-    "models": ["Wild Mouse", "Family Coaster"]
-  },
-  {
-    "manufacturer": "Knoebels",
-    "models": ["Custom Wooden Coaster", "Wooden Flying Turns"]
-  },
-  {
-    "manufacturer": "Morgan",
-    "models": ["Hyper Coaster"]
-  },
-  {
-    "manufacturer": "Martin & Vleminckx",
-    "models": ["Wooden Coaster"]
-  },
-  {
-    "manufacturer": "Kings Island",
-    "models": ["Custom Wooden Coaster"]
-  },
-  {
-    "manufacturer": "S.D.C.",
-    "models": ["Galaxi"]
-  },
-  {
-    "manufacturer": "Kumbak",
-    "models": ["Coaster Upgrade / Retrofit"]
-  },
-  {
-    "manufacturer": "Guven",
-    "models": ["Wild Mouse", "Family Coaster"]
-  },
-  {
-    "manufacturer": "EOS",
-    "models": ["Spinning Coaster", "Family Coaster"]
-  },
-  {
-    "manufacturer": "Wisdom Rides",
-    "models": ["Orient Express", "Miner Mike"]
-  },
-  {
-    "manufacturer": "Cavazza Diego",
-    "models": ["Wild Mouse", "Family Coaster"]
-  },
-  {
-    "manufacturer": "Gosetto",
-    "models": ["Wild Mouse", "Big Apple"]
-  },
-  {
-    "manufacturer": "Big Country Motioneering",
-    "models": ["Custom Steel Coaster"]
-  },
-  {
-    "manufacturer": "International Coasters, Inc.",
-    "models": ["Wooden Coaster"]
-  },
-  {
-    "manufacturer": "Dinn Corporation",
-    "models": ["Custom Wooden Coaster"]
-  },
-  {
-    "manufacturer": "KECO (Taft Broadcasting Company)",
-    "models": ["Custom Wooden Coaster"]
-  },
-  {
-    "manufacturer": "Molina & Sons",
-    "models": ["Galaxi", "Family Coaster"]
-  },
-  {
-    "manufacturer": "Setpoint",
-    "models": ["Suspended Family Coaster", "Swing Thing"]
-  },
-  {
-    "manufacturer": "Kılıç Lunapark",
-    "models": [
-      "Brucomela (Apple Coaster)",
-      "Shark Trip",
-      "Dragon",
-      "Runaway Train",
-      "Spinning Brucomela"
-    ]
   }
 ]

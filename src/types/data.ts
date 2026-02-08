@@ -12,6 +12,7 @@ export interface Coaster {
   model?: string;
   material?: string;
   thrillLevel?: string;
+  type?: "coaster" | "dark-ride"; // Type of ride - defaults to 'coaster' for backward compatibility
   // Ranking metadata
 }
 
@@ -30,11 +31,15 @@ export interface UploadedData {
   rankingMetadata?: RankingMetadata;
 }
 
+export type RideType = "coaster" | "dark-ride";
+
 export type DataContextType = {
   uploadedData: UploadedData | null;
   setUploadedData: (data: UploadedData | null) => void;
+  darkRideData: UploadedData | null;
+  setDarkRideData: (data: UploadedData | null) => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
-  markRankingComplete: (finalRanking: Coaster[]) => void;
-  resetRanking: () => void;
+  markRankingComplete: (finalRanking: Coaster[], rideType: RideType) => void;
+  resetRanking: (rideType: RideType) => void;
 };

@@ -21,7 +21,9 @@ describe("useModelAutocomplete", () => {
   });
 
   it("loads manufacturers data", async () => {
-    const { result } = renderHook(() => useModelAutocomplete("", ""));
+    const { result } = renderHook(() =>
+      useModelAutocomplete("", "", "coaster"),
+    );
 
     expect(result.current.isLoading).toBe(true);
 
@@ -33,7 +35,9 @@ describe("useModelAutocomplete", () => {
   });
 
   it("returns empty suggestions when no manufacturer selected", async () => {
-    const { result } = renderHook(() => useModelAutocomplete("inv", ""));
+    const { result } = renderHook(() =>
+      useModelAutocomplete("inv", "", "coaster"),
+    );
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -45,7 +49,7 @@ describe("useModelAutocomplete", () => {
 
   it("filters models by name", async () => {
     const { result } = renderHook(() =>
-      useModelAutocomplete("inv", "Bolliger & Mabillard"),
+      useModelAutocomplete("inv", "Bolliger & Mabillard", "coaster"),
     );
 
     await waitFor(() => {
