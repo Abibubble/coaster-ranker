@@ -287,14 +287,17 @@ export default function ViewCoasters() {
 
     let updatedRankingMetadata = currentData.rankingMetadata;
     if (updatedRankingMetadata && updatedRankingMetadata.rankedCoasters) {
-      const filteredRankedCoasters =
-        updatedRankingMetadata.rankedCoasters.filter((id) => id !== coasterId);
+      // Rebuild the rankedCoasters array based on the updated coaster rankings
+      const newRankedCoasters = updatedCoasters
+        .filter((coaster) => coaster.rankPosition !== undefined)
+        .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0))
+        .map((coaster) => coaster.id);
 
       updatedRankingMetadata = {
         ...updatedRankingMetadata,
-        rankedCoasters: filteredRankedCoasters,
+        rankedCoasters: newRankedCoasters,
         isRanked:
-          filteredRankedCoasters.length === updatedCoasters.length &&
+          newRankedCoasters.length === updatedCoasters.length &&
           updatedCoasters.length > 0,
         completedComparisons: new Set(
           Array.from(updatedRankingMetadata.completedComparisons || []).filter(

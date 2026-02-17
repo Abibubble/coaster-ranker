@@ -7,6 +7,7 @@ import {
   MainContent,
   ProgressInfo,
   RankingComplete,
+  RideTypeToggle,
   Text,
   Title,
   UndoLastChoice,
@@ -17,23 +18,28 @@ import {
   RankingComparison,
   ComparisonResult,
 } from "../../utils/ranking/newRankingEngine.util";
-import { Coaster } from "../../types/data";
+import { Coaster, RideType } from "../../types/data";
 import * as Styled from "./Rank.styled";
 
 export const Rank: React.FC = () => {
-  const { uploadedData, markRankingComplete, resetRanking } = useData();
+  const { uploadedData, darkRideData, markRankingComplete, resetRanking } =
+    useData();
   const navigate = useNavigate();
+  const [rideType, setRideType] = React.useState<RideType>("coaster");
 
-  // Determine ride type from the first coaster
-  const rideType = uploadedData?.coasters?.[0]?.type || "coaster";
+  // Get current data based on ride type
+  const currentData = rideType === "coaster" ? uploadedData : darkRideData;
+  const rideTypeLabel = rideType === "coaster" ? "Coasters" : "Dark Rides";
+  const rideSingularLabel = rideType === "coaster" ? "coaster" : "dark ride";
+  const ridePluralLabel = rideType === "coaster" ? "coasters" : "dark rides";
 
   const hasUnrankedCoasters =
-    uploadedData?.coasters?.some(
+    currentData?.coasters?.some(
       (c) => !c.isPreRanked && c.rankPosition === undefined,
     ) || false;
 
   const isAlreadyRanked =
-    uploadedData?.rankingMetadata?.isRanked && !hasUnrankedCoasters;
+    currentData?.rankingMetadata?.isRanked && !hasUnrankedCoasters;
 
   const {
     currentComparison,
@@ -55,7 +61,7 @@ export const Rank: React.FC = () => {
     lastComparison: ComparisonResult | null;
     canUndo: boolean;
     undo: () => void;
-  } = useSimpleRanking(uploadedData?.coasters || []);
+  } = useSimpleRanking(currentData?.coasters || []);
 
   React.useEffect(() => {
     if (isComplete && finalRanking.length > 0 && !isAlreadyRanked) {
@@ -69,20 +75,23 @@ export const Rank: React.FC = () => {
     rideType,
   ]);
 
-  if (isAlreadyRanked && uploadedData?.rankingMetadata?.rankedCoasters) {
-    const rankedCoasters = uploadedData.rankingMetadata.rankedCoasters
-      .map((id) => uploadedData.coasters.find((coaster) => coaster.id === id))
+  if (isAlreadyRanked && currentData?.rankingMetadata?.rankedCoasters) {
+    const rankedCoasters = currentData.rankingMetadata.rankedCoasters
+      .map((id) => currentData.coasters.find((coaster) => coaster.id === id))
       .filter(Boolean) as Coaster[];
 
     return (
       <MainContent>
-        <Title>Ranking Complete!</Title>
+        <Title>Rank Your {rideTypeLabel}</Title>
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle value={rideType} onChange={setRideType} />
+        </section>
         <Styled.RankingContainer>
           <RankingComplete
             rankedCoasters={rankedCoasters}
             onRankAgain={() => {
               const confirmed = window.confirm(
-                "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch.",
+                `Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch.`,
               );
 
               if (confirmed) {
@@ -96,17 +105,21 @@ export const Rank: React.FC = () => {
     );
   }
 
-  if (!uploadedData || !uploadedData.coasters.length) {
+  if (!currentData || !currentData.coasters.length) {
     return (
       <MainContent>
-        <Title>Rank Your Coasters</Title>
+        <Title>Rank Your {rideTypeLabel}</Title>
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle value={rideType} onChange={setRideType} />
+        </section>
         <Styled.NoDataSection>
           <Text as="p">
-            No coaster data uploaded yet. Please visit the{" "}
+            No {rideSingularLabel} data uploaded yet. Please visit the{" "}
             <Link href="/upload" dark>
               Upload page
             </Link>{" "}
-            to upload your coaster experiences. You'll need at least 2 coasters
+            to upload your {rideSingularLabel} experiences. You'll need at least
+            2 {ridePluralLabel}
             to start ranking.
           </Text>
         </Styled.NoDataSection>
@@ -114,12 +127,15 @@ export const Rank: React.FC = () => {
     );
   }
 
-  const { coasters, filename, uploadedAt } = uploadedData;
+  const { coasters, filename, uploadedAt } = currentData;
 
   if (coasters.length === 1) {
     return (
       <MainContent>
-        <Title>Rank Your Coasters</Title>
+        <Title>Rank Your {rideTypeLabel}</Title>
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle value={rideType} onChange={setRideType} />
+        </section>
         <section>
           <Styled.UploadSummary aria-label="Upload summary">
             <Text as="p">
@@ -130,16 +146,17 @@ export const Rank: React.FC = () => {
               {uploadedAt.toLocaleTimeString()}
             </Text>
             <Text as="p">
-              <Text bold>Total Coasters:</Text> {coasters.length}
+              <Text bold>Total {rideTypeLabel}:</Text> {coasters.length}
             </Text>
           </Styled.UploadSummary>
 
           <Text as="p">
-            You need at least 2 coasters to start ranking. Please upload more
-            coaster data to begin the ranking process.
+            You need at least 2 {ridePluralLabel} to start ranking. Please
+            upload more
+            {rideSingularLabel} data to begin the ranking process.
           </Text>
           <Button onClick={() => navigate("/upload")} variant="default">
-            Upload More Coasters
+            Upload More {rideTypeLabel}
           </Button>
         </section>
       </MainContent>
@@ -149,7 +166,10 @@ export const Rank: React.FC = () => {
   if (isComplete && finalRanking.length > 0) {
     return (
       <MainContent>
-        <Title>Ranking Complete!</Title>
+        <Title>Rank Your {rideTypeLabel}</Title>
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle value={rideType} onChange={setRideType} />
+        </section>
         <Styled.RankingContainer>
           <RankingComplete
             rankedCoasters={finalRanking}
@@ -172,7 +192,10 @@ export const Rank: React.FC = () => {
   if (currentComparison) {
     return (
       <MainContent>
-        <Title>Rank Your Coasters</Title>
+        <Title>Rank Your {rideTypeLabel}</Title>
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle value={rideType} onChange={setRideType} />
+        </section>
         <Styled.RankingContainer>
           <ProgressInfo
             totalCoasters={coasters.length}
@@ -204,7 +227,10 @@ export const Rank: React.FC = () => {
 
   return (
     <MainContent>
-      <Title>Rank Your Coasters</Title>
+      <Title>Rank Your {rideTypeLabel}</Title>
+      <section style={{ marginBottom: "1.5rem" }}>
+        <RideTypeToggle value={rideType} onChange={setRideType} />
+      </section>
       <Styled.RankingContainer>
         <Styled.PreparingContainer>
           <Text as="p">Preparing ranking...</Text>
