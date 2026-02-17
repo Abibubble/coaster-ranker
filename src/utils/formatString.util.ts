@@ -39,9 +39,8 @@ export const formatString = (
     spacedText = spacedText.replace(/^[-\s]+|[-\s]+$/g, "");
   }
 
-  if (!/\s/.test(spacedText) && !/^[A-Z\s]+$/.test(spacedText)) {
-    spacedText = spacedText.replace(/(?!^)([A-Z])/g, " $1");
-  }
+  // Don't automatically split camelCase - preserve user input
+  // This prevents proper nouns like "VelociCoaster" from being split
 
   switch (spacing) {
     case "space":
@@ -78,8 +77,23 @@ export const formatString = (
       break;
     case "first-word":
       formattedText = spacedText
-        .toLowerCase()
-        .replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
+        .split(/(\s+|(?=[^\w\s])|(?<=[^\w\s]))/)
+        .map((word) => {
+          if (/^\s+$/.test(word) || /^[^\w\s]+$/.test(word)) {
+            // Preserve whitespace and punctuation
+            return word;
+          }
+          if (word.length === 0) {
+            return word;
+          }
+          // Only modify words that are entirely lowercase
+          // Preserve words that are mixed case or all uppercase (likely acronyms/proper nouns)
+          if (word === word.toLowerCase()) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+          }
+          return word;
+        })
+        .join("");
       break;
     default:
       formattedText = spacedText

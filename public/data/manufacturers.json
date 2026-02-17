@@ -34,14 +34,15 @@
   {
     "manufacturer": "Bolliger & Mabillard",
     "models": [
-      "Inverted",
-      "Hyper",
-      "Dive",
-      "Wing",
-      "Floorless",
-      "Flying",
-      "Stand-Up",
-      "Surf Coaster"
+      "Inverted Coaster",
+      "Hyper Coaster",
+      "Dive Coaster",
+      "Wing Coaster",
+      "Floorless Coaster",
+      "Flying Coaster",
+      "Stand-Up Coaster",
+      "Surf Coaster",
+      "Sitting Coaster"
     ]
   },
   {
