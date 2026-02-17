@@ -16,6 +16,7 @@ interface RawCoasterData {
   model?: string;
   material?: string;
   thrillLevel?: string;
+  rank?: string;
 }
 
 export function parseCSV(csvText: string): RawCoasterData[] {
@@ -90,6 +91,20 @@ export function validateCoasterData(
       throw new Error(`Row ${index + 1}: Country is required`);
     }
 
+    // Parse ranking data if present
+    let rankPosition: number | undefined;
+    let originalRankPosition: number | undefined;
+    let isPreRanked: boolean = false;
+
+    if (item.rank) {
+      const parsedRank = parseInt(item.rank.trim(), 10);
+      if (!isNaN(parsedRank) && parsedRank > 0) {
+        rankPosition = parsedRank;
+        originalRankPosition = parsedRank;
+        isPreRanked = true;
+      }
+    }
+
     return {
       id: item.id || `coaster_${index}`,
       name: formatString(item.name, "space", "first-word", false),
@@ -111,6 +126,9 @@ export function validateCoasterData(
         ? formatString(item.thrillLevel, "space", "first-word", false)
         : undefined,
       type: rideType,
+      ...(rankPosition && { rankPosition }),
+      ...(originalRankPosition && { originalRankPosition }),
+      ...(isPreRanked && { isPreRanked }),
     };
   });
 }

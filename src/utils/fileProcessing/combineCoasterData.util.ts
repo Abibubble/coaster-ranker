@@ -25,11 +25,22 @@ export function combineCoasterData(
   const existingCoasters = existingData?.coasters || [];
   const uploadId = Date.now().toString();
 
+  // Check if any of the new coasters have ranking data from CSV
+  const hasCoastersWithRankingData = newCoasters.some(
+    (coaster) => coaster.rankPosition !== undefined || coaster.isPreRanked,
+  );
+
   const markedNewCoasters = newCoasters.map((coaster, index) => ({
     ...coaster,
     isNewCoaster: true,
-    ...(isPreRanked && {
-      originalRankPosition: index,
+    // Only set ranking data if not already present from CSV
+    ...(isPreRanked &&
+      !coaster.originalRankPosition && {
+        originalRankPosition: index,
+        isPreRanked: true,
+      }),
+    // Preserve existing ranking data from CSV
+    ...(coaster.isPreRanked && {
       isPreRanked: true,
     }),
   }));
@@ -53,17 +64,33 @@ export function combineCoasterData(
 
   const coastersWithUniqueIds = detectAndFixDuplicateIds(allCoasters);
 
+  const hasAnyPreRankedData = isPreRanked || hasCoastersWithRankingData;
+
+  // If coasters have ranking data, create ranked coasters array
+  let rankedCoasters = existingRankingMetadata.rankedCoasters;
+  if (hasCoastersWithRankingData) {
+    // Get all coasters with ranking data and sort by rank position
+    const coastersWithRanks = coastersWithUniqueIds
+      .filter((coaster) => coaster.rankPosition !== undefined)
+      .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0));
+
+    // If we have ranked coasters from CSV, use them as the ranked order
+    if (coastersWithRanks.length > 0) {
+      rankedCoasters = coastersWithRanks.map((coaster) => coaster.id);
+    }
+  }
+
   const combinedData: UploadedData = {
     coasters: coastersWithUniqueIds,
     uploadedAt: new Date(),
     filename: combinedFilename,
     rankingMetadata: {
       completedComparisons: existingRankingMetadata.completedComparisons,
-      rankedCoasters: existingRankingMetadata.rankedCoasters,
-      isRanked: false,
+      rankedCoasters,
+      isRanked: existingRankingMetadata.isRanked || hasCoastersWithRankingData,
       hasPreRankedCoasters:
-        existingRankingMetadata.hasPreRankedCoasters || false || isPreRanked,
-      preRankedGroups: isPreRanked
+        existingRankingMetadata.hasPreRankedCoasters || hasAnyPreRankedData,
+      preRankedGroups: hasAnyPreRankedData
         ? [...(existingRankingMetadata.preRankedGroups || []), uploadId]
         : existingRankingMetadata.preRankedGroups || [],
     },
