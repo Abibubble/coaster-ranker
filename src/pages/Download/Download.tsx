@@ -4,6 +4,7 @@ import {
   CurrentDataInfo,
   InfoMessage,
   MainContent,
+  RideTypeToggle,
   Text,
   Title,
 } from "../../components";
@@ -14,23 +15,30 @@ import {
   downloadFile,
   hasRankingDataForExport,
 } from "../../utils/dataExport";
+import { RideType } from "../../types/data";
 import * as Styled from "./Download.styled";
 
 export default function Download() {
   const { uploadedData, darkRideData } = useData();
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null);
+  const [selectedRideType, setSelectedRideType] = useState<RideType>("coaster");
 
-  const coasters = uploadedData?.coasters || [];
-  const darkRides = darkRideData?.coasters || [];
+  const coastersData = uploadedData?.coasters || [];
+  const darkRidesData = darkRideData?.coasters || [];
 
-  const hasRankingData = hasRankingDataForExport(uploadedData);
+  // Get the current data based on the selected ride type
+  const currentData =
+    selectedRideType === "coaster" ? uploadedData : darkRideData;
+  const currentCoasters =
+    selectedRideType === "coaster" ? coastersData : darkRidesData;
 
-  const generateFilename = (
-    basename: string,
-    format: "csv" | "json",
-  ): string => {
+  const hasRankingData = hasRankingDataForExport(currentData);
+
+  const generateFilename = (format: "csv" | "json"): string => {
     const timestamp = new Date().toISOString().split("T")[0];
-    return `${basename}-${timestamp}.${format}`;
+    const rideTypeLabel =
+      selectedRideType === "coaster" ? "coaster" : "dark-ride";
+    return `${rideTypeLabel}-ranker-${timestamp}.${format}`;
   };
 
   const handleDownload = (format: "csv" | "json") => {
@@ -40,22 +48,22 @@ export default function Download() {
 
       if (format === "csv") {
         result = generateCSV({
-          coasters,
+          coasters: currentCoasters,
           includeRanking: hasRankingData,
-          rankingMetadata: uploadedData?.rankingMetadata,
+          rankingMetadata: currentData?.rankingMetadata,
         });
         contentType = "text/csv";
       } else {
         result = generateJSON({
-          coasters,
+          coasters: currentCoasters,
           includeRanking: hasRankingData,
-          rankingMetadata: uploadedData?.rankingMetadata,
+          rankingMetadata: currentData?.rankingMetadata,
         });
         contentType = "application/json";
       }
 
       if (result.content && !result.isEmpty) {
-        const filename = generateFilename("coaster-ranker", format);
+        const filename = generateFilename(format);
         const downloadResult = downloadFile({
           content: result.content,
           filename,
@@ -79,21 +87,21 @@ export default function Download() {
     }
   };
 
-  if (coasters.length === 0) {
+  if (coastersData.length === 0 && darkRidesData.length === 0) {
     return (
       <MainContent>
         <Title>Download Your Collection</Title>
         <section>
           <Styled.EmptyState>
             <Text as="h2" center colour="darkGrey" mb="small">
-              No Coasters Yet
+              No Rides Yet
             </Text>
             <Text as="p" center colour="mediumGrey" mb="large">
-              Upload some coasters to download your collection in CSV or JSON
-              format.
+              Upload some coasters or dark rides to download your collection in
+              CSV or JSON format.
             </Text>
             <Link href="/upload" variant="button">
-              Upload Coasters
+              Upload Rides
             </Link>
           </Styled.EmptyState>
         </section>
@@ -108,70 +116,107 @@ export default function Download() {
       <section>
         <Styled.DownloadContent>
           <CurrentDataInfo
-            coasterCount={coasters.length}
-            darkRideCount={darkRides.length}
+            coasterCount={coastersData.length}
+            darkRideCount={darkRidesData.length}
           />
 
           <Styled.Section>
             <Styled.SectionHeader>
               <Text as="h3" colour="darkGrey" mb="tiny">
-                Choose your format:
+                Choose what to download:
               </Text>
             </Styled.SectionHeader>
 
-            <Styled.DownloadOptions>
-              <Styled.DownloadButton
-                onClick={() => handleDownload("csv")}
-                aria-describedby="csv-description"
-              >
-                <Styled.ButtonContent>
-                  <Text
-                    as="h4"
-                    bold
-                    colour="darkGrey"
-                    fontSize="large"
-                    mb="fine"
-                  >
-                    Download as CSV
-                  </Text>
-                  <Styled.ButtonDescription
-                    as="p"
-                    colour="mediumGrey"
-                    fontSize="small"
-                    id="csv-description"
-                  >
-                    For Excel, Google Sheets, and other spreadsheet apps
-                    {hasRankingData && " (includes rank column)"}
-                  </Styled.ButtonDescription>
-                </Styled.ButtonContent>
-              </Styled.DownloadButton>
+            <RideTypeToggle
+              value={selectedRideType}
+              onChange={setSelectedRideType}
+              name="download-ride-type"
+            />
 
-              <Styled.DownloadButton
-                onClick={() => handleDownload("json")}
-                aria-describedby="json-description"
-              >
-                <Styled.ButtonContent>
+            {currentCoasters.length === 0 ? (
+              <InfoMessage variant="info" role="status" aria-live="polite">
+                No {selectedRideType === "coaster" ? "coasters" : "dark rides"}{" "}
+                uploaded yet. Switch to{" "}
+                {selectedRideType === "coaster" ? "dark rides" : "coasters"} or
+                upload some{" "}
+                {selectedRideType === "coaster" ? "coasters" : "dark rides"}{" "}
+                first.
+              </InfoMessage>
+            ) : (
+              <>
+                <Styled.SectionHeader>
                   <Text
-                    as="h4"
-                    bold
-                    colour="darkGrey"
-                    fontSize="large"
-                    mb="fine"
-                  >
-                    Download as JSON
-                  </Text>
-                  <Styled.ButtonDescription
                     as="p"
                     colour="mediumGrey"
                     fontSize="small"
-                    id="json-description"
+                    mt="small"
+                    mb="tiny"
                   >
-                    Developer-friendly format for importing into other apps
-                    {hasRankingData && " (includes rank field)"}
-                  </Styled.ButtonDescription>
-                </Styled.ButtonContent>
-              </Styled.DownloadButton>
-            </Styled.DownloadOptions>
+                    Downloading {currentCoasters.length}{" "}
+                    {selectedRideType === "coaster" ? "coaster" : "dark ride"}
+                    {currentCoasters.length === 1 ? "" : "s"}
+                    {hasRankingData && " with ranking"}
+                  </Text>
+                  <Text as="h3" colour="darkGrey" mb="tiny" mt="medium">
+                    Choose your format:
+                  </Text>
+                </Styled.SectionHeader>
+
+                <Styled.DownloadOptions>
+                  <Styled.DownloadButton
+                    onClick={() => handleDownload("csv")}
+                    aria-describedby="csv-description"
+                  >
+                    <Styled.ButtonContent>
+                      <Text
+                        as="h4"
+                        bold
+                        colour="darkGrey"
+                        fontSize="large"
+                        mb="fine"
+                      >
+                        Download as CSV
+                      </Text>
+                      <Styled.ButtonDescription
+                        as="p"
+                        colour="mediumGrey"
+                        fontSize="small"
+                        id="csv-description"
+                      >
+                        For Excel, Google Sheets, and other spreadsheet apps
+                        {hasRankingData && " (includes rank column)"}
+                      </Styled.ButtonDescription>
+                    </Styled.ButtonContent>
+                  </Styled.DownloadButton>
+
+                  <Styled.DownloadButton
+                    onClick={() => handleDownload("json")}
+                    aria-describedby="json-description"
+                  >
+                    <Styled.ButtonContent>
+                      <Text
+                        as="h4"
+                        bold
+                        colour="darkGrey"
+                        fontSize="large"
+                        mb="fine"
+                      >
+                        Download as JSON
+                      </Text>
+                      <Styled.ButtonDescription
+                        as="p"
+                        colour="mediumGrey"
+                        fontSize="small"
+                        id="json-description"
+                      >
+                        Developer-friendly format for importing into other apps
+                        {hasRankingData && " (includes rank field)"}
+                      </Styled.ButtonDescription>
+                    </Styled.ButtonContent>
+                  </Styled.DownloadButton>
+                </Styled.DownloadOptions>
+              </>
+            )}
           </Styled.Section>
 
           {downloadStatus && (

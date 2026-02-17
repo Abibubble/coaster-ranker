@@ -1,6 +1,6 @@
-import styled from 'styled-components'
-import { colours, spacing, breakpoints } from '../../theme'
-import { Text } from '../../components'
+import styled from "styled-components";
+import { colours, spacing, breakpoints } from "../../theme";
+import { Text } from "../../components";
 
 export const DownloadContent = styled.div`
   padding: ${spacing.small};
@@ -24,19 +24,19 @@ export const DownloadContent = styled.div`
     padding: ${spacing.large};
     max-width: 900px;
   }
-`
+`;
 
 export const Section = styled.div`
-  margin-bottom: ${spacing.medium};
+  margin-bottom: ${spacing.tiny};
 
   @media (min-width: ${breakpoints.mobileMedium}) {
-    margin-bottom: ${spacing.large};
+    margin-bottom: ${spacing.small};
   }
 
   @media (min-width: ${breakpoints.tablet}) {
-    margin-bottom: ${spacing.giant};
+    margin-bottom: ${spacing.medium};
   }
-`
+`;
 
 export const DownloadButton = styled.button`
   display: flex;
@@ -118,7 +118,7 @@ export const DownloadButton = styled.button`
     transform: translateY(0);
     box-shadow: 0 2px 6px ${colours.shadowMedium};
   }
-`
+`;
 
 export const ButtonContent = styled.div`
   text-align: left;
@@ -133,12 +133,12 @@ export const ButtonContent = styled.div`
       margin-bottom: ${spacing.small};
     }
   }
-`
+`;
 
 export const ButtonDescription = styled(Text).withConfig({
-  shouldForwardProp: prop => {
-    const customProps = ['colour', 'fontSize']
-    return !customProps.includes(prop)
+  shouldForwardProp: (prop) => {
+    const customProps = ["colour", "fontSize"];
+    return !customProps.includes(prop);
   },
 })`
   margin: 0;
@@ -153,7 +153,7 @@ export const ButtonDescription = styled(Text).withConfig({
   @media (min-width: ${breakpoints.tablet}) {
     line-height: 1.6;
   }
-`
+`;
 
 export const InfoSection = styled.div`
   text-align: center;
@@ -170,7 +170,7 @@ export const InfoSection = styled.div`
       font-size: 0.875rem;
     }
   }
-`
+`;
 
 export const EmptyState = styled.div`
   text-align: center;
@@ -221,7 +221,7 @@ export const EmptyState = styled.div`
   }
 
   /* Ensure buttons are centered on small screens */
-  a[role='button'],
+  a[role="button"],
   button {
     display: inline-block;
     margin: 0 auto;
@@ -229,14 +229,14 @@ export const EmptyState = styled.div`
 
   /* For very small screens, ensure proper centering */
   @media (max-width: ${breakpoints.mobileMedium}) {
-    a[role='button'],
+    a[role="button"],
     button {
       display: block;
       width: fit-content;
       margin: 0 auto;
     }
   }
-`
+`;
 
 export const SectionHeader = styled.div`
   margin-bottom: ${spacing.medium};
@@ -250,7 +250,7 @@ export const SectionHeader = styled.div`
     padding-bottom: ${spacing.small};
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: 0;
       left: 0;
@@ -260,21 +260,21 @@ export const SectionHeader = styled.div`
       border-radius: ${spacing.micro};
     }
   }
-`
+`;
 
 export const DownloadOptions = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacing.small};
+  gap: ${spacing.tiny};
 
   @media (min-width: ${breakpoints.mobileMedium}) {
-    gap: ${spacing.medium};
+    gap: ${spacing.small};
   }
 
   @media (min-width: ${breakpoints.tablet}) {
-    gap: ${spacing.large};
+    gap: ${spacing.medium};
   }
-`
+`;
 
 export const RankingOption = styled.div`
   border: 1px solid ${colours.softGrey};
@@ -300,11 +300,11 @@ export const RankingOption = styled.div`
       gap: ${spacing.small};
     }
 
-    input[type='checkbox'] {
+    input[type="checkbox"] {
       width: 16px;
       height: 16px;
       accent-color: ${colours.blue};
       min-width: 16px;
     }
   }
-`
+`;
