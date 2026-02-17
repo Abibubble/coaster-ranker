@@ -13,6 +13,7 @@ const BRAND_KEYWORDS: Record<string, string[]> = {
   "busch gardens": ["busch gardens"],
   "cedar fair": ["cedar point", "kings island", "carowinds", "knotts"],
   disney: ["disneyland", "disney", "walt disney"],
+  "disney's": ["disneyland", "disney", "walt disney"],
   merlin: ["alton towers", "thorpe park", "chessington", "legoland"],
   plopsa: ["plopsaland", "movie park germany"],
   seaworld: ["seaworld"],
@@ -148,6 +149,7 @@ export default function useParkAutocomplete(
 
       let isMatch = false;
 
+      // Enhanced brand keyword matching
       for (const [brand, keywords] of Object.entries(BRAND_KEYWORDS)) {
         if (
           searchWords.some((word) => normalizeForSearch(brand).includes(word))
@@ -157,8 +159,35 @@ export default function useParkAutocomplete(
               parkName.includes(normalizeForSearch(keyword)),
             )
           ) {
-            isMatch = true;
-            break;
+            // For Disney parks, also check if additional search terms match
+            if (
+              brand.toLowerCase().includes("disney") &&
+              searchWords.length > 1
+            ) {
+              const nonDisneyWords = searchWords.filter(
+                (word) =>
+                  !normalizeForSearch(brand).includes(word) &&
+                  !keywords.some((keyword) =>
+                    normalizeForSearch(keyword).includes(word),
+                  ),
+              );
+
+              if (nonDisneyWords.length > 0) {
+                const additionalMatch = nonDisneyWords.every((word) =>
+                  parkWords.some((parkWord) => parkWord.includes(word)),
+                );
+                if (additionalMatch) {
+                  isMatch = true;
+                  break;
+                }
+              } else {
+                isMatch = true;
+                break;
+              }
+            } else {
+              isMatch = true;
+              break;
+            }
           }
         }
       }
