@@ -25,7 +25,7 @@ export default function RideTypeToggle({
           type="button"
           role="tab"
           aria-selected={value === "coaster"}
-          active={value === "coaster"}
+          $active={value === "coaster"}
           onClick={() => onChange("coaster")}
         >
           Roller Coasters
@@ -34,7 +34,7 @@ export default function RideTypeToggle({
           type="button"
           role="tab"
           aria-selected={value === "dark-ride"}
-          active={value === "dark-ride"}
+          $active={value === "dark-ride"}
           onClick={() => onChange("dark-ride")}
         >
           Dark Rides

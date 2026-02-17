@@ -27,18 +27,7 @@ export const useSimpleRanking = (
   const rankingEngine = useMemo(() => {
     if (coasters.length === 0) return null;
     try {
-      console.log(
-        "Creating ranking engine with",
-        coasters.filter((c) => c.rankPosition !== undefined).length,
-        "pre-ranked coasters",
-      );
       const engine = new RankingEngine(coasters);
-      console.log(
-        "Initial comparison:",
-        engine.getCurrentComparison()?.coasterA.name,
-        "vs",
-        engine.getCurrentComparison()?.coasterB.name,
-      );
       return engine;
     } catch (error) {
       console.error("Error creating ranking engine:", error);

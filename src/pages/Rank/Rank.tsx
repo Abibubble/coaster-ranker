@@ -18,7 +18,7 @@ import {
   RankingComparison,
   ComparisonResult,
 } from "../../utils/ranking/newRankingEngine.util";
-import { Coaster, RideType } from "../../types/data";
+import { Coaster, RideType, UploadedData } from "../../types/data";
 import * as Styled from "./Rank.styled";
 
 export const Rank: React.FC = () => {
@@ -33,6 +33,51 @@ export const Rank: React.FC = () => {
   const rideSingularLabel = rideType === "coaster" ? "coaster" : "dark ride";
   const ridePluralLabel = rideType === "coaster" ? "coasters" : "dark rides";
 
+  // Generate a stable key that changes only when ride type changes
+  const [componentKey, setComponentKey] = React.useState<string>(rideType);
+  React.useEffect(() => {
+    setComponentKey(`${rideType}-${Math.random()}`);
+  }, [rideType]);
+
+  return (
+    <RankingContent
+      key={componentKey}
+      currentData={currentData}
+      rideType={rideType}
+      rideTypeLabel={rideTypeLabel}
+      rideSingularLabel={rideSingularLabel}
+      ridePluralLabel={ridePluralLabel}
+      setRideType={setRideType}
+      markRankingComplete={markRankingComplete}
+      resetRanking={resetRanking}
+      navigate={navigate}
+    />
+  );
+};
+
+interface RankingContentProps {
+  currentData: UploadedData | null;
+  rideType: RideType;
+  rideTypeLabel: string;
+  rideSingularLabel: string;
+  ridePluralLabel: string;
+  setRideType: (rideType: RideType) => void;
+  markRankingComplete: (ranking: Coaster[], rideType: RideType) => void;
+  resetRanking: (rideType: RideType) => void;
+  navigate: (path: string) => void;
+}
+
+const RankingContent: React.FC<RankingContentProps> = ({
+  currentData,
+  rideType,
+  rideTypeLabel,
+  rideSingularLabel,
+  ridePluralLabel,
+  setRideType,
+  markRankingComplete,
+  resetRanking,
+  navigate,
+}) => {
   const hasUnrankedCoasters =
     currentData?.coasters?.some(
       (c) => !c.isPreRanked && c.rankPosition === undefined,
@@ -89,6 +134,8 @@ export const Rank: React.FC = () => {
         <Styled.RankingContainer>
           <RankingComplete
             rankedCoasters={rankedCoasters}
+            currentData={currentData}
+            rideType={rideType}
             onRankAgain={() => {
               const confirmed = window.confirm(
                 `Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch.`,
@@ -173,6 +220,8 @@ export const Rank: React.FC = () => {
         <Styled.RankingContainer>
           <RankingComplete
             rankedCoasters={finalRanking}
+            currentData={currentData}
+            rideType={rideType}
             onRankAgain={() => {
               const confirmed = window.confirm(
                 "Are you sure you want to rank again? This will erase all your current rankings and you'll start from scratch",

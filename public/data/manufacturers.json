@@ -190,14 +190,15 @@
   {
     "manufacturer": "Mack Rides",
     "models": [
-      "Wild Mouse",
-      "Powered Coaster",
-      "YoungStar Coaster",
-      "Bobsled",
       "BigDipper",
-      "Xtreme Spinning Coaster",
+      "Bobsled",
+      "Powered Coaster",
       "Hypercoaster",
-      "Launch Coaster"
+      "Launch Coaster",
+      "SuperSplash",
+      "Wild Mouse",
+      "Xtreme Spinning Coaster",
+      "YoungStar Coaster"
     ],
     "darkRideModels": ["Water Dark Ride", "Endless Train"]
   },
@@ -327,7 +328,7 @@
       "Flying Dutchman",
       "Launch Coaster"
     ],
-    "darkRideModels": ["Omnimover"]
+    "darkRideModels": ["Mad House", "Omnimover"]
   },
   {
     "manufacturer": "WGH Transportation Engineering",

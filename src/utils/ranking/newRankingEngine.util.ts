@@ -39,10 +39,6 @@ export class RankingEngine {
       (c) => !c.isPreRanked && c.rankPosition === undefined,
     );
 
-    console.log(
-      `Found ${rankedCoasters.length} already ranked coasters and ${unrankedCoasters.length} unranked coasters`,
-    );
-
     if (unrankedCoasters.length === 0 && rankedCoasters.length === 0) {
       throw new Error("No coasters available for ranking");
     }
@@ -170,14 +166,6 @@ export class RankingEngine {
   getFinalRanking(): Coaster[] {
     if (!this.state.isComplete) return [];
 
-    console.log("=== FINAL RANKING DEBUG ===");
-    console.log("rankedCoasterIds:", this.state.rankedCoasterIds);
-    console.log("allCoasters length:", this.allCoasters.length);
-    console.log(
-      "allCoasters names:",
-      this.allCoasters.map((c) => c.name),
-    );
-
     const finalCoasters = this.state.rankedCoasterIds
       .map((id) => {
         const coaster = this.allCoasters.find((c) => c.id === id);
@@ -187,12 +175,6 @@ export class RankingEngine {
         return coaster;
       })
       .filter((c) => c !== undefined) as Coaster[];
-
-    console.log(
-      "Final ranking coasters:",
-      finalCoasters.map((c) => c.name),
-    );
-    console.log("=== END FINAL RANKING DEBUG ===");
 
     return finalCoasters;
   }

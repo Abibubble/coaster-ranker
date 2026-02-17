@@ -15,14 +15,14 @@ export const TabGroup = styled.div`
   min-width: 400px;
 `;
 
-export const TabButton = styled.button<{ active: boolean }>`
-  background: ${({ active }) => (active ? colours.darkBlue : colours.white)};
-  color: ${({ active }) => (active ? colours.white : colours.charcoal)};
+export const TabButton = styled.button<{ $active: boolean }>`
+  background: ${({ $active }) => ($active ? colours.darkBlue : colours.white)};
+  color: ${({ $active }) => ($active ? colours.white : colours.charcoal)};
   border: ${spacing.micro} solid ${colours.lightGrey};
   border-left: none;
   padding: ${spacing.small} ${spacing.medium};
   font-size: ${fonts.small};
-  font-weight: ${({ active }) => (active ? "700" : "400")};
+  font-weight: ${({ $active }) => ($active ? "700" : "400")};
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   position: relative;
@@ -40,9 +40,9 @@ export const TabButton = styled.button<{ active: boolean }>`
   }
 
   &:hover {
-    background: ${({ active }) =>
-      active ? colours.darkBlue : colours.veryLightGrey};
-    color: ${({ active }) => (active ? colours.white : colours.darkBlue)};
+    background: ${({ $active }) =>
+      $active ? colours.darkBlue : colours.veryLightGrey};
+    color: ${({ $active }) => ($active ? colours.white : colours.darkBlue)};
   }
 
   &:focus {

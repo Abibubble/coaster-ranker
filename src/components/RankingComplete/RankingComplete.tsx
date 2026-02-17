@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Coaster } from "../../types/data";
+import { Coaster, UploadedData, RideType } from "../../types/data";
 import { useData } from "../../contexts/DataContext";
 import { Button } from "../Button";
 import { Link } from "../Link";
@@ -9,6 +9,8 @@ import * as Styled from "./RankingComplete.styled";
 interface RankingCompleteProps {
   rankedCoasters: Coaster[];
   onRankAgain: () => void;
+  currentData?: UploadedData | null;
+  rideType?: RideType;
 }
 
 /**
@@ -23,20 +25,28 @@ interface RankingCompleteProps {
 export default function RankingComplete({
   rankedCoasters,
   onRankAgain,
+  currentData,
+  rideType: _rideType = "coaster",
 }: RankingCompleteProps) {
-  const { uploadedData, setUploadedData } = useData();
+  const { uploadedData, setUploadedData, darkRideData, setDarkRideData } =
+    useData();
   const [isEditing, setIsEditing] = useState(false);
   const [coastersOrder, setCoastersOrder] = useState<Coaster[]>(rankedCoasters);
 
+  // Use the passed currentData, fallback to uploadedData for backwards compatibility
+  const dataToUse = currentData || uploadedData;
+  const setDataToUse =
+    currentData === darkRideData ? setDarkRideData : setUploadedData;
+
   const getCurrentRankedCoasters = (): Coaster[] => {
     if (
-      !uploadedData?.rankingMetadata?.isRanked ||
-      !uploadedData?.rankingMetadata?.rankedCoasters
+      !dataToUse?.rankingMetadata?.isRanked ||
+      !dataToUse?.rankingMetadata?.rankedCoasters
     ) {
       return rankedCoasters;
     }
 
-    const contextCoasters = uploadedData.coasters
+    const contextCoasters = dataToUse.coasters
       .filter((coaster) => coaster.rankPosition !== undefined)
       .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0));
 
@@ -52,10 +62,10 @@ export default function RankingComplete({
   useEffect(() => {
     if (
       !isEditing &&
-      uploadedData?.rankingMetadata?.isRanked &&
-      uploadedData.coasters
+      dataToUse?.rankingMetadata?.isRanked &&
+      dataToUse.coasters
     ) {
-      const contextCoasters = uploadedData.coasters
+      const contextCoasters = dataToUse.coasters
         .filter((coaster) => coaster.rankPosition !== undefined)
         .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0));
 
@@ -63,11 +73,7 @@ export default function RankingComplete({
         setCoastersOrder([...contextCoasters]);
       }
     }
-  }, [
-    uploadedData?.rankingMetadata?.isRanked,
-    uploadedData?.coasters,
-    isEditing,
-  ]);
+  }, [dataToUse?.rankingMetadata?.isRanked, dataToUse?.coasters, isEditing]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -80,8 +86,8 @@ export default function RankingComplete({
   };
 
   const handleSaveChanges = () => {
-    if (uploadedData) {
-      const updatedCoasters = [...uploadedData.coasters];
+    if (dataToUse) {
+      const updatedCoasters = [...dataToUse.coasters];
       coastersOrder.forEach((coaster, index) => {
         const coasterIndex = updatedCoasters.findIndex(
           (c) => c.id === coaster.id,
@@ -94,20 +100,20 @@ export default function RankingComplete({
         }
       });
 
-      const updatedMetadata = uploadedData.rankingMetadata
+      const updatedMetadata = dataToUse.rankingMetadata
         ? {
-            ...uploadedData.rankingMetadata,
+            ...dataToUse.rankingMetadata,
             rankedCoasters: coastersOrder.map((coaster) => coaster.id),
           }
         : undefined;
 
       const updatedData = {
-        ...uploadedData,
+        ...dataToUse,
         coasters: updatedCoasters,
         rankingMetadata: updatedMetadata,
       };
 
-      setUploadedData(updatedData);
+      setDataToUse(updatedData);
     }
     setIsEditing(false);
   };

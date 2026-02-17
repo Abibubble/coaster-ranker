@@ -98,13 +98,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     const setData = rideType === "coaster" ? setUploadedData : setDarkRideData;
     if (!currentData) return;
 
-    console.log("=== MARK RANKING COMPLETE DEBUG ===");
-    console.log(
-      "Input finalRanking:",
-      finalRanking.map((c) => c.name),
-    );
-    console.log("finalRanking length:", finalRanking.length);
-
     const updatedCoasters = currentData.coasters.map((coaster) => {
       const rankIndex = finalRanking.findIndex(
         (ranked) => ranked.id === coaster.id,
@@ -127,16 +120,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
           new Set<string>(),
       },
     };
-
-    console.log(
-      "rankedCoasters IDs being stored:",
-      updatedData.rankingMetadata.rankedCoasters,
-    );
-    console.log(
-      "Updated coasters with rankPosition:",
-      updatedCoasters.slice(0, 5).map((c) => `${c.name}: ${c.rankPosition}`),
-    );
-    console.log("=== END MARK RANKING COMPLETE DEBUG ===");
 
     setData(updatedData);
   };
