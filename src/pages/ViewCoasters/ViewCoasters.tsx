@@ -10,8 +10,18 @@ import {
   SortDirection,
   RideTypeToggle,
   CurrentDataInfo,
+  ParkAutocompleteInput,
+  CountryAutocompleteInput,
+  ManufacturerAutocompleteInput,
+  ModelAutocompleteInput,
 } from "../../components";
 import { useData } from "../../contexts/DataContext";
+import {
+  useParkAutocomplete,
+  useCountryAutocomplete,
+  useManufacturerAutocomplete,
+  useModelAutocomplete,
+} from "../../hooks";
 import { Coaster, RideType } from "../../types/data";
 import * as Styled from "./ViewCoasters.styled";
 
@@ -55,6 +65,36 @@ export default function ViewCoasters() {
     thrillLevel: "",
     country: "",
   });
+
+  // Autocomplete functionality for editing
+  const {
+    suggestions: parkSuggestions,
+    isLoading: isLoadingParks,
+    error: parkError,
+    hasMinCharacters: hasMinCharactersPark,
+  } = useParkAutocomplete(editForm.park);
+
+  const {
+    suggestions: countrySuggestions,
+    isLoading: isLoadingCountries,
+    error: countryError,
+    hasMinCharacters: hasMinCharactersCountry,
+  } = useCountryAutocomplete(editForm.country);
+
+  const {
+    suggestions: manufacturerSuggestions,
+    isLoading: isLoadingManufacturers,
+    error: manufacturerError,
+    hasMinCharacters: hasMinCharactersManufacturer,
+  } = useManufacturerAutocomplete(editForm.manufacturer);
+
+  const {
+    suggestions: modelSuggestions,
+    isLoading: isLoadingModels,
+    error: modelError,
+    hasMinCharacters: hasMinCharactersModel,
+    hasManufacturer,
+  } = useModelAutocomplete(editForm.model, editForm.manufacturer, rideType);
   const [filters, setFilters] = useState<FilterOptions>({
     park: "",
     manufacturer: "",
@@ -423,6 +463,41 @@ export default function ViewCoasters() {
     }));
   };
 
+  // Autocomplete selection handlers for editing
+  const handleParkSelection = (suggestion: {
+    name: string;
+    country: string;
+  }) => {
+    setEditForm((prev) => ({
+      ...prev,
+      park: suggestion.name,
+      country: suggestion.country,
+    }));
+  };
+
+  const handleManufacturerSelection = (suggestion: {
+    manufacturer: string;
+  }) => {
+    setEditForm((prev) => ({
+      ...prev,
+      manufacturer: suggestion.manufacturer,
+    }));
+  };
+
+  const handleModelSelection = (suggestion: { model: string }) => {
+    setEditForm((prev) => ({
+      ...prev,
+      model: suggestion.model,
+    }));
+  };
+
+  const handleCountrySelection = (suggestion: { country: string }) => {
+    setEditForm((prev) => ({
+      ...prev,
+      country: suggestion.country,
+    }));
+  };
+
   if (allCoasters.length === 0) {
     return (
       <MainContent>
@@ -736,48 +811,88 @@ export default function ViewCoasters() {
 
                       <Styled.FormField>
                         <Styled.FormLabel>Park *</Styled.FormLabel>
-                        <Styled.FormInput
-                          type="text"
+                        <ParkAutocompleteInput
                           value={editForm.park}
-                          onChange={(e) =>
-                            handleEditFormChange("park", e.target.value)
+                          onChange={(value) =>
+                            handleEditFormChange("park", value)
                           }
+                          onSuggestionSelect={handleParkSelection}
+                          suggestions={parkSuggestions}
+                          placeholder="e.g. Alton Towers"
+                          label=""
+                          id="edit-park"
+                          name="editPark"
+                          autoComplete="off"
                           required
+                          isLoading={isLoadingParks}
+                          error={parkError}
+                          hasMinCharacters={hasMinCharactersPark}
                         />
                       </Styled.FormField>
 
                       <Styled.FormField>
                         <Styled.FormLabel>Manufacturer *</Styled.FormLabel>
-                        <Styled.FormInput
-                          type="text"
+                        <ManufacturerAutocompleteInput
                           value={editForm.manufacturer}
-                          onChange={(e) =>
-                            handleEditFormChange("manufacturer", e.target.value)
+                          onChange={(value) =>
+                            handleEditFormChange("manufacturer", value)
                           }
+                          onSuggestionSelect={handleManufacturerSelection}
+                          suggestions={manufacturerSuggestions}
+                          placeholder="e.g. Steel Company"
+                          label=""
+                          id="edit-manufacturer"
+                          name="editManufacturer"
+                          autoComplete="off"
                           required
+                          isLoading={isLoadingManufacturers}
+                          error={manufacturerError}
+                          hasMinCharacters={hasMinCharactersManufacturer}
                         />
                       </Styled.FormField>
 
                       <Styled.FormField>
                         <Styled.FormLabel>Country</Styled.FormLabel>
-                        <Styled.FormInput
-                          type="text"
+                        <CountryAutocompleteInput
                           value={editForm.country}
-                          onChange={(e) =>
-                            handleEditFormChange("country", e.target.value)
+                          onChange={(value) =>
+                            handleEditFormChange("country", value)
                           }
+                          onSuggestionSelect={handleCountrySelection}
+                          suggestions={countrySuggestions}
+                          placeholder="e.g. Europe"
+                          label=""
+                          id="edit-country"
+                          name="editCountry"
+                          autoComplete="off"
+                          isLoading={isLoadingCountries}
+                          error={countryError}
+                          hasMinCharacters={hasMinCharactersCountry}
                         />
                       </Styled.FormField>
 
                       {hasModel && (
                         <Styled.FormField>
                           <Styled.FormLabel>Model</Styled.FormLabel>
-                          <Styled.FormInput
-                            type="text"
+                          <ModelAutocompleteInput
                             value={editForm.model}
-                            onChange={(e) =>
-                              handleEditFormChange("model", e.target.value)
+                            onChange={(value) =>
+                              handleEditFormChange("model", value)
                             }
+                            onSuggestionSelect={handleModelSelection}
+                            suggestions={modelSuggestions}
+                            placeholder={
+                              hasManufacturer
+                                ? "e.g. Euro-Fighter"
+                                : "Select manufacturer first"
+                            }
+                            label=""
+                            id="edit-model"
+                            name="editModel"
+                            autoComplete="off"
+                            isLoading={isLoadingModels}
+                            error={modelError}
+                            hasMinCharacters={hasMinCharactersModel}
                           />
                         </Styled.FormField>
                       )}
@@ -798,8 +913,7 @@ export default function ViewCoasters() {
                       {hasThrillLevel && (
                         <Styled.FormField>
                           <Styled.FormLabel>Thrill Level</Styled.FormLabel>
-                          <Styled.FormInput
-                            type="text"
+                          <Styled.FilterSelect
                             value={editForm.thrillLevel}
                             onChange={(e) =>
                               handleEditFormChange(
@@ -807,7 +921,13 @@ export default function ViewCoasters() {
                                 e.target.value,
                               )
                             }
-                          />
+                          >
+                            <option value="">Select thrill level...</option>
+                            <option value="Kiddie">Kiddie</option>
+                            <option value="Family">Family</option>
+                            <option value="Family Thrill">Family Thrill</option>
+                            <option value="Thrill">Thrill</option>
+                          </Styled.FilterSelect>
                         </Styled.FormField>
                       )}
                     </Styled.EditForm>
@@ -855,48 +975,88 @@ export default function ViewCoasters() {
 
                     <Styled.CoasterField>
                       <Styled.FieldLabel>Park *</Styled.FieldLabel>
-                      <Styled.FormInput
-                        type="text"
+                      <ParkAutocompleteInput
                         value={editForm.park}
-                        onChange={(e) =>
-                          handleEditFormChange("park", e.target.value)
+                        onChange={(value) =>
+                          handleEditFormChange("park", value)
                         }
+                        onSuggestionSelect={handleParkSelection}
+                        suggestions={parkSuggestions}
+                        placeholder="e.g. Alton Towers"
+                        label=""
+                        id="mobile-edit-park"
+                        name="mobileEditPark"
+                        autoComplete="off"
                         required
+                        isLoading={isLoadingParks}
+                        error={parkError}
+                        hasMinCharacters={hasMinCharactersPark}
                       />
                     </Styled.CoasterField>
 
                     <Styled.CoasterField>
                       <Styled.FieldLabel>Manufacturer *</Styled.FieldLabel>
-                      <Styled.FormInput
-                        type="text"
+                      <ManufacturerAutocompleteInput
                         value={editForm.manufacturer}
-                        onChange={(e) =>
-                          handleEditFormChange("manufacturer", e.target.value)
+                        onChange={(value) =>
+                          handleEditFormChange("manufacturer", value)
                         }
+                        onSuggestionSelect={handleManufacturerSelection}
+                        suggestions={manufacturerSuggestions}
+                        placeholder="e.g. Steel Company"
+                        label=""
+                        id="mobile-edit-manufacturer"
+                        name="mobileEditManufacturer"
+                        autoComplete="off"
                         required
+                        isLoading={isLoadingManufacturers}
+                        error={manufacturerError}
+                        hasMinCharacters={hasMinCharactersManufacturer}
                       />
                     </Styled.CoasterField>
 
                     <Styled.CoasterField>
                       <Styled.FieldLabel>Country</Styled.FieldLabel>
-                      <Styled.FormInput
-                        type="text"
+                      <CountryAutocompleteInput
                         value={editForm.country}
-                        onChange={(e) =>
-                          handleEditFormChange("country", e.target.value)
+                        onChange={(value) =>
+                          handleEditFormChange("country", value)
                         }
+                        onSuggestionSelect={handleCountrySelection}
+                        suggestions={countrySuggestions}
+                        placeholder="e.g. Europe"
+                        label=""
+                        id="mobile-edit-country"
+                        name="mobileEditCountry"
+                        autoComplete="off"
+                        isLoading={isLoadingCountries}
+                        error={countryError}
+                        hasMinCharacters={hasMinCharactersCountry}
                       />
                     </Styled.CoasterField>
 
                     {hasModel && (
                       <Styled.CoasterField>
                         <Styled.FieldLabel>Model</Styled.FieldLabel>
-                        <Styled.FormInput
-                          type="text"
+                        <ModelAutocompleteInput
                           value={editForm.model}
-                          onChange={(e) =>
-                            handleEditFormChange("model", e.target.value)
+                          onChange={(value) =>
+                            handleEditFormChange("model", value)
                           }
+                          onSuggestionSelect={handleModelSelection}
+                          suggestions={modelSuggestions}
+                          placeholder={
+                            hasManufacturer
+                              ? "e.g. Euro-Fighter"
+                              : "Select manufacturer first"
+                          }
+                          label=""
+                          id="mobile-edit-model"
+                          name="mobileEditModel"
+                          autoComplete="off"
+                          isLoading={isLoadingModels}
+                          error={modelError}
+                          hasMinCharacters={hasMinCharactersModel}
                         />
                       </Styled.CoasterField>
                     )}
