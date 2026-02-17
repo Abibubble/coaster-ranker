@@ -8,9 +8,11 @@ import {
   SortModal,
   SortField,
   SortDirection,
+  RideTypeToggle,
+  CurrentDataInfo,
 } from "../../components";
 import { useData } from "../../contexts/DataContext";
-import { Coaster } from "../../types/data";
+import { Coaster, RideType } from "../../types/data";
 import * as Styled from "./ViewCoasters.styled";
 
 interface FilterOptions {
@@ -33,7 +35,9 @@ interface EditableCoaster {
 }
 
 export default function ViewCoasters() {
-  const { uploadedData, setUploadedData } = useData();
+  const { uploadedData, setUploadedData, darkRideData, setDarkRideData } =
+    useData();
+  const [rideType, setRideType] = useState<RideType>("coaster");
   const [statusMessage, setStatusMessage] = useState<string>("");
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
   const [isSortModalOpen, setIsSortModalOpen] = useState<boolean>(false);
@@ -60,9 +64,21 @@ export default function ViewCoasters() {
     country: "",
   });
 
+  // Get current data based on ride type
+  const currentData = rideType === "coaster" ? uploadedData : darkRideData;
+  const setCurrentData =
+    rideType === "coaster" ? setUploadedData : setDarkRideData;
+  const coasterCount = uploadedData?.coasters?.length || 0;
+  const darkRideCount = darkRideData?.coasters?.length || 0;
+
+  // Define ride type labels once for the entire component
+  const rideTypeLabel = rideType === "coaster" ? "Coasters" : "Dark Rides";
+  const rideSingularLabel = rideType === "coaster" ? "coaster" : "dark ride";
+  const ridePluralLabel = rideType === "coaster" ? "coasters" : "dark rides";
+
   const allCoasters = useMemo(
-    () => uploadedData?.coasters || [],
-    [uploadedData?.coasters],
+    () => currentData?.coasters || [],
+    [currentData?.coasters],
   );
 
   const coasters = useMemo(() => {
@@ -133,8 +149,8 @@ export default function ViewCoasters() {
     } else {
       // Default sorting by rank if available
       const isRanked =
-        uploadedData?.rankingMetadata?.isRanked &&
-        uploadedData?.rankingMetadata?.rankedCoasters;
+        currentData?.rankingMetadata?.isRanked &&
+        currentData?.rankingMetadata?.rankedCoasters;
 
       if (isRanked) {
         filteredCoasters.sort((a, b) => {
@@ -146,7 +162,7 @@ export default function ViewCoasters() {
     }
 
     return filteredCoasters;
-  }, [allCoasters, filters, uploadedData?.rankingMetadata, currentSort]);
+  }, [allCoasters, filters, currentData?.rankingMetadata, currentSort]);
 
   const filterOptions = useMemo(() => {
     return {
@@ -237,21 +253,23 @@ export default function ViewCoasters() {
   };
 
   const handleRemoveCoaster = (coasterId: string) => {
-    if (!uploadedData) return;
+    if (!currentData) return;
 
-    const coasterToRemove = uploadedData.coasters.find(
+    const coasterToRemove = currentData.coasters.find(
       (c) => c.id === coasterId,
     );
-    const coasterName = coasterToRemove ? coasterToRemove.name : "this coaster";
+    const rideName = coasterToRemove
+      ? coasterToRemove.name
+      : `this ${rideSingularLabel}`;
 
     const confirmRemove = window.confirm(
-      `Are you sure you want to remove "${coasterName}" from your collection? This action cannot be undone.`,
+      `Are you sure you want to remove "${rideName}" from your collection? This action cannot be undone.`,
     );
     if (!confirmRemove) return;
 
     const removedCoasterRankPosition = coasterToRemove?.rankPosition;
 
-    const updatedCoasters = uploadedData.coasters
+    const updatedCoasters = currentData.coasters
       .filter((coaster) => coaster.id !== coasterId)
       .map((coaster) => {
         if (
@@ -267,7 +285,7 @@ export default function ViewCoasters() {
         return coaster;
       });
 
-    let updatedRankingMetadata = uploadedData.rankingMetadata;
+    let updatedRankingMetadata = currentData.rankingMetadata;
     if (updatedRankingMetadata && updatedRankingMetadata.rankedCoasters) {
       const filteredRankedCoasters =
         updatedRankingMetadata.rankedCoasters.filter((id) => id !== coasterId);
@@ -286,34 +304,30 @@ export default function ViewCoasters() {
       };
     }
 
-    setUploadedData({
-      ...uploadedData,
+    setCurrentData({
+      ...currentData,
       coasters: updatedCoasters,
       rankingMetadata: updatedRankingMetadata,
     });
 
-    setStatusMessage(`${coasterName} has been removed from your collection.`);
+    setStatusMessage(`${rideName} has been removed from your collection.`);
     setTimeout(() => setStatusMessage(""), 3000);
   };
 
   const handleRemoveAllCoasters = () => {
-    if (!uploadedData || allCoasters.length === 0) return;
+    if (!currentData || allCoasters.length === 0) return;
 
     const coasterCount = allCoasters.length;
     const confirmRemove = window.confirm(
-      `Are you sure you want to remove all ${coasterCount} coaster${
-        coasterCount === 1 ? "" : "s"
-      } from your collection? This action cannot be undone.`,
+      `Are you sure you want to remove all ${coasterCount} ${coasterCount === 1 ? rideTypeLabel.toLowerCase().slice(0, -1) : ridePluralLabel} from your collection? This action cannot be undone.`,
     );
 
     if (!confirmRemove) return;
 
-    setUploadedData(null);
+    setCurrentData(null);
 
     setStatusMessage(
-      `All ${coasterCount} coaster${
-        coasterCount === 1 ? "" : "s"
-      } have been removed from your collection.`,
+      `All ${coasterCount} ${coasterCount === 1 ? rideTypeLabel.toLowerCase().slice(0, -1) : ridePluralLabel} have been removed from your collection.`,
     );
     setTimeout(() => setStatusMessage(""), 3000);
   };
@@ -332,7 +346,7 @@ export default function ViewCoasters() {
   };
 
   const handleSaveEdit = () => {
-    if (!uploadedData || !editingCoasterId) return;
+    if (!currentData || !editingCoasterId) return;
 
     if (
       !editForm.name.trim() ||
@@ -343,7 +357,7 @@ export default function ViewCoasters() {
       return;
     }
 
-    const updatedCoasters = uploadedData.coasters.map((coaster) => {
+    const updatedCoasters = currentData.coasters.map((coaster) => {
       if (coaster.id === editingCoasterId) {
         return {
           ...coaster,
@@ -363,8 +377,8 @@ export default function ViewCoasters() {
       return coaster;
     });
 
-    setUploadedData({
-      ...uploadedData,
+    setCurrentData({
+      ...currentData,
       coasters: updatedCoasters,
     });
 
@@ -379,7 +393,7 @@ export default function ViewCoasters() {
       country: "",
     });
 
-    setStatusMessage("Coaster updated successfully.");
+    setStatusMessage(`${rideTypeLabel.slice(0, -1)} updated successfully.`);
     setTimeout(() => setStatusMessage(""), 3000);
   };
 
@@ -409,15 +423,24 @@ export default function ViewCoasters() {
   if (allCoasters.length === 0) {
     return (
       <MainContent>
-        <Title>Your Coasters</Title>
+        <Title>Your {rideTypeLabel}</Title>
+
+        {/* Ride Type Toggle */}
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle
+            value={rideType}
+            onChange={(newRideType) => setRideType(newRideType)}
+          />
+        </section>
+
         <section>
           <Styled.EmptyState>
             <Text as="h2" center colour="darkGrey" mb="medium" fontSize="large">
-              No coasters yet
+              No {ridePluralLabel} yet
             </Text>
             <Text as="p" center colour="mediumGrey" mb="large">
-              You haven't uploaded any coasters yet. Use one of the upload
-              methods to add some coasters to your collection.
+              You haven't uploaded any {ridePluralLabel} yet. Use one of the
+              upload methods to add some {ridePluralLabel} to your collection.
             </Text>
             <Link href="/upload" variant="button">
               Go to upload page
@@ -430,7 +453,15 @@ export default function ViewCoasters() {
 
   return (
     <MainContent>
-      <Title>Your Coasters</Title>
+      <Title>Your {rideTypeLabel}</Title>
+
+      {/* Ride Type Toggle */}
+      <section style={{ marginBottom: "1.5rem" }}>
+        <RideTypeToggle
+          value={rideType}
+          onChange={(newRideType) => setRideType(newRideType)}
+        />
+      </section>
 
       {statusMessage && (
         <div
@@ -450,19 +481,26 @@ export default function ViewCoasters() {
 
       <section>
         <Styled.CoastersSummary>
-          <Text as="p" colour="mediumGrey" mb="small">
-            You have <Text bold>{allCoasters.length}</Text> coaster
-            {allCoasters.length === 1 ? "" : "s"} in your collection.
-            {coasters.length !== allCoasters.length && (
+          {(coasterCount > 0 || darkRideCount > 0) && (
+            <>
+              <CurrentDataInfo
+                coasterCount={coasterCount}
+                darkRideCount={darkRideCount}
+                rideType={rideType}
+                showButton={false}
+              />
+            </>
+          )}
+          {coasters.length !== allCoasters.length && (
+            <Text as="p" colour="mediumGrey" mb="small">
               <Text colour="darkGrey">
-                {" "}
                 (Showing {coasters.length} after filtering)
               </Text>
-            )}
-          </Text>
-          {uploadedData?.uploadedAt && (
+            </Text>
+          )}
+          {currentData?.uploadedAt && (
             <Text as="p" colour="mutedGrey" fontSize="small" italic>
-              Last updated: {uploadedData.uploadedAt.toLocaleDateString()}
+              Last updated: {currentData.uploadedAt.toLocaleDateString()}
             </Text>
           )}
         </Styled.CoastersSummary>
@@ -500,14 +538,14 @@ export default function ViewCoasters() {
             fontSize="medium"
             mb="small"
           >
-            Filter coasters
+            Filter {ridePluralLabel}
           </Styled.FilterHeading>
           <Styled.FilterToggle
             onClick={() => setIsFiltersOpen(!isFiltersOpen)}
             aria-expanded={isFiltersOpen}
             aria-label={`${isFiltersOpen ? "Hide" : "Show"} filter options`}
           >
-            Filter coasters
+            Filter {ridePluralLabel}
             <Styled.FilterIcon $isOpen={isFiltersOpen} />
           </Styled.FilterToggle>
           <Styled.FilterContent $isOpen={isFiltersOpen}>
@@ -633,7 +671,7 @@ export default function ViewCoasters() {
 
         <Styled.ActionsBar>
           <Button as="link" to="/upload">
-            Add more coasters
+            Add more {ridePluralLabel}
           </Button>
           <Button as="link" to="/rank">
             Start ranking
@@ -641,18 +679,17 @@ export default function ViewCoasters() {
           <Button
             variant="destructive"
             onClick={handleRemoveAllCoasters}
-            aria-label={`Remove all ${coasters.length} coaster${
-              coasters.length === 1 ? "" : "s"
-            } from collection`}
+            aria-label={`Remove all ${coasters.length} ${coasters.length === 1 ? rideSingularLabel : ridePluralLabel} from collection`}
           >
-            Remove all coasters
+            Remove all {ridePluralLabel}
           </Button>
         </Styled.ActionsBar>
 
         <Styled.TableHelpText>
           <Text as="p" colour="mediumGrey" fontSize="small" italic>
-            Tip: Click on any park, manufacturer, model, material, or thrill
-            level to filter by that value.
+            Tip: Click on any park, manufacturer,{" "}
+            {rideType === "coaster" ? "model, material, thrill level, " : ""}
+            or country to filter by that value.
           </Text>
         </Styled.TableHelpText>
 
@@ -673,7 +710,7 @@ export default function ViewCoasters() {
                           Editing: {coaster.name}
                         </Text>
                       </Styled.CoasterTitle>
-                      {uploadedData?.rankingMetadata?.isRanked &&
+                      {currentData?.rankingMetadata?.isRanked &&
                         coaster.rankPosition && (
                           <Styled.RankBadge>
                             #{coaster.rankPosition}
@@ -791,7 +828,7 @@ export default function ViewCoasters() {
                   </Styled.DesktopLayout>
 
                   <Styled.MobileLayout>
-                    {uploadedData?.rankingMetadata?.isRanked &&
+                    {currentData?.rankingMetadata?.isRanked &&
                       coaster.rankPosition && (
                         <Styled.CoasterField>
                           <Styled.FieldLabel>Rank</Styled.FieldLabel>
@@ -926,7 +963,7 @@ export default function ViewCoasters() {
                             marginBottom: "4px",
                           }}
                         >
-                          {uploadedData?.rankingMetadata?.isRanked &&
+                          {currentData?.rankingMetadata?.isRanked &&
                             coaster.rankPosition && (
                               <Styled.RankBadge>
                                 #{coaster.rankPosition}
@@ -1053,7 +1090,7 @@ export default function ViewCoasters() {
 
                   <Styled.MobileLayout>
                     <Styled.MobileHeader>
-                      {uploadedData?.rankingMetadata?.isRanked &&
+                      {currentData?.rankingMetadata?.isRanked &&
                         coaster.rankPosition && (
                           <Styled.MobileRank>
                             <Styled.RankBadge>
@@ -1192,7 +1229,8 @@ export default function ViewCoasters() {
             mb="medium"
             mt="medium"
           >
-            Showing {coasters.length} coaster{coasters.length === 1 ? "" : "s"}
+            Showing {coasters.length}{" "}
+            {coasters.length === 1 ? rideSingularLabel : ridePluralLabel}
           </Text>
         </div>
       </section>
@@ -1203,8 +1241,8 @@ export default function ViewCoasters() {
         onSort={handleSort}
         currentSort={currentSort}
         hasRanking={Boolean(
-          uploadedData?.rankingMetadata?.isRanked &&
-          uploadedData?.rankingMetadata?.rankedCoasters,
+          currentData?.rankingMetadata?.isRanked &&
+          currentData?.rankingMetadata?.rankedCoasters,
         )}
       />
     </MainContent>

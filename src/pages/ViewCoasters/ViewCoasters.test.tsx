@@ -72,7 +72,17 @@ describe("ViewCoasters", () => {
 
       expect(screen.getAllByText("Steel Vengeance")[0]).toBeInTheDocument();
       expect(screen.getAllByText("Fury 325")[0]).toBeInTheDocument();
-      expect(screen.getByText(/2.*coasters/)).toBeInTheDocument();
+      expect(
+        screen.getByText((content, element) => {
+          const textContent = element?.textContent || "";
+          return (
+            element?.tagName === "P" &&
+            textContent.includes("You currently have") &&
+            textContent.includes("2 coasters") &&
+            textContent.includes("in your collection")
+          );
+        }),
+      ).toBeInTheDocument();
     });
   });
 

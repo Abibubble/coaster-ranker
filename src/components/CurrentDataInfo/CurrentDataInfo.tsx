@@ -6,22 +6,25 @@ interface CurrentDataInfoProps {
   coasterCount?: number;
   darkRideCount?: number;
   rideType?: RideType;
+  showButton?: boolean;
 }
 
 /**
- * A component that displays information about the user's current collection with a link to view all rides.
+ * A component that displays information about the user's current collection with an optional link to view all rides.
  *
  * @param coasterCount - The number of coasters currently in the user's collection
  * @param darkRideCount - The number of dark rides currently in the user's collection
  * @param rideType - The type of rides being displayed (coaster or dark-ride)
+ * @param showButton - Whether to display the "View all" button (default: true)
  *
- * @returns An informational component showing the ride count and a button to view all rides
+ * @returns An informational component showing the ride count and optionally a button to view all rides
  */
 
 export default function CurrentDataInfo({
   coasterCount = 0,
   darkRideCount = 0,
   rideType = "coaster",
+  showButton = true,
 }: CurrentDataInfoProps) {
   const buildCountElements = () => {
     const coasterText = coasterCount === 1 ? "coaster" : "coasters";
@@ -63,9 +66,11 @@ export default function CurrentDataInfo({
       <Text as="p">
         You currently have {buildCountElements()} in your collection.
       </Text>
-      <Link href="/view-coasters" variant="button">
-        View all {viewAllText}
-      </Link>
+      {showButton && (
+        <Link href="/view-coasters" variant="button">
+          View all {viewAllText}
+        </Link>
+      )}
     </Styled.CurrentDataInfo>
   );
 }
