@@ -103,6 +103,7 @@ export default function ViewCoasters() {
     thrillLevel: "",
     country: "",
   });
+  const [isSimplifiedView, setIsSimplifiedView] = useState<boolean>(false);
 
   // Get current data based on ride type
   const currentData = rideType === "coaster" ? uploadedData : darkRideData;
@@ -763,15 +764,42 @@ export default function ViewCoasters() {
           </Button>
         </Styled.ActionsBar>
 
-        <Styled.TableHelpText>
+        <Styled.HelpText>
           <Text as="p" colour="mediumGrey" fontSize="small" italic>
             Tip: Click on any park, manufacturer,{" "}
             {rideType === "coaster" ? "model, material, thrill level, " : ""}
             or country to filter by that value.
           </Text>
-        </Styled.TableHelpText>
+        </Styled.HelpText>
 
-        <Styled.CoastersGrid>
+        <Styled.ViewToggle>
+          <Styled.CheckboxLabel>
+            <input
+              type="checkbox"
+              checked={isSimplifiedView}
+              onChange={(e) => setIsSimplifiedView(e.target.checked)}
+              aria-describedby="simplified-view-description"
+            />
+            Simple view
+          </Styled.CheckboxLabel>
+        </Styled.ViewToggle>
+
+        {isSimplifiedView ? (
+          <Styled.SimplifiedGrid>
+            {coasters.map((coaster) => (
+              <Styled.SimplifiedItem key={coaster.id}>
+                {currentData?.rankingMetadata?.isRanked && coaster.rankPosition ? (
+                  <Styled.SimplifiedRank>#{coaster.rankPosition}</Styled.SimplifiedRank>
+                ) : (
+                  <Styled.SimplifiedRank>—</Styled.SimplifiedRank>
+                )}
+                <Styled.SimplifiedName>{coaster.name}</Styled.SimplifiedName>
+                <Styled.SimplifiedPark>{coaster.park}</Styled.SimplifiedPark>
+              </Styled.SimplifiedItem>
+            ))}
+          </Styled.SimplifiedGrid>
+        ) : (
+          <Styled.CoastersGrid>
           {coasters.map((coaster) => (
             <Styled.CoasterCard key={coaster.id}>
               {editingCoasterId === coaster.id ? (
@@ -1136,9 +1164,6 @@ export default function ViewCoasters() {
                             {coaster.name}
                           </Text>
                         </div>
-                        <Text colour="mediumGrey" fontSize="small">
-                          {coaster.park}
-                        </Text>
                       </Styled.CoasterTitle>
                       <Styled.CoasterActions>
                         <Button
@@ -1381,6 +1406,7 @@ export default function ViewCoasters() {
             </Styled.CoasterCard>
           ))}
         </Styled.CoastersGrid>
+        )}
 
         <div>
           <Text

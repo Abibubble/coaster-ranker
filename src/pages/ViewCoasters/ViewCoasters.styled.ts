@@ -173,25 +173,85 @@ export const FilterActions = styled.div`
   margin-top: ${spacing.small};
 `;
 
-export const TableHelpText = styled.div`
+export const HelpText = styled.div`
   margin-bottom: ${spacing.medium};
   text-align: center;
 `;
 
-export const SkipTableLink = styled.a`
-  display: inline-block;
-  margin-left: ${spacing.medium};
-  color: ${colours.blue};
+export const ViewToggle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${spacing.small};
+  margin-bottom: ${spacing.medium};
+  justify-content: flex-end;
+
+  @media (max-width: ${breakpoints.mobileLarge}) {
+    justify-content: center;
+  }
+`;
+
+export const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: ${spacing.tiny};
+  cursor: pointer;
   font-size: ${fonts.small};
-  text-decoration: underline;
+  color: ${colours.charcoal};
+  user-select: none;
+
+  input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+  }
+`;
+
+export const SimplifiedGrid = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing.tiny};
+  max-width: 1106px;
+`;
+
+export const SimplifiedItem = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: ${spacing.small};
+  align-items: center;
+  padding: ${spacing.small};
+  background: ${colours.white};
+  border: ${spacing.micro} solid ${colours.borderGrey};
+  border-radius: ${spacing.tiny};
+  transition: all 0.2s ease;
 
   &:hover {
-    color: ${colours.darkBlue};
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
   }
+`;
 
-  &:focus {
-    outline: 2px solid ${colours.blue};
-    outline-offset: 2px;
+export const SimplifiedRank = styled.div`
+  font-size: ${fonts.small};
+  font-weight: bold;
+  color: ${colours.mediumGrey};
+  min-width: 40px;
+  text-align: center;
+`;
+
+export const SimplifiedName = styled.div`
+  font-size: ${fonts.body};
+  font-weight: bold;
+  color: ${colours.charcoal};
+  line-height: 1.3;
+`;
+
+export const SimplifiedPark = styled.div`
+  font-size: ${fonts.small};
+  color: ${colours.mediumGrey};
+  line-height: 1.2;
+  text-align: right;
+  
+  @media (max-width: ${breakpoints.mobileLarge}) {
+    text-align: left;
   }
 `;
 
@@ -203,251 +263,6 @@ export const ActionsBar = styled.div`
 
   @media (max-width: ${breakpoints.mobileLarge}) {
     flex-direction: column;
-  }
-`;
-
-export const CoastersTable = styled.div`
-  overflow-x: auto;
-  margin-bottom: ${spacing.medium};
-  border: ${spacing.micro} solid ${colours.borderGrey};
-  border-radius: ${spacing.tiny};
-
-  @media (max-width: ${breakpoints.tablet}) {
-    overflow-x: visible;
-    border: none;
-  }
-`;
-
-export const TableHeader = styled.div<{ $hasRank?: boolean }>`
-  display: grid;
-  grid-template-columns: ${({ $hasRank }) =>
-    $hasRank
-      ? `minmax(80px, 0.5fr)
-         minmax(200px, 2fr)
-         minmax(150px, 1.5fr)
-         minmax(150px, 1fr)
-         minmax(120px, 1fr)
-         minmax(100px, 1fr)
-         minmax(100px, 1fr)`
-      : `minmax(200px, 2fr)
-         minmax(150px, 1.5fr)
-         minmax(150px, 1fr)
-         minmax(120px, 1fr)
-         minmax(100px, 1fr)
-         minmax(100px, 1fr)`};
-  background-color: ${colours.veryLightGrey};
-  border-bottom: ${spacing.micro} solid ${colours.borderGrey};
-
-  @media (max-width: ${breakpoints.tablet}) {
-    display: none;
-  }
-`;
-
-export const HeaderCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
-  padding: ${spacing.medium};
-  font-weight: bold;
-  color: ${colours.charcoal};
-  font-size: ${fonts.small};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  @media (max-width: ${breakpoints.tablet}) {
-    ${({ $isHiddenOnTablet }) =>
-      $isHiddenOnTablet &&
-      `
-      display: none;
-    `}
-  }
-`;
-
-export const TableRow = styled.div<{ $hasRank?: boolean }>`
-  display: grid;
-  grid-template-columns: ${({ $hasRank }) =>
-    $hasRank
-      ? `minmax(80px, 0.5fr)
-         minmax(200px, 2fr)
-         minmax(150px, 1.5fr)
-         minmax(150px, 1fr)
-         minmax(120px, 1fr)
-         minmax(100px, 1fr)
-         minmax(100px, 1fr)`
-      : `minmax(200px, 2fr)
-         minmax(150px, 1.5fr)
-         minmax(150px, 1fr)
-         minmax(120px, 1fr)
-         minmax(100px, 1fr)
-         minmax(100px, 1fr)`};
-  border-bottom: ${spacing.micro} solid ${colours.borderGrey};
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: ${colours.paleGrey};
-  }
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  @media (max-width: ${breakpoints.tablet}) {
-    display: block;
-    border: ${spacing.micro} solid ${colours.borderGrey};
-    border-radius: ${spacing.small};
-    padding: ${spacing.small};
-    margin-bottom: ${spacing.small};
-    background-color: ${colours.white};
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-
-    &:hover {
-      background-color: ${colours.white};
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transform: none;
-    }
-
-    &:last-child {
-      border-bottom: ${spacing.micro} solid ${colours.borderGrey};
-    }
-  }
-`;
-
-export const TableCell = styled.div<{ $isHiddenOnTablet?: boolean }>`
-  padding: ${spacing.medium};
-  color: ${colours.slateGrey};
-  font-size: ${fonts.body};
-  align-self: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  @media (max-width: ${breakpoints.tablet}) {
-    padding: 0;
-    margin-bottom: ${spacing.tiny};
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: ${spacing.small};
-    align-items: start;
-    overflow: visible;
-    text-overflow: unset;
-    white-space: normal;
-
-    &:last-child {
-      margin-bottom: 0;
-      margin-top: ${spacing.small};
-      grid-template-columns: 1fr;
-      justify-items: center;
-    }
-  }
-`;
-
-export const ClickableTableCell = styled(TableCell)<{
-  $isHiddenOnTablet?: boolean;
-}>`
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: ${spacing.micro};
-  position: relative;
-
-  &:hover {
-    background-color: ${colours.paleGrey};
-    color: ${colours.charcoal};
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  &:focus {
-    outline: 2px solid ${colours.blue};
-    outline-offset: 2px;
-    background-color: ${colours.paleGrey};
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  &:active {
-    background-color: ${colours.softGrey};
-    transform: translateY(0);
-  }
-  @media (max-width: ${breakpoints.tablet}) {
-    padding: 0;
-    margin-bottom: ${spacing.tiny};
-    border-radius: ${spacing.small};
-    background-color: transparent;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: ${spacing.small};
-    align-items: start;
-
-    &:hover {
-      background-color: transparent;
-      transform: none;
-      box-shadow: none;
-    }
-
-    &:last-child {
-      margin-bottom: 0;
-      margin-top: ${spacing.small};
-      background-color: transparent;
-      grid-template-columns: 1fr;
-      justify-items: center;
-    }
-  }
-`;
-
-export const MobileFieldLabel = styled.span`
-  display: none;
-
-  @media (max-width: ${breakpoints.tablet}) {
-    display: block;
-    font-size: ${fonts.small};
-    font-weight: bold;
-    color: ${colours.charcoal};
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    justify-self: start;
-    align-self: center;
-  }
-`;
-
-export const MobileFieldValue = styled.div`
-  @media (max-width: ${breakpoints.tablet}) {
-    font-size: ${fonts.body};
-    color: ${colours.slateGrey};
-    justify-self: start;
-    align-self: center;
-  }
-`;
-
-export const MobileFieldValueClickable = styled.div`
-  @media (max-width: ${breakpoints.tablet}) {
-    font-size: ${fonts.body};
-    color: ${colours.slateGrey};
-    justify-self: start;
-    align-self: center;
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      color: ${colours.blue};
-    }
-  }
-`;
-
-export const MobileRankCell = styled(TableCell)`
-  @media (max-width: ${breakpoints.tablet}) {
-    padding: 0;
-    margin-bottom: ${spacing.tiny};
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: ${spacing.small};
-    align-items: center;
-
-    &:last-child {
-      margin-bottom: 0;
-      margin-top: ${spacing.small};
-      grid-template-columns: 1fr;
-      justify-items: center;
-    }
   }
 `;
 
@@ -476,7 +291,7 @@ export const CoasterHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: ${spacing.medium};
+  margin-bottom: ${spacing.small};
   gap: ${spacing.medium};
 `;
 
@@ -497,8 +312,7 @@ export const CoasterActions = styled.div`
 export const CoasterDetails = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${spacing.medium};
-  margin-bottom: ${spacing.medium};
+  gap: ${spacing.small};
 
   @media (max-width: ${breakpoints.tablet}) {
     grid-template-columns: 1fr;
