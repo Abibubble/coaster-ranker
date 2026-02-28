@@ -1,5 +1,6 @@
 import { Coaster } from "../../types/data";
 import { shouldAutoMerge, getMergedFields } from "./mergeCoasterData.util";
+import { isParkNameFuzzyMatch } from "../stringMatching.util";
 
 /**
  * Utility functions for detecting duplicate coasters and potential matches.
@@ -29,11 +30,25 @@ export function checkCoasterSimilarity(
   const matchingFields: string[] = [];
 
   fieldsToCheck.forEach((field) => {
-    const existingValue = existing[field]?.toLowerCase().trim();
-    const newValue = newCoaster[field]?.toLowerCase().trim();
+    const existingValue = existing[field];
+    const newValue = newCoaster[field];
 
-    if (existingValue && newValue && existingValue === newValue) {
-      matchingFields.push(field);
+    if (existingValue && newValue) {
+      let isMatch = false;
+
+      if (field === "park") {
+        // Use fuzzy matching for park names to handle common misspellings
+        isMatch = isParkNameFuzzyMatch(existingValue, newValue);
+      } else {
+        // Use exact matching for other fields (with normalization)
+        const normalizedExisting = existingValue.toLowerCase().trim();
+        const normalizedNew = newValue.toLowerCase().trim();
+        isMatch = normalizedExisting === normalizedNew;
+      }
+
+      if (isMatch) {
+        matchingFields.push(field);
+      }
     }
   });
 
@@ -66,7 +81,11 @@ export function detectDuplicates(
       }
 
       const similarity = checkCoasterSimilarity(existingCoaster, newCoaster);
-      if (similarity.matchCount >= 3) {
+      // Only flag as duplicate if name matches AND there are 3+ total matches
+      if (
+        similarity.matchCount >= 3 &&
+        similarity.matchingFields.includes("name")
+      ) {
         duplicates.push({
           existingCoaster,
           newCoaster,

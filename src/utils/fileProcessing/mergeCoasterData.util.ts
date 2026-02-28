@@ -1,4 +1,5 @@
 import { Coaster } from "../../types/data";
+import { isParkNameFuzzyMatch } from "../stringMatching.util";
 
 /**
  * Utility functions for merging coaster data when duplicates are detected.
@@ -50,17 +51,15 @@ export function shouldAutoMerge(
 ): boolean {
   const existingName = existingCoaster.name?.toLowerCase().trim();
   const newName = newCoaster.name?.toLowerCase().trim();
-  const existingPark = existingCoaster.park?.toLowerCase().trim();
-  const newPark = newCoaster.park?.toLowerCase().trim();
+  const existingPark = existingCoaster.park;
+  const newPark = newCoaster.park;
 
-  return !!(
-    existingName &&
-    newName &&
-    existingPark &&
-    newPark &&
-    existingName === newName &&
-    existingPark === newPark
-  );
+  // Check exact name match and fuzzy park match
+  const namesMatch = existingName && newName && existingName === newName;
+  const parksMatch =
+    existingPark && newPark && isParkNameFuzzyMatch(existingPark, newPark);
+
+  return !!(namesMatch && parksMatch);
 }
 
 export function getMergedFields(

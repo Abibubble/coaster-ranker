@@ -4,3 +4,4 @@ export * from "./dataExport";
 export * from "./uploadState";
 export * from "./duplicateIdDetection.util";
 export * from "./coasterOperations";
+export * from "./stringMatching.util";
