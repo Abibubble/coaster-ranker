@@ -1,3 +1,3 @@
-import ViewCoasters from './ViewCoasters'
+import ViewCoasters from "./ViewCoasters";
 
-export { ViewCoasters }
+export { ViewCoasters };

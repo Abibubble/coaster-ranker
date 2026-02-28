@@ -12,7 +12,7 @@ export const TabGroup = styled.div`
   display: flex;
   box-shadow: 0 ${spacing.micro} 3px rgba(0, 0, 0, 0.1);
   width: fit-content;
-  min-width: 400px;
+  min-width: 300px;
 `;
 
 export const TabButton = styled.button<{ $active: boolean }>`
