@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import { breakpoints, colours, spacing } from '../../theme'
+import styled from "styled-components";
+import { breakpoints, colours, spacing } from "../../theme";
 
 export const HeaderContainer = styled.header`
   background-color: ${colours.black};
@@ -15,7 +15,7 @@ export const HeaderContainer = styled.header`
     min-height: ${spacing.giant};
     padding: 0 ${spacing.medium};
   }
-`
+`;
 
 export const HeaderTop = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ export const HeaderTop = styled.div`
       overflow-wrap: break-word;
     }
   }
-`
+`;
 
 export const BurgerButton = styled.button`
   display: flex;
@@ -90,7 +90,7 @@ export const BurgerButton = styled.button`
   @media (min-width: ${breakpoints.tabletLarge}) {
     display: none;
   }
-`
+`;
 
 export const BurgerLine = styled.div<{ $isOpen: boolean }>`
   width: ${spacing.medium};
@@ -100,25 +100,25 @@ export const BurgerLine = styled.div<{ $isOpen: boolean }>`
   transform-origin: center;
 
   &:nth-child(1) {
-    transform: ${props =>
-      props.$isOpen ? 'rotate(45deg) translate(6px, 6px)' : 'none'};
+    transform: ${(props) =>
+      props.$isOpen ? "rotate(45deg) translate(6px, 6px)" : "none"};
   }
 
   &:nth-child(2) {
-    opacity: ${props => (props.$isOpen ? '0' : '1')};
+    opacity: ${(props) => (props.$isOpen ? "0" : "1")};
   }
 
   &:nth-child(3) {
-    transform: ${props =>
-      props.$isOpen ? 'rotate(-45deg) translate(6px, -6px)' : 'none'};
+    transform: ${(props) =>
+      props.$isOpen ? "rotate(-45deg) translate(6px, -6px)" : "none"};
   }
-`
+`;
 
 export const NavContainer = styled.nav<{ $isOpen: boolean }>`
   overflow: hidden;
 
   @media (max-width: ${parseInt(breakpoints.tabletLarge) - 1}px) {
-    display: ${props => (props.$isOpen ? 'block' : 'none')};
+    display: ${(props) => (props.$isOpen ? "block" : "none")};
     border-top: ${spacing.micro} solid ${colours.darkGrey};
   }
 
@@ -126,7 +126,7 @@ export const NavContainer = styled.nav<{ $isOpen: boolean }>`
     display: block;
     flex: 1;
   }
-`
+`;
 
 export const NavLinks = styled.ul`
   display: grid;
@@ -167,7 +167,7 @@ export const NavLinks = styled.ul`
   }
 
   @media (min-width: ${breakpoints.mobileMedium}) and (max-width: ${parseInt(
-      breakpoints.tabletLarge
+      breakpoints.tabletLarge,
     ) - 1}px) {
     grid-template-columns: repeat(2, 1fr);
 
@@ -193,7 +193,7 @@ export const NavLinks = styled.ul`
 
     li a {
       text-align: center;
-      padding: ${spacing.small} ${spacing.medium};
+      padding: ${spacing.small} ${spacing.tiny};
       line-height: 1.2;
       white-space: nowrap;
       position: relative;
@@ -201,6 +201,8 @@ export const NavLinks = styled.ul`
       box-sizing: border-box;
       height: auto;
       width: auto;
+      min-width: ${spacing.tapTarget};
+      min-height: ${spacing.tapTarget};
 
       &:hover,
       &:focus {
@@ -210,4 +212,4 @@ export const NavLinks = styled.ul`
       }
     }
   }
-`
+`;
