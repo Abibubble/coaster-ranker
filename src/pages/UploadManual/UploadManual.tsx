@@ -75,6 +75,7 @@ export default function UploadManual() {
     isLoading: isLoadingParks,
     error: parkError,
     hasMinCharacters,
+    getCountryForPark,
   } = useParkAutocomplete(formData.park);
 
   // Country autocomplete functionality
@@ -131,9 +132,14 @@ export default function UploadManual() {
   };
 
   const handleParkChange = (parkName: string) => {
+    const matchingCountry = getCountryForPark(parkName);
+
     setFormData((prev) => ({
       ...prev,
       park: parkName,
+      // Auto-fill country if we find a matching park and current country is empty
+      country:
+        matchingCountry && !prev.country ? matchingCountry : prev.country,
     }));
   };
 
