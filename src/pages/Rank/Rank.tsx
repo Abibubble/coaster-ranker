@@ -33,11 +33,8 @@ export const Rank: React.FC = () => {
   const rideSingularLabel = rideType === "coaster" ? "coaster" : "dark ride";
   const ridePluralLabel = rideType === "coaster" ? "coasters" : "dark rides";
 
-  // Generate a stable key that changes only when ride type changes
-  const [componentKey, setComponentKey] = React.useState<string>(rideType);
-  React.useEffect(() => {
-    setComponentKey(`${rideType}-${Math.random()}`);
-  }, [rideType]);
+  // Generate a stable key based only on ride type
+  const componentKey = React.useMemo(() => rideType, [rideType]);
 
   return (
     <RankingContent
@@ -96,6 +93,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
     lastComparison,
     canUndo,
     undo,
+    savePartialState,
   }: {
     currentComparison: RankingComparison | null;
     recordWinner: (winner: Coaster) => void;
@@ -106,19 +104,76 @@ const RankingContent: React.FC<RankingContentProps> = ({
     lastComparison: ComparisonResult | null;
     canUndo: boolean;
     undo: () => void;
-  } = useSimpleRanking(currentData?.coasters || []);
+    savePartialState: () => void;
+  } = useSimpleRanking(currentData?.coasters || [], rideType);
 
+  // Mark ranking as complete when it's truly finished (with memoized check)
+  const finalRankingLength = finalRanking.length;
   React.useEffect(() => {
-    if (isComplete && finalRanking.length > 0 && !isAlreadyRanked) {
+    if (isComplete && finalRankingLength > 0 && !isAlreadyRanked) {
+      console.log("Marking ranking as complete...");
       markRankingComplete(finalRanking, rideType);
     }
   }, [
     isComplete,
-    finalRanking,
-    markRankingComplete,
+    finalRankingLength,
     isAlreadyRanked,
     rideType,
+    finalRanking,
+    markRankingComplete,
   ]);
+
+  // Save partial ranking state when navigating away or closing tab
+  React.useEffect(() => {
+    let hasNavigated = false;
+    let saveTimeout: ReturnType<typeof setTimeout>;
+
+    const handleBeforeUnload = (_e: BeforeUnloadEvent) => {
+      if (
+        !isComplete &&
+        !hasNavigated &&
+        (currentComparison || rankedCoasterCount > 0)
+      ) {
+        savePartialState();
+        hasNavigated = true;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (
+        document.visibilityState === "hidden" &&
+        !isComplete &&
+        !hasNavigated &&
+        (currentComparison || rankedCoasterCount > 0)
+      ) {
+        // Debounce the save to prevent rapid firing
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          if (!hasNavigated) {
+            savePartialState();
+            hasNavigated = true;
+          }
+        }, 100);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Return cleanup function
+    return () => {
+      clearTimeout(saveTimeout);
+      if (
+        !isComplete &&
+        !hasNavigated &&
+        (currentComparison || rankedCoasterCount > 0)
+      ) {
+        savePartialState();
+      }
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [savePartialState, isComplete, currentComparison, rankedCoasterCount]); // Added missing dependencies
 
   if (isAlreadyRanked && currentData?.rankingMetadata?.rankedCoasters) {
     const rankedCoasters = currentData.rankingMetadata.rankedCoasters

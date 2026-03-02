@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import {
   DataContextType,
   UploadedData,
@@ -83,15 +89,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const setUploadedData = (data: UploadedData | null) => {
+  const setUploadedData = useCallback((data: UploadedData | null) => {
     setUploadedDataState(data);
     saveDataToStorage(data, COASTER_STORAGE_KEY);
-  };
+  }, []);
 
-  const setDarkRideData = (data: UploadedData | null) => {
+  const setDarkRideData = useCallback((data: UploadedData | null) => {
     setDarkRideDataState(data);
     saveDataToStorage(data, DARK_RIDE_STORAGE_KEY);
-  };
+  }, []);
 
   const markRankingComplete = (finalRanking: Coaster[], rideType: RideType) => {
     const currentData = rideType === "coaster" ? uploadedData : darkRideData;
@@ -116,8 +122,9 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         isRanked: true,
         rankedCoasters: finalRanking.map((coaster) => coaster.id),
         completedComparisons:
-          currentData.rankingMetadata?.completedComparisons ||
+          currentData.rankingMetadata?.completedComparisons ??
           new Set<string>(),
+        partialRankingState: undefined, // Clear partial ranking state when complete
       },
     };
 
@@ -142,11 +149,105 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         isRanked: false,
         rankedCoasters: [],
         completedComparisons: new Set<string>(),
+        partialRankingState: undefined, // Clear partial ranking state
       },
     };
 
     setData(updatedData);
   };
+
+  const savePartialRanking = useCallback(
+    (
+      rankedCoasterIds: string[],
+      comparisonResults: Map<string, string>,
+      unrankedCoasterIds: string[],
+      currentComparison: {
+        coasterA: { id: string };
+        coasterB: { id: string };
+      } | null,
+      lastComparison: {
+        winner: { id: string };
+        loser: { id: string };
+        comparison: { coasterA: { id: string }; coasterB: { id: string } };
+      } | null,
+      rideType: RideType,
+    ) => {
+      const currentData = rideType === "coaster" ? uploadedData : darkRideData;
+      const setData =
+        rideType === "coaster" ? setUploadedData : setDarkRideData;
+      if (!currentData) return;
+
+      // Update coaster rank positions based on current ranking progress
+      const updatedCoasters = currentData.coasters.map((coaster) => {
+        const rankedIndex = rankedCoasterIds.indexOf(coaster.id);
+
+        if (rankedIndex !== -1) {
+          // Coaster is ranked - set its position (1-based)
+          return {
+            ...coaster,
+            rankPosition: rankedIndex + 1,
+          };
+        } else {
+          // Coaster is unranked - clear its position
+          return {
+            ...coaster,
+            rankPosition: undefined,
+          };
+        }
+      });
+
+      const partialRankingState = {
+        rankedCoasterIds,
+        comparisonResults: Array.from(comparisonResults.entries()),
+        unrankedCoasterIds,
+        currentComparison: currentComparison
+          ? {
+              coasterAId: currentComparison.coasterA.id,
+              coasterBId: currentComparison.coasterB.id,
+            }
+          : undefined,
+        lastComparison: lastComparison
+          ? {
+              winnerId: lastComparison.winner.id,
+              loserId: lastComparison.loser.id,
+              coasterAId: lastComparison.comparison.coasterA.id,
+              coasterBId: lastComparison.comparison.coasterB.id,
+            }
+          : undefined,
+      };
+
+      const updatedData = {
+        ...currentData,
+        coasters: updatedCoasters,
+        rankingMetadata: {
+          ...currentData.rankingMetadata,
+          isRanked: currentData.rankingMetadata?.isRanked ?? false,
+          completedComparisons:
+            currentData.rankingMetadata?.completedComparisons ??
+            new Set<string>(),
+          rankedCoasters: currentData.rankingMetadata?.rankedCoasters ?? [],
+          partialRankingState,
+        },
+      };
+
+      // Save to localStorage as well
+      try {
+        const storageKey =
+          rideType === "coaster"
+            ? "partialRankingState"
+            : "partialDarkRideRankingState";
+        localStorage.setItem(storageKey, JSON.stringify(partialRankingState));
+      } catch (error) {
+        console.warn(
+          "Failed to save partial ranking state to localStorage:",
+          error,
+        );
+      }
+
+      setData(updatedData);
+    },
+    [uploadedData, darkRideData, setUploadedData, setDarkRideData],
+  );
 
   return (
     <DataContext.Provider
@@ -159,6 +260,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setIsLoading,
         markRankingComplete,
         resetRanking,
+        savePartialRanking,
       }}
     >
       {children}

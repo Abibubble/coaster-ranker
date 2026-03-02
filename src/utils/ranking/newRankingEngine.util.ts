@@ -93,6 +93,126 @@ export class RankingEngine {
     this.generateNextComparison();
   }
 
+  // Static method to create RankingEngine from saved partial state
+  static fromPartialState(
+    coasters: Coaster[],
+    partialState: {
+      rankedCoasterIds: string[];
+      comparisonResults: [string, string][];
+      unrankedCoasterIds: string[];
+      currentComparison?: {
+        coasterAId: string;
+        coasterBId: string;
+      };
+      lastComparison?: {
+        winnerId: string;
+        loserId: string;
+        coasterAId: string;
+        coasterBId: string;
+      };
+    },
+  ): RankingEngine {
+    const engine = Object.create(RankingEngine.prototype);
+
+    engine.allCoasters = coasters;
+
+    // Restore comparison results
+    const comparisonResults = new Map(partialState.comparisonResults);
+
+    // Find coasters by ID
+    const findCoaster = (id: string) => coasters.find((c) => c && c.id === id);
+
+    // Restore ranked coaster IDs, but validate they exist
+    const validRankedCoasterIds = partialState.rankedCoasterIds.filter((id) => {
+      const coaster = findCoaster(id);
+      if (!coaster) {
+        console.warn(`Ranked coaster with ID ${id} not found, skipping`);
+        return false;
+      }
+      return true;
+    });
+
+    // Restore unranked coasters from partial state
+    const explicitUnrankedCoasters = partialState.unrankedCoasterIds
+      .map(findCoaster)
+      .filter((c): c is Coaster => c !== undefined);
+
+    // Find all rankable coasters (not pre-ranked)
+    const allRankableCoasters = coasters.filter((c) => !c.isPreRanked);
+
+    // Find any new coasters that weren't in the saved partial state
+    const rankedIds = new Set(validRankedCoasterIds);
+    const explicitUnrankedIds = new Set(partialState.unrankedCoasterIds);
+
+    const newUnrankedCoasters = allRankableCoasters.filter(
+      (coaster) =>
+        !rankedIds.has(coaster.id) && !explicitUnrankedIds.has(coaster.id),
+    );
+
+    // Combine explicit unranked and new unranked coasters
+    const unrankedCoasters = [
+      ...explicitUnrankedCoasters,
+      ...newUnrankedCoasters,
+    ];
+
+    console.log(`Total rankable coasters: ${allRankableCoasters.length}`);
+    console.log(`Ranked from partial state: ${validRankedCoasterIds.length}`);
+    console.log(`Explicit unranked: ${explicitUnrankedCoasters.length}`);
+    console.log(`New unranked: ${newUnrankedCoasters.length}`);
+    console.log(`Total unranked: ${unrankedCoasters.length}`);
+
+    // Restore current comparison if it exists
+    let currentComparison: RankingComparison | null = null;
+    if (partialState.currentComparison) {
+      const coasterA = findCoaster(partialState.currentComparison.coasterAId);
+      const coasterB = findCoaster(partialState.currentComparison.coasterBId);
+      if (coasterA && coasterB) {
+        currentComparison = { coasterA, coasterB };
+      }
+    }
+
+    // Restore last comparison if it exists
+    let lastComparison: ComparisonResult | null = null;
+    if (partialState.lastComparison) {
+      const winner = findCoaster(partialState.lastComparison.winnerId);
+      const loser = findCoaster(partialState.lastComparison.loserId);
+      const compCoasterA = findCoaster(partialState.lastComparison.coasterAId);
+      const compCoasterB = findCoaster(partialState.lastComparison.coasterBId);
+
+      if (winner && loser && compCoasterA && compCoasterB) {
+        lastComparison = {
+          comparison: { coasterA: compCoasterA, coasterB: compCoasterB },
+          winner,
+          loser,
+        };
+      }
+    }
+
+    // Set up the restored state
+    engine.state = {
+      rankedCoasterIds: validRankedCoasterIds,
+      comparisonResults,
+      unrankedCoasters,
+      currentComparison,
+      isComplete: unrankedCoasters.length === 0,
+      lastComparison,
+    };
+
+    engine.stateHistory = [];
+
+    // Generate next comparison if not complete and no current comparison
+    if (!engine.state.isComplete && !engine.state.currentComparison) {
+      engine.generateNextComparison();
+    }
+
+    console.log("Ranking engine restored from partial state");
+    console.log(
+      `Ranked: ${validRankedCoasterIds.length}, Unranked: ${unrankedCoasters.length}`,
+    );
+
+    return engine;
+  }
+
   getCurrentComparison(): RankingComparison | null {
     return this.state.currentComparison;
   }
@@ -150,7 +270,12 @@ export class RankingEngine {
   }
 
   getState(): RankingState {
-    return { ...this.state };
+    return {
+      ...this.state,
+      comparisonResults: new Map(this.state.comparisonResults), // Create a new Map instance
+      unrankedCoasters: [...this.state.unrankedCoasters], // Create a new array
+      rankedCoasterIds: [...this.state.rankedCoasterIds], // Create a new array
+    };
   }
 
   getCurrentRanking(): Coaster[] {
@@ -529,7 +654,11 @@ export class RankingEngine {
   }
 
   private findCoasterById(id: string): Coaster | undefined {
-    return this.allCoasters.find((c) => c.id === id);
+    const coaster = this.allCoasters.find((c) => c && c.id === id);
+    if (!coaster) {
+      console.warn(`Coaster with ID ${id} not found in allCoasters`);
+    }
+    return coaster;
   }
 
   private removeFromUnranked(coasterId: string): void {
@@ -539,6 +668,10 @@ export class RankingEngine {
   }
 
   private getComparisonKey(coasterA: Coaster, coasterB: Coaster): string {
+    if (!coasterA || !coasterB || !coasterA.id || !coasterB.id) {
+      console.error("Invalid coasters for comparison:", { coasterA, coasterB });
+      throw new Error("Cannot create comparison key: invalid coaster data");
+    }
     return coasterA.id < coasterB.id
       ? `${coasterA.id}-${coasterB.id}`
       : `${coasterB.id}-${coasterA.id}`;

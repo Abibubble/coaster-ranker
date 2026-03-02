@@ -49,12 +49,15 @@ export const useCoasterSorting = (
         return 0;
       });
     } else {
-      // Default sorting by rank if available
-      const isRanked =
+      // Default sorting by rank if available (complete or partial rankings)
+      const hasCompletedRanking =
         currentData?.rankingMetadata?.isRanked &&
         currentData?.rankingMetadata?.rankedCoasters;
+      const hasPartialRanking = result.some(
+        (coaster) => coaster.rankPosition !== undefined,
+      );
 
-      if (isRanked) {
+      if (hasCompletedRanking || hasPartialRanking) {
         result.sort((a, b) => {
           const rankA = a.rankPosition || Number.MAX_SAFE_INTEGER;
           const rankB = b.rankPosition || Number.MAX_SAFE_INTEGER;

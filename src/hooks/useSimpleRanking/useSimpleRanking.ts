@@ -1,5 +1,6 @@
-import { useState, useCallback, useMemo } from "react";
-import { Coaster } from "../../types/data";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { Coaster, RideType } from "../../types/data";
+import { useData } from "../../contexts/DataContext";
 import {
   RankingEngine,
   RankingComparison,
@@ -19,23 +20,128 @@ export interface UseSimpleRankingReturn {
   lastComparison: ComparisonResult | null;
   canUndo: boolean;
   undo: () => void;
+  savePartialState: () => void;
 }
 
 export const useSimpleRanking = (
   coasters: Coaster[],
+  rideType: RideType = "coaster",
 ): UseSimpleRankingReturn => {
-  const rankingEngine = useMemo(() => {
-    if (coasters.length === 0) return null;
-    try {
-      const engine = new RankingEngine(coasters);
-      return engine;
-    } catch (error) {
-      console.error("Error creating ranking engine:", error);
-      return null;
-    }
+  const { savePartialRanking } = useData();
+
+  // Use state to store the ranking engine with stable initialization
+  const [rankingEngine, setRankingEngine] = useState<RankingEngine | null>(
+    null,
+  );
+  const [, setForceUpdate] = useState(0);
+
+  // Track coasters to detect changes
+  const [lastCoastersHash, setLastCoastersHash] = useState<string>("");
+
+  // Create hash of coasters to detect meaningful changes
+  const coastersHash = useMemo(() => {
+    if (!coasters.length) return "";
+    return coasters
+      .map((c) => c.id)
+      .sort()
+      .join(",");
   }, [coasters]);
 
-  const [, setForceUpdate] = useState(0);
+  // Initialize ranking engine only when coasters actually change
+  useEffect(() => {
+    if (coastersHash === lastCoastersHash) return;
+
+    setLastCoastersHash(coastersHash);
+
+    if (!coasters?.length) {
+      setRankingEngine(null);
+      return;
+    }
+
+    const filteredCoasters = coasters.filter((c) => !c.isPreRanked);
+    if (filteredCoasters.length === 0) {
+      setRankingEngine(null);
+      return;
+    }
+
+    console.log("Initializing ranking engine...");
+
+    // Check for existing partial state in localStorage
+    const storageKey =
+      rideType === "coaster"
+        ? "partialRankingState"
+        : "partialDarkRideRankingState";
+    const savedState = localStorage.getItem(storageKey);
+
+    let engine: RankingEngine;
+
+    if (savedState) {
+      try {
+        console.log("Restoring ranking from partial state...");
+        const partialState = JSON.parse(savedState);
+
+        // Validate that ranking state isn't completely stale
+        const currentCoasterIds = new Set(filteredCoasters.map((c) => c.id));
+        const validRankedIds =
+          partialState.rankedCoasterIds?.filter((id: string) =>
+            currentCoasterIds.has(id),
+          ) || [];
+
+        // Clear stale data if no ranked coasters are valid
+        if (
+          partialState.rankedCoasterIds?.length > 0 &&
+          validRankedIds.length === 0
+        ) {
+          console.warn(
+            "No valid ranked coasters found in partial state, clearing...",
+          );
+          localStorage.removeItem(storageKey);
+          throw new Error("Stale partial state - no valid ranked coasters");
+        }
+
+        // Let the engine handle adding any new coasters to unranked
+        engine = RankingEngine.fromPartialState(filteredCoasters, partialState);
+      } catch (error) {
+        console.error("Failed to restore from partial state:", error);
+        localStorage.removeItem(storageKey);
+        engine = new RankingEngine(filteredCoasters);
+      }
+    } else {
+      console.log("Creating new ranking engine...");
+      engine = new RankingEngine(filteredCoasters);
+    }
+
+    setRankingEngine(engine);
+  }, [coastersHash, rideType, lastCoastersHash, coasters]);
+
+  const savePartialState = useCallback(() => {
+    if (!rankingEngine) return;
+
+    const state = rankingEngine.getState();
+
+    // Only save if there's meaningful progress
+    if (
+      state.isComplete ||
+      (state.rankedCoasterIds.length === 0 &&
+        state.comparisonResults.size === 0)
+    ) {
+      return;
+    }
+
+    const unrankedCoasterIds = state.unrankedCoasters.map((c) => c.id);
+
+    // Use a timeout to batch rapid saves and prevent infinite loops
+    setTimeout(() => {
+      savePartialRanking(
+        state.rankedCoasterIds,
+        state.comparisonResults,
+        unrankedCoasterIds,
+        state.currentComparison,
+        state.lastComparison,
+        rideType,
+      );
+    }, 10);
+  }, [rankingEngine, rideType, savePartialRanking]);
 
   const recordWinner = useCallback(
     (winner: Coaster) => {
@@ -111,5 +217,6 @@ export const useSimpleRanking = (
     lastComparison,
     canUndo,
     undo,
+    savePartialState,
   };
 };

@@ -22,6 +22,22 @@ export interface RankingMetadata {
   isRanked: boolean; // Whether this dataset has been ranked
   hasPreRankedCoasters?: boolean; // Whether any coasters in this dataset are pre-ranked
   preRankedGroups?: string[]; // Array of upload IDs that were marked as pre-ranked
+  // Partial ranking state for persistence
+  partialRankingState?: {
+    rankedCoasterIds: string[];
+    comparisonResults: [string, string][]; // Array of [key, value] pairs for Map serialization
+    unrankedCoasterIds: string[];
+    currentComparison?: {
+      coasterAId: string;
+      coasterBId: string;
+    };
+    lastComparison?: {
+      winnerId: string;
+      loserId: string;
+      coasterAId: string;
+      coasterBId: string;
+    };
+  };
 }
 
 export interface UploadedData {
@@ -42,4 +58,19 @@ export type DataContextType = {
   setIsLoading: (loading: boolean) => void;
   markRankingComplete: (finalRanking: Coaster[], rideType: RideType) => void;
   resetRanking: (rideType: RideType) => void;
+  savePartialRanking: (
+    rankedCoasterIds: string[],
+    comparisonResults: Map<string, string>,
+    unrankedCoasterIds: string[],
+    currentComparison: {
+      coasterA: { id: string };
+      coasterB: { id: string };
+    } | null,
+    lastComparison: {
+      winner: { id: string };
+      loser: { id: string };
+      comparison: { coasterA: { id: string }; coasterB: { id: string } };
+    } | null,
+    rideType: RideType,
+  ) => void;
 };

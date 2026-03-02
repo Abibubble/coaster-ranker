@@ -56,6 +56,13 @@ export default function ViewCoasters() {
     [currentData?.coasters],
   );
 
+  // Check if we should show rankings (complete ranking or partial rankings with positions)
+  const shouldShowRankings = useMemo(() => {
+    if (currentData?.rankingMetadata?.isRanked) return true;
+    // Check if any coasters have rank positions (partial rankings)
+    return allCoasters.some((coaster) => coaster.rankPosition !== undefined);
+  }, [currentData?.rankingMetadata?.isRanked, allCoasters]);
+
   // Custom hooks for functionality
   const {
     filters,
@@ -295,7 +302,7 @@ export default function ViewCoasters() {
               <SimplifiedCoasterItem
                 key={coaster.id}
                 coaster={coaster}
-                isRanked={Boolean(currentData?.rankingMetadata?.isRanked)}
+                isRanked={shouldShowRankings}
               />
             ))}
           </Styled.SimplifiedGrid>
@@ -308,7 +315,7 @@ export default function ViewCoasters() {
                   rideType={rideType}
                   isEditing={isEditing(coaster.id)}
                   editForm={editForm}
-                  isRanked={Boolean(currentData?.rankingMetadata?.isRanked)}
+                  isRanked={shouldShowRankings}
                   onEdit={() => startEditing(coaster)}
                   onRemove={() => handleRemoveCoaster(coaster.id)}
                   onFieldClick={handleFieldClick}

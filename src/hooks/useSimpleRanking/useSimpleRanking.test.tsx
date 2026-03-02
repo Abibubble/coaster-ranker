@@ -3,29 +3,57 @@ import { vi } from "vitest";
 import { useSimpleRanking } from "./useSimpleRanking";
 import { Coaster } from "../../types/data";
 
+// Mock the useData hook
+vi.mock("../../contexts/DataContext", () => ({
+  useData: () => ({
+    savePartialRanking: vi.fn(),
+  }),
+}));
+
 // Mock the ranking engine
 vi.mock("../../utils/ranking/newRankingEngine.util", () => {
-  return {
-    RankingEngine: vi.fn().mockImplementation((coasters: Coaster[]) => {
+  class MockRankingEngine {
+    constructor(coasters: Coaster[]) {
       if (!coasters || coasters.length === 0) {
         throw new Error("No coasters provided");
       }
+    }
 
+    getCurrentComparison() {
+      return null;
+    }
+
+    recordComparisonResult() {}
+
+    getState() {
       return {
-        getCurrentComparison: () => null,
-        recordComparisonResult: () => {},
-        getState: () => ({
-          isComplete: false,
-          comparisonResults: new Map(),
-          rankedCoasterIds: [],
-        }),
-        getFinalRanking: () => [],
-        getCurrentRanking: () => coasters,
-        getLastComparison: () => null,
-        canUndo: () => false,
-        undo: () => {},
+        isComplete: false,
+        comparisonResults: new Map(),
+        rankedCoasterIds: [],
       };
-    }),
+    }
+
+    getFinalRanking() {
+      return [];
+    }
+
+    getCurrentRanking() {
+      return [];
+    }
+
+    getLastComparison() {
+      return null;
+    }
+
+    canUndo() {
+      return false;
+    }
+
+    undo() {}
+  }
+
+  return {
+    RankingEngine: MockRankingEngine,
   };
 });
 

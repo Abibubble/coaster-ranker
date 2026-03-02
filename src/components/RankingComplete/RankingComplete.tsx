@@ -55,25 +55,40 @@ export default function RankingComplete({
 
   const currentRankedCoasters = getCurrentRankedCoasters();
 
+  // Only update on initial load or when ranking is completed
   useEffect(() => {
-    setCoastersOrder([...rankedCoasters]);
-  }, [rankedCoasters]);
+    if (rankedCoasters.length > 0 && coastersOrder.length === 0) {
+      setCoastersOrder([...rankedCoasters]);
+    }
+  }, [rankedCoasters.length, coastersOrder.length, rankedCoasters]);
+
+  // Separate effect for context data with better stability
+  const contextDataHash = React.useMemo(() => {
+    if (!dataToUse?.coasters || !dataToUse?.rankingMetadata?.isRanked)
+      return "";
+    const rankedCoasters = dataToUse.coasters
+      .filter((c) => c.rankPosition !== undefined)
+      .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0));
+    return `${rankedCoasters.length}-${rankedCoasters.map((c) => `${c.id}:${c.rankPosition}`).join(",")}`;
+  }, [dataToUse]);
 
   useEffect(() => {
     if (
       !isEditing &&
       dataToUse?.rankingMetadata?.isRanked &&
-      dataToUse.coasters
+      contextDataHash &&
+      coastersOrder.length === 0
     ) {
-      const contextCoasters = dataToUse.coasters
-        .filter((coaster) => coaster.rankPosition !== undefined)
-        .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0));
+      const contextCoasters =
+        dataToUse.coasters
+          ?.filter((coaster) => coaster.rankPosition !== undefined)
+          .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0)) || [];
 
       if (contextCoasters.length > 0) {
         setCoastersOrder([...contextCoasters]);
       }
     }
-  }, [dataToUse?.rankingMetadata?.isRanked, dataToUse?.coasters, isEditing]);
+  }, [contextDataHash, isEditing, coastersOrder.length, dataToUse]);
 
   const handleEditClick = () => {
     setIsEditing(true);
