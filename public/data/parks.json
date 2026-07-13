@@ -108,6 +108,10 @@
     "country": "France"
   },
   {
+    "name": "Parc d'Olhain",
+    "country": "France"
+  },
+  {
     "name": "Parc Du Bocasse",
     "country": "France"
   },
@@ -220,11 +224,23 @@
     "country": "Netherlands"
   },
   {
+    "name": "Mondo Verde",
+    "country": "Netherlands"
+  },
+  {
+    "name": "Slagharen Amusement Park",
+    "country": "Netherlands"
+  },
+  {
     "name": "Toverland",
     "country": "Netherlands"
   },
   {
     "name": "Walibi Holland",
+    "country": "Netherlands"
+  },
+  {
+    "name": "Wildlands Adventure Zoo Emmen",
     "country": "Netherlands"
   },
   {
@@ -284,15 +300,23 @@
     "country": "Sweden"
   },
   {
+    "name": "Adventure Island",
+    "country": "United Kingdom"
+  },
+  {
     "name": "Alton Towers",
     "country": "United Kingdom"
   },
   {
-    "name": "Blackpool Pleasure Beach",
+    "name": "Brighton Palace Pier",
     "country": "United Kingdom"
   },
   {
     "name": "Chessington World of Adventures",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Clarence Pier",
     "country": "United Kingdom"
   },
   {
@@ -312,7 +336,7 @@
     "country": "United Kingdom"
   },
   {
-    "name": "Legoland Windsor",
+    "name": "LEGOLAND Windsor",
     "country": "United Kingdom"
   },
   {
@@ -321,6 +345,22 @@
   },
   {
     "name": "Paultons Park",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Pleasure Beach Resort (Blackpool)",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "Pleasurewood Hills",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "South Parade Pier",
+    "country": "United Kingdom"
+  },
+  {
+    "name": "South Pier",
     "country": "United Kingdom"
   },
   {
@@ -400,7 +440,7 @@
     "country": "United States"
   },
   {
-    "name": "Universal's Islands of Adventure",
+    "name": "Universal Islands of Adventure",
     "country": "United States"
   },
   {

@@ -64,13 +64,21 @@ const normalizeForSearch = (text: string): string => {
     .replace(/[\u0300-\u036f]/g, "");
 };
 
+const escapeRegExp = (text: string): string =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const expandSearchTerms = (searchTerm: string): string => {
   const normalized = searchTerm.toLowerCase();
 
+  // Expand recognised country aliases (e.g. "america" -> "united states"),
+  // but only when the alias appears as a whole word. Using a plain substring
+  // match here meant a short alias like "us" would fire inside an unrelated
+  // park name — typing "Busch" became "Bunited statesch" and matched nothing.
   for (const [keyword, countries] of Object.entries(COUNTRY_KEYWORDS)) {
-    if (normalized.includes(keyword)) {
+    const wholeWord = new RegExp(`\\b${escapeRegExp(keyword)}\\b`, "i");
+    if (wholeWord.test(normalized)) {
       const replacement = countries.join(" ");
-      return normalized.replace(keyword, replacement);
+      return normalized.replace(wholeWord, replacement);
     }
   }
 
@@ -210,17 +218,27 @@ export default function useParkAutocomplete(
         }
       }
 
-      // Check if search term matches country name (whole word or starts with)
+      // Check if search term matches country name.
       if (!isMatch) {
         const countryWords = parkCountry
           .split(/[\s-]+/)
           .filter((word) => word.length > 0);
-        isMatch = searchWords.some((searchWord) =>
-          countryWords.some(
+
+        if (searchWords.length > 1) {
+          // A multi-word search (e.g. an expanded alias like "united states")
+          // must match the country name as a contiguous prefix. Matching any
+          // single word would let the shared "united" in "united states" pull
+          // in the United Kingdom / United Arab Emirates too.
+          isMatch = parkCountry.startsWith(searchWords.join(" "));
+        } else {
+          // Single partial word (e.g. "ger" -> Germany): prefix-match any word
+          // of the country name.
+          isMatch = countryWords.some(
             (countryWord) =>
-              countryWord.startsWith(searchWord) && searchWord.length >= 3,
-          ),
-        );
+              countryWord.startsWith(searchWords[0]) &&
+              searchWords[0].length >= 3,
+          );
+        }
       }
 
       if (!isMatch && searchWords.length > 1) {
