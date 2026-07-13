@@ -77,19 +77,24 @@ export const formatString = (
       break;
     case "first-word":
       formattedText = spacedText
-        .split(/(\s+|(?=[^\w\s])|(?<=[^\w\s]))/)
+        // Split on whitespace only, keeping the whitespace runs as tokens so
+        // they can be rejoined verbatim. We deliberately do NOT treat accented
+        // letters (é, ñ, …) or in-word punctuation (apostrophes) as word
+        // boundaries — doing so would capitalise the letter after them, e.g.
+        // "Pégase" -> "PéGase" or "Cobra's" -> "Cobra'S".
+        .split(/(\s+)/)
         .map((word) => {
-          if (/^\s+$/.test(word) || /^[^\w\s]+$/.test(word)) {
-            // Preserve whitespace and punctuation
+          if (/^\s+$/.test(word) || word.length === 0) {
+            // Preserve whitespace runs
             return word;
           }
-          if (word.length === 0) {
-            return word;
-          }
-          // Only modify words that are entirely lowercase
-          // Preserve words that are mixed case or all uppercase (likely acronyms/proper nouns)
+          // Only modify words that are entirely lowercase.
+          // Preserve words that are mixed case or all uppercase (likely
+          // acronyms/proper nouns, e.g. "VelociCoaster", "RMC").
           if (word === word.toLowerCase()) {
-            return word.charAt(0).toUpperCase() + word.slice(1);
+            // Uppercase the first cased letter (Unicode-aware), leaving any
+            // leading punctuation and all following characters untouched.
+            return word.replace(/\p{L}/u, (letter) => letter.toUpperCase());
           }
           return word;
         })
