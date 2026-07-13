@@ -28,6 +28,10 @@
     "country": "Belgium"
   },
   {
+    "name": "Plopsaland Blegium",
+    "country": "Belgium"
+  },
+  {
     "name": "Walibi Belgium",
     "country": "Belgium"
   },
@@ -145,6 +149,10 @@
   },
   {
     "name": "Phantasialand",
+    "country": "Germany"
+  },
+  {
+    "name": "Plopsaland Germany",
     "country": "Germany"
   },
   {
@@ -385,6 +393,10 @@
   },
   {
     "name": "Universal Studios Hollywood",
+    "country": "United States"
+  },
+  {
+    "name": "Universal Studios Orlando",
     "country": "United States"
   },
   {

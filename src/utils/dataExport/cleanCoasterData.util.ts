@@ -69,7 +69,7 @@ export function addRankingToCoasterData(
   coasters: Coaster[],
   rankingMetadata?: { rankedCoasters?: string[]; isRanked?: boolean },
 ): CoasterWithRank[] {
-  return coasters.map((coaster) => {
+  const rankedCoasters = coasters.map((coaster) => {
     const baseCoaster: CoasterWithRank = {
       name: coaster.name,
       park: coaster.park,
@@ -95,6 +95,16 @@ export function addRankingToCoasterData(
     }
 
     return baseCoaster;
+  });
+
+  // Sort into rank order (rank 1 first, then 2, ...) so exports are ordered.
+  // Unranked coasters keep their original relative order at the end
+  // (Array.prototype.sort is stable).
+  return rankedCoasters.sort((a, b) => {
+    if (a.rank === undefined && b.rank === undefined) return 0;
+    if (a.rank === undefined) return 1;
+    if (b.rank === undefined) return -1;
+    return a.rank - b.rank;
   });
 }
 
