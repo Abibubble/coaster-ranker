@@ -120,6 +120,12 @@ describe("UploadManual - form submission", () => {
     expect(stored[0].name).toBe("Nemesis");
   });
 
+  it("regression: the Name field has no name attribute (Firefox autofill history keys off it)", () => {
+    render(<MockedUploadManual />);
+
+    expect(screen.getByLabelText(/^name/i)).not.toHaveAttribute("name");
+  });
+
   it("shows an error and adds nothing when required fields are missing", async () => {
     const { container } = render(<MockedUploadManual />);
 

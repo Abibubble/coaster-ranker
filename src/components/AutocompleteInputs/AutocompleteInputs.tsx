@@ -89,7 +89,6 @@ export interface ParkAutocompleteInputProps {
   label?: string;
   required?: boolean;
   id?: string;
-  name?: string;
   autoComplete?: string;
   isLoading?: boolean;
   error?: string | null;
@@ -113,7 +112,6 @@ export interface CountryAutocompleteInputProps {
   label?: string;
   required?: boolean;
   id?: string;
-  name?: string;
   autoComplete?: string;
   isLoading?: boolean;
   error?: string | null;
@@ -137,7 +135,6 @@ export interface ManufacturerAutocompleteInputProps {
   label?: string;
   required?: boolean;
   id?: string;
-  name?: string;
   autoComplete?: string;
   isLoading?: boolean;
   error?: string | null;
@@ -161,7 +158,6 @@ export interface ModelAutocompleteInputProps {
   label?: string;
   required?: boolean;
   id?: string;
-  name?: string;
   autoComplete?: string;
   isLoading?: boolean;
   error?: string | null;

@@ -104,4 +104,21 @@ describe("GenericAutocompleteInput", () => {
 
     expect(screen.getByText("Failed to load items")).toBeInTheDocument();
   });
+
+  it("regression: never renders a name attribute, even if one is somehow passed through", () => {
+    // A stable `name` gives Firefox something to build persistent autofill
+    // history against across visits, which autocomplete="off" alone doesn't
+    // reliably suppress. This field is React-controlled (value/onChange),
+    // so it has no functional need for `name`.
+    render(
+      <GenericAutocompleteInput
+        {...defaultProps}
+        label="Item"
+        id="test-item"
+        {...({ name: "item" } as object)}
+      />,
+    );
+
+    expect(screen.getByLabelText("Item")).not.toHaveAttribute("name");
+  });
 });

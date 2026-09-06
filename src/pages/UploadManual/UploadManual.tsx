@@ -106,20 +106,20 @@ export default function UploadManual() {
     rideType,
   );
 
+  // Material and Thrill Level are plain, native form controls (not backed by
+  // an autocomplete component with its own value-based onChange), so they
+  // still route through their `name` attribute here. Park/Manufacturer/
+  // Model/Country and Name have their own dedicated handlers below and no
+  // longer carry a `name` attribute at all (see GenericAutocompleteInput.tsx
+  // for why).
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
 
-    // Map generic field names back to form data properties
     const fieldNameMap: Record<string, string> = {
-      coasterName: "name",
-      themePark: "park",
-      rideManufacturer: "manufacturer",
-      rideModel: "model",
       trackMaterial: "material",
       intensityLevel: "thrillLevel",
-      parkLocation: "country",
     };
 
     const formFieldName = fieldNameMap[name] || name;
@@ -127,6 +127,13 @@ export default function UploadManual() {
     setFormData((prev) => ({
       ...prev,
       [formFieldName]: value,
+    }));
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      name: e.target.value,
     }));
   };
 
@@ -447,9 +454,8 @@ export default function UploadManual() {
                   <Styled.Input
                     type="text"
                     id="coaster-name"
-                    name="coasterName"
                     value={formData.name || ""}
-                    onChange={handleInputChange}
+                    onChange={handleNameChange}
                     placeholder="e.g. The Smiler"
                     autoComplete="off"
                     data-form-type="other"
@@ -467,7 +473,6 @@ export default function UploadManual() {
                     label="Theme Park"
                     required
                     id="theme-park"
-                    name="themePark"
                     autoComplete="off"
                     data-form-type="other"
                     isLoading={isLoadingParks}
@@ -488,7 +493,6 @@ export default function UploadManual() {
                     label="Manufacturer"
                     required
                     id="ride-manufacturer"
-                    name="rideManufacturer"
                     autoComplete="off"
                     data-form-type="other"
                     isLoading={isLoadingManufacturers}
@@ -511,7 +515,6 @@ export default function UploadManual() {
                       }
                       label="Model"
                       id="ride-model"
-                      name="rideModel"
                       autoComplete="off"
                       data-form-type="other"
                       isLoading={isLoadingModels}
@@ -586,7 +589,6 @@ export default function UploadManual() {
                   placeholder="e.g. Europe"
                   label="Location"
                   id="park-location"
-                  name="parkLocation"
                   autoComplete="off"
                   data-form-type="other"
                   isLoading={isLoadingCountries}

@@ -115,7 +115,6 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
             placeholder="e.g. Alton Towers"
             label=""
             id="edit-park"
-            name="editPark"
             autoComplete="off"
             required
             isLoading={autocomplete.park.isLoading}
@@ -133,7 +132,6 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
             placeholder="e.g. B&M"
             label=""
             id="edit-manufacturer"
-            name="editManufacturer"
             autoComplete="off"
             required
             isLoading={autocomplete.manufacturer.isLoading}
@@ -152,7 +150,6 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
               placeholder="e.g. Invert"
               label=""
               id="edit-model"
-              name="editModel"
               autoComplete="off"
               isLoading={autocomplete.model.isLoading}
               error={autocomplete.model.error}
@@ -171,7 +168,6 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
             placeholder="e.g. United Kingdom"
             label=""
             id="edit-country"
-            name="editCountry"
             autoComplete="off"
             required
             isLoading={autocomplete.country.isLoading}

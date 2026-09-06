@@ -27,7 +27,6 @@ export interface GenericAutocompleteInputProps<
   label?: string;
   required?: boolean;
   id?: string;
-  name?: string;
   autoComplete?: string;
   isLoading?: boolean;
   error?: string | null;
@@ -49,7 +48,6 @@ export default function GenericAutocompleteInput<
   label,
   required,
   id,
-  name,
   autoComplete,
   isLoading,
   error,
@@ -189,10 +187,19 @@ export default function GenericAutocompleteInput<
       )}
 
       <Styled.InputWrapper>
+        {/*
+          Deliberately no `name` attribute: this is a React-controlled field
+          (value/onChange drive state, nothing reads it via native form
+          submission), and browsers - Firefox in particular - key their
+          persistent "remembered values" autofill off a field's `name`
+          (falling back to `id` only when `name` is absent). A stable `name`
+          here just gives the browser something to build autofill history
+          against across visits, which autocomplete="off" alone doesn't
+          reliably suppress.
+        */}
         <Styled.Input
           ref={inputRef}
           id={inputId}
-          name={name}
           type="text"
           value={value}
           onChange={handleInputChange}

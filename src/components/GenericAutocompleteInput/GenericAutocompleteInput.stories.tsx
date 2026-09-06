@@ -104,7 +104,6 @@ const GenericAutocompleteWrapper = (args: WrapperArgs) => {
       label={args.label}
       required={args.required}
       id={args.id}
-      name={args.name}
       autoComplete={args.autoComplete}
       isLoading={args.isLoading}
       error={args.error}

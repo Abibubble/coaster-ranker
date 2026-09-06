@@ -47,7 +47,6 @@ const ParkWrapper = (args: Record<string, unknown>) => {
       label={args.label as string}
       required={args.required as boolean}
       id={args.id as string}
-      name={args.name as string}
       autoComplete={args.autoComplete as string}
       isLoading={args.isLoading as boolean}
       error={args.error as string | null}
@@ -77,7 +76,6 @@ const CountryWrapper = (args: Record<string, unknown>) => {
       label={args.label as string}
       required={args.required as boolean}
       id={args.id as string}
-      name={args.name as string}
       autoComplete={args.autoComplete as string}
       isLoading={args.isLoading as boolean}
       error={args.error as string | null}
@@ -107,7 +105,6 @@ const ManufacturerWrapper = (args: Record<string, unknown>) => {
       label={args.label as string}
       required={args.required as boolean}
       id={args.id as string}
-      name={args.name as string}
       autoComplete={args.autoComplete as string}
       isLoading={args.isLoading as boolean}
       error={args.error as string | null}
@@ -137,7 +134,6 @@ const ModelWrapper = (args: Record<string, unknown>) => {
       label={args.label as string}
       required={args.required as boolean}
       id={args.id as string}
-      name={args.name as string}
       autoComplete={args.autoComplete as string}
       isLoading={args.isLoading as boolean}
       error={args.error as string | null}
