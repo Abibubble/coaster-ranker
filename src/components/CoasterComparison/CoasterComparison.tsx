@@ -90,6 +90,7 @@ export default function CoasterComparison({
         {renderField("Material", coaster1.material)}
         {renderField("Thrill Level", coaster1.thrillLevel)}
         {renderField("Country", coaster1.country)}
+        {renderField("Opening Year", coaster1.openingYear?.toString())}
       </Card>
 
       <Styled.VersusText>VS</Styled.VersusText>
@@ -108,6 +109,7 @@ export default function CoasterComparison({
         {renderField("Material", coaster2.material)}
         {renderField("Thrill Level", coaster2.thrillLevel)}
         {renderField("Country", coaster2.country)}
+        {renderField("Opening Year", coaster2.openingYear?.toString())}
       </Card>
     </Styled.ComparisonArea>
   );

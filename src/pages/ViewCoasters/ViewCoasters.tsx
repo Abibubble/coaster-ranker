@@ -167,6 +167,10 @@ export default function ViewCoasters() {
       return;
     }
 
+    const parsedOpeningYear = editForm.openingYear.trim()
+      ? parseInt(editForm.openingYear.trim(), 10)
+      : NaN;
+
     const updatedData = updateCoaster(currentData, editingCoasterId, {
       name: editForm.name.trim(),
       park: editForm.park.trim(),
@@ -175,6 +179,7 @@ export default function ViewCoasters() {
       material: editForm.material.trim() || undefined,
       thrillLevel: editForm.thrillLevel || undefined,
       country: editForm.country.trim(),
+      openingYear: isNaN(parsedOpeningYear) ? undefined : parsedOpeningYear,
     });
 
     setCurrentData(updatedData);

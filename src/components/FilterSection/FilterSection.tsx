@@ -35,6 +35,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
   const uniqueMaterials = getUniqueFieldValues(allCoasters, "material");
   const uniqueCountries = getUniqueFieldValues(allCoasters, "country");
   const uniqueThrillLevels = getUniqueFieldValues(allCoasters, "thrillLevel");
+  const uniqueOpeningYears = getUniqueFieldValues(allCoasters, "openingYear");
 
   const hasModel = rideType === "coaster";
   const hasMaterial = rideType === "coaster";
@@ -135,6 +136,26 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
               {uniqueCountries.map((country) => (
                 <option key={country} value={country}>
                   {country}
+                </option>
+              ))}
+            </Styled.FilterSelect>
+          </Styled.FilterGroup>
+
+          <Styled.FilterGroup>
+            <Styled.FilterLabel htmlFor="filter-opening-year">
+              Opening Year
+            </Styled.FilterLabel>
+            <Styled.FilterSelect
+              id="filter-opening-year"
+              value={filters.openingYear}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                onFilterChange("openingYear", e.target.value)
+              }
+            >
+              <option value="">All opening years</option>
+              {uniqueOpeningYears.map((year) => (
+                <option key={year} value={year}>
+                  {year}
                 </option>
               ))}
             </Styled.FilterSelect>

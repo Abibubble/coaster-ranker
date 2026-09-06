@@ -209,6 +209,21 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
               </Styled.ClickableFieldValue>
             </Styled.CoasterField>
           )}
+
+          {coaster.openingYear !== undefined && (
+            <Styled.CoasterField>
+              <Styled.FieldLabel>Opening Year</Styled.FieldLabel>
+              <Styled.ClickableFieldValue
+                onClick={() =>
+                  onFieldClick("openingYear", String(coaster.openingYear))
+                }
+                title={`Filter by opening year: ${coaster.openingYear}`}
+                aria-label={`Filter by opening year: ${coaster.openingYear}`}
+              >
+                {coaster.openingYear}
+              </Styled.ClickableFieldValue>
+            </Styled.CoasterField>
+          )}
         </Styled.CoasterDetails>
       </Styled.DesktopLayout>
 

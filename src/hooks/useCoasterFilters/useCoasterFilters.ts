@@ -8,6 +8,7 @@ export interface FilterOptions {
   material: string;
   thrillLevel: string;
   country: string;
+  openingYear: string;
 }
 
 export interface UseCoasterFiltersReturn {
@@ -29,6 +30,7 @@ export const useCoasterFilters = (
     material: "",
     thrillLevel: "",
     country: "",
+    openingYear: "",
   });
 
   const filteredCoasters = useMemo(() => {
@@ -74,6 +76,11 @@ export const useCoasterFilters = (
         coaster.country.toLowerCase().includes(filters.country.toLowerCase()),
       );
     }
+    if (filters.openingYear) {
+      result = result.filter(
+        (coaster) => String(coaster.openingYear ?? "") === filters.openingYear,
+      );
+    }
 
     return result;
   }, [allCoasters, filters]);
@@ -90,6 +97,7 @@ export const useCoasterFilters = (
       material: "",
       thrillLevel: "",
       country: "",
+      openingYear: "",
     });
   };
 

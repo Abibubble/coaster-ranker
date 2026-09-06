@@ -9,6 +9,7 @@ export interface EditableCoaster {
   material: string;
   thrillLevel: string;
   country: string;
+  openingYear: string;
 }
 
 export interface UseCoasterEditingReturn {
@@ -29,6 +30,7 @@ const initialEditForm: EditableCoaster = {
   material: "",
   thrillLevel: "",
   country: "",
+  openingYear: "",
 };
 
 export const useCoasterEditing = (): UseCoasterEditingReturn => {
@@ -49,6 +51,8 @@ export const useCoasterEditing = (): UseCoasterEditingReturn => {
       material: coaster.material || "",
       thrillLevel: coaster.thrillLevel || "",
       country: coaster.country,
+      openingYear:
+        coaster.openingYear !== undefined ? String(coaster.openingYear) : "",
     });
   };
 

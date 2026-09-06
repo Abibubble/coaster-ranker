@@ -12,6 +12,7 @@ export interface Coaster {
   model?: string;
   material?: string;
   thrillLevel?: string;
+  openingYear?: number; // Year the ride opened to the public
   type?: "coaster" | "dark-ride"; // Type of ride - defaults to 'coaster' for backward compatibility
   // Ranking metadata
 }

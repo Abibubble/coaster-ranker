@@ -16,6 +16,7 @@ interface RawCoasterData {
   model?: string;
   material?: string;
   thrillLevel?: string;
+  openingYear?: string;
   rank?: string;
 }
 
@@ -110,6 +111,16 @@ export function validateCoasterData(
       }
     }
 
+    // Parse opening year if present and a plausible year
+    let openingYear: number | undefined;
+    if (item.openingYear) {
+      const parsedYear = parseInt(item.openingYear.trim(), 10);
+      const maxYear = new Date().getFullYear() + 2;
+      if (!isNaN(parsedYear) && parsedYear >= 1800 && parsedYear <= maxYear) {
+        openingYear = parsedYear;
+      }
+    }
+
     return {
       id: item.id || `coaster_${index}`,
       name: formatString(item.name, "space", "first-word", false),
@@ -131,6 +142,7 @@ export function validateCoasterData(
         ? formatString(item.thrillLevel, "space", "first-word", false)
         : undefined,
       type: rideType,
+      ...(openingYear !== undefined && { openingYear }),
       ...(rankPosition && { rankPosition }),
       ...(originalRankPosition && { originalRankPosition }),
       ...(isPreRanked && { isPreRanked }),

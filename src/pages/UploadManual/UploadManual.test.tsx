@@ -120,6 +120,31 @@ describe("UploadManual - form submission", () => {
     expect(stored[0].name).toBe("Nemesis");
   });
 
+  it("regression: stores a valid opening year as a number, and ignores an implausible one (issue #44)", async () => {
+    const user = userEvent.setup();
+    render(<MockedUploadManual />);
+
+    await fillRequiredFields(user, {
+      name: "Nemesis",
+      park: "Alton Towers",
+      manufacturer: "B&M",
+      country: "United Kingdom",
+    });
+    await user.type(screen.getByLabelText(/opening year/i), "1994");
+
+    await user.click(
+      screen.getByRole("button", { name: /add coaster to collection/i }),
+    );
+
+    await waitFor(() => {
+      const stored = getStoredCoasters("coaster-ranker-data");
+      expect(stored).toHaveLength(1);
+    });
+
+    const stored = getStoredCoasters("coaster-ranker-data");
+    expect(stored[0].openingYear).toBe(1994);
+  });
+
   it("regression: keeps the park/country after adding, but clears the ride-specific fields (issue #48)", async () => {
     const user = userEvent.setup();
     render(<MockedUploadManual />);

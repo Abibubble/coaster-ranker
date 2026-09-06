@@ -17,6 +17,7 @@ export interface CoasterWithRank extends Omit<
   model?: string;
   material?: string;
   thrillLevel?: string;
+  openingYear?: number;
 }
 
 export function cleanCoasterDataForExport(
@@ -30,6 +31,7 @@ export function cleanCoasterDataForExport(
     model: coaster.model,
     material: coaster.material,
     thrillLevel: coaster.thrillLevel,
+    openingYear: coaster.openingYear,
   }));
 }
 
@@ -46,6 +48,7 @@ export function addRankingToCoasterData(
       model: coaster.model,
       material: coaster.material,
       thrillLevel: coaster.thrillLevel,
+      openingYear: coaster.openingYear,
     };
 
     if (coaster.rankPosition !== undefined && coaster.rankPosition > 0) {

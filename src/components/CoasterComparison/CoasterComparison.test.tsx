@@ -47,6 +47,18 @@ describe("CoasterComparison", () => {
     expect(screen.getByText("Fury 325")).toBeInTheDocument();
   });
 
+  it("regression: displays Opening Year when present (issue #44)", () => {
+    render(
+      <CoasterComparison
+        {...defaultProps}
+        coaster1={{ ...defaultProps.coaster1, openingYear: 2003 }}
+      />,
+    );
+
+    expect(screen.getByText("Opening Year:")).toBeInTheDocument();
+    expect(screen.getByText("2003")).toBeInTheDocument();
+  });
+
   it("shows fallback labels when coaster names are missing", () => {
     const propsWithoutNames = {
       ...defaultProps,

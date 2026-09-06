@@ -25,6 +25,7 @@ export interface EditableCoaster {
   material: string;
   thrillLevel: string;
   country: string;
+  openingYear: string;
 }
 
 interface CoasterEditFormProps {
@@ -173,6 +174,21 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
             isLoading={autocomplete.country.isLoading}
             error={autocomplete.country.error}
             hasMinCharacters={autocomplete.country.hasMinCharacters}
+          />
+        </Styled.FormField>
+
+        <Styled.FormField>
+          <Styled.FormLabel htmlFor="edit-opening-year">
+            Opening Year
+          </Styled.FormLabel>
+          <Styled.FormInput
+            id="edit-opening-year"
+            type="number"
+            inputMode="numeric"
+            min={1800}
+            max={new Date().getFullYear() + 2}
+            value={editForm.openingYear}
+            onChange={(e) => onFormChange("openingYear", e.target.value)}
           />
         </Styled.FormField>
 

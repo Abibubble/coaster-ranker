@@ -30,11 +30,20 @@ describe("generateCSV", () => {
     expect(result.rowCount).toBe(1);
     const [header, ...rows] = result.content.split("\n");
     expect(header).toBe(
-      "name,park,country,manufacturer,model,material,thrillLevel",
+      "name,park,country,manufacturer,model,material,thrillLevel,openingYear",
     );
     expect(rows).toEqual([
-      "Steel Vengeance,Cedar Point,Country,Manufacturer,,,",
+      "Steel Vengeance,Cedar Point,Country,Manufacturer,,,,",
     ]);
+  });
+
+  it("includes openingYear when present on the source coaster (issue #44)", () => {
+    const coasters = [makeCoaster({ name: "Nemesis", openingYear: 1994 })];
+
+    const result = generateCSV({ coasters });
+    const [, dataRow] = result.content.split("\n");
+
+    expect(dataRow.endsWith(",1994")).toBe(true);
   });
 
   it("quotes and escapes values containing commas, quotes, or newlines", () => {
@@ -56,7 +65,7 @@ describe("generateCSV", () => {
     expect(result.content).toContain('"Park\nWith Newline"');
   });
 
-  it("leaves missing optional fields (model/material/thrillLevel) as empty cells, not the literal text undefined", () => {
+  it("leaves missing optional fields (model/material/thrillLevel/openingYear) as empty cells, not the literal text undefined", () => {
     const coasters = [
       makeCoaster({ name: "Ghost Train", type: "dark-ride" }),
     ];
@@ -66,7 +75,7 @@ describe("generateCSV", () => {
 
     expect(dataRow).not.toContain("undefined");
     expect(dataRow).not.toContain("null");
-    expect(dataRow.endsWith(",,,")).toBe(true);
+    expect(dataRow.endsWith(",,,,")).toBe(true);
   });
 
   describe("includeRanking: true", () => {
@@ -80,7 +89,7 @@ describe("generateCSV", () => {
       const [header, row1, row2] = result.content.split("\n");
 
       expect(header).toBe(
-        "rank,name,park,country,manufacturer,model,material,thrillLevel",
+        "rank,name,park,country,manufacturer,model,material,thrillLevel,openingYear",
       );
       expect(row1.startsWith("1,Fury 325")).toBe(true);
       expect(row2.startsWith("2,Maverick")).toBe(true);

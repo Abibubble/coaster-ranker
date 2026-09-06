@@ -52,6 +52,7 @@ const blankEditForm = {
   material: "",
   thrillLevel: "",
   country: "",
+  openingYear: "",
 };
 
 describe("useCoasterEditing", () => {
@@ -77,6 +78,7 @@ describe("useCoasterEditing", () => {
         material: "Hybrid",
         thrillLevel: "Thrill",
         country: "United States",
+        openingYear: "",
       });
     });
 
@@ -93,6 +95,7 @@ describe("useCoasterEditing", () => {
         material: "",
         thrillLevel: "",
         country: "United States",
+        openingYear: "",
       });
     });
 
@@ -113,6 +116,7 @@ describe("useCoasterEditing", () => {
         material: "Steel",
         thrillLevel: "Thrill",
         country: "United States",
+        openingYear: "",
       });
     });
   });

@@ -151,6 +151,29 @@ describe("validateCoasterData", () => {
       expect("isPreRanked" in result).toBe(false);
     },
   );
+
+  it("sets openingYear from a plausible year (issue #44)", () => {
+    const [result] = validateCoasterData([
+      { ...validRow, openingYear: "2015" },
+    ]);
+
+    expect(result.openingYear).toBe(2015);
+  });
+
+  it("leaves openingYear unset when absent", () => {
+    const [result] = validateCoasterData([validRow]);
+
+    expect("openingYear" in result).toBe(false);
+  });
+
+  it.each([["abc"], ["1799"], [String(new Date().getFullYear() + 3)], [""]])(
+    "ignores an implausible opening year: %s",
+    (openingYear) => {
+      const [result] = validateCoasterData([{ ...validRow, openingYear }]);
+
+      expect("openingYear" in result).toBe(false);
+    },
+  );
 });
 
 describe("processUploadedFile", () => {

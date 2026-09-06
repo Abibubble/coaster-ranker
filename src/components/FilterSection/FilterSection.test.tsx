@@ -20,6 +20,7 @@ const emptyFilters: FilterOptions = {
   material: "",
   thrillLevel: "",
   country: "",
+  openingYear: "",
 };
 
 const makeCoaster = (overrides: Partial<Coaster> = {}): Coaster => ({
@@ -41,6 +42,7 @@ const coasterCollection: Coaster[] = [
     material: "Hybrid",
     thrillLevel: "Thrill",
     country: "United States",
+    openingYear: 2018,
   }),
   makeCoaster({
     id: "2",
@@ -51,6 +53,7 @@ const coasterCollection: Coaster[] = [
     material: "Steel",
     thrillLevel: "Thrill",
     country: "United States",
+    openingYear: 2015,
   }),
 ];
 
@@ -180,6 +183,16 @@ describe("FilterSection", () => {
     );
 
     expect(options).toEqual(["", "United States"]);
+  });
+
+  it("populates the Opening Year select with unique, sorted values (issue #44)", () => {
+    renderFilterSection();
+
+    const options = Array.from(getFilterSelect("Opening Year").options).map(
+      (o) => o.value,
+    );
+
+    expect(options).toEqual(["", "2015", "2018"]);
   });
 
   it("regression: populates the Model select with real options, not just the empty placeholder", () => {

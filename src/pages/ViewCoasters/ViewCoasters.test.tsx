@@ -328,6 +328,41 @@ describe("ViewCoasters - editing", () => {
     expect(screen.queryAllByText("Nemesis", { exact: true })).toHaveLength(0);
   });
 
+  it("regression: edits a coaster's opening year and saves it as a number (issue #44)", async () => {
+    const user = userEvent.setup();
+    seed("coaster-ranker-data", [
+      makeCoaster({
+        id: "1",
+        name: "Nemesis",
+        park: "Alton Towers",
+        manufacturer: "Bolliger & Mabillard",
+        country: "United Kingdom",
+      }),
+    ]);
+
+    render(
+      <DataProvider>
+        <ViewCoasters />
+      </DataProvider>,
+    );
+
+    await user.click(screen.getAllByRole("button", { name: "Edit Nemesis" })[0]);
+    // The FilterSection's "Opening Year" filter select and CoasterEditForm's
+    // "Opening Year" input are both on screen at once and share that label
+    // text, so getByLabelText alone would be ambiguous here.
+    const openingYearInput = document.getElementById(
+      "edit-opening-year",
+    ) as HTMLInputElement;
+    await user.type(openingYearInput, "1994");
+    await user.click(screen.getByRole("button", { name: "Save changes" }));
+
+    expect(screen.getAllByText("1994").length).toBeGreaterThan(0);
+
+    const raw = localStorage.getItem("coaster-ranker-data");
+    const stored = raw ? JSON.parse(raw).coasters : [];
+    expect(stored[0].openingYear).toBe(1994);
+  });
+
   it("discards the change when editing is cancelled", async () => {
     const user = userEvent.setup();
     seed("coaster-ranker-data", [

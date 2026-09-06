@@ -38,6 +38,7 @@ interface CoasterFormData {
   model?: string;
   material?: string;
   thrillLevel?: string;
+  openingYear?: string;
   country: string;
   type: RideType;
 }
@@ -59,6 +60,7 @@ export default function UploadManual() {
     model: "",
     material: "",
     thrillLevel: "",
+    openingYear: "",
     country: "",
     type: "coaster",
   });
@@ -224,6 +226,7 @@ export default function UploadManual() {
       model: "",
       material: "",
       thrillLevel: "",
+      openingYear: "",
       country: prev.country,
       type: rideType,
     }));
@@ -271,6 +274,10 @@ export default function UploadManual() {
       return;
     }
 
+    const parsedOpeningYear = formData.openingYear?.trim()
+      ? parseInt(formData.openingYear.trim(), 10)
+      : NaN;
+
     const newCoaster: Coaster = {
       id: generateId(),
       name: formatString(formData.name.trim(), "space", "first-word", false),
@@ -305,6 +312,7 @@ export default function UploadManual() {
           false,
         ),
       }),
+      ...(!isNaN(parsedOpeningYear) && { openingYear: parsedOpeningYear }),
       country: formatString(
         formData.country.trim(),
         "space",
@@ -584,6 +592,30 @@ export default function UploadManual() {
                   isLoading={isLoadingCountries}
                   error={countryError}
                   hasMinCharacters={hasMinCharactersCountry}
+                />
+              </Styled.FormGroup>
+
+              <Styled.FormGroup>
+                <Text
+                  as="label"
+                  bold
+                  colour="charcoal"
+                  fontSize="small"
+                  htmlFor="opening-year"
+                >
+                  Opening Year
+                </Text>
+                <Styled.Input
+                  type="number"
+                  inputMode="numeric"
+                  id="opening-year"
+                  name="openingYear"
+                  min={1800}
+                  max={new Date().getFullYear() + 2}
+                  value={formData.openingYear || ""}
+                  onChange={handleInputChange}
+                  placeholder="e.g. 2015"
+                  autoComplete="off"
                 />
               </Styled.FormGroup>
             </div>

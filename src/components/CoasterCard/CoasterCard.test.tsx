@@ -23,6 +23,7 @@ const coaster: Coaster = {
   model: "I-Box",
   material: "Hybrid",
   thrillLevel: "Thrill",
+  openingYear: 2018,
 };
 
 const darkRideCoaster: Coaster = {
@@ -65,6 +66,7 @@ const editForm: EditableCoaster = {
   material: "Hybrid",
   thrillLevel: "Thrill",
   country: "United States",
+  openingYear: "2018",
 };
 
 interface RenderOptions {
@@ -157,6 +159,20 @@ describe("CoasterCard", () => {
     expect(desktopScope.getByText("Hybrid")).toBeInTheDocument();
     expect(desktopScope.getByText("Thrill")).toBeInTheDocument();
     expect(desktopScope.getByText("United States")).toBeInTheDocument();
+  });
+
+  it("regression: shows Opening Year in the desktop layout, but not mobile (issue #44)", () => {
+    renderCard();
+
+    const desktop = document.querySelector(
+      `.${Styled.DesktopLayout.styledComponentId}`,
+    ) as HTMLElement;
+    expect(within(desktop).getByText("2018")).toBeInTheDocument();
+
+    const mobile = document.querySelector(
+      `.${Styled.MobileLayout.styledComponentId}`,
+    ) as HTMLElement;
+    expect(within(mobile).queryByText("2018")).not.toBeInTheDocument();
   });
 
   it("renders the coaster's details in the mobile layout when not editing", () => {

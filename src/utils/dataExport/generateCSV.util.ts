@@ -54,6 +54,7 @@ export function generateCSV(params: GenerateCSVParams): GenerateCSVResult {
           "model",
           "material",
           "thrillLevel",
+          "openingYear",
         ]
       : [
           "name",
@@ -63,6 +64,7 @@ export function generateCSV(params: GenerateCSVParams): GenerateCSVResult {
           "model",
           "material",
           "thrillLevel",
+          "openingYear",
         ]);
 
   const csvHeaderRow = csvHeaders.join(",");

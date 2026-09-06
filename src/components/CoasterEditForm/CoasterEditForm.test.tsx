@@ -63,6 +63,7 @@ const editForm: EditableCoaster = {
   material: "Hybrid",
   thrillLevel: "Thrill",
   country: "United States",
+  openingYear: "2018",
 };
 
 const blankEditForm: EditableCoaster = {
@@ -73,6 +74,7 @@ const blankEditForm: EditableCoaster = {
   material: "",
   thrillLevel: "",
   country: "United States",
+  openingYear: "",
 };
 
 interface RenderOptions {

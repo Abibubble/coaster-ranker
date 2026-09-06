@@ -37,6 +37,15 @@ describe("generateJSON", () => {
     expect(typeof parsed.exportedAt).toBe("string");
   });
 
+  it("includes openingYear when present on the source coaster (issue #44)", () => {
+    const coasters = [makeCoaster({ name: "Nemesis", openingYear: 1994 })];
+
+    const result = generateJSON({ coasters });
+    const parsed = JSON.parse(result.content);
+
+    expect(parsed.coasters[0].openingYear).toBe(1994);
+  });
+
   it("itemCount reflects the number of coasters exported", () => {
     const coasters = [
       makeCoaster({ id: "1", name: "A" }),

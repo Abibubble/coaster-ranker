@@ -21,6 +21,7 @@ const steelVengeance = makeCoaster({
   model: "I-Box",
   material: "Hybrid",
   thrillLevel: "Thrill",
+  openingYear: 2018,
 });
 
 const fury325 = makeCoaster({
@@ -32,6 +33,7 @@ const fury325 = makeCoaster({
   model: "Giga",
   material: "Steel",
   thrillLevel: "Thrill",
+  openingYear: 2015,
 });
 
 const maverick = makeCoaster({
@@ -119,6 +121,26 @@ describe("useCoasterFilters", () => {
       expect(result.current.filteredCoasters.map((c) => c.name)).toEqual([
         "Maverick",
       ]);
+    });
+
+    it("filters by openingYear (exact match, issue #44)", () => {
+      const { result } = renderHook(() => useCoasterFilters(coasterCollection));
+
+      act(() => result.current.updateFilter("openingYear", "2018"));
+
+      expect(result.current.filteredCoasters.map((c) => c.name)).toEqual([
+        "Steel Vengeance",
+      ]);
+    });
+
+    it("excludes coasters with no openingYear when the filter is active", () => {
+      const { result } = renderHook(() => useCoasterFilters(coasterCollection));
+
+      act(() => result.current.updateFilter("openingYear", "2015"));
+
+      expect(
+        result.current.filteredCoasters.some((c) => c.name === "Maverick"),
+      ).toBe(false);
     });
 
     describe("model filter (exact-or-prefix, not general substring)", () => {
@@ -252,6 +274,7 @@ describe("useCoasterFilters", () => {
         material: "",
         thrillLevel: "",
         country: "",
+        openingYear: "",
       });
       expect(result.current.filteredCoasters).toHaveLength(3);
       expect(result.current.hasActiveFilters).toBe(false);
