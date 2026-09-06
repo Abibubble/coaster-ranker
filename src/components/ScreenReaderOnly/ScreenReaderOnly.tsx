@@ -7,7 +7,6 @@ export type ScreenReaderOnlyProps<
 > = ComponentPropsWithRef<GElementType> & {
   children: ReactNode;
   as?: GElementType;
-  id?: string;
 };
 
 /**
@@ -15,7 +14,7 @@ export type ScreenReaderOnlyProps<
  *
  * @param children - The content to be available to screen readers only
  * @param as - The HTML element type to render as. Defaults to "span"
- * @param id - Optional ID attribute for the element
+ * @param rest - Any other props (e.g. id, htmlFor) are forwarded to the rendered element
  *
  * @returns A visually hidden element that remains accessible to assistive technologies
  */
@@ -23,10 +22,10 @@ export type ScreenReaderOnlyProps<
 export default function ScreenReaderOnly({
   children,
   as = "span",
-  id,
+  ...rest
 }: ScreenReaderOnlyProps) {
   return (
-    <Styled.SROnly as={as} id={id}>
+    <Styled.SROnly as={as} {...rest}>
       {children}
     </Styled.SROnly>
   );

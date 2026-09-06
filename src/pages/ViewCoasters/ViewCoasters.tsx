@@ -181,6 +181,8 @@ export default function ViewCoasters() {
       <NoUploadsViewCoasters
         rideTypeLabel={rideTypeLabel}
         ridePluralLabel={ridePluralLabel}
+        rideType={rideType}
+        onRideTypeChange={setRideType}
       />
     );
   }

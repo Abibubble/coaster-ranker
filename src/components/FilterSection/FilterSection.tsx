@@ -61,8 +61,9 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
       <Styled.FilterContent $isOpen={isFiltersOpen}>
         <Styled.FiltersGrid>
           <Styled.FilterGroup>
-            <Styled.FilterLabel>Park</Styled.FilterLabel>
+            <Styled.FilterLabel htmlFor="filter-park">Park</Styled.FilterLabel>
             <Styled.FilterSelect
+              id="filter-park"
               value={filters.park}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 onFilterChange("park", e.target.value)
@@ -78,8 +79,11 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
           </Styled.FilterGroup>
 
           <Styled.FilterGroup>
-            <Styled.FilterLabel>Manufacturer</Styled.FilterLabel>
+            <Styled.FilterLabel htmlFor="filter-manufacturer">
+              Manufacturer
+            </Styled.FilterLabel>
             <Styled.FilterSelect
+              id="filter-manufacturer"
               value={filters.manufacturer}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 onFilterChange("manufacturer", e.target.value)
@@ -96,8 +100,11 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
 
           {hasModel && (
             <Styled.FilterGroup>
-              <Styled.FilterLabel>Model</Styled.FilterLabel>
+              <Styled.FilterLabel htmlFor="filter-model">
+                Model
+              </Styled.FilterLabel>
               <Styled.FilterSelect
+                id="filter-model"
                 value={filters.model}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                   onFilterChange("model", e.target.value)
@@ -114,8 +121,11 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
           )}
 
           <Styled.FilterGroup>
-            <Styled.FilterLabel>Country</Styled.FilterLabel>
+            <Styled.FilterLabel htmlFor="filter-country">
+              Country
+            </Styled.FilterLabel>
             <Styled.FilterSelect
+              id="filter-country"
               value={filters.country}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 onFilterChange("country", e.target.value)
@@ -132,8 +142,11 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
 
           {hasMaterial && (
             <Styled.FilterGroup>
-              <Styled.FilterLabel>Material</Styled.FilterLabel>
+              <Styled.FilterLabel htmlFor="filter-material">
+                Material
+              </Styled.FilterLabel>
               <Styled.FilterSelect
+                id="filter-material"
                 value={filters.material}
                 onChange={(e) => onFilterChange("material", e.target.value)}
               >
@@ -149,8 +162,11 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
 
           {hasThrillLevel && (
             <Styled.FilterGroup>
-              <Styled.FilterLabel>Thrill Level</Styled.FilterLabel>
+              <Styled.FilterLabel htmlFor="filter-thrill-level">
+                Thrill Level
+              </Styled.FilterLabel>
               <Styled.FilterSelect
+                id="filter-thrill-level"
                 value={filters.thrillLevel}
                 onChange={(e) => onFilterChange("thrillLevel", e.target.value)}
               >

@@ -497,27 +497,29 @@ export default function UploadManual() {
                   />
                 </Styled.FormGroup>
 
-                <Styled.FormGroup>
-                  <ModelAutocompleteInput
-                    value={formData.model || ""}
-                    onChange={handleModelChange}
-                    onSuggestionSelect={handleModelSelection}
-                    suggestions={modelSuggestions}
-                    placeholder={
-                      hasManufacturer
-                        ? "e.g. Euro-Fighter"
-                        : "Select manufacturer first"
-                    }
-                    label="Model"
-                    id="ride-model"
-                    name="rideModel"
-                    autoComplete="off"
-                    data-form-type="other"
-                    isLoading={isLoadingModels}
-                    error={modelError}
-                    hasMinCharacters={hasMinCharactersModel}
-                  />
-                </Styled.FormGroup>
+                {rideType === "coaster" && (
+                  <Styled.FormGroup>
+                    <ModelAutocompleteInput
+                      value={formData.model || ""}
+                      onChange={handleModelChange}
+                      onSuggestionSelect={handleModelSelection}
+                      suggestions={modelSuggestions}
+                      placeholder={
+                        hasManufacturer
+                          ? "e.g. Euro-Fighter"
+                          : "Select manufacturer first"
+                      }
+                      label="Model"
+                      id="ride-model"
+                      name="rideModel"
+                      autoComplete="off"
+                      data-form-type="other"
+                      isLoading={isLoadingModels}
+                      error={modelError}
+                      hasMinCharacters={hasMinCharactersModel}
+                    />
+                  </Styled.FormGroup>
+                )}
               </Styled.FormRow>
 
               {/* Material - only for coasters */}

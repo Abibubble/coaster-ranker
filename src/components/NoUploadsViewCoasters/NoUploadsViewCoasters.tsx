@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   MainContent,
   Title,
@@ -12,22 +12,21 @@ import * as Styled from "./NoUploadsViewCoasters.styled";
 interface NoUploadsViewCoastersProps {
   rideTypeLabel: string;
   ridePluralLabel: string;
+  rideType: RideType;
+  onRideTypeChange: (rideType: RideType) => void;
 }
 
 export const NoUploadsViewCoasters: React.FC<NoUploadsViewCoastersProps> = ({
   rideTypeLabel,
   ridePluralLabel,
+  rideType,
+  onRideTypeChange,
 }) => {
-  const [rideType, setRideType] = useState<RideType>("coaster");
-
   return (
     <MainContent>
       <Title>Your {rideTypeLabel}</Title>
 
-      <RideTypeToggle
-        value={rideType}
-        onChange={(newRideType) => setRideType(newRideType)}
-      />
+      <RideTypeToggle value={rideType} onChange={onRideTypeChange} />
 
       <section>
         <Styled.EmptyState>

@@ -94,6 +94,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
     canUndo,
     undo,
     savePartialState,
+    resetRankingEngine,
   }: {
     currentComparison: RankingComparison | null;
     recordWinner: (winner: Coaster) => void;
@@ -105,6 +106,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
     canUndo: boolean;
     undo: () => void;
     savePartialState: () => void;
+    resetRankingEngine: () => void;
   } = useSimpleRanking(currentData?.coasters || [], rideType);
 
   // Mark ranking as complete when it's truly finished (with memoized check)
@@ -197,6 +199,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
               );
 
               if (confirmed) {
+                resetRankingEngine();
                 resetRanking(rideType);
                 window.location.reload();
               }
@@ -283,6 +286,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
               );
 
               if (confirmed) {
+                resetRankingEngine();
                 resetRanking(rideType);
                 window.location.reload();
               }

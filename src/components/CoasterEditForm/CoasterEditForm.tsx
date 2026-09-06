@@ -95,8 +95,9 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
 
       <Styled.EditForm>
         <Styled.FormField>
-          <Styled.FormLabel>Name *</Styled.FormLabel>
+          <Styled.FormLabel htmlFor="edit-name">Name *</Styled.FormLabel>
           <Styled.FormInput
+            id="edit-name"
             type="text"
             value={editForm.name}
             onChange={(e) => onFormChange("name", e.target.value)}
@@ -181,8 +182,11 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
 
         {hasMaterial && (
           <Styled.FormField>
-            <Styled.FormLabel>Material</Styled.FormLabel>
+            <Styled.FormLabel htmlFor="edit-material">
+              Material
+            </Styled.FormLabel>
             <Styled.FormInput
+              id="edit-material"
               type="text"
               value={editForm.material}
               onChange={(e) => onFormChange("material", e.target.value)}
@@ -192,8 +196,11 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
 
         {hasThrillLevel && (
           <Styled.FormField>
-            <Styled.FormLabel>Thrill Level</Styled.FormLabel>
+            <Styled.FormLabel htmlFor="edit-thrill-level">
+              Thrill Level
+            </Styled.FormLabel>
             <FilterSelect
+              id="edit-thrill-level"
               value={editForm.thrillLevel}
               onChange={(e) => onFormChange("thrillLevel", e.target.value)}
             >

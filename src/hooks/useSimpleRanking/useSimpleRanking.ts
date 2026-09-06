@@ -21,6 +21,7 @@ export interface UseSimpleRankingReturn {
   canUndo: boolean;
   undo: () => void;
   savePartialState: () => void;
+  resetRankingEngine: () => void;
 }
 
 export const useSimpleRanking = (
@@ -73,45 +74,58 @@ export const useSimpleRanking = (
         : "partialDarkRideRankingState";
     const savedState = localStorage.getItem(storageKey);
 
-    let engine: RankingEngine;
+    try {
+      let engine: RankingEngine;
 
-    if (savedState) {
-      try {
-        console.log("Restoring ranking from partial state...");
-        const partialState = JSON.parse(savedState);
+      if (savedState) {
+        try {
+          console.log("Restoring ranking from partial state...");
+          const partialState = JSON.parse(savedState);
 
-        // Validate that ranking state isn't completely stale
-        const currentCoasterIds = new Set(filteredCoasters.map((c) => c.id));
-        const validRankedIds =
-          partialState.rankedCoasterIds?.filter((id: string) =>
-            currentCoasterIds.has(id),
-          ) || [];
-
-        // Clear stale data if no ranked coasters are valid
-        if (
-          partialState.rankedCoasterIds?.length > 0 &&
-          validRankedIds.length === 0
-        ) {
-          console.warn(
-            "No valid ranked coasters found in partial state, clearing...",
+          // Validate that ranking state isn't completely stale
+          const currentCoasterIds = new Set(
+            filteredCoasters.map((c) => c.id),
           );
-          localStorage.removeItem(storageKey);
-          throw new Error("Stale partial state - no valid ranked coasters");
-        }
+          const validRankedIds =
+            partialState.rankedCoasterIds?.filter((id: string) =>
+              currentCoasterIds.has(id),
+            ) || [];
 
-        // Let the engine handle adding any new coasters to unranked
-        engine = RankingEngine.fromPartialState(filteredCoasters, partialState);
-      } catch (error) {
-        console.error("Failed to restore from partial state:", error);
-        localStorage.removeItem(storageKey);
+          // Clear stale data if no ranked coasters are valid
+          if (
+            partialState.rankedCoasterIds?.length > 0 &&
+            validRankedIds.length === 0
+          ) {
+            console.warn(
+              "No valid ranked coasters found in partial state, clearing...",
+            );
+            localStorage.removeItem(storageKey);
+            throw new Error("Stale partial state - no valid ranked coasters");
+          }
+
+          // Let the engine handle adding any new coasters to unranked
+          engine = RankingEngine.fromPartialState(
+            filteredCoasters,
+            partialState,
+          );
+        } catch (error) {
+          console.error("Failed to restore from partial state:", error);
+          localStorage.removeItem(storageKey);
+          engine = new RankingEngine(filteredCoasters);
+        }
+      } else {
+        console.log("Creating new ranking engine...");
         engine = new RankingEngine(filteredCoasters);
       }
-    } else {
-      console.log("Creating new ranking engine...");
-      engine = new RankingEngine(filteredCoasters);
-    }
 
-    setRankingEngine(engine);
+      setRankingEngine(engine);
+    } catch (error) {
+      // Not enough rankable coasters (e.g. exactly one, none pre-ranked) -
+      // the engine's constructor throws in this case. Fail gracefully
+      // instead of leaving an uncaught error from a passive effect.
+      console.error("Failed to initialize ranking engine:", error);
+      setRankingEngine(null);
+    }
   }, [coastersHash, rideType, lastCoastersHash, coasters]);
 
   const savePartialState = useCallback(() => {
@@ -207,6 +221,15 @@ export const useSimpleRanking = (
     }
   }, [rankingEngine]);
 
+  // Synchronously clears the in-memory engine (e.g. after "rank again")
+  // and forces the next render with the same coasters to reinitialize
+  // from scratch, rather than relying solely on a page reload to avoid
+  // re-persisting a stale completed ranking in the meantime.
+  const resetRankingEngine = useCallback(() => {
+    setRankingEngine(null);
+    setLastCoastersHash("");
+  }, []);
+
   return {
     currentComparison,
     recordWinner,
@@ -218,5 +241,6 @@ export const useSimpleRanking = (
     canUndo,
     undo,
     savePartialState,
+    resetRankingEngine,
   };
 };
