@@ -53,6 +53,40 @@ describe("SortModal", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("regression: offers Park Name and Manufacturer sort options (issue #10)", () => {
+    render(<SortModal {...defaultProps} />);
+
+    expect(screen.getByText("Park Name (A-Z)")).toBeInTheDocument();
+    expect(screen.getByText("Park Name (Z-A)")).toBeInTheDocument();
+    expect(screen.getByText("Manufacturer (A-Z)")).toBeInTheDocument();
+    expect(screen.getByText("Manufacturer (Z-A)")).toBeInTheDocument();
+  });
+
+  it("regression: offers Model sort options by default (hasModel defaults to true)", () => {
+    render(<SortModal {...defaultProps} />);
+
+    expect(screen.getByText("Model (A-Z)")).toBeInTheDocument();
+    expect(screen.getByText("Model (Z-A)")).toBeInTheDocument();
+  });
+
+  it("hides Model sort options when hasModel is false (dark rides)", () => {
+    render(<SortModal {...defaultProps} hasModel={false} />);
+
+    expect(screen.queryByText("Model (A-Z)")).not.toBeInTheDocument();
+    expect(screen.queryByText("Model (Z-A)")).not.toBeInTheDocument();
+  });
+
+  it("calls onSort with the right field when a park/manufacturer option is selected", async () => {
+    const user = userEvent.setup();
+    render(<SortModal {...defaultProps} />);
+
+    await user.click(screen.getByText("Park Name (Z-A)"));
+    expect(defaultProps.onSort).toHaveBeenCalledWith("park", "desc");
+
+    await user.click(screen.getByText("Manufacturer (A-Z)"));
+    expect(defaultProps.onSort).toHaveBeenCalledWith("manufacturer", "asc");
+  });
+
   it("calls onSort and onClose when a sort option is selected", async () => {
     const user = userEvent.setup();
     render(<SortModal {...defaultProps} />);
@@ -71,12 +105,14 @@ describe("SortModal", () => {
     };
     render(<SortModal {...defaultProps} currentSort={currentSort} />);
 
-    const nameAscButton = screen.getByRole("button", { name: /name \(a-z\)/i });
+    const nameAscButton = screen.getByRole("button", {
+      name: /^ride name \(a-z\)$/i,
+    });
     expect(nameAscButton).toHaveAttribute("aria-pressed", "true");
 
     // Other options should not be pressed
     const nameDescButton = screen.getByRole("button", {
-      name: /name \(z-a\)/i,
+      name: /^ride name \(z-a\)$/i,
     });
     expect(nameDescButton).toHaveAttribute("aria-pressed", "false");
   });

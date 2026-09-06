@@ -254,6 +254,48 @@ describe("ViewCoasters - sorting and rank badges", () => {
     expect(names.indexOf("Galactica")).toBeLessThan(names.indexOf("Nemesis"));
     expect(names.indexOf("Nemesis")).toBeLessThan(names.indexOf("Stealth"));
   });
+
+  it("regression: offers park/manufacturer/model sort options and shows the right badge label (issue #10)", async () => {
+    const user = userEvent.setup();
+    seed("coaster-ranker-data", [
+      makeCoaster({
+        id: "1",
+        name: "Nemesis",
+        park: "Alton Towers",
+        manufacturer: "B&M",
+      }),
+      makeCoaster({
+        id: "2",
+        name: "Galactica",
+        park: "Alton Towers",
+        manufacturer: "Vekoma",
+      }),
+    ]);
+
+    render(
+      <DataProvider>
+        <ViewCoasters />
+      </DataProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Open sort options" }));
+    expect(screen.getByText("Park Name (A-Z)")).toBeInTheDocument();
+    expect(screen.getByText("Manufacturer (A-Z)")).toBeInTheDocument();
+
+    await user.click(screen.getByText("Manufacturer (Z-A)"));
+
+    // The "Sort by" badge must reflect the actually-selected field, not
+    // always fall back to "Ride Name".
+    expect(
+      screen.getByRole("button", { name: /open sort options/i }),
+    ).toHaveTextContent("Manufacturer (Z-A)");
+
+    // Manufacturer Z-A: "Vekoma" sorts before "B&M" in descending order.
+    const names = screen
+      .getAllByRole("heading", { level: 3 })
+      .map((h) => h.textContent);
+    expect(names.indexOf("Galactica")).toBeLessThan(names.indexOf("Nemesis"));
+  });
 });
 
 describe("ViewCoasters - editing", () => {

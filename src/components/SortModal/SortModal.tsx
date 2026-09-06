@@ -26,6 +26,7 @@ interface SortModalProps {
   onSort: (field: SortField, direction: SortDirection) => void;
   currentSort: { field: SortField; direction: SortDirection } | null;
   hasRanking: boolean;
+  hasModel?: boolean;
 }
 
 export const SortModal: React.FC<SortModalProps> = ({
@@ -34,12 +35,29 @@ export const SortModal: React.FC<SortModalProps> = ({
   onSort,
   currentSort,
   hasRanking,
+  hasModel = true,
 }) => {
   const sortOptions: SortOption[] = [
     // Name sorting
     { field: "name", direction: "asc", label: "Ride Name (A-Z)" },
     { field: "name", direction: "desc", label: "Ride Name (Z-A)" },
+
+    // Park sorting
+    { field: "park", direction: "asc", label: "Park Name (A-Z)" },
+    { field: "park", direction: "desc", label: "Park Name (Z-A)" },
+
+    // Manufacturer sorting
+    { field: "manufacturer", direction: "asc", label: "Manufacturer (A-Z)" },
+    { field: "manufacturer", direction: "desc", label: "Manufacturer (Z-A)" },
   ];
+
+  // Model doesn't apply to dark rides
+  if (hasModel) {
+    sortOptions.push(
+      { field: "model", direction: "asc", label: "Model (A-Z)" },
+      { field: "model", direction: "desc", label: "Model (Z-A)" },
+    );
+  }
 
   // Add ranking options if available
   if (hasRanking) {

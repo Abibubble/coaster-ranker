@@ -13,6 +13,7 @@ import {
   FilterSection,
   SimplifiedCoasterItem,
 } from "../../components";
+import type { SortField, SortDirection } from "../../components";
 import { useData } from "../../contexts/DataContext";
 import {
   useParkAutocomplete,
@@ -31,6 +32,30 @@ import {
   hasAnyRanking,
 } from "../../utils";
 import * as Styled from "./ViewCoasters.styled";
+
+const SORT_FIELD_LABELS: Record<SortField, string> = {
+  name: "Ride Name",
+  park: "Park Name",
+  manufacturer: "Manufacturer",
+  model: "Model",
+  country: "Country",
+  material: "Material",
+  thrillLevel: "Thrill Level",
+  rankPosition: "Rankings",
+};
+
+const getSortBadgeText = (sort: {
+  field: SortField;
+  direction: SortDirection;
+}): string => {
+  const label = SORT_FIELD_LABELS[sort.field];
+
+  if (sort.field === "rankPosition") {
+    return `${label} (${sort.direction === "asc" ? "Top to Bottom" : "Bottom to Top"})`;
+  }
+
+  return `${label} (${sort.direction === "asc" ? "A-Z" : "Z-A"})`;
+};
 
 export default function ViewCoasters() {
   const { uploadedData, setUploadedData, darkRideData, setDarkRideData } =
@@ -233,9 +258,7 @@ export default function ViewCoasters() {
             Sort by
             {currentSort && (
               <Styled.SortBadge>
-                {currentSort.field === "rankPosition"
-                  ? `Rankings (${currentSort.direction === "asc" ? "Top to Bottom" : "Bottom to Top"})`
-                  : `Ride Name (${currentSort.direction === "asc" ? "A-Z" : "Z-A"})`}
+                {getSortBadgeText(currentSort)}
               </Styled.SortBadge>
             )}
           </Button>
@@ -382,6 +405,7 @@ export default function ViewCoasters() {
         onSort={handleSort}
         currentSort={currentSort}
         hasRanking={shouldShowRankings}
+        hasModel={rideType === "coaster"}
       />
     </MainContent>
   );
