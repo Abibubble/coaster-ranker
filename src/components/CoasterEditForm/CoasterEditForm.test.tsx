@@ -64,6 +64,7 @@ const editForm: EditableCoaster = {
   thrillLevel: "Thrill",
   country: "United States",
   openingYear: "2018",
+  isNumberZero: false,
 };
 
 const blankEditForm: EditableCoaster = {
@@ -75,6 +76,7 @@ const blankEditForm: EditableCoaster = {
   thrillLevel: "",
   country: "United States",
   openingYear: "",
+  isNumberZero: false,
 };
 
 interface RenderOptions {
@@ -82,12 +84,14 @@ interface RenderOptions {
   editForm?: EditableCoaster;
   rideType?: RideType;
   onFormChange?: (field: keyof EditableCoaster, value: string) => void;
+  onToggleNumberZero?: (value: boolean) => void;
   onSave?: () => void;
   onCancel?: () => void;
 }
 
 const renderEditForm = (options: RenderOptions = {}) => {
   const onFormChange = options.onFormChange ?? vi.fn();
+  const onToggleNumberZero = options.onToggleNumberZero ?? vi.fn();
   const onSave = options.onSave ?? vi.fn();
   const onCancel = options.onCancel ?? vi.fn();
 
@@ -97,6 +101,7 @@ const renderEditForm = (options: RenderOptions = {}) => {
       editForm={options.editForm ?? editForm}
       rideType={options.rideType ?? "coaster"}
       onFormChange={onFormChange}
+      onToggleNumberZero={onToggleNumberZero}
       onSave={onSave}
       onCancel={onCancel}
       onParkSelection={vi.fn()}
@@ -105,7 +110,7 @@ const renderEditForm = (options: RenderOptions = {}) => {
     />,
   );
 
-  return { ...utils, onFormChange, onSave, onCancel };
+  return { ...utils, onFormChange, onToggleNumberZero, onSave, onCancel };
 };
 
 describe("CoasterEditForm", () => {
@@ -252,6 +257,7 @@ describe("CoasterEditForm", () => {
         editForm={editForm}
         rideType="coaster"
         onFormChange={vi.fn()}
+        onToggleNumberZero={vi.fn()}
         onSave={vi.fn()}
         onCancel={vi.fn()}
         onParkSelection={vi.fn()}
@@ -261,5 +267,42 @@ describe("CoasterEditForm", () => {
     );
 
     expect(screen.getByText("#3")).toBeInTheDocument();
+  });
+
+  it("shows a Number 0 badge instead of the numeric rank badge, even with a rankPosition also set", () => {
+    renderEditForm({ coaster: { ...coaster, isNumberZero: true, rankPosition: 2 } });
+
+    expect(screen.getByText("Number 0")).toBeInTheDocument();
+    expect(screen.queryByText("#2")).not.toBeInTheDocument();
+  });
+
+  it("shows the Number 0 checkbox, checked according to editForm.isNumberZero", () => {
+    renderEditForm({ editForm: { ...editForm, isNumberZero: true } });
+
+    const checkbox = screen.getByRole("checkbox", {
+      name: /this is my number 0/i,
+    });
+    expect(checkbox).toBeChecked();
+  });
+
+  it("shows the checkbox unchecked when editForm.isNumberZero is false", () => {
+    renderEditForm({ editForm: { ...editForm, isNumberZero: false } });
+
+    expect(
+      screen.getByRole("checkbox", { name: /this is my number 0/i }),
+    ).not.toBeChecked();
+  });
+
+  it("calls onToggleNumberZero with the new checked value when the checkbox is toggled", async () => {
+    const user = userEvent.setup();
+    const { onToggleNumberZero } = renderEditForm({
+      editForm: { ...editForm, isNumberZero: false },
+    });
+
+    await user.click(
+      screen.getByRole("checkbox", { name: /this is my number 0/i }),
+    );
+
+    expect(onToggleNumberZero).toHaveBeenCalledWith(true);
   });
 });

@@ -53,6 +53,7 @@ const blankEditForm = {
   thrillLevel: "",
   country: "",
   openingYear: "",
+  isNumberZero: false,
 };
 
 describe("useCoasterEditing", () => {
@@ -79,7 +80,18 @@ describe("useCoasterEditing", () => {
         thrillLevel: "Thrill",
         country: "United States",
         openingYear: "",
+        isNumberZero: false,
       });
+    });
+
+    it("picks up isNumberZero: true from the coaster", () => {
+      const { result } = renderHook(() => useCoasterEditing());
+
+      act(() =>
+        result.current.startEditing({ ...steelVengeance, isNumberZero: true }),
+      );
+
+      expect(result.current.editForm.isNumberZero).toBe(true);
     });
 
     it("defaults model/material/thrillLevel to empty strings (not undefined) for a dark-ride-shaped coaster", () => {
@@ -96,6 +108,7 @@ describe("useCoasterEditing", () => {
         thrillLevel: "",
         country: "United States",
         openingYear: "",
+        isNumberZero: false,
       });
     });
 
@@ -117,6 +130,7 @@ describe("useCoasterEditing", () => {
         thrillLevel: "Thrill",
         country: "United States",
         openingYear: "",
+        isNumberZero: false,
       });
     });
   });
@@ -163,6 +177,21 @@ describe("useCoasterEditing", () => {
       expect(result.current.editForm.manufacturer).toBe(
         "Rocky Mountain Construction",
       );
+    });
+  });
+
+  describe("setEditFormNumberZero", () => {
+    it("updates only isNumberZero, leaving every other field untouched", () => {
+      const { result } = renderHook(() => useCoasterEditing());
+
+      act(() => result.current.startEditing(steelVengeance));
+      act(() => result.current.setEditFormNumberZero(true));
+
+      expect(result.current.editForm.isNumberZero).toBe(true);
+      expect(result.current.editForm.name).toBe("Steel Vengeance");
+
+      act(() => result.current.setEditFormNumberZero(false));
+      expect(result.current.editForm.isNumberZero).toBe(false);
     });
   });
 

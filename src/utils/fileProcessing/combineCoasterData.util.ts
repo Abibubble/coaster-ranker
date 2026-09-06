@@ -1,5 +1,6 @@
 import { Coaster, UploadedData } from "../../types/data";
 import { detectAndFixDuplicateIds } from "../duplicateIdDetection.util";
+import { enforceSingleNumberZero } from "../coasterOperations/coasterOperations";
 /**
  * Utility functions for combining new coaster data with existing coaster data.
  * Handles pre-ranking flags, metadata updates, and data merging operations.
@@ -62,7 +63,9 @@ export function combineCoasterData(
 
   const allCoasters = [...preservedExistingCoasters, ...markedNewCoasters];
 
-  const coastersWithUniqueIds = detectAndFixDuplicateIds(allCoasters);
+  const coastersWithUniqueIds = enforceSingleNumberZero(
+    detectAndFixDuplicateIds(allCoasters),
+  );
 
   const hasAnyPreRankedData = isPreRanked || hasCoastersWithRankingData;
 

@@ -128,6 +128,53 @@ describe("combineCoasterData", () => {
     expect(new Set(ids).size).toBe(result.combinedData.coasters.length);
   });
 
+  it("keeps the existing Number 0 and clears it from an incoming coaster that also has it (existing wins - array order)", () => {
+    const existingData = makeUploadedData({
+      coasters: [
+        makeCoaster({ id: "existing-1", name: "Steel Vengeance", isNumberZero: true }),
+      ],
+    });
+    const newCoasters = [
+      makeCoaster({ id: "new-1", name: "Fury 325", isNumberZero: true }),
+    ];
+
+    const result = combineCoasterData({
+      newCoasters,
+      filename: "new.csv",
+      existingData,
+    });
+
+    const existing = result.combinedData.coasters.find(
+      (c) => c.id === "existing-1",
+    );
+    const incoming = result.combinedData.coasters.find(
+      (c) => c.id === "new-1",
+    );
+    expect(existing?.isNumberZero).toBe(true);
+    expect(incoming?.isNumberZero).toBe(false);
+  });
+
+  it("never ends up with two Number 0 coasters when two new coasters both claim it", () => {
+    const newCoasters = [
+      makeCoaster({ id: "a", name: "Nemesis", isNumberZero: true }),
+      makeCoaster({ id: "b", name: "Fury 325", isNumberZero: true }),
+    ];
+
+    const result = combineCoasterData({
+      newCoasters,
+      filename: "upload.csv",
+      existingData: null,
+    });
+
+    const numberZeroCount = result.combinedData.coasters.filter(
+      (c) => c.isNumberZero,
+    ).length;
+    expect(numberZeroCount).toBe(1);
+    expect(result.combinedData.coasters.find((c) => c.id === "a")?.isNumberZero).toBe(
+      true,
+    );
+  });
+
   it("combines dark-ride coasters the same way as coasters", () => {
     const newCoasters = [
       makeCoaster({ id: "a", name: "Haunted Mansion", type: "dark-ride" }),

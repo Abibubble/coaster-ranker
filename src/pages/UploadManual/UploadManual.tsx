@@ -27,6 +27,7 @@ import {
   formatString,
   handleDuplicateDetection,
   processDuplicateResolution,
+  updateCoaster,
 } from "../../utils";
 import type { DuplicateResolution } from "../../components/DuplicateResolver";
 import * as Styled from "./UploadManual.styled";
@@ -41,6 +42,7 @@ interface CoasterFormData {
   openingYear?: string;
   country: string;
   type: RideType;
+  isNumberZero: boolean;
 }
 
 export default function UploadManual() {
@@ -63,6 +65,7 @@ export default function UploadManual() {
     openingYear: "",
     country: "",
     type: "coaster",
+    isNumberZero: false,
   });
 
   // Get current data based on ride type
@@ -210,6 +213,14 @@ export default function UploadManual() {
     }));
   };
 
+  // Just local form state - no side effects here. The warning and the
+  // actual overwrite both happen at submit time (handleSubmit), not here,
+  // so that unchecking the box or abandoning the form afterward can never
+  // leave an existing Number 0 cleared with nothing to replace it.
+  const handleToggleNumberZero = (checked: boolean) => {
+    setFormData((prev) => ({ ...prev, isNumberZero: checked }));
+  };
+
   const generateId = () => {
     return Math.random().toString(36).substr(2, 9);
   };
@@ -229,16 +240,20 @@ export default function UploadManual() {
       openingYear: "",
       country: prev.country,
       type: rideType,
+      isNumberZero: false,
     }));
   };
 
-  const addCoasterToCollection = (coasterToAdd: Coaster) => {
-    const existingCoasters = currentData?.coasters || [];
+  const addCoasterToCollection = (
+    coasterToAdd: Coaster,
+    baseData: typeof currentData = currentData,
+  ) => {
+    const existingCoasters = baseData?.coasters || [];
     const updatedData = {
       coasters: [...existingCoasters, coasterToAdd],
-      uploadedAt: currentData?.uploadedAt || new Date(),
-      filename: currentData?.filename || "manual-entry",
-      rankingMetadata: currentData?.rankingMetadata || {
+      uploadedAt: baseData?.uploadedAt || new Date(),
+      filename: baseData?.filename || "manual-entry",
+      rankingMetadata: baseData?.rankingMetadata || {
         completedComparisons: new Set<string>(),
         rankedCoasters: [],
         isRanked: false,
@@ -258,7 +273,7 @@ export default function UploadManual() {
     setError(null);
     setSuccess(null);
 
-    const requiredFields: (keyof CoasterFormData)[] = [
+    const requiredFields: Array<"name" | "park" | "manufacturer"> = [
       "name",
       "park",
       "manufacturer",
@@ -272,6 +287,29 @@ export default function UploadManual() {
         `Please fill in all required fields: ${missingFields.join(", ")}`,
       );
       return;
+    }
+
+    // If this ride is being marked as the Number 0, warn about (and then
+    // apply) overwriting any existing one now, at the actual point of
+    // submission - not when the checkbox was ticked, so cancelling out of
+    // the form afterward can never leave the old one cleared with nothing
+    // to replace it.
+    let baseData = currentData;
+    if (formData.isNumberZero) {
+      const existingNumberZero = currentData?.coasters.find(
+        (c) => c.isNumberZero,
+      );
+      if (existingNumberZero) {
+        const confirmed = window.confirm(
+          `${existingNumberZero.name} is currently your Number 0. Continuing will replace it with the ride you're adding now. Continue?`,
+        );
+        if (!confirmed) return;
+
+        baseData = updateCoaster(currentData!, existingNumberZero.id, {
+          isNumberZero: false,
+        });
+        setCurrentData(baseData);
+      }
     }
 
     const parsedOpeningYear = formData.openingYear?.trim()
@@ -321,12 +359,13 @@ export default function UploadManual() {
       ),
       type: rideType as RideType,
       isNewCoaster: true,
+      ...(formData.isNumberZero && { isNumberZero: true }),
     };
 
     const duplicateResult = handleDuplicateDetection({
       newCoasters: [newCoaster],
-      existingData: currentData,
-      filename: currentData?.filename || "manual-entry",
+      existingData: baseData,
+      filename: baseData?.filename || "manual-entry",
     });
 
     if (duplicateResult.hasDuplicates) {
@@ -357,7 +396,7 @@ export default function UploadManual() {
 
       resetFormAfterAdd();
     } else {
-      addCoasterToCollection(newCoaster);
+      addCoasterToCollection(newCoaster, baseData);
     }
   };
 
@@ -617,6 +656,20 @@ export default function UploadManual() {
                   placeholder="e.g. 2015"
                   autoComplete="off"
                 />
+              </Styled.FormGroup>
+
+              <Styled.FormGroup>
+                <Styled.CheckboxLabel htmlFor="mark-number-zero">
+                  <input
+                    type="checkbox"
+                    id="mark-number-zero"
+                    checked={formData.isNumberZero}
+                    onChange={(e) =>
+                      handleToggleNumberZero(e.target.checked)
+                    }
+                  />
+                  This is my Number 0 (too personally significant to rank)
+                </Styled.CheckboxLabel>
               </Styled.FormGroup>
             </div>
 

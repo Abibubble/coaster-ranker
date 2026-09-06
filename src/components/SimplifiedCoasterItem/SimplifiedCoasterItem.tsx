@@ -13,7 +13,9 @@ export const SimplifiedCoasterItem: React.FC<SimplifiedCoasterItemProps> = ({
 }) => {
   return (
     <Styled.SimplifiedItem>
-      {isRanked && coaster.rankPosition ? (
+      {coaster.isNumberZero ? (
+        <Styled.SimplifiedRank>#0</Styled.SimplifiedRank>
+      ) : isRanked && coaster.rankPosition ? (
         <Styled.SimplifiedRank>#{coaster.rankPosition}</Styled.SimplifiedRank>
       ) : (
         <Styled.SimplifiedRank>—</Styled.SimplifiedRank>

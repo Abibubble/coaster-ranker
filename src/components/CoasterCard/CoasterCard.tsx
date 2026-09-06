@@ -18,8 +18,10 @@ interface CoasterCardProps {
   isRanked?: boolean;
   onEdit: () => void;
   onRemove: () => void;
+  onUnmarkNumberZero?: () => void;
   onFieldClick: (field: string, value: string) => void;
   onFormChange?: (field: keyof EditableCoaster, value: string) => void;
+  onToggleNumberZero?: (value: boolean) => void;
   onSaveEdit?: () => void;
   onCancelEdit?: () => void;
   onParkSelection?: (suggestion: { name: string; country: string }) => void;
@@ -61,8 +63,10 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
   isRanked,
   onEdit,
   onRemove,
+  onUnmarkNumberZero,
   onFieldClick,
   onFormChange,
+  onToggleNumberZero,
   onSaveEdit,
   onCancelEdit,
   onParkSelection,
@@ -73,6 +77,7 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
     isEditing &&
     editForm &&
     onFormChange &&
+    onToggleNumberZero &&
     onSaveEdit &&
     onCancelEdit &&
     onParkSelection &&
@@ -85,6 +90,7 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
         editForm={editForm}
         rideType={rideType}
         onFormChange={onFormChange}
+        onToggleNumberZero={onToggleNumberZero}
         onSave={onSaveEdit}
         onCancel={onCancelEdit}
         onParkSelection={onParkSelection}
@@ -107,8 +113,13 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
                 marginBottom: "4px",
               }}
             >
-              {isRanked && coaster.rankPosition && (
-                <Styled.RankBadge>#{coaster.rankPosition}</Styled.RankBadge>
+              {coaster.isNumberZero ? (
+                <Styled.NumberZeroBadge>Number 0</Styled.NumberZeroBadge>
+              ) : (
+                isRanked &&
+                coaster.rankPosition && (
+                  <Styled.RankBadge>#{coaster.rankPosition}</Styled.RankBadge>
+                )
               )}
               <Text as="h3" fontSize="large" colour="charcoal">
                 {coaster.name}
@@ -123,6 +134,15 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
             >
               Edit
             </Button>
+            {coaster.isNumberZero && onUnmarkNumberZero && (
+              <Button
+                variant="default"
+                onClick={onUnmarkNumberZero}
+                aria-label={`Remove ${coaster.name}'s Number 0 status and rank it normally`}
+              >
+                Rank normally
+              </Button>
+            )}
             <Button
               variant="destructive"
               onClick={onRemove}
@@ -228,11 +248,19 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
       </Styled.DesktopLayout>
 
       <Styled.MobileLayout>
-        {isRanked && coaster.rankPosition && (
+        {coaster.isNumberZero ? (
           <Styled.CoasterField>
             <Styled.FieldLabel>Rank</Styled.FieldLabel>
-            <Styled.RankBadge>#{coaster.rankPosition}</Styled.RankBadge>
+            <Styled.NumberZeroBadge>Number 0</Styled.NumberZeroBadge>
           </Styled.CoasterField>
+        ) : (
+          isRanked &&
+          coaster.rankPosition && (
+            <Styled.CoasterField>
+              <Styled.FieldLabel>Rank</Styled.FieldLabel>
+              <Styled.RankBadge>#{coaster.rankPosition}</Styled.RankBadge>
+            </Styled.CoasterField>
+          )
         )}
 
         <Styled.CoasterField>
@@ -291,7 +319,12 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
 
         <Styled.CoasterField>
           <div
-            style={{ display: "flex", gap: "8px", justifyContent: "center" }}
+            style={{
+              display: "flex",
+              gap: "8px",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
           >
             <Button
               variant="default"
@@ -300,6 +333,15 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
             >
               Edit
             </Button>
+            {coaster.isNumberZero && onUnmarkNumberZero && (
+              <Button
+                variant="default"
+                onClick={onUnmarkNumberZero}
+                aria-label={`Remove ${coaster.name}'s Number 0 status and rank it normally`}
+              >
+                Rank normally
+              </Button>
+            )}
             <Button
               variant="destructive"
               onClick={onRemove}

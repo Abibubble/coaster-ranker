@@ -67,6 +67,7 @@ const editForm: EditableCoaster = {
   thrillLevel: "Thrill",
   country: "United States",
   openingYear: "2018",
+  isNumberZero: false,
 };
 
 interface RenderOptions {
@@ -74,6 +75,7 @@ interface RenderOptions {
   isEditing?: boolean;
   editForm?: EditableCoaster;
   isRanked?: boolean;
+  onUnmarkNumberZero?: () => void;
 }
 
 const renderCard = (options: RenderOptions = {}) => {
@@ -90,8 +92,10 @@ const renderCard = (options: RenderOptions = {}) => {
       isRanked={options.isRanked}
       onEdit={onEdit}
       onRemove={onRemove}
+      onUnmarkNumberZero={options.onUnmarkNumberZero}
       onFieldClick={onFieldClick}
       onFormChange={vi.fn()}
+      onToggleNumberZero={vi.fn()}
       onSaveEdit={vi.fn()}
       onCancelEdit={vi.fn()}
       onParkSelection={vi.fn()}
@@ -270,6 +274,77 @@ describe("CoasterCard", () => {
   it("does not show the rank badge when isRanked is true but rankPosition is unset", () => {
     renderCard({ isRanked: true, coaster: { ...coaster, rankPosition: undefined } });
     expect(screen.queryByText(/^#\d+$/)).not.toBeInTheDocument();
+  });
+
+  it("shows a Number 0 badge instead of the numeric rank badge, even when isRanked and rankPosition are both set", () => {
+    renderCard({
+      isRanked: true,
+      coaster: { ...coaster, isNumberZero: true, rankPosition: 2 },
+    });
+
+    expect(screen.getAllByText("Number 0").length).toBeGreaterThan(0);
+    expect(screen.queryByText("#2")).not.toBeInTheDocument();
+  });
+
+  it('shows a "Rank normally" button only when isNumberZero is true AND onUnmarkNumberZero is provided, and calls it on click', async () => {
+    const user = userEvent.setup();
+    const onUnmarkNumberZero = vi.fn();
+
+    const { rerender } = renderCard({
+      coaster: { ...coaster, isNumberZero: true },
+      onUnmarkNumberZero,
+    });
+
+    const desktop = document.querySelector(
+      `.${Styled.DesktopLayout.styledComponentId}`,
+    ) as HTMLElement;
+    const button = within(desktop).getByRole("button", {
+      name: `Remove ${coaster.name}'s Number 0 status and rank it normally`,
+    });
+    await user.click(button);
+    expect(onUnmarkNumberZero).toHaveBeenCalledTimes(1);
+
+    // Not isNumberZero: button absent even with the handler provided.
+    rerender(
+      <CoasterCard
+        coaster={coaster}
+        rideType="coaster"
+        isEditing={false}
+        onEdit={vi.fn()}
+        onRemove={vi.fn()}
+        onUnmarkNumberZero={onUnmarkNumberZero}
+        onFieldClick={vi.fn()}
+        autocomplete={emptyAutocomplete}
+      />,
+    );
+    expect(
+      screen.queryByRole("button", { name: /Rank normally|rank it normally/i }),
+    ).not.toBeInTheDocument();
+
+    // isNumberZero but no handler provided: button absent.
+    rerender(
+      <CoasterCard
+        coaster={{ ...coaster, isNumberZero: true }}
+        rideType="coaster"
+        isEditing={false}
+        onEdit={vi.fn()}
+        onRemove={vi.fn()}
+        onFieldClick={vi.fn()}
+        autocomplete={emptyAutocomplete}
+      />,
+    );
+    expect(
+      screen.queryByText("Rank normally"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("has no accessibility violations when isNumberZero with the unmark action present", async () => {
+    const { container } = renderCard({
+      coaster: { ...coaster, isNumberZero: true },
+      onUnmarkNumberZero: vi.fn(),
+    });
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it("renders a dark-ride coaster (no model/material/thrillLevel) without crashing, in both layouts", () => {

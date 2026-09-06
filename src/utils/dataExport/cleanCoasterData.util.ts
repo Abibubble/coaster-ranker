@@ -51,7 +51,9 @@ export function addRankingToCoasterData(
       openingYear: coaster.openingYear,
     };
 
-    if (coaster.rankPosition !== undefined && coaster.rankPosition > 0) {
+    if (coaster.isNumberZero) {
+      baseCoaster.rank = 0;
+    } else if (coaster.rankPosition !== undefined && coaster.rankPosition > 0) {
       baseCoaster.rank = coaster.rankPosition;
     } else if (rankingMetadata?.isRanked && rankingMetadata?.rankedCoasters) {
       const position = rankingMetadata.rankedCoasters.indexOf(coaster.id);
@@ -87,7 +89,7 @@ export function hasRankingDataForExport(
   }
 
   const hasCoasterRankings = uploadedData.coasters.some(
-    (c) => c.rankPosition !== undefined && c.rankPosition > 0,
+    (c) => (c.rankPosition !== undefined && c.rankPosition > 0) || c.isNumberZero,
   );
 
   const hasRankingMetadata = uploadedData.rankingMetadata?.isRanked === true;

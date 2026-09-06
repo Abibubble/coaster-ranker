@@ -15,16 +15,24 @@ import {
 import { useData } from "../../contexts/DataContext";
 import { useSimpleRanking } from "../../hooks/useSimpleRanking";
 import { useGroupRankingShortcut } from "../../hooks/useGroupRankingShortcut";
+import { useNumberZeroOffer } from "../../hooks/useNumberZeroOffer";
 import {
   RankingComparison,
   ComparisonResult,
 } from "../../utils/ranking/newRankingEngine.util";
+import { markCoasterAsNumberZero } from "../../utils/coasterOperations/coasterOperations";
 import { Coaster, RideType, UploadedData } from "../../types/data";
 import * as Styled from "./Rank.styled";
 
 export const Rank: React.FC = () => {
-  const { uploadedData, darkRideData, markRankingComplete, resetRanking } =
-    useData();
+  const {
+    uploadedData,
+    darkRideData,
+    markRankingComplete,
+    resetRanking,
+    setUploadedData,
+    setDarkRideData,
+  } = useData();
   const navigate = useNavigate();
   const [rideType, setRideType] = React.useState<RideType>("coaster");
 
@@ -49,6 +57,8 @@ export const Rank: React.FC = () => {
       markRankingComplete={markRankingComplete}
       resetRanking={resetRanking}
       navigate={navigate}
+      setUploadedData={setUploadedData}
+      setDarkRideData={setDarkRideData}
     />
   );
 };
@@ -63,6 +73,8 @@ interface RankingContentProps {
   markRankingComplete: (ranking: Coaster[], rideType: RideType) => void;
   resetRanking: (rideType: RideType) => void;
   navigate: (path: string) => void;
+  setUploadedData: (data: UploadedData | null) => void;
+  setDarkRideData: (data: UploadedData | null) => void;
 }
 
 const RankingContent: React.FC<RankingContentProps> = ({
@@ -75,10 +87,12 @@ const RankingContent: React.FC<RankingContentProps> = ({
   markRankingComplete,
   resetRanking,
   navigate,
+  setUploadedData,
+  setDarkRideData,
 }) => {
   const hasUnrankedCoasters =
     currentData?.coasters?.some(
-      (c) => !c.isPreRanked && c.rankPosition === undefined,
+      (c) => !c.isPreRanked && !c.isNumberZero && c.rankPosition === undefined,
     ) || false;
 
   const isAlreadyRanked =
@@ -99,6 +113,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
     rankedCoasters,
     nextUnrankedCoaster,
     applyGroupRankingResult,
+    markAsNumberZero,
   }: {
     currentComparison: RankingComparison | null;
     recordWinner: (winner: Coaster) => void;
@@ -114,6 +129,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
     rankedCoasters: Coaster[];
     nextUnrankedCoaster: Coaster | null;
     applyGroupRankingResult: (orderedCoasters: Coaster[]) => void;
+    markAsNumberZero: (coasterId: string) => void;
   } = useSimpleRanking(currentData?.coasters || [], rideType);
 
   const groupShortcut = useGroupRankingShortcut(
@@ -121,6 +137,21 @@ const RankingContent: React.FC<RankingContentProps> = ({
     rankedCoasters,
     applyGroupRankingResult,
   );
+
+  const hasExistingNumberZero =
+    currentData?.coasters?.some((c) => c.isNumberZero) || false;
+  const numberZeroOffer = useNumberZeroOffer(
+    nextUnrankedCoaster,
+    hasExistingNumberZero,
+  );
+
+  const handleAcceptNumberZero = (coaster: Coaster) => {
+    if (!currentData) return;
+    const setData =
+      rideType === "coaster" ? setUploadedData : setDarkRideData;
+    setData(markCoasterAsNumberZero(currentData, coaster.id));
+    markAsNumberZero(coaster.id);
+  };
 
   // Mark ranking as complete when it's truly finished (with memoized check)
   const finalRankingLength = finalRanking.length;
@@ -337,6 +368,43 @@ const RankingContent: React.FC<RankingContentProps> = ({
             onClick={groupShortcut.cancelActiveComparison}
           >
             Cancel, rank normally instead
+          </Button>
+        </Styled.RankingContainer>
+      </MainContent>
+    );
+  }
+
+  if (numberZeroOffer.offer) {
+    const numberZeroCoaster = numberZeroOffer.offer;
+
+    return (
+      <MainContent>
+        <Title>Rank Your {rideTypeLabel}</Title>
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle value={rideType} onChange={setRideType} />
+        </section>
+        <Styled.RankingContainer>
+          <Text as="p" mb="small">
+            Some rides mean so much - nostalgia, a first-ever ride, pure
+            sentimental value - that they don't belong in a competitive
+            ranking at all. A Number 0 sits outside your ranked list
+            entirely, instead of competing for position 1, 2, 3...
+          </Text>
+          <Text as="p" bold mb="small">
+            Is {numberZeroCoaster.name} one of those for you?
+          </Text>
+
+          <Button
+            variant="default"
+            onClick={() => handleAcceptNumberZero(numberZeroCoaster)}
+          >
+            Yes, this is my Number 0
+          </Button>
+          <Button
+            variant="default"
+            onClick={numberZeroOffer.declineOffer}
+          >
+            No, rank it normally
           </Button>
         </Styled.RankingContainer>
       </MainContent>

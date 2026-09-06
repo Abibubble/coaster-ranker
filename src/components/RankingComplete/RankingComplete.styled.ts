@@ -31,6 +31,24 @@ export const ResultsList = styled.div`
   }
 `
 
+export const NumberZeroSection = styled.div`
+  text-align: left;
+  background: ${colours.veryLightBlue};
+  border-radius: ${spacing.tiny};
+  border-left: ${spacing.fine} solid ${colours.blue};
+  padding: ${spacing.small};
+  margin: ${spacing.small} 0;
+
+  ul {
+    padding-left: ${spacing.medium};
+    margin: ${spacing.tiny} 0 0;
+  }
+
+  li {
+    margin-bottom: ${spacing.tiny};
+  }
+`
+
 export const RankingComplete = styled.div`
   text-align: center;
   background: ${colours.successBg};

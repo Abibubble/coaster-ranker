@@ -49,6 +49,21 @@ export const FormGroup = styled.div`
   margin-bottom: ${spacing.small};
 `
 
+export const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: ${spacing.tiny};
+  cursor: pointer;
+  font-size: ${fonts.small};
+  color: ${colours.charcoal};
+  user-select: none;
+
+  input[type='checkbox'] {
+    margin: 0;
+    cursor: pointer;
+  }
+`
+
 const baseFormControlStyles = css`
   border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.fine};

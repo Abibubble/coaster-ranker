@@ -141,7 +141,7 @@ describe("validateCoasterData", () => {
     expect(result.isPreRanked).toBe(true);
   });
 
-  it.each([["abc"], ["0"], ["-5"], [""]])(
+  it.each([["abc"], ["-5"], [""]])(
     "ignores an invalid rank value: %s",
     (rank) => {
       const [result] = validateCoasterData([{ ...validRow, rank }]);
@@ -149,8 +149,27 @@ describe("validateCoasterData", () => {
       expect("rankPosition" in result).toBe(false);
       expect("originalRankPosition" in result).toBe(false);
       expect("isPreRanked" in result).toBe(false);
+      expect("isNumberZero" in result).toBe(false);
     },
   );
+
+  it("sets isNumberZero (not rankPosition/isPreRanked) for a rank of exactly 0", () => {
+    const [result] = validateCoasterData([{ ...validRow, rank: "0" }]);
+
+    expect(result.isNumberZero).toBe(true);
+    expect("rankPosition" in result).toBe(false);
+    expect("originalRankPosition" in result).toBe(false);
+    expect("isPreRanked" in result).toBe(false);
+  });
+
+  it("still sets ranking fields (not isNumberZero) for a positive rank - regression", () => {
+    const [result] = validateCoasterData([{ ...validRow, rank: "1" }]);
+
+    expect(result.rankPosition).toBe(1);
+    expect(result.originalRankPosition).toBe(1);
+    expect(result.isPreRanked).toBe(true);
+    expect("isNumberZero" in result).toBe(false);
+  });
 
   it("sets openingYear from a plausible year (issue #44)", () => {
     const [result] = validateCoasterData([

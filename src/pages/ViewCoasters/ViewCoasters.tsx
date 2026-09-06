@@ -28,6 +28,7 @@ import { RideType } from "../../types/data";
 import {
   removeCoaster,
   updateCoaster,
+  markCoasterAsNumberZero,
   getRemovalConfirmationMessage,
   hasAnyRanking,
 } from "../../utils";
@@ -105,6 +106,7 @@ export default function ViewCoasters() {
     startEditing,
     cancelEditing,
     updateEditForm,
+    setEditFormNumberZero,
   } = useCoasterEditing();
 
   // Autocomplete for editing
@@ -152,6 +154,21 @@ export default function ViewCoasters() {
     setTimeout(() => setStatusMessage(""), 3000);
   };
 
+  const handleUnmarkNumberZero = (coasterId: string) => {
+    if (!currentData) return;
+
+    const coaster = currentData.coasters.find((c) => c.id === coasterId);
+    const updatedData = updateCoaster(currentData, coasterId, {
+      isNumberZero: false,
+    });
+
+    setCurrentData(updatedData);
+    setStatusMessage(
+      `${coaster?.name || "This ride"} will go back into the normal ranking.`,
+    );
+    setTimeout(() => setStatusMessage(""), 3000);
+  };
+
   const handleSaveEdit = () => {
     if (!currentData || !editingCoasterId) return;
 
@@ -167,11 +184,27 @@ export default function ViewCoasters() {
       return;
     }
 
+    // Warn about (and only then apply) overwriting an existing Number 0 at
+    // the actual point of saving, not when the checkbox was ticked, so
+    // cancelling the edit afterward can never leave the old one cleared
+    // with nothing to replace it.
+    if (editForm.isNumberZero) {
+      const existingNumberZero = currentData.coasters.find(
+        (c) => c.isNumberZero && c.id !== editingCoasterId,
+      );
+      if (existingNumberZero) {
+        const confirmed = window.confirm(
+          `${existingNumberZero.name} is currently your Number 0. Continuing will replace it with ${editForm.name.trim()}. Continue?`,
+        );
+        if (!confirmed) return;
+      }
+    }
+
     const parsedOpeningYear = editForm.openingYear.trim()
       ? parseInt(editForm.openingYear.trim(), 10)
       : NaN;
 
-    const updatedData = updateCoaster(currentData, editingCoasterId, {
+    let updatedData = updateCoaster(currentData, editingCoasterId, {
       name: editForm.name.trim(),
       park: editForm.park.trim(),
       manufacturer: editForm.manufacturer.trim(),
@@ -181,6 +214,10 @@ export default function ViewCoasters() {
       country: editForm.country.trim(),
       openingYear: isNaN(parsedOpeningYear) ? undefined : parsedOpeningYear,
     });
+
+    updatedData = editForm.isNumberZero
+      ? markCoasterAsNumberZero(updatedData, editingCoasterId)
+      : updateCoaster(updatedData, editingCoasterId, { isNumberZero: false });
 
     setCurrentData(updatedData);
     cancelEditing();
@@ -348,8 +385,14 @@ export default function ViewCoasters() {
                   isRanked={shouldShowRankings}
                   onEdit={() => startEditing(coaster)}
                   onRemove={() => handleRemoveCoaster(coaster.id)}
+                  onUnmarkNumberZero={
+                    coaster.isNumberZero
+                      ? () => handleUnmarkNumberZero(coaster.id)
+                      : undefined
+                  }
                   onFieldClick={handleFieldClick}
                   onFormChange={updateEditForm}
+                  onToggleNumberZero={setEditFormNumberZero}
                   onSaveEdit={handleSaveEdit}
                   onCancelEdit={cancelEditing}
                   onParkSelection={handleParkSelection}

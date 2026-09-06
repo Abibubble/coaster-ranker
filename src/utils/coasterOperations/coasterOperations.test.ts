@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { Coaster, RankingMetadata, UploadedData } from "../../types/data";
 import {
+  enforceSingleNumberZero,
   getUniqueFieldValues,
   hasAnyRanking,
+  markCoasterAsNumberZero,
   removeCoaster,
   updateCoaster,
 } from "./coasterOperations";
@@ -224,6 +226,143 @@ describe("updateCoaster", () => {
 
     expect(result.coasters[0].name).toBe("The Haunted Mansion");
     expect(result.coasters[0].type).toBe("dark-ride");
+  });
+});
+
+describe("markCoasterAsNumberZero", () => {
+  it("marks the target coaster and clears its rankPosition", () => {
+    const currentData = makeUploadedData([
+      makeCoaster({ id: "a", rankPosition: 2 }),
+      makeCoaster({ id: "b", rankPosition: 1 }),
+    ]);
+
+    const result = markCoasterAsNumberZero(currentData, "a");
+
+    const a = result.coasters.find((c) => c.id === "a")!;
+    expect(a.isNumberZero).toBe(true);
+    expect(a.rankPosition).toBeUndefined();
+  });
+
+  it("clears isNumberZero from every other coaster, guaranteeing only one at a time", () => {
+    const currentData = makeUploadedData([
+      makeCoaster({ id: "a", isNumberZero: true }),
+      makeCoaster({ id: "b" }),
+      makeCoaster({ id: "c", isNumberZero: true }), // shouldn't happen, but be defensive
+    ]);
+
+    const result = markCoasterAsNumberZero(currentData, "b");
+
+    const byId = Object.fromEntries(
+      result.coasters.map((c) => [c.id, c.isNumberZero]),
+    );
+    expect(byId.a).toBe(false);
+    expect(byId.b).toBe(true);
+    expect(byId.c).toBe(false);
+  });
+
+  it("leaves coasters that never had the flag untouched", () => {
+    const b = makeCoaster({ id: "b", name: "Bravo", park: "Park B" });
+    const currentData = makeUploadedData([makeCoaster({ id: "a" }), b]);
+
+    const result = markCoasterAsNumberZero(currentData, "a");
+
+    expect(result.coasters.find((c) => c.id === "b")).toEqual(b);
+  });
+
+  it("regression: shifts everyone below the newly-Number-0 coaster up by one, closing the gap", () => {
+    const currentData = makeUploadedData(
+      [
+        makeCoaster({ id: "a", rankPosition: 1 }),
+        makeCoaster({ id: "b", rankPosition: 2 }),
+        makeCoaster({ id: "c", rankPosition: 3 }),
+      ],
+      {
+        completedComparisons: new Set(),
+        rankedCoasters: ["a", "b", "c"],
+        isRanked: true,
+      },
+    );
+
+    const result = markCoasterAsNumberZero(currentData, "a");
+
+    const byId = Object.fromEntries(
+      result.coasters.map((c) => [c.id, c.rankPosition]),
+    );
+    expect(byId.a).toBeUndefined();
+    expect(byId.b).toBe(1);
+    expect(byId.c).toBe(2);
+    expect(result.rankingMetadata?.rankedCoasters).toEqual(["b", "c"]);
+  });
+
+  it("regression: leaves coasters ranked above the newly-Number-0 coaster untouched", () => {
+    const currentData = makeUploadedData([
+      makeCoaster({ id: "a", rankPosition: 1 }),
+      makeCoaster({ id: "b", rankPosition: 2 }),
+      makeCoaster({ id: "c", rankPosition: 3 }),
+    ]);
+
+    const result = markCoasterAsNumberZero(currentData, "b");
+
+    const byId = Object.fromEntries(
+      result.coasters.map((c) => [c.id, c.rankPosition]),
+    );
+    expect(byId.a).toBe(1);
+    expect(byId.b).toBeUndefined();
+    expect(byId.c).toBe(2);
+  });
+
+  it("does not shift anyone when the newly-Number-0 coaster was never ranked", () => {
+    const currentData = makeUploadedData([
+      makeCoaster({ id: "a" }),
+      makeCoaster({ id: "b", rankPosition: 1 }),
+      makeCoaster({ id: "c", rankPosition: 2 }),
+    ]);
+
+    const result = markCoasterAsNumberZero(currentData, "a");
+
+    const byId = Object.fromEntries(
+      result.coasters.map((c) => [c.id, c.rankPosition]),
+    );
+    expect(byId.b).toBe(1);
+    expect(byId.c).toBe(2);
+  });
+});
+
+describe("enforceSingleNumberZero", () => {
+  it("keeps the flag on the first match and clears any later ones", () => {
+    const coasters = [
+      makeCoaster({ id: "a" }),
+      makeCoaster({ id: "b", isNumberZero: true }),
+      makeCoaster({ id: "c", isNumberZero: true }),
+    ];
+
+    const result = enforceSingleNumberZero(coasters);
+
+    const byId = Object.fromEntries(
+      result.map((c) => [c.id, c.isNumberZero]),
+    );
+    expect(byId.b).toBe(true);
+    expect(byId.c).toBe(false);
+  });
+
+  it("leaves the array unchanged (in effect) when at most one coaster has the flag", () => {
+    const coasters = [
+      makeCoaster({ id: "a" }),
+      makeCoaster({ id: "b", isNumberZero: true }),
+    ];
+
+    const result = enforceSingleNumberZero(coasters);
+
+    expect(result.map((c) => ({ id: c.id, isNumberZero: c.isNumberZero }))).toEqual([
+      { id: "a", isNumberZero: undefined },
+      { id: "b", isNumberZero: true },
+    ]);
+  });
+
+  it("is a no-op when no coaster has the flag", () => {
+    const coasters = [makeCoaster({ id: "a" }), makeCoaster({ id: "b" })];
+
+    expect(enforceSingleNumberZero(coasters)).toEqual(coasters);
   });
 });
 

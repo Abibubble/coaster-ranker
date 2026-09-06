@@ -4,6 +4,7 @@ export interface Coaster {
   isCurrentlyRanking?: boolean; // Whether this coaster is currently being ranked (for sequential insertion)
   isNewCoaster?: boolean; // Flag to track newly added coasters
   isPreRanked?: boolean; // Whether this coaster came from pre-ranked data
+  isNumberZero?: boolean; // Too personally/emotionally significant to rank - sits outside the numbered list entirely
   name: string;
   originalRankPosition?: number; // Position in original upload order (for pre-ranked data)
   park: string;

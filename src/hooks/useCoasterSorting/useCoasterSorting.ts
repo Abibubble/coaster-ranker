@@ -3,6 +3,14 @@ import { Coaster, UploadedData } from "../../types/data";
 import { SortField, SortDirection } from "../../components";
 import { hasAnyRanking } from "../../utils";
 
+// A Number 0 sits above #1 when sorting by rank - it's not "unranked" (which
+// falls to the bottom via MAX_SAFE_INTEGER), it's deliberately outside the
+// numbered list altogether.
+const rankSortKey = (coaster: Coaster): number => {
+  if (coaster.isNumberZero) return -1;
+  return coaster.rankPosition || Number.MAX_SAFE_INTEGER;
+};
+
 export interface SortOptions {
   field: SortField;
   direction: SortDirection;
@@ -32,8 +40,8 @@ export const useCoasterSorting = (
         let valueB: string | number | undefined;
 
         if (field === "rankPosition") {
-          valueA = a.rankPosition || Number.MAX_SAFE_INTEGER;
-          valueB = b.rankPosition || Number.MAX_SAFE_INTEGER;
+          valueA = rankSortKey(a);
+          valueB = rankSortKey(b);
         } else {
           valueA = a[field] || "";
           valueB = b[field] || "";
@@ -52,11 +60,7 @@ export const useCoasterSorting = (
     } else {
       // Default sorting by rank if available (complete or partial rankings)
       if (hasAnyRanking(result, currentData?.rankingMetadata)) {
-        result.sort((a, b) => {
-          const rankA = a.rankPosition || Number.MAX_SAFE_INTEGER;
-          const rankB = b.rankPosition || Number.MAX_SAFE_INTEGER;
-          return rankA - rankB;
-        });
+        result.sort((a, b) => rankSortKey(a) - rankSortKey(b));
       }
     }
 

@@ -95,6 +95,74 @@ export const updateCoaster = (
 };
 
 /**
+ * Marks a single coaster as a Number 0 - the enthusiast convention for a
+ * ride too personally/emotionally significant to rank competitively -
+ * clearing the flag from every other coaster in the collection first, since
+ * only one can hold it at a time.
+ */
+export const markCoasterAsNumberZero = (
+  currentData: UploadedData,
+  coasterId: string,
+): UploadedData => {
+  const target = currentData.coasters.find((c) => c.id === coasterId);
+  const previousRankPosition = target?.rankPosition;
+
+  const updatedCoasters = currentData.coasters.map((coaster) => {
+    if (coaster.id === coasterId) {
+      return { ...coaster, isNumberZero: true, rankPosition: undefined };
+    }
+
+    // If the coaster becoming Number 0 was already ranked, close the gap by
+    // shifting everyone below it up by one - same renumbering removeCoaster
+    // already does when a ranked coaster is deleted outright.
+    const shifted =
+      previousRankPosition !== undefined &&
+      coaster.rankPosition !== undefined &&
+      coaster.rankPosition > previousRankPosition
+        ? { ...coaster, rankPosition: coaster.rankPosition - 1 }
+        : coaster;
+
+    return shifted.isNumberZero
+      ? { ...shifted, isNumberZero: false }
+      : shifted;
+  });
+
+  let updatedRankingMetadata = currentData.rankingMetadata;
+  if (updatedRankingMetadata) {
+    const newRankedCoasters = updatedCoasters
+      .filter((coaster) => coaster.rankPosition !== undefined)
+      .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0))
+      .map((coaster) => coaster.id);
+
+    updatedRankingMetadata = {
+      ...updatedRankingMetadata,
+      rankedCoasters: newRankedCoasters,
+    };
+  }
+
+  return {
+    ...currentData,
+    coasters: updatedCoasters,
+    rankingMetadata: updatedRankingMetadata,
+  };
+};
+
+/**
+ * Ensures at most one coaster is marked as a Number 0, keeping the flag on
+ * the first match (array order) and clearing any later ones. Guards against
+ * an import/merge combining data that already has more than one.
+ */
+export const enforceSingleNumberZero = (coasters: Coaster[]): Coaster[] => {
+  let seen = false;
+  return coasters.map((coaster) => {
+    if (!coaster.isNumberZero) return coaster;
+    if (seen) return { ...coaster, isNumberZero: false };
+    seen = true;
+    return coaster;
+  });
+};
+
+/**
  * Gets unique values for a specific field from all coasters
  */
 export const getUniqueFieldValues = (

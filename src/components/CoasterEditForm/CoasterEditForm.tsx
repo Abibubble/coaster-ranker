@@ -26,6 +26,7 @@ export interface EditableCoaster {
   thrillLevel: string;
   country: string;
   openingYear: string;
+  isNumberZero: boolean;
 }
 
 interface CoasterEditFormProps {
@@ -33,6 +34,7 @@ interface CoasterEditFormProps {
   editForm: EditableCoaster;
   rideType: RideType;
   onFormChange: (field: keyof EditableCoaster, value: string) => void;
+  onToggleNumberZero: (value: boolean) => void;
   onSave: () => void;
   onCancel: () => void;
   onParkSelection: (suggestion: { name: string; country: string }) => void;
@@ -71,6 +73,7 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
   editForm,
   rideType,
   onFormChange,
+  onToggleNumberZero,
   onSave,
   onCancel,
   onParkSelection,
@@ -89,8 +92,12 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
             Editing: {coaster.name}
           </Text>
         </Styled.CoasterTitle>
-        {coaster.rankPosition && (
-          <Styled.RankBadge>#{coaster.rankPosition}</Styled.RankBadge>
+        {coaster.isNumberZero ? (
+          <Styled.NumberZeroBadge>Number 0</Styled.NumberZeroBadge>
+        ) : (
+          coaster.rankPosition && (
+            <Styled.RankBadge>#{coaster.rankPosition}</Styled.RankBadge>
+          )
         )}
       </Styled.CoasterHeader>
 
@@ -224,6 +231,18 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
             </FilterSelect>
           </Styled.FormField>
         )}
+
+        <Styled.FormField>
+          <Styled.CheckboxLabel htmlFor="edit-number-zero">
+            <input
+              type="checkbox"
+              id="edit-number-zero"
+              checked={editForm.isNumberZero}
+              onChange={(e) => onToggleNumberZero(e.target.checked)}
+            />
+            This is my Number 0 (too personally significant to rank)
+          </Styled.CheckboxLabel>
+        </Styled.FormField>
       </Styled.EditForm>
 
       <Styled.FormActions>

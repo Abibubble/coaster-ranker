@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Coaster, UploadedData, RideType } from "../../types/data";
 import { useData } from "../../contexts/DataContext";
+import { markCoasterAsNumberZero } from "../../utils/coasterOperations/coasterOperations";
 import { Button } from "../Button";
 import { Link } from "../Link";
 import { Text } from "../Text";
@@ -140,6 +141,27 @@ export default function RankingComplete({
     setCoastersOrder(newOrder);
   };
 
+  // An immediate action, not batched into "Save Changes" - warns about (and
+  // only then applies) overwriting an existing Number 0, then removes this
+  // coaster from the reorder buffer since it no longer belongs in the
+  // numbered ranking at all.
+  const handleSetAsNumberZero = (coaster: Coaster) => {
+    if (!dataToUse) return;
+
+    const existingNumberZero = dataToUse.coasters.find(
+      (c) => c.isNumberZero && c.id !== coaster.id,
+    );
+    if (existingNumberZero) {
+      const confirmed = window.confirm(
+        `${existingNumberZero.name} is currently your Number 0. Continuing will replace it with ${coaster.name}. Continue?`,
+      );
+      if (!confirmed) return;
+    }
+
+    setDataToUse(markCoasterAsNumberZero(dataToUse, coaster.id));
+    setCoastersOrder((prev) => prev.filter((c) => c.id !== coaster.id));
+  };
+
   const handleKeyDown = (
     event: React.KeyboardEvent,
     coaster: Coaster,
@@ -155,6 +177,7 @@ export default function RankingComplete({
   };
 
   const displayCoasters = isEditing ? coastersOrder : currentRankedCoasters;
+  const numberZeroCoaster = dataToUse?.coasters.find((c) => c.isNumberZero);
 
   return (
     <Styled.RankingComplete>
@@ -223,6 +246,13 @@ export default function RankingComplete({
                     ↓
                   </Styled.MoveButton>
                 </Styled.MoveButtons>
+                <Button
+                  variant="default"
+                  onClick={() => handleSetAsNumberZero(coaster)}
+                  aria-label={`Set ${coaster.name} as your Number 0, removing it from the numbered ranking`}
+                >
+                  Number 0
+                </Button>
               </Styled.EditableItem>
             ))}
           </ol>
@@ -254,6 +284,23 @@ export default function RankingComplete({
             </Link>
           </Styled.ViewAllLink>
         </Styled.ResultsList>
+      )}
+
+      {numberZeroCoaster && (
+        <Styled.NumberZeroSection>
+          <Text as="h3" bold colour="darkGrey" mb="tiny">
+            Your Number 0
+          </Text>
+          <Text as="p" colour="mediumGrey" fontSize="small" mb="tiny">
+            Too personally significant to rank against the rest.
+          </Text>
+          <ul>
+            <li>
+              <Text bold>{numberZeroCoaster.name}</Text> at{" "}
+              {numberZeroCoaster.park}
+            </li>
+          </ul>
+        </Styled.NumberZeroSection>
       )}
 
       <Text as="p" colour="mediumGrey" fontSize="small" mb="small">

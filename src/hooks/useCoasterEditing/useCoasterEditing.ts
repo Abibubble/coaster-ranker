@@ -10,6 +10,7 @@ export interface EditableCoaster {
   thrillLevel: string;
   country: string;
   openingYear: string;
+  isNumberZero: boolean;
 }
 
 export interface UseCoasterEditingReturn {
@@ -19,6 +20,7 @@ export interface UseCoasterEditingReturn {
   startEditing: (coaster: Coaster) => void;
   cancelEditing: () => void;
   updateEditForm: (field: keyof EditableCoaster, value: string) => void;
+  setEditFormNumberZero: (value: boolean) => void;
   resetEditForm: () => void;
 }
 
@@ -31,6 +33,7 @@ const initialEditForm: EditableCoaster = {
   thrillLevel: "",
   country: "",
   openingYear: "",
+  isNumberZero: false,
 };
 
 export const useCoasterEditing = (): UseCoasterEditingReturn => {
@@ -53,6 +56,7 @@ export const useCoasterEditing = (): UseCoasterEditingReturn => {
       country: coaster.country,
       openingYear:
         coaster.openingYear !== undefined ? String(coaster.openingYear) : "",
+      isNumberZero: coaster.isNumberZero || false,
     });
   };
 
@@ -71,6 +75,13 @@ export const useCoasterEditing = (): UseCoasterEditingReturn => {
     }));
   };
 
+  const setEditFormNumberZero = (value: boolean): void => {
+    setEditForm((prev) => ({
+      ...prev,
+      isNumberZero: value,
+    }));
+  };
+
   const resetEditForm = (): void => {
     setEditForm(initialEditForm);
   };
@@ -82,6 +93,7 @@ export const useCoasterEditing = (): UseCoasterEditingReturn => {
     startEditing,
     cancelEditing,
     updateEditForm,
+    setEditFormNumberZero,
     resetEditForm,
   };
 };

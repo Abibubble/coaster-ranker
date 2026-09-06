@@ -342,6 +342,166 @@ describe("RankingEngine.seedComparisonResults (issue #3 group shortcut)", () => 
   });
 });
 
+describe("RankingEngine - Number 0 coasters excluded from construction", () => {
+  it("throws when the only coaster is marked isNumberZero (excluded from both pools)", () => {
+    const a = makeCoaster({ id: "a", name: "Alpha", isNumberZero: true });
+    expect(() => new RankingEngine([a])).toThrow(
+      "No coasters available for ranking",
+    );
+  });
+
+  it("never surfaces a Number 0 coaster as a comparison candidate, ranked or unranked", () => {
+    const zero = makeCoaster({ id: "zero", name: "Zero", isNumberZero: true });
+    const a = makeCoaster({ id: "a", name: "Alpha" });
+    const b = makeCoaster({ id: "b", name: "Bravo" });
+
+    const engine = new RankingEngine([zero, a, b]);
+
+    const comparison = engine.getCurrentComparison()!;
+    expect([comparison.coasterA.id, comparison.coasterB.id].sort()).toEqual([
+      "a",
+      "b",
+    ]);
+    expect(
+      engine.getState().unrankedCoasters.map((c) => c.id),
+    ).not.toContain("zero");
+  });
+
+  it("is excluded even if it also carries a rankPosition (isNumberZero wins)", () => {
+    const zero = makeCoaster({
+      id: "zero",
+      name: "Zero",
+      isNumberZero: true,
+      rankPosition: 1,
+    });
+    const a = makeCoaster({ id: "a", name: "Alpha" });
+    const b = makeCoaster({ id: "b", name: "Bravo" });
+
+    const engine = new RankingEngine([zero, a, b]);
+
+    expect(engine.getState().rankedCoasterIds).not.toContain("zero");
+    expect(engine.getCurrentRanking().map((c) => c.id)).not.toContain("zero");
+  });
+
+  it("fromPartialState also excludes a Number 0 coaster from the rebuilt pools", () => {
+    const zero = makeCoaster({ id: "zero", name: "Zero", isNumberZero: true });
+    const a = makeCoaster({ id: "a", name: "Alpha" });
+    const b = makeCoaster({ id: "b", name: "Bravo" });
+
+    const engine = RankingEngine.fromPartialState([zero, a, b], {
+      rankedCoasterIds: [],
+      comparisonResults: [],
+      unrankedCoasterIds: [],
+    });
+
+    const unrankedIds = engine.getCurrentRanking().map((c) => c.id);
+    expect(unrankedIds.sort()).toEqual(["a", "b"]);
+  });
+});
+
+describe("RankingEngine.excludeCoaster", () => {
+  it("removes a mid-search coaster from the unranked pool and generates a fresh comparison for whoever's next", () => {
+    const a = makeCoaster({ id: "a", rankPosition: 1 });
+    const b = makeCoaster({ id: "b", rankPosition: 2 });
+    const c = makeCoaster({ id: "c", rankPosition: 3 });
+    const target = makeCoaster({ id: "target", name: "Target" });
+    const other = makeCoaster({ id: "other", name: "Other" });
+
+    const engine = new RankingEngine([a, b, c, target, other]);
+    const before = engine.getCurrentComparison()!;
+    expect(before.coasterA.id).toBe("target");
+
+    engine.excludeCoaster("target");
+
+    const state = engine.getState();
+    expect(state.unrankedCoasters.map((c) => c.id)).toEqual(["other"]);
+    expect(state.rankedCoasterIds).toEqual(["a", "b", "c"]);
+    expect(state.isComplete).toBe(false);
+    const after = engine.getCurrentComparison()!;
+    expect(after.coasterA.id).toBe("other");
+  });
+
+  it("falls through to a new first-comparison pair when excluding one of the very first two unranked coasters, with more remaining", () => {
+    const target = makeCoaster({ id: "target", name: "Target" });
+    const b = makeCoaster({ id: "b", name: "Bravo" });
+    const c = makeCoaster({ id: "c", name: "Charlie" });
+
+    const engine = new RankingEngine([target, b, c]);
+    const before = engine.getCurrentComparison()!;
+    expect(before).toEqual({ coasterA: target, coasterB: b });
+
+    engine.excludeCoaster("target");
+
+    expect(engine.getState().rankedCoasterIds).toEqual([]);
+    expect(engine.getCurrentComparison()).toEqual({ coasterA: b, coasterB: c });
+  });
+
+  it("auto-completes with the sole remaining coaster ranked #1 when excluding one of only two unranked coasters", () => {
+    const target = makeCoaster({ id: "target", name: "Target" });
+    const lone = makeCoaster({ id: "lone", name: "Lone" });
+
+    const engine = new RankingEngine([target, lone]);
+    engine.excludeCoaster("target");
+
+    const state = engine.getState();
+    expect(state.isComplete).toBe(true);
+    expect(state.currentComparison).toBeNull();
+    expect(engine.getFinalRanking().map((c) => c.id)).toEqual(["lone"]);
+  });
+
+  it("is a no-op when the coaster id is already ranked", () => {
+    const a = makeCoaster({ id: "a", rankPosition: 1 });
+    const b = makeCoaster({ id: "b", rankPosition: 2 });
+    const target = makeCoaster({ id: "target" });
+
+    const engine = new RankingEngine([a, b, target]);
+    const before = engine.getState();
+
+    engine.excludeCoaster("a");
+
+    const after = engine.getState();
+    expect(after.rankedCoasterIds).toEqual(before.rankedCoasterIds);
+    expect(after.unrankedCoasters.map((c) => c.id)).toEqual(
+      before.unrankedCoasters.map((c) => c.id),
+    );
+    expect(engine.canUndo()).toBe(false);
+  });
+
+  it("is a no-op when the coaster id doesn't exist at all", () => {
+    const a = makeCoaster({ id: "a" });
+    const b = makeCoaster({ id: "b" });
+    const engine = new RankingEngine([a, b]);
+    const before = engine.getCurrentComparison();
+
+    engine.excludeCoaster("does-not-exist");
+
+    expect(engine.getCurrentComparison()).toEqual(before);
+    expect(engine.canUndo()).toBe(false);
+  });
+
+  it("participates in the undo stack, restoring the excluded coaster to the unranked pool", () => {
+    const target = makeCoaster({ id: "target", name: "Target" });
+    const b = makeCoaster({ id: "b", name: "Bravo" });
+    const c = makeCoaster({ id: "c", name: "Charlie" });
+
+    const engine = new RankingEngine([target, b, c]);
+    const beforeComparison = engine.getCurrentComparison();
+
+    engine.excludeCoaster("target");
+    expect(engine.canUndo()).toBe(true);
+    expect(
+      engine.getCurrentRanking().map((c) => c.id),
+    ).not.toContain("target");
+
+    engine.undo();
+
+    expect(engine.getCurrentComparison()).toEqual(beforeComparison);
+    expect(
+      engine.getState().unrankedCoasters.map((c) => c.id).sort(),
+    ).toEqual(["b", "c", "target"]);
+  });
+});
+
 describe("RankingEngine - recordComparisonResult guard", () => {
   it("throws if there is no active comparison to record", () => {
     const a = makeCoaster({ id: "a", name: "Alpha", rankPosition: 1 });

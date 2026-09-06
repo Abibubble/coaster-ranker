@@ -32,11 +32,13 @@ export class RankingEngine {
 
   constructor(coasters: Coaster[]) {
     const rankedCoasters = coasters
-      .filter((c) => !c.isPreRanked && c.rankPosition !== undefined)
+      .filter(
+        (c) => !c.isPreRanked && !c.isNumberZero && c.rankPosition !== undefined,
+      )
       .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0));
 
     const unrankedCoasters = coasters.filter(
-      (c) => !c.isPreRanked && c.rankPosition === undefined,
+      (c) => !c.isPreRanked && !c.isNumberZero && c.rankPosition === undefined,
     );
 
     if (unrankedCoasters.length === 0 && rankedCoasters.length === 0) {
@@ -137,8 +139,10 @@ export class RankingEngine {
       .map(findCoaster)
       .filter((c): c is Coaster => c !== undefined);
 
-    // Find all rankable coasters (not pre-ranked)
-    const allRankableCoasters = coasters.filter((c) => !c.isPreRanked);
+    // Find all rankable coasters (not pre-ranked, not a Number 0)
+    const allRankableCoasters = coasters.filter(
+      (c) => !c.isPreRanked && !c.isNumberZero,
+    );
 
     // Find any new coasters that weren't in the saved partial state
     const rankedIds = new Set(validRankedCoasterIds);
@@ -355,6 +359,25 @@ export class RankingEngine {
       this.storeComparisonResult(coasterA, coasterB, winner);
     });
 
+    this.generateNextComparison();
+  }
+
+  // Pulls a coaster (always the one about to be placed, i.e.
+  // unrankedCoasters[0]) out of the ranking pool entirely - for a coaster
+  // marked as a "Number 0" mid-ranking. Unlike recordComparisonResult, this
+  // never places the coaster into rankedCoasterIds; it simply disappears
+  // from consideration, and a fresh comparison is generated for whichever
+  // coaster is up next.
+  excludeCoaster(coasterId: string): void {
+    const isUnranked = this.state.unrankedCoasters.some(
+      (c) => c.id === coasterId,
+    );
+    if (!isUnranked) return;
+
+    this.saveCurrentState();
+
+    this.removeFromUnranked(coasterId);
+    this.state.currentComparison = null;
     this.generateNextComparison();
   }
 

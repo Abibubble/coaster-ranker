@@ -146,6 +146,44 @@ describe("useCoasterSorting", () => {
       ]);
     });
 
+    it("sorts a Number 0 coaster above rank #1 (ascending)", () => {
+      const withNumberZero = [
+        { ...steelVengeance, rankPosition: 1 },
+        { ...fury325, isNumberZero: true },
+        { ...maverick, rankPosition: 2 },
+      ];
+      const { result } = renderHook(() =>
+        useCoasterSorting(withNumberZero, null),
+      );
+
+      act(() => result.current.handleSort("rankPosition", "asc"));
+
+      expect(result.current.sortedCoasters.map((c) => c.name)).toEqual([
+        "Fury 325",
+        "Steel Vengeance",
+        "Maverick",
+      ]);
+    });
+
+    it("sorts a Number 0 coaster to the opposite end when descending (full reversal)", () => {
+      const withNumberZero = [
+        { ...steelVengeance, rankPosition: 1 },
+        { ...fury325, isNumberZero: true },
+        { ...maverick, rankPosition: 2 },
+      ];
+      const { result } = renderHook(() =>
+        useCoasterSorting(withNumberZero, null),
+      );
+
+      act(() => result.current.handleSort("rankPosition", "desc"));
+
+      expect(result.current.sortedCoasters.map((c) => c.name)).toEqual([
+        "Maverick",
+        "Steel Vengeance",
+        "Fury 325",
+      ]);
+    });
+
     it("sorts coasters without a rankPosition to the end (treated as MAX_SAFE_INTEGER)", () => {
       const partiallyRanked = [
         { ...steelVengeance, rankPosition: 1 },
@@ -219,6 +257,27 @@ describe("useCoasterSorting", () => {
         "Maverick",
         "Steel Vengeance",
         "Fury 325",
+      ]);
+    });
+
+    it("defaults to a Number 0 coaster floating above rank #1", () => {
+      const withNumberZero = [
+        { ...steelVengeance, rankPosition: 2 },
+        { ...fury325, isNumberZero: true },
+        { ...maverick, rankPosition: 1 },
+      ];
+      const currentData = makeUploadedData(
+        withNumberZero,
+        makeRankingMetadata({ isRanked: true, rankedCoasters: ["3", "1"] }),
+      );
+      const { result } = renderHook(() =>
+        useCoasterSorting(withNumberZero, currentData),
+      );
+
+      expect(result.current.sortedCoasters.map((c) => c.name)).toEqual([
+        "Fury 325",
+        "Maverick",
+        "Steel Vengeance",
       ]);
     });
 

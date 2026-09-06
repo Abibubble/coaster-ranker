@@ -25,6 +25,7 @@ export interface UseSimpleRankingReturn {
   rankedCoasters: Coaster[];
   nextUnrankedCoaster: Coaster | null;
   applyGroupRankingResult: (orderedCoasters: Coaster[]) => void;
+  markAsNumberZero: (coasterId: string) => void;
 }
 
 export const useSimpleRanking = (
@@ -62,7 +63,9 @@ export const useSimpleRanking = (
       return;
     }
 
-    const filteredCoasters = coasters.filter((c) => !c.isPreRanked);
+    const filteredCoasters = coasters.filter(
+      (c) => !c.isPreRanked && !c.isNumberZero,
+    );
     if (filteredCoasters.length === 0) {
       setRankingEngine(null);
       return;
@@ -194,7 +197,9 @@ export const useSimpleRanking = (
     const state = rankingEngine.getState();
     const completedComparisons = state.comparisonResults.size;
 
-    const totalCoasters = coasters.filter((c) => !c.isPreRanked).length;
+    const totalCoasters = coasters.filter(
+      (c) => !c.isPreRanked && !c.isNumberZero,
+    ).length;
     const estimatedTotal = Math.max(
       1,
       Math.ceil(totalCoasters * Math.log2(totalCoasters + 1)),
@@ -251,6 +256,19 @@ export const useSimpleRanking = (
     [rankingEngine],
   );
 
+  // Pulls a coaster out of the live engine's unranked pool (issue: "Number
+  // 0" rides). Only affects this in-memory engine instance - persisting
+  // isNumberZero onto the coaster itself, so it stays excluded across
+  // reloads, is the caller's responsibility (see Rank.tsx).
+  const markAsNumberZero = useCallback(
+    (coasterId: string) => {
+      if (!rankingEngine) return;
+      rankingEngine.excludeCoaster(coasterId);
+      setForceUpdate((prev) => prev + 1);
+    },
+    [rankingEngine],
+  );
+
   const undo = useCallback(() => {
     if (!rankingEngine) {
       console.error("No ranking engine available for undo");
@@ -290,5 +308,6 @@ export const useSimpleRanking = (
     rankedCoasters,
     nextUnrankedCoaster,
     applyGroupRankingResult,
+    markAsNumberZero,
   };
 };

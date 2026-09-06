@@ -62,6 +62,34 @@ const seedData = (
 const getComparisonButtons = () =>
   screen.getAllByRole("button", { name: /^Choose .* as your favorite$/ });
 
+// The Number 0 offer appears for the first not-yet-ranked coaster before any
+// other ranking UI (comparisons, the group-ranking-shortcut offer). Tests
+// that aren't specifically about that offer decline it first so the rest of
+// the flow behaves as it did before that feature existed.
+const declineNumberZeroOffer = async (
+  user: ReturnType<typeof userEvent.setup>,
+) => {
+  const declineButton = await screen.findByRole("button", {
+    name: /no, rank it normally/i,
+  });
+  await user.click(declineButton);
+};
+
+// Non-blocking variant for mid-session checks: the offer can reappear for
+// each new coaster as its turn comes up (it's declined per-coaster-id, not
+// for the whole session), so a multi-comparison test needs to clear it
+// whenever it shows up rather than only once at the start.
+const declineNumberZeroOfferIfPresent = async (
+  user: ReturnType<typeof userEvent.setup>,
+) => {
+  const declineButton = screen.queryByRole("button", {
+    name: /no, rank it normally/i,
+  });
+  if (declineButton) {
+    await user.click(declineButton);
+  }
+};
+
 const nameFromComparisonButton = (button: HTMLElement) => {
   const match = button
     .getAttribute("aria-label")
@@ -144,6 +172,8 @@ describe("Rank Page", () => {
       ]);
 
       render(<Rank />);
+      const user = userEvent.setup();
+      await declineNumberZeroOffer(user);
 
       const buttons = await waitFor(() => {
         const found = getComparisonButtons();
@@ -156,7 +186,6 @@ describe("Rank Page", () => {
       // above the second regardless of which one was actually clicked.
       const secondShownName = nameFromComparisonButton(buttons[1]);
 
-      const user = userEvent.setup();
       await user.click(buttons[1]);
 
       await waitFor(() => {
@@ -178,6 +207,7 @@ describe("Rank Page", () => {
       render(<Rank />);
 
       const user = userEvent.setup();
+      await declineNumberZeroOffer(user);
 
       // Consistently prefer whichever coaster's name sorts first
       // alphabetically. For a comparison-based insertion sort, always
@@ -185,6 +215,7 @@ describe("Rank Page", () => {
       // total order - so this both drives the session to completion and
       // gives us a checkable expected result.
       for (let i = 0; i < 20; i++) {
+        await declineNumberZeroOfferIfPresent(user);
         if (screen.queryByText("Ranking Complete!")) break;
 
         const buttons = getComparisonButtons();
@@ -199,8 +230,13 @@ describe("Rank Page", () => {
           const stillComparing = screen.queryAllByRole("button", {
             name: /^Choose .* as your favorite$/,
           });
+          const offerShowing = screen.queryByRole("button", {
+            name: /no, rank it normally/i,
+          });
           const done = screen.queryByText("Ranking Complete!");
-          expect(stillComparing.length === 2 || done).toBeTruthy();
+          expect(
+            stillComparing.length === 2 || offerShowing || done,
+          ).toBeTruthy();
         });
       }
 
@@ -227,6 +263,7 @@ describe("Rank Page", () => {
 
       const user = userEvent.setup();
       await user.click(screen.getByRole("tab", { name: /Dark Rides/i }));
+      await declineNumberZeroOffer(user);
 
       const buttons = await waitFor(() => {
         const found = getComparisonButtons();
@@ -288,6 +325,7 @@ describe("Rank Page", () => {
 
     render(<Rank />);
     const user = userEvent.setup();
+    await declineNumberZeroOffer(user);
 
     expect(
       await screen.findByText(/compare New Wing against just those first/i),
@@ -341,6 +379,7 @@ describe("Rank Page", () => {
 
     render(<Rank />);
     const user = userEvent.setup();
+    await declineNumberZeroOffer(user);
 
     expect(
       await screen.findByText(/compare New Wing against just those first/i),
@@ -375,6 +414,8 @@ describe("Rank Page", () => {
     ]);
 
     const { container } = render(<Rank />);
+    const setupUser = userEvent.setup();
+    await declineNumberZeroOffer(setupUser);
 
     await screen.findByText(/compare New Wing against just those first/i);
 
@@ -413,6 +454,8 @@ describe("Rank Page", () => {
     ]);
 
     render(<Rank />);
+    const user = userEvent.setup();
+    await declineNumberZeroOffer(user);
 
     await waitFor(() => {
       expect(getComparisonButtons().length).toBeGreaterThan(0);
@@ -421,6 +464,221 @@ describe("Rank Page", () => {
     expect(
       screen.queryByText(/compare New Wing against just those first/i),
     ).not.toBeInTheDocument();
+  });
+});
+
+describe("Number 0 offer", () => {
+  it("offers to mark the next unranked coaster as a Number 0, with an explanation and both actions", async () => {
+    seedData("coaster", [
+      makeCoaster({ id: "1", name: "Alpha" }),
+      makeCoaster({ id: "2", name: "Bravo" }),
+      makeCoaster({ id: "3", name: "Charlie" }),
+    ]);
+
+    render(<Rank />);
+
+    expect(
+      await screen.findByText(/Is Alpha one of those for you?/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/don't belong in a competitive ranking at all/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /yes, this is my number 0/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /no, rank it normally/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("accepting removes the coaster from ranking, persists isNumberZero, and moves on to comparing the rest", async () => {
+    seedData("coaster", [
+      makeCoaster({ id: "1", name: "Alpha" }),
+      makeCoaster({ id: "2", name: "Bravo" }),
+      makeCoaster({ id: "3", name: "Charlie" }),
+    ]);
+
+    render(<Rank />);
+    const user = userEvent.setup();
+
+    await screen.findByText(/Is Alpha one of those for you?/i);
+    await user.click(
+      screen.getByRole("button", { name: /yes, this is my number 0/i }),
+    );
+
+    const buttons = await waitFor(() => {
+      const found = getComparisonButtons();
+      expect(found).toHaveLength(2);
+      return found;
+    });
+    const names = buttons.map(nameFromComparisonButton).sort();
+    expect(names).toEqual(["Bravo", "Charlie"]);
+    expect(
+      screen.queryByText(/Is Alpha one of those for you?/i),
+    ).not.toBeInTheDocument();
+
+    const saved = JSON.parse(
+      localStorage.getItem("coaster-ranker-data") || "{}",
+    );
+    const alpha = saved.coasters.find((c: Coaster) => c.id === "1");
+    expect(alpha.isNumberZero).toBe(true);
+    expect(alpha.rankPosition).toBeUndefined();
+  });
+
+  it("accepting with only one other coaster left completes the ranking immediately, showing the Number 0 separately", async () => {
+    seedData("coaster", [
+      makeCoaster({ id: "1", name: "Alpha" }),
+      makeCoaster({ id: "2", name: "Bravo" }),
+    ]);
+
+    render(<Rank />);
+    const user = userEvent.setup();
+
+    await screen.findByText(/Is Alpha one of those for you?/i);
+    await user.click(
+      screen.getByRole("button", { name: /yes, this is my number 0/i }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Ranking Complete!")).toBeInTheDocument();
+    });
+
+    const items = screen.getAllByRole("listitem");
+    expect(items[0]).toHaveTextContent("Bravo");
+    expect(screen.getByText("Your Number 0")).toBeInTheDocument();
+    expect(screen.getByText("Alpha")).toBeInTheDocument();
+  });
+
+  it("declining falls through to the normal comparison flow for that same coaster", async () => {
+    seedData("coaster", [
+      makeCoaster({ id: "1", name: "Alpha" }),
+      makeCoaster({ id: "2", name: "Bravo" }),
+      makeCoaster({ id: "3", name: "Charlie" }),
+    ]);
+
+    render(<Rank />);
+    const user = userEvent.setup();
+
+    await screen.findByText(/Is Alpha one of those for you?/i);
+    await user.click(
+      screen.getByRole("button", { name: /no, rank it normally/i }),
+    );
+
+    const buttons = await waitFor(() => {
+      const found = getComparisonButtons();
+      expect(found).toHaveLength(2);
+      return found;
+    });
+    expect(
+      screen.queryByText(/Is Alpha one of those for you?/i),
+    ).not.toBeInTheDocument();
+    expect(
+      buttons.some((b) => nameFromComparisonButton(b) === "Alpha"),
+    ).toBe(true);
+  });
+
+  it("never offers a second Number 0 once one already exists for this ride type (hard requirement)", async () => {
+    seedData("coaster", [
+      makeCoaster({ id: "existing-zero", name: "Old Favourite", isNumberZero: true }),
+      makeCoaster({ id: "1", name: "Alpha" }),
+      makeCoaster({ id: "2", name: "Bravo" }),
+    ]);
+
+    render(<Rank />);
+
+    const buttons = await waitFor(() => {
+      const found = getComparisonButtons();
+      expect(found).toHaveLength(2);
+      return found;
+    });
+
+    expect(
+      screen.queryByText(/one of those for you/i),
+    ).not.toBeInTheDocument();
+    expect(buttons.map(nameFromComparisonButton).sort()).toEqual([
+      "Alpha",
+      "Bravo",
+    ]);
+  });
+
+  it("does not offer a Number 0 for the dark-ride collection when one already exists for coasters (per ride-type, independent)", async () => {
+    seedData("coaster", [
+      makeCoaster({ id: "c-zero", name: "Coaster Favourite", isNumberZero: true }),
+      makeCoaster({ id: "c1", name: "Coaster A" }),
+      makeCoaster({ id: "c2", name: "Coaster B" }),
+    ]);
+    seedData("dark-ride", [
+      makeCoaster({ id: "d1", name: "Haunted Mansion", type: "dark-ride" }),
+      makeCoaster({ id: "d2", name: "Ghost Train", type: "dark-ride" }),
+    ]);
+
+    render(<Rank />);
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("tab", { name: /Dark Rides/i }));
+
+    expect(
+      await screen.findByText(/Is Haunted Mansion one of those for you?/i),
+    ).toBeInTheDocument();
+  });
+
+  it("takes priority over the group-ranking-shortcut offer for the same coaster", async () => {
+    seedData("coaster", [
+      makeCoaster({
+        id: "w1",
+        name: "Wing One",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 1,
+      }),
+      makeCoaster({
+        id: "w2",
+        name: "Wing Two",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 2,
+      }),
+      makeCoaster({
+        id: "w3",
+        name: "Wing Three",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 3,
+      }),
+      makeCoaster({
+        id: "w4",
+        name: "Wing Four",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 4,
+      }),
+      makeCoaster({
+        id: "new",
+        name: "New Wing",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+      }),
+    ]);
+
+    render(<Rank />);
+
+    expect(
+      await screen.findByText(/Is New Wing one of those for you?/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/compare New Wing against just those first/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("has no accessibility violations on the offer prompt screen", async () => {
+    seedData("coaster", [
+      makeCoaster({ id: "1", name: "Alpha" }),
+      makeCoaster({ id: "2", name: "Bravo" }),
+    ]);
+
+    const { container } = render(<Rank />);
+    await screen.findByText(/Is Alpha one of those for you?/i);
+
+    await testAxeCompliance(container);
   });
 });
 
@@ -435,6 +693,7 @@ describe("undo", () => {
       render(<Rank />);
 
       const user = userEvent.setup();
+      await declineNumberZeroOffer(user);
 
       const firstButtons = await waitFor(() => {
         const found = getComparisonButtons();
@@ -444,6 +703,11 @@ describe("undo", () => {
       const firstNames = firstButtons.map(nameFromComparisonButton);
 
       await user.click(firstButtons[0]);
+
+      // The first comparison ranks both Alpha and Bravo at once (see
+      // handleFirstComparison), leaving Charlie as the sole unranked
+      // coaster - its turn comes with its own fresh Number 0 offer.
+      await declineNumberZeroOfferIfPresent(user);
 
       const undoButton = await screen.findByRole("button", {
         name: /Undo your last choice/i,

@@ -30,6 +30,17 @@ export const RankBadge = styled.div`
   min-width: 40px;
 `;
 
+export const NumberZeroBadge = styled.div`
+  background: ${colours.blue};
+  color: ${colours.white};
+  padding: ${spacing.tiny} ${spacing.small};
+  border-radius: ${spacing.small};
+  font-weight: bold;
+  font-size: ${fonts.small};
+  text-align: center;
+  white-space: nowrap;
+`;
+
 export const CoasterActions = styled.div`
   display: flex;
   gap: ${spacing.small};

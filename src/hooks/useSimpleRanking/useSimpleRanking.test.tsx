@@ -13,10 +13,13 @@ vi.mock("../../contexts/DataContext", () => ({
 // Mock the ranking engine
 vi.mock("../../utils/ranking/newRankingEngine.util", () => {
   class MockRankingEngine {
+    unrankedCoasters: Coaster[];
+
     constructor(coasters: Coaster[]) {
       if (!coasters || coasters.length === 0) {
         throw new Error("No coasters provided");
       }
+      this.unrankedCoasters = [...coasters];
     }
 
     getCurrentComparison() {
@@ -30,7 +33,7 @@ vi.mock("../../utils/ranking/newRankingEngine.util", () => {
         isComplete: false,
         comparisonResults: new Map(),
         rankedCoasterIds: [],
-        unrankedCoasters: [],
+        unrankedCoasters: this.unrankedCoasters,
       };
     }
 
@@ -53,6 +56,12 @@ vi.mock("../../utils/ranking/newRankingEngine.util", () => {
     undo() {}
 
     seedComparisonResults() {}
+
+    excludeCoaster(coasterId: string) {
+      this.unrankedCoasters = this.unrankedCoasters.filter(
+        (c) => c.id !== coasterId,
+      );
+    }
   }
 
   return {
@@ -69,6 +78,15 @@ const mockCoasters: Coaster[] = [
     manufacturer: "Rocky Mountain Construction",
     model: "I-Box",
     material: "Hybrid",
+  },
+  {
+    id: "2",
+    name: "Fury 325",
+    park: "Carowinds",
+    country: "United States",
+    manufacturer: "Bolliger & Mabillard",
+    model: "Giga Coaster",
+    material: "Steel",
   },
 ];
 
@@ -100,5 +118,27 @@ describe("useSimpleRanking", () => {
 
     // Should not throw
     expect(typeof result.current.isComplete).toBe("boolean");
+  });
+
+  it("markAsNumberZero removes the coaster from the live engine's unranked pool", () => {
+    const { result } = renderHook(() => useSimpleRanking(mockCoasters));
+
+    expect(result.current.nextUnrankedCoaster?.id).toBe("1");
+
+    act(() => {
+      result.current.markAsNumberZero("1");
+    });
+
+    expect(result.current.nextUnrankedCoaster?.id).toBe("2");
+  });
+
+  it("markAsNumberZero is a no-op before the engine has initialized", () => {
+    const { result } = renderHook(() => useSimpleRanking([]));
+
+    expect(() => {
+      act(() => {
+        result.current.markAsNumberZero("anything");
+      });
+    }).not.toThrow();
   });
 });

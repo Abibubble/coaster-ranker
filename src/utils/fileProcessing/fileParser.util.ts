@@ -101,10 +101,13 @@ export function validateCoasterData(
     let rankPosition: number | undefined;
     let originalRankPosition: number | undefined;
     let isPreRanked: boolean = false;
+    let isNumberZero: boolean = false;
 
     if (item.rank) {
       const parsedRank = parseInt(item.rank.trim(), 10);
-      if (!isNaN(parsedRank) && parsedRank > 0) {
+      if (!isNaN(parsedRank) && parsedRank === 0) {
+        isNumberZero = true;
+      } else if (!isNaN(parsedRank) && parsedRank > 0) {
         rankPosition = parsedRank;
         originalRankPosition = parsedRank;
         isPreRanked = true;
@@ -146,6 +149,7 @@ export function validateCoasterData(
       ...(rankPosition && { rankPosition }),
       ...(originalRankPosition && { originalRankPosition }),
       ...(isPreRanked && { isPreRanked }),
+      ...(isNumberZero && { isNumberZero }),
     };
   });
 }

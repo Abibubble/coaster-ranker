@@ -24,6 +24,32 @@ export const RankBadge = styled.div`
   min-width: 40px;
 `;
 
+export const NumberZeroBadge = styled.div`
+  background: ${colours.blue};
+  color: ${colours.white};
+  padding: ${spacing.tiny} ${spacing.small};
+  border-radius: ${spacing.small};
+  font-weight: bold;
+  font-size: ${fonts.small};
+  text-align: center;
+  white-space: nowrap;
+`;
+
+export const CheckboxLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: ${spacing.tiny};
+  cursor: pointer;
+  font-size: ${fonts.small};
+  color: ${colours.charcoal};
+  user-select: none;
+
+  input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+  }
+`;
+
 export const EditForm = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

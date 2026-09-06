@@ -441,6 +441,52 @@ describe("ViewCoasters - removing", () => {
   });
 });
 
+describe("ViewCoasters - Number 0", () => {
+  it('shows a Number 0 badge and clicking "Rank normally" clears the flag and persists it', async () => {
+    const user = userEvent.setup();
+    seed("coaster-ranker-data", [
+      makeCoaster({ id: "1", name: "Nemesis", isNumberZero: true }),
+      makeCoaster({ id: "2", name: "Galactica" }),
+    ]);
+
+    render(
+      <DataProvider>
+        <ViewCoasters />
+      </DataProvider>,
+    );
+
+    expect(screen.getAllByText("Number 0").length).toBeGreaterThan(0);
+
+    await user.click(
+      screen.getAllByRole("button", {
+        name: "Remove Nemesis's Number 0 status and rank it normally",
+      })[0],
+    );
+
+    expect(screen.queryByText("Number 0")).not.toBeInTheDocument();
+
+    const saved = JSON.parse(storageData["coaster-ranker-data"]);
+    const nemesis = saved.coasters.find((c: Coaster) => c.id === "1");
+    expect(nemesis.isNumberZero).toBe(false);
+  });
+
+  it('does not show "Rank normally" for a coaster that isn\'t a Number 0', async () => {
+    seed("coaster-ranker-data", [
+      makeCoaster({ id: "1", name: "Nemesis" }),
+    ]);
+
+    render(
+      <DataProvider>
+        <ViewCoasters />
+      </DataProvider>,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /Number 0 status/ }),
+    ).not.toBeInTheDocument();
+  });
+});
+
 describe("ViewCoasters - dark-ride collection", () => {
   it("hides coaster-only filters and fields, and still supports filtering and removing", async () => {
     const user = userEvent.setup();
