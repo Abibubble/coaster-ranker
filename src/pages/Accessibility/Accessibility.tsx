@@ -168,7 +168,8 @@ function Accessibility() {
           </Styled.List>
           <Text as='p' mt='small'>
             <Text bold>Note:</Text> The application is optimized for modern
-            browsers and requires an internet connection to load.
+            browsers. It can be installed to your home screen and continues
+            to work offline after your first visit.
           </Text>
         </Styled.Section>
 
@@ -211,7 +212,7 @@ function Accessibility() {
         </Styled.Section>
 
         <Styled.FooterText as='p' italic mt='large'>
-          Last updated: November 6, 2025
+          Last updated: September 6, 2026
         </Styled.FooterText>
       </Styled.PageContent>
     </MainContent>

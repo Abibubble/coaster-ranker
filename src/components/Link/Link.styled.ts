@@ -51,10 +51,7 @@ const backStyles = css`
   margin-top: ${spacing.medium};
   color: ${colours.blue};
   font-size: ${fonts.small};
-
-  &:hover {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 
   &:visited {
     color: ${colours.blue};
@@ -64,14 +61,7 @@ const backStyles = css`
 const textStyles = css<StyledLinkProps>`
   ${({ $dark }) =>
     $dark ? `color: ${colours.black};` : `color: ${colours.white};`}
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
 
   &:visited {
     ${({ $dark }) =>
