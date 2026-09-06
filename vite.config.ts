@@ -2,6 +2,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 import path from "node:path";
@@ -15,7 +16,47 @@ const dirname =
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: [
+        "favicon/favicon.ico",
+        "favicon/apple-touch-icon.png",
+        "favicon/favicon-16x16.png",
+        "favicon/favicon-32x32.png",
+      ],
+      manifest: {
+        name: "Coaster Ranker",
+        short_name: "Coaster Ranker",
+        description: "An easy way to rank your coasters",
+        start_url: "/coaster-ranker/",
+        scope: "/coaster-ranker/",
+        theme_color: "#ffffff",
+        background_color: "#ffffff",
+        display: "standalone",
+        icons: [
+          {
+            src: "favicon/android-chrome-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "favicon/android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+      },
+      workbox: {
+        // Precache the app shell plus the reference data JSON the
+        // autocomplete hooks fetch at runtime, so the whole app - not just
+        // the pages someone happened to already visit - works offline
+        // after the first successful load.
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,json}"],
+      },
+    }),
+  ],
   base: "/coaster-ranker/",
   server: {
     port: 3000,
