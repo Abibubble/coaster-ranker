@@ -17,6 +17,11 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 const COASTER_STORAGE_KEY = "coaster-ranker-data";
 const DARK_RIDE_STORAGE_KEY = "coaster-ranker-dark-rides";
 
+const getPartialRankingStorageKey = (rideType: RideType) =>
+  rideType === "coaster"
+    ? "partialRankingState"
+    : "partialDarkRideRankingState";
+
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const [uploadedData, setUploadedDataState] = useState<UploadedData | null>(
     null,
@@ -128,6 +133,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       },
     };
 
+    localStorage.removeItem(getPartialRankingStorageKey(rideType));
     setData(updatedData);
   };
 
@@ -153,6 +159,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       },
     };
 
+    localStorage.removeItem(getPartialRankingStorageKey(rideType));
     setData(updatedData);
   };
 
@@ -232,10 +239,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
       // Save to localStorage as well
       try {
-        const storageKey =
-          rideType === "coaster"
-            ? "partialRankingState"
-            : "partialDarkRideRankingState";
+        const storageKey = getPartialRankingStorageKey(rideType);
         localStorage.setItem(storageKey, JSON.stringify(partialRankingState));
       } catch (error) {
         console.warn(

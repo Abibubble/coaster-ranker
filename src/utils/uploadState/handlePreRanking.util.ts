@@ -62,6 +62,18 @@ export function handlePreRankingAnswer(
     setShowDuplicateResolver(true);
     sessionStorage.setItem("pendingPreRanked", isPreRanked.toString());
 
+    if (result.autoMerged && result.autoMerged.count > 0) {
+      if (result.updatedExistingData) {
+        setUploadedData(result.updatedExistingData);
+      }
+
+      const mergeCount = result.autoMerged.count;
+      const coasterList = result.autoMerged.mergedCoasters.join(", ");
+      setSuccess(
+        `Auto-merged data for ${mergeCount} existing coaster${mergeCount === 1 ? "" : "s"}: ${coasterList}. Please resolve remaining duplicates below.`,
+      );
+    }
+
     return { success: true, needsDuplicateResolution: true };
   } else {
     setUploadedData(result.combinedData!);

@@ -22,6 +22,11 @@ export interface HandleDuplicateDetectionResult {
     count: number;
     mergedCoasters: string[];
   };
+  // Existing data with any auto-merges already applied. When `hasDuplicates`
+  // is true, callers must persist this immediately (rather than only the
+  // caller's original existingData) so an auto-merge computed alongside a
+  // still-unresolved manual duplicate isn't silently lost.
+  updatedExistingData?: UploadedData;
   combinedData?: UploadedData;
   newCoasterCount?: number;
   totalCount?: number;
@@ -94,6 +99,13 @@ export function handleDuplicateDetection(
     });
   }
 
+  const updatedExistingData: UploadedData | null = existingData
+    ? {
+        ...existingData,
+        coasters: updatedExistingCoasters,
+      }
+    : null;
+
   if (detectedDuplicates.duplicates.length > 0) {
     return {
       hasDuplicates: true,
@@ -105,15 +117,9 @@ export function handleDuplicateDetection(
               mergedCoasters: autoMergedCoasters,
             }
           : undefined,
+      updatedExistingData: updatedExistingData ?? undefined,
     };
   }
-
-  const updatedExistingData: UploadedData | null = existingData
-    ? {
-        ...existingData,
-        coasters: updatedExistingCoasters,
-      }
-    : null;
 
   const result = combineCoasterData({
     newCoasters: remainingNewCoasters,

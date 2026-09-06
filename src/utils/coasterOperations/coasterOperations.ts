@@ -1,4 +1,17 @@
-import { Coaster, UploadedData } from "../../types/data";
+import { Coaster, RankingMetadata, UploadedData } from "../../types/data";
+
+/**
+ * Whether a coaster collection has any ranking progress to show or sort by —
+ * either a fully completed ranking, or a partial session with at least one
+ * coaster that already has a rankPosition.
+ */
+export const hasAnyRanking = (
+  coasters: Coaster[],
+  rankingMetadata?: RankingMetadata,
+): boolean => {
+  if (rankingMetadata?.isRanked) return true;
+  return coasters.some((coaster) => coaster.rankPosition !== undefined);
+};
 
 /**
  * Removes a coaster from the collection and updates rankings accordingly
@@ -44,7 +57,9 @@ export const removeCoaster = (
         updatedCoasters.length > 0,
       completedComparisons: new Set(
         Array.from(updatedRankingMetadata.completedComparisons || []).filter(
-          (comparison) => !comparison.includes(coasterId),
+          (comparison) =>
+            !comparison.startsWith(`${coasterId}-`) &&
+            !comparison.endsWith(`-${coasterId}`),
         ),
       ),
     };

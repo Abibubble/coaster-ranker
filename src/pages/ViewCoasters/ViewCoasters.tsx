@@ -28,6 +28,7 @@ import {
   removeCoaster,
   updateCoaster,
   getRemovalConfirmationMessage,
+  hasAnyRanking,
 } from "../../utils";
 import * as Styled from "./ViewCoasters.styled";
 
@@ -57,11 +58,10 @@ export default function ViewCoasters() {
   );
 
   // Check if we should show rankings (complete ranking or partial rankings with positions)
-  const shouldShowRankings = useMemo(() => {
-    if (currentData?.rankingMetadata?.isRanked) return true;
-    // Check if any coasters have rank positions (partial rankings)
-    return allCoasters.some((coaster) => coaster.rankPosition !== undefined);
-  }, [currentData?.rankingMetadata?.isRanked, allCoasters]);
+  const shouldShowRankings = useMemo(
+    () => hasAnyRanking(allCoasters, currentData?.rankingMetadata),
+    [currentData?.rankingMetadata, allCoasters],
+  );
 
   // Custom hooks for functionality
   const {
@@ -379,10 +379,7 @@ export default function ViewCoasters() {
         onClose={() => setIsSortModalOpen(false)}
         onSort={handleSort}
         currentSort={currentSort}
-        hasRanking={Boolean(
-          currentData?.rankingMetadata?.isRanked &&
-          currentData?.rankingMetadata?.rankedCoasters,
-        )}
+        hasRanking={shouldShowRankings}
       />
     </MainContent>
   );

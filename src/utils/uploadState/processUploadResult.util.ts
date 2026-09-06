@@ -69,6 +69,10 @@ export function processUploadResult(
     sessionStorage.setItem("pendingPreRanked", "false");
 
     if (result.autoMerged && result.autoMerged.count > 0) {
+      if (result.updatedExistingData) {
+        setUploadedData(result.updatedExistingData);
+      }
+
       const mergeCount = result.autoMerged.count;
       const coasterList = result.autoMerged.mergedCoasters.join(", ");
       setSuccess(

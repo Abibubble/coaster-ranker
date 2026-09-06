@@ -31,6 +31,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
 }) => {
   const uniqueParks = getUniqueFieldValues(allCoasters, "park");
   const uniqueManufacturers = getUniqueFieldValues(allCoasters, "manufacturer");
+  const uniqueModels = getUniqueFieldValues(allCoasters, "model");
   const uniqueMaterials = getUniqueFieldValues(allCoasters, "material");
   const uniqueCountries = getUniqueFieldValues(allCoasters, "country");
   const uniqueThrillLevels = getUniqueFieldValues(allCoasters, "thrillLevel");
@@ -103,6 +104,11 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
                 }
               >
                 <option value="">All models</option>
+                {uniqueModels.map((model) => (
+                  <option key={model} value={model}>
+                    {model}
+                  </option>
+                ))}
               </Styled.FilterSelect>
             </Styled.FilterGroup>
           )}

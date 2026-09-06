@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Coaster, UploadedData } from "../../types/data";
 import { SortField, SortDirection } from "../../components";
+import { hasAnyRanking } from "../../utils";
 
 export interface SortOptions {
   field: SortField;
@@ -50,14 +51,7 @@ export const useCoasterSorting = (
       });
     } else {
       // Default sorting by rank if available (complete or partial rankings)
-      const hasCompletedRanking =
-        currentData?.rankingMetadata?.isRanked &&
-        currentData?.rankingMetadata?.rankedCoasters;
-      const hasPartialRanking = result.some(
-        (coaster) => coaster.rankPosition !== undefined,
-      );
-
-      if (hasCompletedRanking || hasPartialRanking) {
+      if (hasAnyRanking(result, currentData?.rankingMetadata)) {
         result.sort((a, b) => {
           const rankA = a.rankPosition || Number.MAX_SAFE_INTEGER;
           const rankB = b.rankPosition || Number.MAX_SAFE_INTEGER;

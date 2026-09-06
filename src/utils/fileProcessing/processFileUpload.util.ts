@@ -30,6 +30,7 @@ export interface ProcessFileUploadResult {
     count: number;
     mergedCoasters: string[];
   };
+  updatedExistingData?: UploadedData;
   combinedData?: UploadedData;
   newCoasterCount?: number;
   totalCount?: number;
@@ -50,6 +51,7 @@ export interface HandlePreRankingDecisionResult {
     count: number;
     mergedCoasters: string[];
   };
+  updatedExistingData?: UploadedData;
   combinedData?: UploadedData;
   newCoasterCount?: number;
   totalCount?: number;
@@ -103,6 +105,7 @@ export async function processFileUpload(
           parsedCoasters: parseResult.coasters,
           duplicates: duplicateResult.duplicates,
           autoMerged: duplicateResult.autoMerged,
+          updatedExistingData: duplicateResult.updatedExistingData,
         };
       } else {
         return {
@@ -149,6 +152,7 @@ export function handlePreRankingDecision(
       needsDuplicateResolution: true,
       duplicates: duplicateResult.duplicates,
       autoMerged: duplicateResult.autoMerged,
+      updatedExistingData: duplicateResult.updatedExistingData,
     };
   } else {
     const result = combineCoasterData({

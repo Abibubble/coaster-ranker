@@ -1,12 +1,6 @@
 import styled from "styled-components";
 import { breakpoints, colours, fonts, spacing } from "../../theme";
 
-export const DesktopLayout = styled.div`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
 export const CoasterHeader = styled.div`
   display: flex;
   justify-content: space-between;

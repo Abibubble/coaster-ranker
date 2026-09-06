@@ -23,11 +23,10 @@ import {
 } from "../../hooks";
 import { Coaster, RideType } from "../../types/data";
 import {
-  detectDuplicates,
   DuplicateMatch,
   formatString,
-  mergeCoasterData,
-  getMergedFields,
+  handleDuplicateDetection,
+  processDuplicateResolution,
 } from "../../utils";
 import type { DuplicateResolution } from "../../components/DuplicateResolver";
 import * as Styled from "./UploadManual.styled";
@@ -301,46 +300,37 @@ export default function UploadManual() {
       isNewCoaster: true,
     };
 
-    const existingCoasters = currentData?.coasters || [];
-    const duplicateCheck = detectDuplicates(existingCoasters, [newCoaster]);
+    const duplicateResult = handleDuplicateDetection({
+      newCoasters: [newCoaster],
+      existingData: currentData,
+      filename: currentData?.filename || "manual-entry",
+    });
 
-    if (duplicateCheck.autoMerges.length > 0) {
-      const autoMerge = duplicateCheck.autoMerges[0];
-      const mergedCoaster = mergeCoasterData(
-        autoMerge.existingCoaster,
-        newCoaster,
-      );
-      const mergedFields = getMergedFields(
-        autoMerge.existingCoaster,
-        newCoaster,
-      );
+    if (duplicateResult.hasDuplicates) {
+      // An auto-merge may have happened alongside this still-unresolved
+      // duplicate - persist it immediately so it isn't lost if the user
+      // cancels or never completes the resolution.
+      if (duplicateResult.updatedExistingData) {
+        setCurrentData(duplicateResult.updatedExistingData);
+      }
 
-      const updatedCoasters = existingCoasters.map((coaster) =>
-        coaster.id === autoMerge.existingCoaster.id ? mergedCoaster : coaster,
-      );
+      setPendingCoaster(newCoaster);
+      setDuplicates(duplicateResult.duplicates);
+      setShowDuplicateResolver(true);
 
-      const updatedData = {
-        coasters: updatedCoasters,
-        uploadedAt: currentData?.uploadedAt || new Date(),
-        filename: currentData?.filename || "manual-entry",
-        rankingMetadata: currentData?.rankingMetadata || {
-          completedComparisons: new Set<string>(),
-          rankedCoasters: [],
-          isRanked: false,
-        },
-      };
-
-      setCurrentData(updatedData);
-
-      if (mergedFields.length > 0) {
+      if (duplicateResult.autoMerged) {
+        const { count, mergedCoasters } = duplicateResult.autoMerged;
         setSuccess(
-          `Successfully merged "${newCoaster.name}" with existing data! Added: ${mergedFields.join(", ")}.`,
-        );
-      } else {
-        setSuccess(
-          `"${newCoaster.name}" already exists with all the same data. No changes made.`,
+          `Auto-merged data for ${count} existing coaster${count === 1 ? "" : "s"}: ${mergedCoasters.join(", ")}. Please resolve the remaining duplicate below.`,
         );
       }
+    } else if (duplicateResult.autoMerged) {
+      setCurrentData(duplicateResult.combinedData!);
+
+      const { count, mergedCoasters } = duplicateResult.autoMerged;
+      setSuccess(
+        `Successfully merged "${newCoaster.name}" with existing data! Auto-merged data for ${count} existing coaster${count === 1 ? "" : "s"}: ${mergedCoasters.join(", ")}.`,
+      );
 
       setFormData({
         name: "",
@@ -352,11 +342,6 @@ export default function UploadManual() {
         country: "",
         type: rideType,
       });
-    } else if (duplicateCheck.duplicates.length > 0) {
-      // Handle duplicates that need manual resolution
-      setPendingCoaster(newCoaster);
-      setDuplicates(duplicateCheck.duplicates);
-      setShowDuplicateResolver(true);
     } else {
       addCoasterToCollection(newCoaster);
     }
@@ -365,38 +350,19 @@ export default function UploadManual() {
   const handleDuplicateResolution = (resolutions: DuplicateResolution[]) => {
     if (!pendingCoaster) return;
 
-    const existingCoasters = uploadedData?.coasters || [];
-    let updatedCoasters = [...existingCoasters];
-
-    resolutions.forEach((resolution, index) => {
-      const duplicate = duplicates[index];
-
-      switch (resolution.action) {
-        case "keep-new":
-          updatedCoasters = updatedCoasters.filter(
-            (c) => c.id !== duplicate.existingCoaster.id,
-          );
-          updatedCoasters.push(pendingCoaster);
-          break;
-        case "keep-both":
-          updatedCoasters.push(pendingCoaster);
-          break;
-      }
+    const result = processDuplicateResolution({
+      resolutions,
+      duplicates,
+      pendingCoasters: [pendingCoaster],
+      existingData: currentData,
+      filename: currentData?.filename || "manual-entry",
+      isPreRanked: false,
     });
 
-    const updatedData = {
-      coasters: updatedCoasters,
-      uploadedAt: uploadedData?.uploadedAt || new Date(),
-      filename: uploadedData?.filename || "manual-entry",
-      rankingMetadata: uploadedData?.rankingMetadata || {
-        completedComparisons: new Set<string>(),
-        rankedCoasters: [],
-        isRanked: false,
-      },
-    };
-
-    setUploadedData(updatedData);
-    setSuccess(`Successfully processed coaster: "${pendingCoaster.name}"!`);
+    setCurrentData(result.combinedData);
+    setSuccess(
+      `Successfully processed ${rideType === "coaster" ? "coaster" : "dark ride"}: "${pendingCoaster.name}"!`,
+    );
 
     setShowDuplicateResolver(false);
     setDuplicates([]);

@@ -37,15 +37,12 @@ export const detectAndFixDuplicateIds = (coasters: Coaster[]): Coaster[] => {
   );
 
   let nextAvailableId = 1;
+  const occurrenceCounts = new Map<string, number>();
   const fixedCoasters = coasters.map((coaster) => {
     const duplicateGroup = duplicateGroups.get(coaster.id);
     if (duplicateGroup && duplicateGroup.length > 1) {
-      const duplicateIndex = duplicateGroup.findIndex(
-        (c) =>
-          c.name === coaster.name &&
-          c.park === coaster.park &&
-          c.manufacturer === coaster.manufacturer,
-      );
+      const duplicateIndex = occurrenceCounts.get(coaster.id) ?? 0;
+      occurrenceCounts.set(coaster.id, duplicateIndex + 1);
 
       if (duplicateIndex > 0) {
         while (seenIds.has(nextAvailableId.toString().padStart(3, "0"))) {

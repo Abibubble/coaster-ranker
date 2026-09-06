@@ -380,9 +380,7 @@ export class RankingEngine {
   }
 
   private handleFirstComparison(): void {
-    const { coasterA, coasterB } = this.state.currentComparison!;
-    const winner = this.getWinnerFromComparison(coasterA, coasterB);
-    const loser = winner.id === coasterA.id ? coasterB : coasterA;
+    const { winner, loser } = this.state.lastComparison!;
 
     this.state.rankedCoasterIds = [winner.id, loser.id];
     this.removeFromUnranked(winner.id);
@@ -460,7 +458,12 @@ export class RankingEngine {
     while (left < right) {
       const mid = Math.floor((left + right) / 2);
       const midCoasterId = this.state.rankedCoasterIds[mid];
-      const midCoaster = this.findCoasterById(midCoasterId)!;
+      const midCoaster = this.findCoasterById(midCoasterId);
+      if (!midCoaster) {
+        throw new Error(
+          `Ranking engine invariant violated: ranked coaster id "${midCoasterId}" not found in allCoasters`,
+        );
+      }
 
       const comparisonResult = this.getComparisonResult(newCoaster, midCoaster);
 
@@ -582,7 +585,12 @@ export class RankingEngine {
     while (left < right) {
       const mid = this.calculateMiddleIndex(left, right);
       const midCoasterId = this.state.rankedCoasterIds[mid];
-      const midCoaster = this.findCoasterById(midCoasterId)!;
+      const midCoaster = this.findCoasterById(midCoasterId);
+      if (!midCoaster) {
+        throw new Error(
+          `Ranking engine invariant violated: ranked coaster id "${midCoasterId}" not found in allCoasters`,
+        );
+      }
 
       console.log(`  Checking mid position ${mid}: ${midCoaster.name}`);
       const existingResult = this.getComparisonResult(newCoaster, midCoaster);
@@ -616,21 +624,6 @@ export class RankingEngine {
 
   private calculateMiddleIndex(left: number, right: number): number {
     return Math.floor((left + right) / 2);
-  }
-
-  private getWinnerFromComparison(
-    coasterA: Coaster,
-    coasterB: Coaster,
-  ): Coaster {
-    const aPosition = coasterA.rankPosition;
-    const bPosition = coasterB.rankPosition;
-
-    if (aPosition !== undefined && bPosition !== undefined) {
-      return aPosition < bPosition ? coasterA : coasterB;
-    }
-
-    console.warn("getWinnerFromComparison called with non-ranked coasters");
-    return coasterA;
   }
 
   private getComparisonResult(
