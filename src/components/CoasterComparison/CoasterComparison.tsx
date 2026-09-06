@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Coaster } from "../../types/data";
 import * as Styled from "./CoasterComparison.styled";
 import { Card } from "../Card";
@@ -60,9 +61,22 @@ export default function CoasterComparison({
   const coaster2DisplayLabel =
     coaster2Label || (hasValue(coaster2.name) ? coaster2.name : "Coaster 2");
 
+  // Each new comparison reuses the same two <button> cards, so the browser's
+  // focus otherwise silently stays on whichever card was just clicked while
+  // its content changes underneath it. Move focus to the first card whenever
+  // a genuinely new pairing appears, so keyboard/screen-reader users land
+  // somewhere sensible instead of on stale-seeming content.
+  const firstCardRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (clickable) {
+      firstCardRef.current?.focus();
+    }
+  }, [coaster1.id, coaster2.id, clickable]);
+
   return (
     <Styled.ComparisonArea>
       <Card
+        ref={firstCardRef}
         title={coaster1DisplayLabel}
         subtitle={`${coaster1.park}${formatCountry(coaster1.country)}`}
         clickable={clickable}

@@ -105,4 +105,59 @@ describe("CoasterComparison", () => {
 
     expect(screen.queryByText("Thrill Level:")).not.toBeInTheDocument();
   });
+
+  it("regression: moves focus to the first card whenever a new comparison appears", () => {
+    const { rerender } = render(<CoasterComparison {...defaultProps} />);
+
+    const firstCoasterButton = screen.getByRole("button", {
+      name: /choose steel vengeance/i,
+    });
+    expect(firstCoasterButton).toHaveFocus();
+
+    // Move focus away, simulating the user having clicked the second card
+    // (a real click moves focus to whatever was clicked; here we just need
+    // focus to be somewhere else before the next comparison renders).
+    const secondCoasterButton = screen.getByRole("button", {
+      name: /choose fury 325/i,
+    });
+    secondCoasterButton.focus();
+    expect(secondCoasterButton).toHaveFocus();
+
+    // A genuinely new pairing (different coaster ids) should move focus to
+    // its first card, rather than leaving focus on the previous button
+    // while its content changes underneath it.
+    rerender(
+      <CoasterComparison
+        {...defaultProps}
+        coaster1={comparisonCoasters.hyperion}
+        coaster2={comparisonCoasters.theVoyage}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: /choose hyperion/i }),
+    ).toHaveFocus();
+  });
+
+  it("does not move focus when the same comparison re-renders (only content, not identity, changed)", () => {
+    const { rerender } = render(<CoasterComparison {...defaultProps} />);
+
+    const secondCoasterButton = screen.getByRole("button", {
+      name: /choose fury 325/i,
+    });
+    secondCoasterButton.focus();
+    expect(secondCoasterButton).toHaveFocus();
+
+    // Same coaster ids, just a prop changed (e.g. a label) - focus should
+    // stay put rather than jump back to the first card on every re-render.
+    rerender(<CoasterComparison {...defaultProps} coaster1Label="Updated" />);
+
+    expect(secondCoasterButton).toHaveFocus();
+  });
+
+  it("does not attempt to move focus when the cards aren't clickable", () => {
+    render(<CoasterComparison {...defaultProps} clickable={false} />);
+
+    expect(document.activeElement).toBe(document.body);
+  });
 });
