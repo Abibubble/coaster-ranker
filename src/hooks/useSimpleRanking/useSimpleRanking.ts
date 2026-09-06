@@ -22,6 +22,9 @@ export interface UseSimpleRankingReturn {
   undo: () => void;
   savePartialState: () => void;
   resetRankingEngine: () => void;
+  rankedCoasters: Coaster[];
+  nextUnrankedCoaster: Coaster | null;
+  applyGroupRankingResult: (orderedCoasters: Coaster[]) => void;
 }
 
 export const useSimpleRanking = (
@@ -206,6 +209,48 @@ export const useSimpleRanking = (
   const lastComparison = rankingEngine?.getLastComparison() || null;
   const canUndo = rankingEngine?.canUndo() || false;
 
+  // The actual ranked Coaster objects (not just ids), and whichever
+  // unranked coaster the engine will ask about next - used to detect
+  // "compare within a group first" opportunities (issue #3) without
+  // exposing the engine instance itself outside this hook.
+  const rankedCoasters = rankingEngine
+    ? rankingEngine
+        .getState()
+        .rankedCoasterIds.map((id) => coasters.find((c) => c.id === id))
+        .filter((c): c is Coaster => !!c)
+    : [];
+  const nextUnrankedCoaster =
+    rankingEngine?.getState().unrankedCoasters[0] || null;
+
+  // Pre-fills the engine's comparison cache from an externally-determined
+  // order (e.g. a quick round of comparisons among just a group of similar
+  // coasters), so its normal binary search can skip questions it would
+  // otherwise need to ask. orderedCoasters must be sorted best-to-worst.
+  const applyGroupRankingResult = useCallback(
+    (orderedCoasters: Coaster[]) => {
+      if (!rankingEngine || orderedCoasters.length < 2) return;
+
+      const entries: {
+        coasterA: Coaster;
+        coasterB: Coaster;
+        winner: Coaster;
+      }[] = [];
+      for (let i = 0; i < orderedCoasters.length; i++) {
+        for (let j = i + 1; j < orderedCoasters.length; j++) {
+          entries.push({
+            coasterA: orderedCoasters[i],
+            coasterB: orderedCoasters[j],
+            winner: orderedCoasters[i],
+          });
+        }
+      }
+
+      rankingEngine.seedComparisonResults(entries);
+      setForceUpdate((prev) => prev + 1);
+    },
+    [rankingEngine],
+  );
+
   const undo = useCallback(() => {
     if (!rankingEngine) {
       console.error("No ranking engine available for undo");
@@ -242,5 +287,8 @@ export const useSimpleRanking = (
     undo,
     savePartialState,
     resetRankingEngine,
+    rankedCoasters,
+    nextUnrankedCoaster,
+    applyGroupRankingResult,
   };
 };

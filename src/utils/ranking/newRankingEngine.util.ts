@@ -339,6 +339,25 @@ export class RankingEngine {
     console.log("=== END UNDO ===\n");
   }
 
+  // Pre-fills known comparison outcomes (e.g. from a quick round of
+  // comparisons among just a smaller group of similar coasters) into the
+  // cache the binary search already consults on every step. Doesn't touch
+  // the search/placement logic at all - just gives it more answers to work
+  // with, so it can skip questions it would otherwise need to ask.
+  seedComparisonResults(
+    entries: { coasterA: Coaster; coasterB: Coaster; winner: Coaster }[],
+  ): void {
+    if (entries.length === 0) return;
+
+    this.saveCurrentState();
+
+    entries.forEach(({ coasterA, coasterB, winner }) => {
+      this.storeComparisonResult(coasterA, coasterB, winner);
+    });
+
+    this.generateNextComparison();
+  }
+
   private saveCurrentState(): void {
     this.stateHistory.push({
       rankedCoasterIds: [...this.state.rankedCoasterIds],

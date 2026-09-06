@@ -30,6 +30,7 @@ vi.mock("../../utils/ranking/newRankingEngine.util", () => {
         isComplete: false,
         comparisonResults: new Map(),
         rankedCoasterIds: [],
+        unrankedCoasters: [],
       };
     }
 
@@ -50,6 +51,8 @@ vi.mock("../../utils/ranking/newRankingEngine.util", () => {
     }
 
     undo() {}
+
+    seedComparisonResults() {}
   }
 
   return {

@@ -242,7 +242,189 @@ describe("Rank Page", () => {
     });
   });
 
-  describe("undo", () => {
+  describe("group ranking shortcut (issue #3)", () => {
+  const seedWingGroup = (extra: Coaster[] = []) =>
+    seedData("coaster", [
+      makeCoaster({
+        id: "w1",
+        name: "Wing One",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 1,
+      }),
+      makeCoaster({
+        id: "w2",
+        name: "Wing Two",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 2,
+      }),
+      makeCoaster({
+        id: "w3",
+        name: "Wing Three",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 3,
+      }),
+      makeCoaster({
+        id: "w4",
+        name: "Wing Four",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 4,
+      }),
+      ...extra,
+    ]);
+
+  it("offers a group comparison shortcut, and a fully-covering result resolves the main ranking with no further questions", async () => {
+    seedWingGroup([
+      makeCoaster({
+        id: "new",
+        name: "New Wing",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+      }),
+    ]);
+
+    render(<Rank />);
+    const user = userEvent.setup();
+
+    expect(
+      await screen.findByText(/compare New Wing against just those first/i),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /yes, compare those first/i }),
+    );
+
+    expect(await screen.findByText(/quick comparison/i)).toBeInTheDocument();
+
+    // Always favor "New Wing" in the mini-ranking - it should beat every
+    // other Wing Coaster and end up ranked #1 overall.
+    let safety = 0;
+    while (!screen.queryByText("Ranking Complete!")) {
+      if (safety++ > 20) throw new Error("Session did not complete");
+
+      const buttons = getComparisonButtons();
+      const newWingButton = buttons.find(
+        (b) => nameFromComparisonButton(b) === "New Wing",
+      );
+      expect(newWingButton).toBeDefined();
+
+      await user.click(newWingButton!);
+
+      await waitFor(() => {
+        const stillComparing = screen.queryAllByRole("button", {
+          name: /^Choose .* as your favorite$/,
+        });
+        const done = screen.queryByText("Ranking Complete!");
+        expect(stillComparing.length === 2 || done).toBeTruthy();
+      });
+    }
+
+    // All 4 already-ranked coasters were the group, and New Wing beat every
+    // one of them in the mini-ranking - that fully determines its position
+    // in the main ranking too, with no further (non-group) questions asked.
+    const items = screen.getAllByRole("listitem");
+    expect(items[0]).toHaveTextContent("New Wing");
+  });
+
+  it("falls back to the normal ranking flow when the user declines the offer", async () => {
+    seedWingGroup([
+      makeCoaster({
+        id: "new",
+        name: "New Wing",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+      }),
+    ]);
+
+    render(<Rank />);
+    const user = userEvent.setup();
+
+    expect(
+      await screen.findByText(/compare New Wing against just those first/i),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /no, rank normally/i }),
+    );
+
+    const buttons = await waitFor(() => {
+      const found = getComparisonButtons();
+      expect(found).toHaveLength(2);
+      return found;
+    });
+
+    expect(
+      screen.queryByText(/compare New Wing against just those first/i),
+    ).not.toBeInTheDocument();
+    expect(
+      buttons.some((b) => nameFromComparisonButton(b) === "New Wing"),
+    ).toBe(true);
+  });
+
+  it("has no accessibility violations on the offer prompt screen", async () => {
+    seedWingGroup([
+      makeCoaster({
+        id: "new",
+        name: "New Wing",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+      }),
+    ]);
+
+    const { container } = render(<Rank />);
+
+    await screen.findByText(/compare New Wing against just those first/i);
+
+    await testAxeCompliance(container);
+  });
+
+  it("does not offer the shortcut with only 3 already-ranked matches (not more than 3)", async () => {
+    seedData("coaster", [
+      makeCoaster({
+        id: "w1",
+        name: "Wing One",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 1,
+      }),
+      makeCoaster({
+        id: "w2",
+        name: "Wing Two",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 2,
+      }),
+      makeCoaster({
+        id: "w3",
+        name: "Wing Three",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+        rankPosition: 3,
+      }),
+      makeCoaster({
+        id: "new",
+        name: "New Wing",
+        model: "Wing Coaster",
+        manufacturer: "B&M",
+      }),
+    ]);
+
+    render(<Rank />);
+
+    await waitFor(() => {
+      expect(getComparisonButtons().length).toBeGreaterThan(0);
+    });
+
+    expect(
+      screen.queryByText(/compare New Wing against just those first/i),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe("undo", () => {
     it("reverts to the previous comparison and hides the undo control once history is exhausted", async () => {
       seedData("coaster", [
         makeCoaster({ id: "1", name: "Alpha" }),

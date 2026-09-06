@@ -4,6 +4,7 @@ export { useManufacturerAutocomplete } from "./useManufacturerAutocomplete";
 export { useModelAutocomplete } from "./useModelAutocomplete";
 export { useScrollToTop } from "./useScrollToTop";
 export { useSimpleRanking } from "./useSimpleRanking";
+export * from "./useGroupRankingShortcut";
 export * from "./useCoasterFilters";
 export * from "./useCoasterSorting";
 export * from "./useCoasterEditing";

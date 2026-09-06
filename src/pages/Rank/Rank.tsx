@@ -14,6 +14,7 @@ import {
 } from "../../components";
 import { useData } from "../../contexts/DataContext";
 import { useSimpleRanking } from "../../hooks/useSimpleRanking";
+import { useGroupRankingShortcut } from "../../hooks/useGroupRankingShortcut";
 import {
   RankingComparison,
   ComparisonResult,
@@ -95,6 +96,9 @@ const RankingContent: React.FC<RankingContentProps> = ({
     undo,
     savePartialState,
     resetRankingEngine,
+    rankedCoasters,
+    nextUnrankedCoaster,
+    applyGroupRankingResult,
   }: {
     currentComparison: RankingComparison | null;
     recordWinner: (winner: Coaster) => void;
@@ -107,7 +111,16 @@ const RankingContent: React.FC<RankingContentProps> = ({
     undo: () => void;
     savePartialState: () => void;
     resetRankingEngine: () => void;
+    rankedCoasters: Coaster[];
+    nextUnrankedCoaster: Coaster | null;
+    applyGroupRankingResult: (orderedCoasters: Coaster[]) => void;
   } = useSimpleRanking(currentData?.coasters || [], rideType);
+
+  const groupShortcut = useGroupRankingShortcut(
+    nextUnrankedCoaster,
+    rankedCoasters,
+    applyGroupRankingResult,
+  );
 
   // Mark ranking as complete when it's truly finished (with memoized check)
   const finalRankingLength = finalRanking.length;
@@ -292,6 +305,67 @@ const RankingContent: React.FC<RankingContentProps> = ({
               }
             }}
           />
+        </Styled.RankingContainer>
+      </MainContent>
+    );
+  }
+
+  if (groupShortcut.isActive && groupShortcut.groupComparison) {
+    const { coasterA, coasterB } = groupShortcut.groupComparison;
+
+    return (
+      <MainContent>
+        <Title>Rank Your {rideTypeLabel}</Title>
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle value={rideType} onChange={setRideType} />
+        </section>
+        <Styled.RankingContainer>
+          <Text as="p" mb="small">
+            Quick comparison, just among your {coasterA.manufacturer}{" "}
+            {coasterA.model} {ridePluralLabel}:
+          </Text>
+
+          <CoasterComparison
+            coaster1={coasterA}
+            coaster2={coasterB}
+            onChoose1={() => groupShortcut.recordGroupWinner(coasterA)}
+            onChoose2={() => groupShortcut.recordGroupWinner(coasterB)}
+          />
+
+          <Button
+            variant="default"
+            onClick={groupShortcut.cancelActiveComparison}
+          >
+            Cancel, rank normally instead
+          </Button>
+        </Styled.RankingContainer>
+      </MainContent>
+    );
+  }
+
+  if (groupShortcut.offer) {
+    const { newCoaster, groupMatches } = groupShortcut.offer;
+
+    return (
+      <MainContent>
+        <Title>Rank Your {rideTypeLabel}</Title>
+        <section style={{ marginBottom: "1.5rem" }}>
+          <RideTypeToggle value={rideType} onChange={setRideType} />
+        </section>
+        <Styled.RankingContainer>
+          <Text as="p" mb="small">
+            You've already ranked {groupMatches.length} other{" "}
+            {newCoaster.manufacturer} {newCoaster.model}{" "}
+            {groupMatches.length === 1 ? rideSingularLabel : ridePluralLabel}.
+            Compare {newCoaster.name} against just those first?
+          </Text>
+
+          <Button variant="default" onClick={groupShortcut.acceptOffer}>
+            Yes, compare those first
+          </Button>
+          <Button variant="default" onClick={groupShortcut.declineOffer}>
+            No, rank normally
+          </Button>
         </Styled.RankingContainer>
       </MainContent>
     );

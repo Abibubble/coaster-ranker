@@ -244,6 +244,104 @@ describe("RankingEngine - undo", () => {
   });
 });
 
+describe("RankingEngine.seedComparisonResults (issue #3 group shortcut)", () => {
+  it("fully resolves an unranked coaster's placement with no further questions when the seeded results cover the whole binary search path", () => {
+    const a = makeCoaster({ id: "a", name: "Alpha", rankPosition: 1 });
+    const b = makeCoaster({ id: "b", name: "Bravo", rankPosition: 2 });
+    const c = makeCoaster({ id: "c", name: "Charlie", rankPosition: 3 });
+    const d = makeCoaster({ id: "d", name: "Delta", rankPosition: 4 });
+    const e = makeCoaster({ id: "e", name: "Echo" });
+
+    const engine = new RankingEngine([a, b, c, d, e]);
+
+    // Simulate a completed group mini-ranking: e slots in 2nd, between a and b.
+    const order = [a, e, b, c, d];
+    const entries = [];
+    for (let i = 0; i < order.length; i++) {
+      for (let j = i + 1; j < order.length; j++) {
+        entries.push({
+          coasterA: order[i],
+          coasterB: order[j],
+          winner: order[i],
+        });
+      }
+    }
+
+    engine.seedComparisonResults(entries);
+
+    expect(engine.getCurrentComparison()).toBeNull();
+    expect(engine.getState().isComplete).toBe(true);
+    expect(engine.getFinalRanking().map((c) => c.id)).toEqual([
+      "a",
+      "e",
+      "b",
+      "c",
+      "d",
+    ]);
+  });
+
+  it("still asks a real question for a coaster not covered by the seeded results, skipping only the ones that are", () => {
+    const a = makeCoaster({ id: "a", rankPosition: 1 });
+    const b = makeCoaster({ id: "b", rankPosition: 2 });
+    const c = makeCoaster({ id: "c", rankPosition: 3 });
+    const d = makeCoaster({ id: "d", rankPosition: 4 });
+    const f = makeCoaster({ id: "f", rankPosition: 5 });
+    const e = makeCoaster({ id: "e" });
+
+    const engine = new RankingEngine([a, b, c, d, f, e]);
+    engine.seedComparisonResults([{ coasterA: e, coasterB: c, winner: c }]);
+
+    const comparison = engine.getCurrentComparison();
+    expect(comparison).not.toBeNull();
+    expect(
+      [comparison!.coasterA.id, comparison!.coasterB.id].sort(),
+    ).toEqual(["e", "f"]);
+  });
+
+  it("supports undo after seeding, reverting both the cached results and any resulting placement", () => {
+    const a = makeCoaster({ id: "a", rankPosition: 1 });
+    const b = makeCoaster({ id: "b", rankPosition: 2 });
+    const c = makeCoaster({ id: "c", rankPosition: 3 });
+    const d = makeCoaster({ id: "d", rankPosition: 4 });
+    const e = makeCoaster({ id: "e" });
+
+    const engine = new RankingEngine([a, b, c, d, e]);
+    const beforeComparison = engine.getCurrentComparison();
+
+    const order = [a, e, b, c, d];
+    const entries = [];
+    for (let i = 0; i < order.length; i++) {
+      for (let j = i + 1; j < order.length; j++) {
+        entries.push({
+          coasterA: order[i],
+          coasterB: order[j],
+          winner: order[i],
+        });
+      }
+    }
+    engine.seedComparisonResults(entries);
+    expect(engine.getState().isComplete).toBe(true);
+    expect(engine.canUndo()).toBe(true);
+
+    engine.undo();
+
+    expect(engine.getState().isComplete).toBe(false);
+    expect(engine.getCurrentComparison()).toEqual(beforeComparison);
+  });
+
+  it("does nothing when given an empty entries array", () => {
+    const a = makeCoaster({ id: "a" });
+    const b = makeCoaster({ id: "b" });
+    const engine = new RankingEngine([a, b]);
+    const before = engine.getCurrentComparison();
+
+    expect(() => engine.seedComparisonResults([])).not.toThrow();
+
+    expect(engine.canUndo()).toBe(false);
+    expect(engine.getCurrentComparison()).toEqual(before);
+  });
+});
+
 describe("RankingEngine - recordComparisonResult guard", () => {
   it("throws if there is no active comparison to record", () => {
     const a = makeCoaster({ id: "a", name: "Alpha", rankPosition: 1 });
