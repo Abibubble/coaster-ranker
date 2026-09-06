@@ -19,38 +19,6 @@ export interface CoasterWithRank extends Omit<
   thrillLevel?: string;
 }
 
-export function cleanCoasterData(coasters: Coaster[]): Partial<Coaster>[] {
-  return coasters.map((coaster) => {
-    const cleanCoaster: Partial<Coaster> = {
-      name: coaster.name,
-      park: coaster.park,
-      country: coaster.country,
-      manufacturer: coaster.manufacturer,
-      model: coaster.model,
-      material: coaster.material,
-      thrillLevel: coaster.thrillLevel,
-    };
-
-    if (coaster.isCurrentlyRanking !== undefined) {
-      cleanCoaster.isCurrentlyRanking = coaster.isCurrentlyRanking;
-    }
-    if (coaster.isNewCoaster !== undefined) {
-      cleanCoaster.isNewCoaster = coaster.isNewCoaster;
-    }
-    if (coaster.isPreRanked !== undefined) {
-      cleanCoaster.isPreRanked = coaster.isPreRanked;
-    }
-    if (coaster.originalRankPosition !== undefined) {
-      cleanCoaster.originalRankPosition = coaster.originalRankPosition;
-    }
-    if (coaster.rankPosition !== undefined) {
-      cleanCoaster.rankPosition = coaster.rankPosition;
-    }
-
-    return cleanCoaster;
-  });
-}
-
 export function cleanCoasterDataForExport(
   coasters: Coaster[],
 ): Partial<Coaster>[] {

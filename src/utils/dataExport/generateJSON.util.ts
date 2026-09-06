@@ -1,6 +1,6 @@
 import { Coaster } from "../../types/data";
 import {
-  cleanCoasterData,
+  cleanCoasterDataForExport,
   addRankingToCoasterData,
   CoasterWithRank,
 } from "./cleanCoasterData.util";
@@ -21,7 +21,7 @@ export interface GenerateJSONParams {
 export interface GenerateJSONResult {
   content: string;
   isEmpty: boolean;
-  dataSize: number;
+  itemCount: number;
 }
 
 export interface JSONExportFormat {
@@ -45,7 +45,7 @@ export function generateJSON(params: GenerateJSONParams): GenerateJSONResult {
     return {
       content: '{"coasters": [], "totalCount": 0}',
       isEmpty: true,
-      dataSize: 0,
+      itemCount: 0,
     };
   }
 
@@ -54,7 +54,7 @@ export function generateJSON(params: GenerateJSONParams): GenerateJSONResult {
   if (includeRanking) {
     processedCoasters = addRankingToCoasterData(coasters, rankingMetadata);
   } else {
-    processedCoasters = cleanCoasterData(coasters);
+    processedCoasters = cleanCoasterDataForExport(coasters);
   }
 
   let exportData: JSONExportFormat | (Partial<Coaster>[] | CoasterWithRank[]);
@@ -76,6 +76,6 @@ export function generateJSON(params: GenerateJSONParams): GenerateJSONResult {
   return {
     content,
     isEmpty: false,
-    dataSize: coasters.length,
+    itemCount: coasters.length,
   };
 }

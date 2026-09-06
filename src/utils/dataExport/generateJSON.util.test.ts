@@ -19,7 +19,7 @@ describe("generateJSON", () => {
     expect(result).toEqual({
       content: '{"coasters": [], "totalCount": 0}',
       isEmpty: true,
-      dataSize: 0,
+      itemCount: 0,
     });
   });
 
@@ -37,7 +37,7 @@ describe("generateJSON", () => {
     expect(typeof parsed.exportedAt).toBe("string");
   });
 
-  it("dataSize reflects the coaster count, not a byte size", () => {
+  it("itemCount reflects the number of coasters exported", () => {
     const coasters = [
       makeCoaster({ id: "1", name: "A" }),
       makeCoaster({ id: "2", name: "B" }),
@@ -46,10 +46,7 @@ describe("generateJSON", () => {
 
     const result = generateJSON({ coasters });
 
-    expect(result.dataSize).toBe(3);
-    // dataSize is just coasters.length - it does not track the actual
-    // serialized byte length of result.content, despite the name.
-    expect(result.dataSize).not.toBe(result.content.length);
+    expect(result.itemCount).toBe(3);
   });
 
   it("omits the metadata wrapper when includeMetadata is false, returning a bare array", () => {
@@ -94,8 +91,14 @@ describe("generateJSON", () => {
     });
   });
 
-  describe("includeRanking: false (default) - cross-format field-stripping mismatch with CSV", () => {
-    it("KEEPS internal tracking fields (isPreRanked, isNewCoaster, originalRankPosition, rankPosition) when they're present on the source coaster", () => {
+  describe("includeRanking: false (default) - parity with CSV's field-stripping", () => {
+    it("strips internal tracking fields (isPreRanked, isNewCoaster, originalRankPosition, rankPosition) even when present on the source coaster", () => {
+      // Regression: generateJSON used to use a different cleaner
+      // (cleanCoasterData) than generateCSV's equivalent default path
+      // (cleanCoasterDataForExport), so the same "exclude ranking" request
+      // produced a different set of retained fields depending on export
+      // format. Both now use cleanCoasterDataForExport, so this must strip
+      // exactly like the CSV export does.
       const coasters = [
         makeCoaster({
           name: "Steel Vengeance",
@@ -110,16 +113,10 @@ describe("generateJSON", () => {
       const parsed = JSON.parse(result.content);
       const exported = parsed.coasters[0];
 
-      // Unlike generateCSV's default (includeRanking: false) path - which uses
-      // cleanCoasterDataForExport and strips ALL of these - generateJSON's
-      // default path uses cleanCoasterData, which preserves them whenever they
-      // were set on the input. This is a real, current cross-format
-      // inconsistency: the same "exclude ranking" request produces a
-      // different set of retained fields depending on export format.
-      expect(exported.isPreRanked).toBe(true);
-      expect(exported.isNewCoaster).toBe(true);
-      expect(exported.originalRankPosition).toBe(3);
-      expect(exported.rankPosition).toBe(1);
+      expect(exported).not.toHaveProperty("isPreRanked");
+      expect(exported).not.toHaveProperty("isNewCoaster");
+      expect(exported).not.toHaveProperty("originalRankPosition");
+      expect(exported).not.toHaveProperty("rankPosition");
     });
 
     it("does not add tracking fields that were absent on the source coaster", () => {
