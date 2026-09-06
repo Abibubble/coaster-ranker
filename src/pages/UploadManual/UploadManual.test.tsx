@@ -120,6 +120,59 @@ describe("UploadManual - form submission", () => {
     expect(stored[0].name).toBe("Nemesis");
   });
 
+  it("regression: keeps the park/country after adding, but clears the ride-specific fields (issue #48)", async () => {
+    const user = userEvent.setup();
+    render(<MockedUploadManual />);
+
+    await fillRequiredFields(user, {
+      name: "Nemesis",
+      park: "Alton Towers",
+      manufacturer: "B&M",
+      country: "United Kingdom",
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /add coaster to collection/i }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("status")).toHaveTextContent(
+        /successfully added/i,
+      );
+    });
+
+    expect(screen.getByLabelText(/^name/i)).toHaveValue("");
+    expect(
+      screen.getByRole("combobox", { name: "Manufacturer" }),
+    ).toHaveValue("");
+    expect(screen.getByRole("combobox", { name: "Theme Park" })).toHaveValue(
+      "Alton Towers",
+    );
+    expect(screen.getByRole("combobox", { name: "Location" })).toHaveValue(
+      "United Kingdom",
+    );
+
+    // A second ride can be added using just the persisted park/country,
+    // without retyping either.
+    await user.type(screen.getByLabelText(/^name/i), "Galactica");
+    await user.type(
+      screen.getByRole("combobox", { name: "Manufacturer" }),
+      "Intamin",
+    );
+    await user.click(
+      screen.getByRole("button", { name: /add coaster to collection/i }),
+    );
+
+    await waitFor(() => {
+      const stored = getStoredCoasters("coaster-ranker-data");
+      expect(stored).toHaveLength(2);
+    });
+
+    const stored = getStoredCoasters("coaster-ranker-data");
+    expect(stored[1].name).toBe("Galactica");
+    expect(stored[1].park).toBe("Alton Towers");
+  });
+
   it("regression: the Name field has no name attribute (Firefox autofill history keys off it)", () => {
     render(<MockedUploadManual />);
 

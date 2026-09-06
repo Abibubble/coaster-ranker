@@ -212,6 +212,23 @@ export default function UploadManual() {
     return Math.random().toString(36).substr(2, 9);
   };
 
+  // Clears the ride-specific fields after a successful add, but keeps the
+  // park/country the user just entered - they're very often adding several
+  // rides from the same park in a row, and re-typing/re-selecting it every
+  // time is exactly what this form is meant to avoid.
+  const resetFormAfterAdd = () => {
+    setFormData((prev) => ({
+      name: "",
+      park: prev.park,
+      manufacturer: "",
+      model: "",
+      material: "",
+      thrillLevel: "",
+      country: prev.country,
+      type: rideType,
+    }));
+  };
+
   const addCoasterToCollection = (coasterToAdd: Coaster) => {
     const existingCoasters = currentData?.coasters || [];
     const updatedData = {
@@ -230,16 +247,7 @@ export default function UploadManual() {
       `Successfully added "${coasterToAdd.name}" to your ${rideType === "coaster" ? "coaster" : "dark ride"} collection!`,
     );
 
-    setFormData({
-      name: "",
-      park: "",
-      manufacturer: "",
-      model: "",
-      material: "",
-      thrillLevel: "",
-      country: "",
-      type: rideType,
-    });
+    resetFormAfterAdd();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -339,16 +347,7 @@ export default function UploadManual() {
         `Successfully merged "${newCoaster.name}" with existing data! Auto-merged data for ${count} existing coaster${count === 1 ? "" : "s"}: ${mergedCoasters.join(", ")}.`,
       );
 
-      setFormData({
-        name: "",
-        park: "",
-        manufacturer: "",
-        model: "",
-        material: "",
-        thrillLevel: "",
-        country: "",
-        type: rideType,
-      });
+      resetFormAfterAdd();
     } else {
       addCoasterToCollection(newCoaster);
     }
@@ -375,16 +374,7 @@ export default function UploadManual() {
     setDuplicates([]);
     setPendingCoaster(null);
 
-    setFormData({
-      name: "",
-      park: "",
-      manufacturer: "",
-      model: "",
-      material: "",
-      thrillLevel: "",
-      country: "",
-      type: rideType,
-    });
+    resetFormAfterAdd();
   };
 
   const handleDuplicateCancel = () => {
