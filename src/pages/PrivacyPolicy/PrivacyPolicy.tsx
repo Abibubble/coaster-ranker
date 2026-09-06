@@ -160,7 +160,7 @@ function PrivacyPolicy() {
         </Styled.Section>
 
         <Styled.FooterText as='p' italic mt='large'>
-          Last updated: November 6, 2025
+          Last updated: September 6, 2026
         </Styled.FooterText>
       </Styled.PageContent>
     </MainContent>

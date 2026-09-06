@@ -53,7 +53,7 @@ export default defineConfig({
         // autocomplete hooks fetch at runtime, so the whole app - not just
         // the pages someone happened to already visit - works offline
         // after the first successful load.
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,json}"],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,json,woff,woff2}"],
       },
     }),
   ],

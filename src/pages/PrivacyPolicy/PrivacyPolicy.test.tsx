@@ -87,7 +87,7 @@ describe("PrivacyPolicy Page", () => {
     render(<PrivacyPolicy />);
 
     expect(
-      screen.getByText("Last updated: November 6, 2025")
+      screen.getByText("Last updated: September 6, 2026")
     ).toBeInTheDocument();
   });
 

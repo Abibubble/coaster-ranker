@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "@fontsource/atkinson-hyperlegible/400.css";
+import "@fontsource/atkinson-hyperlegible/400-italic.css";
+import "@fontsource/atkinson-hyperlegible/700.css";
+import "@fontsource/atkinson-hyperlegible/700-italic.css";
 import {
   Accessibility,
   Download,
