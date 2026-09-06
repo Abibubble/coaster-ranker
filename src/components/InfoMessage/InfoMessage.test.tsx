@@ -6,6 +6,7 @@ import {
 } from "../../utils/testing";
 import { InfoMessage } from "./InfoMessage";
 import { Text } from "../Text/Text";
+import { colours } from "../../theme";
 
 describe("InfoMessage", () => {
   it("has no accessibility violations", async () => {
@@ -92,7 +93,7 @@ describe("InfoMessage", () => {
       </InfoMessage>
     );
     const element = screen.getByText("Custom color message").closest("p");
-    expect(element).toHaveStyle("background-color: #007acc");
+    expect(element).toHaveStyle(`background-color: ${colours.blue}`);
   });
 
   it("allows custom border color override", () => {
@@ -102,6 +103,6 @@ describe("InfoMessage", () => {
       </InfoMessage>
     );
     const element = screen.getByText("Custom border message").closest("p");
-    expect(element).toHaveStyle("border: 1px solid #1d7231");
+    expect(element).toHaveStyle(`border: 1px solid ${colours.green}`);
   });
 });
