@@ -94,6 +94,60 @@ describe("useCoasterFilters", () => {
       ]);
     });
 
+    it("groups coasters recorded under a manufacturer's alternate name when an alias map is provided", () => {
+      const arrowDynamicsCoaster = makeCoaster({
+        id: "6",
+        name: "Viper",
+        manufacturer: "Arrow Dynamics",
+      });
+      const arrowDevelopmentCoaster = makeCoaster({
+        id: "7",
+        name: "Corkscrew",
+        manufacturer: "Arrow Development",
+      });
+      const aliasMap = new Map([
+        ["arrow dynamics", "Arrow Dynamics"],
+        ["arrow development", "Arrow Dynamics"],
+      ]);
+
+      const { result } = renderHook(() =>
+        useCoasterFilters(
+          [...coasterCollection, arrowDynamicsCoaster, arrowDevelopmentCoaster],
+          aliasMap,
+        ),
+      );
+
+      act(() => result.current.updateFilter("manufacturer", "Arrow Dynamics"));
+
+      expect(result.current.filteredCoasters.map((c) => c.name)).toEqual([
+        "Viper",
+        "Corkscrew",
+      ]);
+    });
+
+    it("still filters normally when no alias map is provided (defaults to substring matching only)", () => {
+      const arrowDynamicsCoaster = makeCoaster({
+        id: "6",
+        name: "Viper",
+        manufacturer: "Arrow Dynamics",
+      });
+      const arrowDevelopmentCoaster = makeCoaster({
+        id: "7",
+        name: "Corkscrew",
+        manufacturer: "Arrow Development",
+      });
+
+      const { result } = renderHook(() =>
+        useCoasterFilters([arrowDynamicsCoaster, arrowDevelopmentCoaster]),
+      );
+
+      act(() => result.current.updateFilter("manufacturer", "Arrow Dynamics"));
+
+      expect(result.current.filteredCoasters.map((c) => c.name)).toEqual([
+        "Viper",
+      ]);
+    });
+
     it("filters by country (case-insensitive substring)", () => {
       const { result } = renderHook(() => useCoasterFilters(coasterCollection));
 

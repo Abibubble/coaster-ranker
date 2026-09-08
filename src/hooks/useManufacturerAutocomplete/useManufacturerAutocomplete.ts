@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { buildManufacturerAliasMap } from "../../utils/manufacturerGrouping";
 
 const normalizeForSearch = (text: string): string => {
   return text
@@ -10,6 +11,7 @@ const normalizeForSearch = (text: string): string => {
 
 export interface ManufacturerData {
   manufacturer: string;
+  alternateNames?: string[];
 }
 
 export interface ManufacturerSuggestion extends ManufacturerData {
@@ -184,10 +186,16 @@ export default function useManufacturerAutocomplete(
 
   const hasMinCharacters = value.length >= minCharacters;
 
+  const manufacturerAliasMap = useMemo(
+    () => buildManufacturerAliasMap(manufacturers),
+    [manufacturers],
+  );
+
   return {
     suggestions,
     isLoading,
     error,
     hasMinCharacters,
+    manufacturerAliasMap,
   };
 }

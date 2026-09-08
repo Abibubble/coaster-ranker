@@ -91,15 +91,6 @@ export default function ViewCoasters() {
 
   // Custom hooks for functionality
   const {
-    filters,
-    filteredCoasters,
-    hasActiveFilters,
-    clearAllFilters,
-    updateFilter,
-  } = useCoasterFilters(allCoasters);
-  const { currentSort, sortedCoasters, handleSort, handleClearSort } =
-    useCoasterSorting(filteredCoasters, currentData);
-  const {
     editingCoasterId,
     editForm,
     isEditing,
@@ -120,6 +111,16 @@ export default function ViewCoasters() {
     editForm.manufacturer,
     rideType,
   );
+
+  const {
+    filters,
+    filteredCoasters,
+    hasActiveFilters,
+    clearAllFilters,
+    updateFilter,
+  } = useCoasterFilters(allCoasters, manufacturerAutocomplete.manufacturerAliasMap);
+  const { currentSort, sortedCoasters, handleSort, handleClearSort } =
+    useCoasterSorting(filteredCoasters, currentData);
 
   // Event handlers
   const handleRemoveCoaster = (coasterId: string) => {
@@ -323,6 +324,7 @@ export default function ViewCoasters() {
           rideType={rideType}
           ridePluralLabel={ridePluralLabel}
           allCoasters={allCoasters}
+          manufacturerAliasMap={manufacturerAutocomplete.manufacturerAliasMap}
           onToggleFilters={() => setIsFiltersOpen(!isFiltersOpen)}
           onFilterChange={updateFilter}
           onClearAllFilters={clearAllFilters}

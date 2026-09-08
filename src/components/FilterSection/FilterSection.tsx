@@ -3,6 +3,7 @@ import { Button, Text } from "../index";
 import { RideType } from "../../types/data";
 import { FilterOptions } from "../../hooks/useCoasterFilters";
 import { getUniqueFieldValues } from "../../utils/coasterOperations";
+import { getOtherNamesInManufacturerGroup } from "../../utils/manufacturerGrouping";
 import { Coaster } from "../../types/data";
 import * as Styled from "./FilterSection.styled";
 
@@ -13,6 +14,7 @@ interface FilterSectionProps {
   rideType: RideType;
   ridePluralLabel: string;
   allCoasters: Coaster[];
+  manufacturerAliasMap?: Map<string, string>;
   onToggleFilters: () => void;
   onFilterChange: (field: keyof FilterOptions, value: string) => void;
   onClearAllFilters: () => void;
@@ -25,6 +27,7 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
   rideType,
   ridePluralLabel,
   allCoasters,
+  manufacturerAliasMap = new Map(),
   onToggleFilters,
   onFilterChange,
   onClearAllFilters,
@@ -36,6 +39,14 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
   const uniqueCountries = getUniqueFieldValues(allCoasters, "country");
   const uniqueThrillLevels = getUniqueFieldValues(allCoasters, "thrillLevel");
   const uniqueOpeningYears = getUniqueFieldValues(allCoasters, "openingYear");
+
+  const otherNamesInManufacturerGroup = filters.manufacturer
+    ? getOtherNamesInManufacturerGroup(
+        uniqueManufacturers,
+        filters.manufacturer,
+        manufacturerAliasMap,
+      )
+    : [];
 
   const hasModel = rideType === "coaster";
   const hasMaterial = rideType === "coaster";
@@ -97,6 +108,13 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
                 </option>
               ))}
             </Styled.FilterSelect>
+            {otherNamesInManufacturerGroup.length > 0 && (
+              <Styled.FilterHint>
+                Also showing rides recorded as{" "}
+                {otherNamesInManufacturerGroup.join(", ")} - companies with
+                multiple names are grouped together.
+              </Styled.FilterHint>
+            )}
           </Styled.FilterGroup>
 
           {hasModel && (

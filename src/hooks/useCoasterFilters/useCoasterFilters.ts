@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Coaster } from "../../types/data";
+import { resolveManufacturerGroup } from "../../utils/manufacturerGrouping";
 
 export interface FilterOptions {
   park: string;
@@ -22,6 +23,7 @@ export interface UseCoasterFiltersReturn {
 
 export const useCoasterFilters = (
   allCoasters: Coaster[],
+  manufacturerAliasMap: Map<string, string> = new Map(),
 ): UseCoasterFiltersReturn => {
   const [filters, setFilters] = useState<FilterOptions>({
     park: "",
@@ -42,11 +44,20 @@ export const useCoasterFilters = (
       );
     }
     if (filters.manufacturer) {
-      result = result.filter((coaster) =>
-        coaster.manufacturer
-          .toLowerCase()
-          .includes(filters.manufacturer.toLowerCase()),
+      const filterGroup = resolveManufacturerGroup(
+        filters.manufacturer,
+        manufacturerAliasMap,
       );
+      result = result.filter((coaster) => {
+        const isSubstringMatch = coaster.manufacturer
+          .toLowerCase()
+          .includes(filters.manufacturer.toLowerCase());
+        const isSameManufacturerGroup =
+          resolveManufacturerGroup(coaster.manufacturer, manufacturerAliasMap) ===
+          filterGroup;
+
+        return isSubstringMatch || isSameManufacturerGroup;
+      });
     }
     if (filters.model) {
       const filterTerm = filters.model.toLowerCase().trim();
@@ -83,7 +94,7 @@ export const useCoasterFilters = (
     }
 
     return result;
-  }, [allCoasters, filters]);
+  }, [allCoasters, filters, manufacturerAliasMap]);
 
   const hasActiveFilters = Object.values(filters).some(
     (filter) => filter !== "",

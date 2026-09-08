@@ -91,6 +91,7 @@ interface RenderOptions {
   hasActiveFilters?: boolean;
   rideType?: RideType;
   allCoasters?: Coaster[];
+  manufacturerAliasMap?: Map<string, string>;
   onToggleFilters?: () => void;
   onFilterChange?: (field: keyof FilterOptions, value: string) => void;
   onClearAllFilters?: () => void;
@@ -109,6 +110,7 @@ const renderFilterSection = (options: RenderOptions = {}) => {
       rideType={options.rideType ?? "coaster"}
       ridePluralLabel={options.rideType === "dark-ride" ? "dark rides" : "coasters"}
       allCoasters={options.allCoasters ?? coasterCollection}
+      manufacturerAliasMap={options.manufacturerAliasMap}
       onToggleFilters={onToggleFilters}
       onFilterChange={onFilterChange}
       onClearAllFilters={onClearAllFilters}
@@ -173,6 +175,80 @@ describe("FilterSection", () => {
       "Bolliger & Mabillard",
       "Rocky Mountain Construction",
     ]);
+  });
+
+  it("keeps each recorded manufacturer name as its own Manufacturer option, even when an alias map is provided - a ride is never displayed under a different name than what was entered for it", () => {
+    const arrowDynamicsCoaster = makeCoaster({
+      id: "arrow-1",
+      name: "Viper",
+      manufacturer: "Arrow Dynamics",
+    });
+    const arrowDevelopmentCoaster = makeCoaster({
+      id: "arrow-2",
+      name: "Corkscrew",
+      manufacturer: "Arrow Development",
+    });
+    const manufacturerAliasMap = new Map([
+      ["arrow dynamics", "Arrow Dynamics"],
+      ["arrow development", "Arrow Dynamics"],
+    ]);
+
+    renderFilterSection({
+      allCoasters: [arrowDynamicsCoaster, arrowDevelopmentCoaster],
+      manufacturerAliasMap,
+    });
+
+    const options = Array.from(getFilterSelect("Manufacturer").options).map(
+      (o) => o.value,
+    );
+
+    expect(options).toEqual(["", "Arrow Development", "Arrow Dynamics"]);
+  });
+
+  it("shows a note naming the other recorded names grouped in when a manufacturer with alternate names present is selected", () => {
+    const arrowDynamicsCoaster = makeCoaster({
+      id: "arrow-1",
+      name: "Viper",
+      manufacturer: "Arrow Dynamics",
+    });
+    const arrowDevelopmentCoaster = makeCoaster({
+      id: "arrow-2",
+      name: "Corkscrew",
+      manufacturer: "Arrow Development",
+    });
+    const manufacturerAliasMap = new Map([
+      ["arrow dynamics", "Arrow Dynamics"],
+      ["arrow development", "Arrow Dynamics"],
+    ]);
+
+    renderFilterSection({
+      filters: { ...emptyFilters, manufacturer: "Arrow Development" },
+      allCoasters: [arrowDynamicsCoaster, arrowDevelopmentCoaster],
+      manufacturerAliasMap,
+    });
+
+    const note = screen.getByText(/grouped together/i);
+    expect(note).toBeInTheDocument();
+    expect(note.textContent).toContain("Arrow Dynamics");
+  });
+
+  it("does not show a grouping note when no manufacturer filter is selected", () => {
+    const manufacturerAliasMap = new Map([
+      ["arrow dynamics", "Arrow Dynamics"],
+      ["arrow development", "Arrow Dynamics"],
+    ]);
+
+    renderFilterSection({ manufacturerAliasMap });
+
+    expect(screen.queryByText(/grouped together/i)).not.toBeInTheDocument();
+  });
+
+  it("does not show a grouping note when the selected manufacturer has no other recorded name present", () => {
+    renderFilterSection({
+      filters: { ...emptyFilters, manufacturer: "Bolliger & Mabillard" },
+    });
+
+    expect(screen.queryByText(/grouped together/i)).not.toBeInTheDocument();
   });
 
   it("populates the Country select with unique, sorted values", () => {

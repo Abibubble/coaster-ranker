@@ -1,7 +1,16 @@
 [
   {
+    "manufacturer": "3DBA",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "3Dynamic",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "abc rides",
-    "models": ["Dynamic Swing Glider", "Tube Coaster"]
+    "models": ["Dynamic Swing Glider", "Tube Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "A Brinquedos",
@@ -12,12 +21,20 @@
     "models": ["Out And Back", "Coaster"]
   },
   {
+    "manufacturer": "Adventure Island",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Aerial Tramway Construction Co.",
     "models": ["Suspended"]
   },
   {
     "manufacturer": "Akron Scenic Railway Company",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Alf Biddall",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Allan Herschell Company",
@@ -28,12 +45,20 @@
     "darkRideModels": ["Salto!"]
   },
   {
+    "manufacturer": "Amariah Lake",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "American Construction Co.",
     "models": ["Twin"]
   },
   {
     "manufacturer": "Analog",
     "models": ["Hoverla"]
+  },
+  {
+    "manufacturer": "APE",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Apple",
@@ -48,7 +73,8 @@
     "models": ["Coaster"]
   },
   {
-    "manufacturer": "Arrow Dynamics / Arrow Development / Arrow-Huss",
+    "manufacturer": "Arrow Dynamics",
+    "alternateNames": ["Arrow Development", "Arrow-Huss"],
     "models": [
       "4th Dimension",
       "Corkscrew",
@@ -76,7 +102,12 @@
       "Family Coaster",
       "Family Launch Coaster",
       "Mega Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Arvus Group",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Ascot Design & Development",
@@ -85,6 +116,22 @@
   {
     "manufacturer": "Atraksion.Uz",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Attraction Media and Entertainment",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Attraktion!",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Aufwind Group",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Australian Electric Vehicles",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Bachmann + Co",
@@ -121,7 +168,8 @@
   },
   {
     "manufacturer": "Barbisan",
-    "models": ["Jamming"]
+    "models": ["Jamming"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Bartling",
@@ -132,11 +180,22 @@
     "models": ["Kiddie Coaster", "Wild Mouse"]
   },
   {
+    "manufacturer": "Bear Rides",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Beasley Engineering",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Beijing Chen Jinying Amusement Equipment",
     "models": ["Mine Car"]
   },
   {
     "manufacturer": "Beijing Jiuhua Amusement Rides Manufacturing Co., Ltd",
+    "alternateNames": [
+      "Beijing Jialong Jiuhua Amusement Rides Manufacturing Co., Ltd"
+    ],
     "models": [
       "Children Coaster",
       "Crazy Skateboard",
@@ -147,7 +206,8 @@
       "Star Coaster",
       "Super Skateboard",
       "Suspended Roller Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Beijing North Rongda Amusement Equipment Co., Ltd",
@@ -173,24 +233,51 @@
       "Spinning Coaster",
       "Suspended & Powered Coaster",
       "Suspended Loop Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Bell's Amusement Park",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Belmont Construction Co.",
     "models": ["Coaster"]
   },
   {
-    "manufacturer": "BHS / Translift",
+    "manufacturer": "Bertazzon",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "BHS",
+    "alternateNames": ["Translift"],
     "models": ["Coaster"],
     "darkRideModels": ["Suspended Dark Ride"]
   },
   {
+    "manufacturer": "Biddall Bros.",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Big Country Motioneering",
-    "models": ["Mini Coaster", "Powered Roller Coaster"]
+    "models": ["Mini Coaster", "Powered Roller Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Bill Tracy",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Blackpool Leisure Amusement Consultancy",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Blands Engineering",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "BoldMove Nation",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Bolliger & Mabillard",
@@ -206,15 +293,25 @@
       "Stand-Up Coaster",
       "Surf Coaster",
       "Wing Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Bombay Amusement Ride (P) Limited",
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Bosch Rexroth",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Bottons",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Bradley and Kaye",
-    "models": ["Little Dipper"]
+    "models": ["Little Dipper"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Brandauer",
@@ -225,8 +322,16 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Brogent Technologies",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Butlin",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "CAE USA",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "CAM Baby Kart",
@@ -241,8 +346,24 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Carpenteria 2000",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Caturmitra",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Cavazza Diego",
     "models": ["Blizzard", "Mini Nessie", "Nessie", "Super Nessie"]
+  },
+  {
+    "manufacturer": "CAVU Designwerks",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "CBK",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Cedeal Rides",
@@ -261,8 +382,10 @@
     "models": ["Coaster"]
   },
   {
-    "manufacturer": "Chance Rides / Chance Morgan / D.H. Morgan",
-    "models": ["Big Dipper", "Hyper GT-X", "Toboggan"]
+    "manufacturer": "Chance Rides",
+    "alternateNames": ["Chance Morgan"],
+    "models": ["Big Dipper", "Hyper GT-X", "Toboggan"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Changhong Entertainment Machinery Co., Ltd.",
@@ -278,6 +401,10 @@
     ]
   },
   {
+    "manufacturer": "Chapman",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Chengdu Xindu Xin'an Playingment",
     "models": ["Outer Space Flying Car", "Wave Shuttle"]
   },
@@ -290,6 +417,10 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Chipperfield Bros.",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Chuangyi Amusement",
     "models": ["Coaster"]
   },
@@ -298,12 +429,32 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Clark's Trading Post",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "CL Corporation",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Cleveland Tram Rail Company",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Coaster Works, Inc.",
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Cocotop",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Cordes Holzbau",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Craig Harrison",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Credible",
@@ -311,11 +462,13 @@
   },
   {
     "manufacturer": "C&S",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Custom Coasters International",
-    "models": ["Custom Wooden Coaster"]
+    "models": ["Custom Wooden Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "DAL Amusement Rides",
@@ -329,8 +482,16 @@
     ]
   },
   {
+    "manufacturer": "Dale Wesseldine",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Dambroz",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "D-Box",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "DeBrinquedo",
@@ -338,7 +499,9 @@
   },
   {
     "manufacturer": "DH Morgan Manufacturing, Inc",
-    "models": ["Coaster"]
+    "alternateNames": ["D.H. Morgan", "Morgan Manufacturing"],
+    "models": ["Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Dinn Corporation",
@@ -349,8 +512,21 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "DOF Robotics",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Doppelmayr",
-    "models": ["Mountain Glider"]
+    "models": ["Mountain Glider"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Doron Precision Systems",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Dotto Trains",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Double Grip Tubular Steel Amusement Devices Ltd.",
@@ -361,12 +537,28 @@
     "models": ["Classic Family Coaster", "Junior Coaster", "Minicoaster Apple"]
   },
   {
+    "manufacturer": "Dudley Bowers",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Dynamic Attractions",
     "darkRideModels": ["Coaster"]
   },
   {
+    "manufacturer": "E2M Technologies",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "E&F Miler Industries",
     "models": ["Family Coaster", "Hi-Miler", "Water Coaster", "Wild Mouse"]
+  },
+  {
+    "manufacturer": "Emiliana Luna Park",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Entertainment Resource",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "EOS Rides",
@@ -375,7 +567,8 @@
       "Roller Coaster Dark Ride",
       "Spinning Coaster",
       "Typhoon"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Erbschloe Fun Construct",
@@ -398,16 +591,41 @@
     "models": ["Astral", "Spinning Coaster", "Take Off", "Wacky Worm"]
   },
   {
+    "manufacturer": "Fa. Dietz Fahrzeugbau",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Fajume",
     "models": ["Wacky Worm"]
   },
   {
+    "manufacturer": "Falcon's Creative Group",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Fantasy Rides Industry",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Fantawild",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Federal Engineering Co.",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Ferretti International srl",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Flight Avionics",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Ford Motor Company",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Foshan Huanshi Nanfang Amusement Machine Factory",
@@ -418,12 +636,24 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Fulldome Pro",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Fun Xian Machinery Manufacturing Ranger Company",
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "FX Illusions",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Garcia Brinquedos",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Garmendale",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Gerstlauer",
@@ -441,7 +671,16 @@
       "Launch Coaster",
       "Shuttle Family Coaster",
       "Spinning Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Gilbert Chadwick",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Gilbert Chadwick Jr.",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Giovanola",
@@ -461,11 +700,16 @@
   },
   {
     "manufacturer": "Gosetto",
-    "models": ["Cosmic Spin", "Dragon Coaster", "Spinning Coaster"]
+    "models": ["Cosmic Spin", "Dragon Coaster", "Spinning Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Grant Engineering",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Gravitron",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Gravitykraft Corporation",
@@ -474,6 +718,10 @@
   {
     "manufacturer": "Great Coasters International",
     "models": ["Wooden Coaster"]
+  },
+  {
+    "manufacturer": "Gröna Lund",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Gros",
@@ -488,6 +736,14 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Guangzhou Liling Technology",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Gulliver's Theme Park Resorts",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Guohui Machinery",
     "models": ["Coaster"]
   },
@@ -496,12 +752,20 @@
     "models": ["Brucomela", "Dragon", "Runaway Train", "Shark"]
   },
   {
+    "manufacturer": "Hafema",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Hangzhou Hogwood Amusement Equipment",
     "models": ["Coaster"]
   },
   {
     "manufacturer": "Havraysan Mountain Slide",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Hayes Fabrication",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Hebei H&S Amusement Equipment Co., LTD.",
@@ -520,12 +784,24 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Helters Ltd",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Henan Beston Rides Co., Ltd",
     "models": ["Coaster"]
   },
   {
     "manufacturer": "Hensel Phelps Construction Co.",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Herreros de Barcelona",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Herschend Creative Studios",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Hindustan Amusement Machines",
@@ -536,8 +812,21 @@
     "models": ["Kids Coaster"]
   },
   {
+    "manufacturer": "Hollingsworth",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Holovis",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Hopkins Rides",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "H.P. Jackson",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Huatong Taike Amusement Equipment Co., Ltd.",
@@ -546,6 +835,18 @@
   {
     "manufacturer": "Huayi Amusement",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Hurlbut Amusement Company",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Hydraudyne",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Hytechnology",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "I.E. Park",
@@ -558,11 +859,20 @@
       "Mini OTTO",
       "Rolly",
       "Spinning Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Ihle",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Ikeda Works",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Indiana Beach",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Inno-Heege GmbH & Co. KG",
@@ -619,7 +929,8 @@
   },
   {
     "manufacturer": "Interlink",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "International Amusement Devices, Inc.",
@@ -643,6 +954,10 @@
     ]
   },
   {
+    "manufacturer": "Intersim",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "InterTech",
     "models": ["Coaster"]
   },
@@ -659,8 +974,24 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "JBT Corporation",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Jervis B. Webb",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Jimmy Rawlings",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Jinfeng",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Jingang Technology",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Jingbei Amusement Equipment Co., Ltd.",
@@ -686,7 +1017,8 @@
       "Suspended Roller Coaster",
       "Suspended Sightseeing Coaster",
       "Vertical Roller Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Jinxin Credit",
@@ -697,12 +1029,40 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "John Brett",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "John Cogger",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Joyland Arcade",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Jung-Max Rides",
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "J.W. Stewart",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Kangyuan Amusement Equipment",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Keith Carroll",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Kennywood",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Kirin Company",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Kılıç Lunapark",
@@ -723,15 +1083,25 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Knoebels",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Kolmax Plus",
     "models": ["Coaster"]
   },
   {
-    "manufacturer": "KumbaK The Amusement Engineers",
-    "models": ["Water Coaster"]
+    "manufacturer": "Kraftwerk Living Technologies",
+    "darkRideModels": [""]
   },
   {
-    "manufacturer": "KUKA / Dynamic Structures",
+    "manufacturer": "KumbaK The Amusement Engineers",
+    "models": ["Water Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "KUKA",
+    "alternateNames": ["Dynamic Structures"],
     "darkRideModels": ["RoboCoaster G2"]
   },
   {
@@ -744,7 +1114,16 @@
   },
   {
     "manufacturer": "L.A. Thompson Scenic Railway Company",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Leisurtec",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Leslie Joseph",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Levent Lunapark",
@@ -755,13 +1134,18 @@
     "models": ["Caterpillar Coaster"]
   },
   {
+    "manufacturer": "Lot Morgan",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "L&T Systems",
     "models": [
       "Compact Coaster",
       "Junior Coaster",
       "Mini Coaster",
       "Wild Mouse"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Lucrezia Di Cartoceto",
@@ -816,11 +1200,20 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Master Industrie",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Master Park",
     "models": ["Mini Roller Coaster"]
   },
   {
-    "manufacturer": "Maurer Rides / Maurer AG",
+    "manufacturer": "Matrix Technology",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Maurer Rides",
+    "alternateNames": ["Maurer AG"],
     "models": [
       "Custom Looping Coaster",
       "SkyLoop",
@@ -828,11 +1221,16 @@
       "Spinning Coaster",
       "Wild Maus Classic",
       "X-Car"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Maxwell & Sons",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "McFadden Systems",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "McKay Construction",
@@ -841,6 +1239,10 @@
   {
     "manufacturer": "Mecpower",
     "models": ["Spinning Coaster"]
+  },
+  {
+    "manufacturer": "Media Mation",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Meisho Amusement Machines",
@@ -857,6 +1259,14 @@
   {
     "manufacturer": "Meiwa Komuten",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Mel Park",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Metallbau Emmeln",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Metal Park",
@@ -879,6 +1289,14 @@
     ]
   },
   {
+    "manufacturer": "Miller & Baker",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Mimafab",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Mizone Playground",
     "models": ["Coaster"]
   },
@@ -891,6 +1309,10 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Modern Products",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Molina & Sons",
     "models": ["Moli-Coaster"]
   },
@@ -899,12 +1321,28 @@
     "models": ["Cobra"]
   },
   {
+    "manufacturer": "Moser Rides",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Mountain Innovations GmbH",
     "models": ["Coaster"]
   },
   {
     "manufacturer": "Mountain Systems GmbH",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Moviemex3D",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "MTS Systems Corporation",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Multi Pilot Simulations",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Mundial Park",
@@ -919,7 +1357,8 @@
       "Launch U-Shaped Coaster",
       "Reciprocating Roller Coaster",
       "Spinning Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "National Amusement Device Company",
@@ -943,7 +1382,8 @@
   },
   {
     "manufacturer": "OCT Vision",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Okamoto Co., Ltd.",
@@ -954,6 +1394,14 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Orton & Spooner",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Otis Elevator Company",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Outdoor Amusement Enterprise, Inc.",
     "models": ["Coaster"]
   },
@@ -962,12 +1410,24 @@
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Parc du Bocasse",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Parkash Amusements",
     "models": ["Dragon Coaster", "Free Fall Loop Coaster"]
   },
   {
     "manufacturer": "Park Style S.R.L.",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Parque de Atracciones de Madrid",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Parque de Atracciones de Zaragoza",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Pax Company",
@@ -989,12 +1449,17 @@
     ]
   },
   {
+    "manufacturer": "PBA",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Peter Petz",
     "models": ["Coaster"]
   },
   {
     "manufacturer": "Philadelphia Toboggan Coasters, Inc.",
-    "models": ["Junior Coaster"]
+    "models": ["Junior Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Pinfari",
@@ -1008,11 +1473,20 @@
       "Super Train",
       "Xpress",
       "Zyklon"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Pinto Brothers",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Playfun",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Pleasure Beach Resort",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Poonan Amusement Ride Industries",
@@ -1027,7 +1501,8 @@
       "Liquid Coaster",
       "Standard Coaster",
       "Sky Rocket"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Preston & Barbieri",
@@ -1040,11 +1515,32 @@
       "Mini Coaster",
       "Spinning Coaster",
       "Wacky Worm"
-    ]
+    ],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Pretzel Company",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Princeton Machine",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Prior and Church Company",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "project syntropy",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Protech",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "P.T.A. Fabrications",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Qin Long",
@@ -1063,20 +1559,36 @@
     "models": ["Free Fall"]
   },
   {
+    "manufacturer": "Rainbow's End",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "R&C Entertainment",
     "models": ["Coaster"]
   },
   {
     "manufacturer": "RES Rides AG",
-    "models": ["Air Loop", "Flume Ride XL", "Roller Ball"]
+    "models": ["Air Loop", "Flume Ride XL", "Roller Ball"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Reverchon Industries",
-    "models": ["Custom Coaster", "Gliding Coaster", "Spinning Coaster"]
+    "models": ["Custom Coaster", "Gliding Coaster", "Spinning Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Ride & Show Engineering",
+    "alternateNames": ["Ride and Show Engineering"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "RIDE Technic s.r.o.",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Ridewerks",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Risheng Amusement Rides",
@@ -1087,20 +1599,47 @@
     "models": ["Brucomela", "Runaway Train"]
   },
   {
+    "manufacturer": "Robin G. Mitchell",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Robles Bouso Atracciones",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "RoboCoaster",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Rocky Mountain Construction",
-    "models": ["IBox Track", "Raptor Single Rail", "Topper Track", "Wild Moose"]
+    "models": [
+      "IBox Track",
+      "Raptor Single Rail",
+      "Topper Track",
+      "Wild Moose"
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Roller Coaster Corporation of America",
     "models": ["Coaster"]
   },
   {
+    "manufacturer": "Ronnie Bentley",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Roush Enterprises",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "R&R",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Rundles",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Saeki",
@@ -1111,13 +1650,90 @@
     "models": ["Looping Coaster"]
   },
   {
+    "manufacturer": "Samuel Butler",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Sansei Technologies",
     "models": ["Jungle Mouse", "Lady Bird Coaster", "Space Coaster"],
     "darkRideModels": ["Magnetic Wire-Guided Boat"]
   },
   {
+    "manufacturer": "Sany",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Sartori Rides",
-    "models": ["Crazy Worm", "Nova Coaster", "Spinning Coaster"]
+    "models": ["Crazy Worm", "Nova Coaster", "Spinning Coaster"],
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Saturn Imagineering",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Schwingel",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Screen Brilliance",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Seabreeze Amusement Park",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Severn Lamb",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Shenyang Chuangqi Amusment Equipment",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Sherif Bdran",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Showscan Entertainment",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "SHUQEE",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "SimEx-Iwerks",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Simtech",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Simtec Systems",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Simworx Attractions Limited",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Sipkema",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Soaring Eagle Zipline",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Sparco",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "StereoLife",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Sấu Con",
@@ -1152,10 +1768,12 @@
       "Triangle Coaster",
       "Truck Race",
       "Vortex Coaster"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
-    "manufacturer": "Schwarzkopf Industries / Anton Schwarzkopf",
+    "manufacturer": "Schwarzkopf Industries",
+    "alternateNames": ["Anton Schwarzkopf", "Schwarzkopf GmbH"],
     "models": [
       "Alpen Blitz",
       "Double Looping",
@@ -1167,7 +1785,8 @@
       "Silverarrow",
       "Speed Racer",
       "Wildcat"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "S.D.C.",
@@ -1190,7 +1809,8 @@
   },
   {
     "manufacturer": "Senyo Kogyo Co., Ltd.",
-    "models": ["Atomic Coaster", "Kid's Coaster", "Mad Mouse"]
+    "models": ["Atomic Coaster", "Kid's Coaster", "Mad Mouse"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Setpoint",
@@ -1234,11 +1854,13 @@
   },
   {
     "manufacturer": "S&MC",
-    "models": ["Hurricane", "Speedy Gonzalez"]
+    "models": ["Hurricane", "Speedy Gonzalez"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Soquet",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Spillman Engineering",
@@ -1249,7 +1871,8 @@
     "models": ["Coaster"]
   },
   {
-    "manufacturer": "S&S Sansei / S&S Worldwide",
+    "manufacturer": "S&S Sansei",
+    "alternateNames": ["S&S Worldwide"],
     "models": [
       "4D Free Spin",
       "4th Dimension",
@@ -1287,7 +1910,8 @@
   },
   {
     "manufacturer": "Supercar",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Takahashi Kikai Sangyo",
@@ -1317,12 +1941,32 @@
     "models": ["Boomerang", "Tornado"]
   },
   {
+    "manufacturer": "Techno Motion",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Tekin Amusement Rides Factory",
     "models": ["Mini Dragon"]
   },
   {
+    "manufacturer": "Thales Training and Simulation",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "The Gravity Group",
     "models": ["Wooden Coaster", "Family Wooden Coaster"]
+  },
+  {
+    "manufacturer": "Thomson Entertainment",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Tibidabo",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Tivoli Friheden",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "TM Harton Company",
@@ -1350,7 +1994,8 @@
       "Standing Coaster",
       "Super Roller Coaster",
       "Ultra Twister"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Top Fun",
@@ -1358,7 +2003,8 @@
   },
   {
     "manufacturer": "Traver Engineering Company",
-    "models": ["Whirlwind Racer"]
+    "models": ["Whirlwind Racer"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Três Eixos",
@@ -1369,12 +2015,28 @@
     "darkRideModels": ["Maestro"]
   },
   {
+    "manufacturer": "Ultra-Technik",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Universal Design",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Upside Down House UK",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "U.S. Amusement Company",
     "models": ["Coaster"]
   },
   {
     "manufacturer": "Vafaei Rides",
     "models": ["Crazy Mouse", "Rollerskater", "Tokaydo"]
+  },
+  {
+    "manufacturer": "Valdemar Lebech",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Vekoma",
@@ -1417,12 +2079,36 @@
     "darkRideModels": ["Mad House", "Omnimover"]
   },
   {
+    "manufacturer": "Venture Ride Company",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Von Roll",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Vostok",
     "models": ["Caterpillar"]
   },
   {
+    "manufacturer": "Waagner-Biro",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Wadbrooke",
+    "darkRideModels": [""]
+  },
+  {
+    "manufacturer": "Walter Murphy",
+    "darkRideModels": [""]
+  },
+  {
     "manufacturer": "Wanle",
     "models": ["Coaster"]
+  },
+  {
+    "manufacturer": "Wattman",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Weifang Youxin Machinery",
@@ -1438,11 +2124,16 @@
   },
   {
     "manufacturer": "WGH Transportation Engineering",
-    "models": ["Coaster"]
+    "models": ["Coaster"],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Walt Disney Imagineering",
     "darkRideModels": ["Trackless Dark Ride"]
+  },
+  {
+    "manufacturer": "WhiteWater",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Wiegand",
@@ -1453,6 +2144,10 @@
       "Sport Coaster",
       "Wie-Flyer"
     ]
+  },
+  {
+    "manufacturer": "William Belson",
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Williams Amusement Device Company",
@@ -1529,7 +2224,8 @@
       "Volare",
       "Zig Zag Coaster",
       "Windstorm"
-    ]
+    ],
+    "darkRideModels": [""]
   },
   {
     "manufacturer": "Zhejiang Juma Amusement Equipment Co. Ltd.",
@@ -1611,6 +2307,7 @@
       "Spinning Coaster",
       "Tivoli",
       "Tower"
-    ]
+    ],
+    "darkRideModels": [""]
   }
 ]

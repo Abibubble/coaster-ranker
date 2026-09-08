@@ -127,6 +127,12 @@ export const FilterSelect = styled.select`
   }
 `;
 
+export const FilterHint = styled.p`
+  margin: 0;
+  font-size: ${fonts.small};
+  color: ${colours.textGrey};
+`;
+
 export const FilterActions = styled.div`
   display: flex;
   justify-content: flex-end;

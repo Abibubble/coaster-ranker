@@ -9,6 +9,10 @@ global.fetch = vi.fn();
 const mockManufacturers: ManufacturerData[] = [
   { manufacturer: "Bolliger & Mabillard" },
   { manufacturer: "Intamin" },
+  {
+    manufacturer: "Arrow Dynamics",
+    alternateNames: ["Arrow Development", "Arrow-Huss"],
+  },
 ];
 
 describe("useManufacturerAutocomplete", () => {
@@ -45,5 +49,20 @@ describe("useManufacturerAutocomplete", () => {
     });
 
     expect(result.current.suggestions.length).toBeGreaterThanOrEqual(0);
+  });
+
+  it("builds a manufacturerAliasMap that resolves alternate names to their primary manufacturer", async () => {
+    const { result } = renderHook(() => useManufacturerAutocomplete(""));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.manufacturerAliasMap.get("arrow development")).toBe(
+      "Arrow Dynamics",
+    );
+    expect(result.current.manufacturerAliasMap.get("arrow dynamics")).toBe(
+      "Arrow Dynamics",
+    );
   });
 });

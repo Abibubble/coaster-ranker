@@ -5,3 +5,4 @@ export * from "./uploadState";
 export * from "./duplicateIdDetection.util";
 export * from "./coasterOperations";
 export * from "./stringMatching.util";
+export * from "./manufacturerGrouping";
