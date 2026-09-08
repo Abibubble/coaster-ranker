@@ -488,7 +488,7 @@ describe("ViewCoasters - Number 0", () => {
 });
 
 describe("ViewCoasters - dark-ride collection", () => {
-  it("hides coaster-only filters and fields, and still supports filtering and removing", async () => {
+  it("hides Material/Thrill Level (coaster-only) but keeps Model, and still supports filtering and removing", async () => {
     const user = userEvent.setup();
     const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
     // Seed a coaster too so the page mounts on its normal (functional) toggle
@@ -518,7 +518,9 @@ describe("ViewCoasters - dark-ride collection", () => {
     await user.click(screen.getByRole("tab", { name: "Dark Rides" }));
     await user.click(screen.getByRole("button", { name: "Show filter options" }));
 
-    expect(screen.queryAllByText("Model")).toHaveLength(0);
+    // Model now applies to dark rides too (backed by darkRideModels), so it
+    // stays visible here - only Material/Thrill Level remain coaster-only.
+    expect(screen.queryAllByText("Model").length).toBeGreaterThan(0);
     expect(screen.queryAllByText("Material")).toHaveLength(0);
     expect(screen.queryAllByText("Thrill Level")).toHaveLength(0);
 

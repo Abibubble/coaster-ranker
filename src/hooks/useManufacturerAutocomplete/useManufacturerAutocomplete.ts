@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { buildManufacturerAliasMap } from "../../utils/manufacturerGrouping";
+import { RideType } from "../../types/data";
 
 // Common short names/initialisms that don't naturally line up with the
 // "initials of each word" heuristic below - typed as one word (e.g. "b&m",
@@ -31,6 +32,7 @@ const expandSearchTerms = (searchTerm: string): string => {
 export interface ManufacturerData {
   manufacturer: string;
   alternateNames?: string[];
+  darkRideModels?: string[];
 }
 
 export interface ManufacturerSuggestion extends ManufacturerData {
@@ -44,6 +46,7 @@ interface UseManufacturerAutocompleteOptions {
 
 export default function useManufacturerAutocomplete(
   value: string,
+  rideType: RideType = "coaster",
   options: UseManufacturerAutocompleteOptions = {},
 ) {
   const { minCharacters = 2, maxSuggestions = 3 } = options;
@@ -76,8 +79,20 @@ export default function useManufacturerAutocomplete(
     loadManufacturers();
   }, []);
 
+  // Only manufacturers credited with at least one dark ride (i.e. the
+  // manufacturers.json entry has a darkRideModels field at all, even an
+  // empty/placeholder one) are relevant when adding/editing a dark ride -
+  // coaster-only manufacturers are never suggested there, and vice versa.
+  const rideTypeManufacturers = useMemo(
+    () =>
+      rideType === "dark-ride"
+        ? manufacturers.filter((mfg) => "darkRideModels" in mfg)
+        : manufacturers,
+    [manufacturers, rideType],
+  );
+
   const suggestions = useMemo(() => {
-    if (!value || manufacturers.length === 0) {
+    if (!value || rideTypeManufacturers.length === 0) {
       return [];
     }
 
@@ -98,7 +113,7 @@ export default function useManufacturerAutocomplete(
 
     const matches: ManufacturerSuggestion[] = [];
 
-    for (const manufacturerData of manufacturers) {
+    for (const manufacturerData of rideTypeManufacturers) {
       const manufacturerName = normalizeForSearch(
         manufacturerData.manufacturer,
       );
@@ -212,7 +227,7 @@ export default function useManufacturerAutocomplete(
       // Finally alphabetical
       return a.manufacturer.localeCompare(b.manufacturer);
     });
-  }, [value, manufacturers, minCharacters, maxSuggestions]);
+  }, [value, rideTypeManufacturers, minCharacters, maxSuggestions]);
 
   const hasMinCharacters = value.length >= minCharacters;
 

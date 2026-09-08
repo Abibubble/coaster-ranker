@@ -174,14 +174,15 @@ describe("CoasterEditForm", () => {
     expect(screen.getByText("Thrill Level")).toBeInTheDocument();
   });
 
-  it("hides Model, Material and Thrill Level fields for dark rides, without crashing", () => {
+  it("still shows Model for dark rides (with a dark-ride-appropriate placeholder), but hides Material and Thrill Level, without crashing", () => {
     renderEditForm({
       rideType: "dark-ride",
       coaster: darkRideCoaster,
       editForm: blankEditForm,
     });
 
-    expect(screen.queryByText("Model")).not.toBeInTheDocument();
+    expect(screen.getByText("Model")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("e.g. Omnimover")).toBeInTheDocument();
     expect(screen.queryByText("Material")).not.toBeInTheDocument();
     expect(screen.queryByText("Thrill Level")).not.toBeInTheDocument();
     expect(screen.getByDisplayValue("Haunted Mansion")).toBeInTheDocument();

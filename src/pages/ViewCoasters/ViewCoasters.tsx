@@ -105,6 +105,7 @@ export default function ViewCoasters() {
   const countryAutocomplete = useCountryAutocomplete(editForm.country);
   const manufacturerAutocomplete = useManufacturerAutocomplete(
     editForm.manufacturer,
+    rideType,
   );
   const modelAutocomplete = useModelAutocomplete(
     editForm.model,

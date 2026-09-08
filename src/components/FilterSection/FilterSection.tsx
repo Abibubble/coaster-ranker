@@ -48,7 +48,6 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
       )
     : [];
 
-  const hasModel = rideType === "coaster";
   const hasMaterial = rideType === "coaster";
   const hasThrillLevel = rideType === "coaster";
 
@@ -117,27 +116,25 @@ export const FilterSection: React.FC<FilterSectionProps> = ({
             )}
           </Styled.FilterGroup>
 
-          {hasModel && (
-            <Styled.FilterGroup>
-              <Styled.FilterLabel htmlFor="filter-model">
-                Model
-              </Styled.FilterLabel>
-              <Styled.FilterSelect
-                id="filter-model"
-                value={filters.model}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  onFilterChange("model", e.target.value)
-                }
-              >
-                <option value="">All models</option>
-                {uniqueModels.map((model) => (
-                  <option key={model} value={model}>
-                    {model}
-                  </option>
-                ))}
-              </Styled.FilterSelect>
-            </Styled.FilterGroup>
-          )}
+          <Styled.FilterGroup>
+            <Styled.FilterLabel htmlFor="filter-model">
+              Model
+            </Styled.FilterLabel>
+            <Styled.FilterSelect
+              id="filter-model"
+              value={filters.model}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                onFilterChange("model", e.target.value)
+              }
+            >
+              <option value="">All models</option>
+              {uniqueModels.map((model) => (
+                <option key={model} value={model}>
+                  {model}
+                </option>
+              ))}
+            </Styled.FilterSelect>
+          </Styled.FilterGroup>
 
           <Styled.FilterGroup>
             <Styled.FilterLabel htmlFor="filter-country">

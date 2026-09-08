@@ -268,11 +268,11 @@ describe("UploadManual - form submission", () => {
 
   it("regression: an auto-merged dark-ride submission updates the dark-ride bucket, not the coaster bucket", async () => {
     // Auto-merge only requires an exact name match + fuzzy park match, so
-    // (unlike a manual "needs resolution" duplicate, which requires 3+
-    // matching fields including one - like model - that dark rides can no
-    // longer submit via this form) it's reachable for a dark-ride entry.
-    // This exercises the exact code path that used to write dark-ride
-    // duplicate/auto-merge results into the coaster bucket instead.
+    // it's reachable here without needing to fill in enough matching
+    // fields (name/park/manufacturer/model) to trigger "needs resolution"
+    // instead. This exercises the exact code path that used to write
+    // dark-ride duplicate/auto-merge results into the coaster bucket
+    // instead.
     seedDarkRideData([
       {
         id: "existing-dr-1",
@@ -314,7 +314,7 @@ describe("UploadManual - form submission", () => {
     expect(localStorage.getItem("coaster-ranker-data")).toBeNull();
   });
 
-  it("regression: only shows model/material/thrill-level fields for coasters, hiding all three for dark rides", async () => {
+  it("regression: shows Model for both ride types, but only shows Material/Thrill Level for coasters", async () => {
     const user = userEvent.setup();
     render(<MockedUploadManual />);
 
@@ -326,13 +326,12 @@ describe("UploadManual - form submission", () => {
 
     await user.click(screen.getByRole("tab", { name: "Dark Rides" }));
 
-    // Model is now gated by ride type too, matching Material/Thrill Level -
-    // a dark-ride entry can no longer get a model value that's invisible
-    // everywhere else in the app (FilterSection/CoasterEditForm already
-    // hid Model for dark rides).
+    // Model is backed by each manufacturer's darkRideModels for dark rides
+    // (never coaster models), so it stays visible here - only Material and
+    // Thrill Level remain coaster-only.
     expect(
-      screen.queryByRole("combobox", { name: "Model" }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("combobox", { name: "Model" }),
+    ).toBeInTheDocument();
     expect(screen.queryByText(/^material$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^thrill level$/i)).not.toBeInTheDocument();
   });

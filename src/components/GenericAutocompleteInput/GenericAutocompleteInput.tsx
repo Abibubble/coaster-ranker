@@ -31,6 +31,12 @@ export interface GenericAutocompleteInputProps<
   isLoading?: boolean;
   error?: string | null;
   hasMinCharacters?: boolean;
+  // Opt-in: opens the dropdown on focus even with an empty value, as long as
+  // there are suggestions to show (e.g. every known model for an already-
+  // selected manufacturer). Other fields default this off, since an empty
+  // park/country/manufacturer field has far too many possible suggestions
+  // to usefully browse this way.
+  showAllOnFocusWhenEmpty?: boolean;
   "aria-label"?: string;
   "data-form-type"?: string;
 }
@@ -52,6 +58,7 @@ export default function GenericAutocompleteInput<
   isLoading,
   error,
   hasMinCharacters,
+  showAllOnFocusWhenEmpty = false,
   "aria-label": ariaLabel,
   "data-form-type": dataFormType,
 }: GenericAutocompleteInputProps<TSuggestionItem, TSelectionData>) {
@@ -99,7 +106,7 @@ export default function GenericAutocompleteInput<
     onChange(newValue);
     setHighlightedIndex(-1);
 
-    if (newValue.trim()) {
+    if (newValue.trim() || showAllOnFocusWhenEmpty) {
       setIsOpen(true);
     } else {
       setIsOpen(false);
@@ -134,7 +141,10 @@ export default function GenericAutocompleteInput<
       return;
     }
 
-    if (value.trim() && suggestions.length > 0) {
+    if (
+      suggestions.length > 0 &&
+      (value.trim() || showAllOnFocusWhenEmpty)
+    ) {
       setIsOpen(true);
     }
   };

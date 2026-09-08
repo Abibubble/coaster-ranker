@@ -121,4 +121,91 @@ describe("GenericAutocompleteInput", () => {
 
     expect(screen.getByLabelText("Item")).not.toHaveAttribute("name");
   });
+
+  describe("showAllOnFocusWhenEmpty", () => {
+    it("opens the suggestions list on focus even with an empty value when enabled", async () => {
+      const user = userEvent.setup();
+      render(
+        <GenericAutocompleteInput
+          {...defaultProps}
+          label="Item"
+          suggestions={mockSuggestions}
+          hasMinCharacters
+          showAllOnFocusWhenEmpty
+        />,
+      );
+
+      await user.click(screen.getByLabelText("Item"));
+
+      expect(screen.getByRole("listbox")).toBeInTheDocument();
+      expect(screen.getByText("Apple")).toBeInTheDocument();
+      expect(screen.getByText("Banana")).toBeInTheDocument();
+    });
+
+    it("does not open on focus with an empty value when there are no suggestions", async () => {
+      const user = userEvent.setup();
+      render(
+        <GenericAutocompleteInput
+          {...defaultProps}
+          label="Item"
+          suggestions={[]}
+          hasMinCharacters
+          showAllOnFocusWhenEmpty
+        />,
+      );
+
+      await user.click(screen.getByLabelText("Item"));
+
+      expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    });
+
+    it("does not open on focus with an empty value when disabled (default behaviour)", async () => {
+      const user = userEvent.setup();
+      render(
+        <GenericAutocompleteInput
+          {...defaultProps}
+          label="Item"
+          suggestions={mockSuggestions}
+          hasMinCharacters
+        />,
+      );
+
+      await user.click(screen.getByLabelText("Item"));
+
+      expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    });
+
+    it("still lets the user type a custom value while the browsable list is showing", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+
+      const TestWrapper = () => {
+        const [value, setValue] = useState("");
+        const handleChange = (newValue: string) => {
+          setValue(newValue);
+          onChange(newValue);
+        };
+
+        return (
+          <GenericAutocompleteInput
+            {...defaultProps}
+            value={value}
+            onChange={handleChange}
+            label="Item"
+            suggestions={mockSuggestions}
+            hasMinCharacters
+            showAllOnFocusWhenEmpty
+          />
+        );
+      };
+
+      render(<TestWrapper />);
+
+      const input = screen.getByLabelText("Item");
+      await user.click(input);
+      await user.type(input, "Custom");
+
+      expect(onChange).toHaveBeenCalledWith("Custom");
+    });
+  });
 });

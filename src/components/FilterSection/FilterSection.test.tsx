@@ -297,12 +297,12 @@ describe("FilterSection", () => {
     expect(thrillOptions).toEqual(["", "Thrill"]);
   });
 
-  it("hides Model, Material and Thrill Level for dark rides", () => {
-    // hasModel is gated on rideType === "coaster", identically to
-    // hasMaterial/hasThrillLevel - it is not shown for dark rides either.
+  it("keeps Model but hides Material and Thrill Level for dark rides", () => {
+    // Model applies to both ride types (backed by darkRideModels for dark
+    // rides), unlike hasMaterial/hasThrillLevel which stay coaster-only.
     renderFilterSection({ rideType: "dark-ride", allCoasters: darkRideCollection });
 
-    expect(queryFilterSelect("Model")).not.toBeInTheDocument();
+    expect(queryFilterSelect("Model")).toBeInTheDocument();
     expect(queryFilterSelect("Material")).not.toBeInTheDocument();
     expect(queryFilterSelect("Thrill Level")).not.toBeInTheDocument();
   });

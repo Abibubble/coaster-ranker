@@ -96,7 +96,7 @@ export default function UploadManual() {
     isLoading: isLoadingManufacturers,
     error: manufacturerError,
     hasMinCharacters: hasMinCharactersManufacturer,
-  } = useManufacturerAutocomplete(formData.manufacturer);
+  } = useManufacturerAutocomplete(formData.manufacturer, rideType);
 
   // Model autocomplete functionality
   const {
@@ -538,28 +538,29 @@ export default function UploadManual() {
                   />
                 </Styled.FormGroup>
 
-                {rideType === "coaster" && (
-                  <Styled.FormGroup>
-                    <ModelAutocompleteInput
-                      value={formData.model || ""}
-                      onChange={handleModelChange}
-                      onSuggestionSelect={handleModelSelection}
-                      suggestions={modelSuggestions}
-                      placeholder={
-                        hasManufacturer
-                          ? "e.g. Euro-Fighter"
-                          : "Select manufacturer first"
-                      }
-                      label="Model"
-                      id="ride-model"
-                      autoComplete="off"
-                      data-form-type="other"
-                      isLoading={isLoadingModels}
-                      error={modelError}
-                      hasMinCharacters={hasMinCharactersModel}
-                    />
-                  </Styled.FormGroup>
-                )}
+                <Styled.FormGroup>
+                  <ModelAutocompleteInput
+                    value={formData.model || ""}
+                    onChange={handleModelChange}
+                    onSuggestionSelect={handleModelSelection}
+                    suggestions={modelSuggestions}
+                    placeholder={
+                      !hasManufacturer
+                        ? "Select manufacturer first"
+                        : rideType === "dark-ride"
+                          ? "e.g. Omnimover"
+                          : "e.g. Euro-Fighter"
+                    }
+                    label="Model"
+                    id="ride-model"
+                    autoComplete="off"
+                    data-form-type="other"
+                    isLoading={isLoadingModels}
+                    error={modelError}
+                    hasMinCharacters={hasMinCharactersModel}
+                    showAllOnFocusWhenEmpty
+                  />
+                </Styled.FormGroup>
               </Styled.FormRow>
 
               {/* Material - only for coasters */}

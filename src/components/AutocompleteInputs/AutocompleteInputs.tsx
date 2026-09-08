@@ -162,6 +162,7 @@ export interface ModelAutocompleteInputProps {
   isLoading?: boolean;
   error?: string | null;
   hasMinCharacters?: boolean;
+  showAllOnFocusWhenEmpty?: boolean;
   "aria-label"?: string;
   "data-form-type"?: string;
 }

@@ -80,7 +80,6 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
   onCountrySelection,
   autocomplete,
 }) => {
-  const hasModel = rideType === "coaster";
   const hasMaterial = rideType === "coaster";
   const hasThrillLevel = rideType === "coaster";
 
@@ -148,23 +147,24 @@ export const CoasterEditForm: React.FC<CoasterEditFormProps> = ({
           />
         </Styled.FormField>
 
-        {hasModel && (
-          <Styled.FormField>
-            <Styled.FormLabel>Model</Styled.FormLabel>
-            <ModelAutocompleteInput
-              value={editForm.model}
-              onChange={(value) => onFormChange("model", value)}
-              suggestions={autocomplete.model.suggestions}
-              placeholder="e.g. Invert"
-              label=""
-              id="edit-model"
-              autoComplete="off"
-              isLoading={autocomplete.model.isLoading}
-              error={autocomplete.model.error}
-              hasMinCharacters={autocomplete.model.hasMinCharacters}
-            />
-          </Styled.FormField>
-        )}
+        <Styled.FormField>
+          <Styled.FormLabel>Model</Styled.FormLabel>
+          <ModelAutocompleteInput
+            value={editForm.model}
+            onChange={(value) => onFormChange("model", value)}
+            suggestions={autocomplete.model.suggestions}
+            placeholder={
+              rideType === "dark-ride" ? "e.g. Omnimover" : "e.g. Invert"
+            }
+            label=""
+            id="edit-model"
+            autoComplete="off"
+            isLoading={autocomplete.model.isLoading}
+            error={autocomplete.model.error}
+            hasMinCharacters={autocomplete.model.hasMinCharacters}
+            showAllOnFocusWhenEmpty
+          />
+        </Styled.FormField>
 
         <Styled.FormField>
           <Styled.FormLabel>Country *</Styled.FormLabel>

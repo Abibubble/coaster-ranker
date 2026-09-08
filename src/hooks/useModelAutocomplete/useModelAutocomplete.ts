@@ -65,13 +65,7 @@ export default function useModelAutocomplete(
 
   const suggestions = useMemo(() => {
     // If no manufacturer is selected, don't show any suggestions
-    if (!selectedManufacturer.trim() || !value || manufacturers.length === 0) {
-      return [];
-    }
-
-    const searchTerm = normalizeForSearch(value.trim());
-
-    if (searchTerm.length < minCharacters) {
+    if (!selectedManufacturer.trim() || manufacturers.length === 0) {
       return [];
     }
 
@@ -91,12 +85,34 @@ export default function useModelAutocomplete(
     }
 
     // Get the appropriate models array based on ride type
-    const modelsArray =
+    const modelsArray = (
       rideType === "dark-ride"
         ? manufacturerData.darkRideModels || []
-        : manufacturerData.models || [];
+        : manufacturerData.models || []
+    ).filter((model) => model.trim().length > 0);
 
     if (modelsArray.length === 0) {
+      return [];
+    }
+
+    const toSuggestion = (model: string): ModelSuggestion => ({
+      model,
+      manufacturer: manufacturerData.manufacturer,
+      id: model.replace(/[^a-zA-Z0-9]/g, "-").toLowerCase(),
+    });
+
+    // With a manufacturer selected but nothing typed yet, offer every known
+    // model for that manufacturer as a browsable list - the user can still
+    // type a custom model name instead of picking one of these.
+    if (!value.trim()) {
+      return [...modelsArray]
+        .sort((a, b) => a.localeCompare(b))
+        .map(toSuggestion);
+    }
+
+    const searchTerm = normalizeForSearch(value.trim());
+
+    if (searchTerm.length < minCharacters) {
       return [];
     }
 
@@ -169,11 +185,7 @@ export default function useModelAutocomplete(
       }
 
       if (isMatch) {
-        matches.push({
-          model,
-          manufacturer: manufacturerData.manufacturer,
-          id: model.replace(/[^a-zA-Z0-9]/g, "-").toLowerCase(),
-        });
+        matches.push(toSuggestion(model));
 
         if (matches.length >= maxSuggestions) {
           break;
@@ -216,8 +228,12 @@ export default function useModelAutocomplete(
     rideType,
   ]);
 
-  const hasMinCharacters = value.length >= minCharacters;
   const hasManufacturer = selectedManufacturer.trim().length > 0;
+  // An empty field with a manufacturer already selected is allowed through
+  // too, so focusing it can browse every known model for that manufacturer
+  // rather than needing to type something first.
+  const hasMinCharacters =
+    value.length >= minCharacters || (hasManufacturer && value.length === 0);
 
   return {
     suggestions,

@@ -18,6 +18,8 @@ const mockManufacturers: ManufacturerData[] = [
   { manufacturer: "Custom Coasters International" },
   { manufacturer: "Philadelphia Toboggan Coasters, Inc." },
   { manufacturer: "S&S Sansei", alternateNames: ["S&S Worldwide"] },
+  { manufacturer: "Vekoma", darkRideModels: ["Mad House", "Omnimover"] },
+  { manufacturer: "Some Obscure Dark Ride Maker", darkRideModels: [""] },
 ];
 
 describe("useManufacturerAutocomplete", () => {
@@ -105,6 +107,78 @@ describe("useManufacturerAutocomplete", () => {
         result.current.suggestions.some(
           (s) => s.manufacturer === "Rocky Mountain Construction",
         ),
+      ).toBe(true);
+    });
+  });
+
+  describe("rideType filtering", () => {
+    it("suggests coaster-only manufacturers (no darkRideModels field) when rideType is coaster", async () => {
+      const { result } = renderHook(() =>
+        useManufacturerAutocomplete("bolliger", "coaster"),
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(
+        result.current.suggestions.some(
+          (s) => s.manufacturer === "Bolliger & Mabillard",
+        ),
+      ).toBe(true);
+    });
+
+    it("excludes manufacturers with no darkRideModels field when rideType is dark-ride", async () => {
+      const { result } = renderHook(() =>
+        useManufacturerAutocomplete("bolliger", "dark-ride"),
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.suggestions).toEqual([]);
+    });
+
+    it("includes a manufacturer with populated darkRideModels when rideType is dark-ride", async () => {
+      const { result } = renderHook(() =>
+        useManufacturerAutocomplete("vekoma", "dark-ride"),
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(
+        result.current.suggestions.some((s) => s.manufacturer === "Vekoma"),
+      ).toBe(true);
+    });
+
+    it("includes a manufacturer with only a placeholder/empty darkRideModels array, since the field is present", async () => {
+      const { result } = renderHook(() =>
+        useManufacturerAutocomplete("obscure", "dark-ride"),
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(
+        result.current.suggestions.some(
+          (s) => s.manufacturer === "Some Obscure Dark Ride Maker",
+        ),
+      ).toBe(true);
+    });
+
+    it("defaults to coaster behaviour (no dark-ride filtering) when rideType is omitted", async () => {
+      const { result } = renderHook(() => useManufacturerAutocomplete("intamin"));
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(
+        result.current.suggestions.some((s) => s.manufacturer === "Intamin"),
       ).toBe(true);
     });
   });
