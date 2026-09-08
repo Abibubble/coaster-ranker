@@ -1,12 +1,31 @@
 import { useState, useEffect, useMemo } from "react";
 import { buildManufacturerAliasMap } from "../../utils/manufacturerGrouping";
 
+// Common short names/initialisms that don't naturally line up with the
+// "initials of each word" heuristic below - typed as one word (e.g. "b&m",
+// "rmc"), they expand to the full manufacturer name before matching, the
+// same approach useParkAutocomplete uses for park abbreviations like "ioa".
+const ABBREVIATIONS: Record<string, string> = {
+  "b&m": "bolliger & mabillard",
+  rmc: "rocky mountain construction",
+  gci: "great coasters international",
+  cci: "custom coasters international",
+  ptc: "philadelphia toboggan coasters",
+  "s&s": "s&s sansei",
+};
+
 const normalizeForSearch = (text: string): string => {
   return text
     .toLowerCase()
     .replace(/['']/g, "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
+};
+
+const expandSearchTerms = (searchTerm: string): string => {
+  const words = searchTerm.split(/[\s-]+/);
+  const expandedWords = words.map((word) => ABBREVIATIONS[word] || word);
+  return expandedWords.join(" ");
 };
 
 export interface ManufacturerData {
@@ -68,7 +87,12 @@ export default function useManufacturerAutocomplete(
       return [];
     }
 
-    const searchWords = searchTerm
+    // Expand recognised short names (e.g. "b&m" -> "bolliger & mabillard")
+    // before matching, so typing a common abbreviation surfaces the full
+    // manufacturer name.
+    const expandedSearchTerm = expandSearchTerms(searchTerm);
+
+    const searchWords = expandedSearchTerm
       .split(/[\s-]+/)
       .filter((word) => word.length > 0);
 
@@ -85,13 +109,15 @@ export default function useManufacturerAutocomplete(
       let isMatch = false;
 
       // Direct name matching: manufacturer name starts with or contains the search term
-      if (manufacturerName.includes(searchTerm)) {
+      if (manufacturerName.includes(expandedSearchTerm)) {
         isMatch = true;
       }
 
       // Check if search term matches from start of any word
       if (!isMatch) {
-        isMatch = manufacturerWords.some((word) => word.startsWith(searchTerm));
+        isMatch = manufacturerWords.some((word) =>
+          word.startsWith(expandedSearchTerm),
+        );
       }
 
       // Multi-word matching: each search word matches start of consecutive manufacturer words
@@ -166,10 +192,14 @@ export default function useManufacturerAutocomplete(
       const aWords = aName.split(/[\s-]+/);
       const bWords = bName.split(/[\s-]+/);
 
-      const aExactStart = aName.startsWith(searchTerm);
-      const bExactStart = bName.startsWith(searchTerm);
-      const aWordStart = aWords.some((word) => word.startsWith(searchTerm));
-      const bWordStart = bWords.some((word) => word.startsWith(searchTerm));
+      const aExactStart = aName.startsWith(expandedSearchTerm);
+      const bExactStart = bName.startsWith(expandedSearchTerm);
+      const aWordStart = aWords.some((word) =>
+        word.startsWith(expandedSearchTerm),
+      );
+      const bWordStart = bWords.some((word) =>
+        word.startsWith(expandedSearchTerm),
+      );
 
       // Prioritize exact name starts
       if (aExactStart && !bExactStart) return -1;
