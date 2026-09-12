@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { spacing, textSpacing, colours, breakpoints } from '../../theme'
+import { spacing, textSpacing, colours, shadows, breakpoints } from '../../theme'
 import hyperiaImage from '../../assets/hyperia-thorpe-park.webp'
 
 export const Section = styled.section`
@@ -99,6 +99,15 @@ export const CTAButtonGroup = styled.div`
   @media (min-width: ${breakpoints.mobileLarge}) {
     flex-direction: row;
   }
+
+  /* The hero background is a purple gradient + a purple-toned photo, so the
+     buttons need their own edge definition rather than relying on hue
+     contrast against whatever happens to be behind them. */
+  > a,
+  > button {
+    border-color: ${colours.white};
+    box-shadow: ${shadows.heavy};
+  }
 `
 
 export const FeaturesSection = styled.section`
@@ -139,7 +148,7 @@ export const FeatureGrid = styled.div`
 export const FeatureCard = styled.div`
   background: linear-gradient(
     135deg,
-    ${colours.white} 0%,
+    ${colours.surface} 0%,
     ${colours.paleGrey} 100%
   );
   border: 1px solid ${colours.borderGrey};

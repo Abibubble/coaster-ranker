@@ -14,7 +14,7 @@ function PrivacyPolicy() {
         </Text>
 
         <Styled.Section>
-          <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
+          <Text as='h2' bold colour='charcoal' fontSize='large' mb='medium'>
             Data Collection
           </Text>
           <Text as='p' mb='small'>
@@ -39,7 +39,7 @@ function PrivacyPolicy() {
         </Styled.Section>
 
         <Styled.Section>
-          <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
+          <Text as='h2' bold colour='charcoal' fontSize='large' mb='medium'>
             How Your Data is Used
           </Text>
           <Text as='p' mb='small'>
@@ -58,7 +58,7 @@ function PrivacyPolicy() {
         </Styled.Section>
 
         <Styled.Section>
-          <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
+          <Text as='h2' bold colour='charcoal' fontSize='large' mb='medium'>
             Data Storage and Security
           </Text>
           <Styled.List>
@@ -78,7 +78,7 @@ function PrivacyPolicy() {
         </Styled.Section>
 
         <Styled.Section>
-          <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
+          <Text as='h2' bold colour='charcoal' fontSize='large' mb='medium'>
             Third-Party Services
           </Text>
           <Text as='p' mb='medium'>
@@ -90,7 +90,7 @@ function PrivacyPolicy() {
         </Styled.Section>
 
         <Styled.Section>
-          <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
+          <Text as='h2' bold colour='charcoal' fontSize='large' mb='medium'>
             Your Rights
           </Text>
           <Text as='p' mb='small'>
@@ -113,7 +113,7 @@ function PrivacyPolicy() {
           </Styled.List>
         </Styled.Section>
         <Styled.Section>
-          <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
+          <Text as='h2' bold colour='charcoal' fontSize='large' mb='medium'>
             How to Clear Your Data
           </Text>
           <Text as='p' mb='small'>
@@ -148,7 +148,7 @@ function PrivacyPolicy() {
         </Styled.Section>
 
         <Styled.Section>
-          <Text as='h2' bold colour='darkGrey' fontSize='large' mb='medium'>
+          <Text as='h2' bold colour='charcoal' fontSize='large' mb='medium'>
             Changes to This Policy
           </Text>
           <Text as='p' mb='medium'>

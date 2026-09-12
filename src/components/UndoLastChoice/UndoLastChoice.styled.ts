@@ -90,9 +90,9 @@ export const UndoButton = styled.button`
   }
 
   &:focus {
-    outline: 2px solid ${colours.darkGrey};
+    outline: 2px solid ${colours.accentText};
     outline-offset: 2px;
-    border-color: ${colours.darkGrey};
+    border-color: ${colours.accentText};
     box-shadow: 0 0 0 3px ${colours.veryLightGrey};
   }
 

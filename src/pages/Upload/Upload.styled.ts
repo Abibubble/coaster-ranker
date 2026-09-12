@@ -33,7 +33,7 @@ export const UploadButton = styled.div`
   display: block;
   text-decoration: none;
   color: inherit;
-  background-color: ${colours.white};
+  background-color: ${colours.surface};
   border: ${spacing.mini} solid ${colours.borderGrey};
   border-radius: ${spacing.tiny};
   text-align: center;
@@ -52,13 +52,13 @@ export const UploadButton = styled.div`
   }
 
   &:hover {
-    border-color: ${colours.blue};
+    border-color: ${colours.accentText};
     box-shadow: 0 ${spacing.fine} ${spacing.small} ${colours.shadowLight};
     transform: translateY(-${spacing.mini});
   }
 
   &:focus {
-    outline: ${spacing.mini} solid ${colours.blue};
+    outline: ${spacing.mini} solid ${colours.accentText};
     outline-offset: ${spacing.mini};
   }
 

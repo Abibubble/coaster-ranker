@@ -67,14 +67,14 @@ export default function PreRankingQuestion({
           <Styled.ButtonContainer>
             <Styled.ActionButton
               onClick={() => onAnswer(false)}
-              variant="success"
+              variant="default"
               aria-label="Continue with upload"
             >
               Continue Upload
             </Styled.ActionButton>
 
             <Button
-              variant="disabled"
+              variant="destructive"
               onClick={onCancel}
               aria-label="Cancel upload"
             >
@@ -126,7 +126,7 @@ export default function PreRankingQuestion({
         <Styled.ButtonContainer>
           <Styled.ActionButton
             onClick={() => onAnswer(true)}
-            variant="success"
+            variant="default"
             aria-label="Yes, these coasters are already ranked in order"
           >
             Yes, already ranked
@@ -141,7 +141,7 @@ export default function PreRankingQuestion({
           </Styled.ActionButton>
 
           <Button
-            variant="disabled"
+            variant="destructive"
             onClick={onCancel}
             aria-label="Cancel upload"
           >

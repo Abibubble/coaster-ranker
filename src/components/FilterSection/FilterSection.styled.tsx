@@ -32,11 +32,11 @@ export const FilterToggle = styled.button`
   min-height: auto;
 
   &:hover {
-    color: ${colours.blue};
+    color: ${colours.accentText};
   }
 
   &:focus {
-    outline: 2px solid ${colours.blue};
+    outline: 2px solid ${colours.accentText};
     outline-offset: 2px;
   }
 
@@ -97,7 +97,7 @@ export const FilterSelect = styled.select`
   padding: ${spacing.small};
   border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.tiny};
-  background-color: ${colours.white};
+  background-color: ${colours.surface};
   color: ${colours.charcoal};
   font-size: ${fonts.body};
   cursor: pointer;
@@ -112,14 +112,14 @@ export const FilterSelect = styled.select`
   padding-right: ${spacing.large};
 
   &:hover {
-    border-color: ${colours.blue};
+    border-color: ${colours.accentText};
     box-shadow: 0 2px 4px ${colours.shadowMedium};
   }
 
   &:focus {
     outline: none;
-    border-color: ${colours.blue};
-    box-shadow: 0 0 0 2px ${colours.blue}20;
+    border-color: ${colours.accentText};
+    box-shadow: 0 0 0 2px color-mix(in srgb, ${colours.accentText} 12.5%, transparent);
   }
 
   @media (min-width: ${breakpoints.mobileLarge}) {

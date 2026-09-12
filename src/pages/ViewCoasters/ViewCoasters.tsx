@@ -29,6 +29,7 @@ import {
   removeCoaster,
   updateCoaster,
   markCoasterAsNumberZero,
+  unmarkNumberZero,
   getRemovalConfirmationMessage,
   hasAnyRanking,
 } from "../../utils";
@@ -65,7 +66,10 @@ export default function ViewCoasters() {
   const [statusMessage, setStatusMessage] = useState<string>("");
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
   const [isSortModalOpen, setIsSortModalOpen] = useState<boolean>(false);
-  const [isSimplifiedView, setIsSimplifiedView] = useState<boolean>(false);
+  const [isInformationView, setIsInformationView] = useState<boolean>(false);
+  const [expandedCoasterIds, setExpandedCoasterIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   // Data setup
   const currentData = rideType === "coaster" ? uploadedData : darkRideData;
@@ -160,9 +164,7 @@ export default function ViewCoasters() {
     if (!currentData) return;
 
     const coaster = currentData.coasters.find((c) => c.id === coasterId);
-    const updatedData = updateCoaster(currentData, coasterId, {
-      isNumberZero: false,
-    });
+    const updatedData = unmarkNumberZero(currentData, coasterId);
 
     setCurrentData(updatedData);
     setStatusMessage(
@@ -219,7 +221,7 @@ export default function ViewCoasters() {
 
     updatedData = editForm.isNumberZero
       ? markCoasterAsNumberZero(updatedData, editingCoasterId)
-      : updateCoaster(updatedData, editingCoasterId, { isNumberZero: false });
+      : unmarkNumberZero(updatedData, editingCoasterId);
 
     setCurrentData(updatedData);
     cancelEditing();
@@ -243,6 +245,75 @@ export default function ViewCoasters() {
   const handleCountrySelection = (suggestion: { country: string }) => {
     updateEditForm("country", suggestion.country);
   };
+
+  const toggleExpanded = (coasterId: string) => {
+    setExpandedCoasterIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(coasterId)) {
+        next.delete(coasterId);
+      } else {
+        next.add(coasterId);
+      }
+      return next;
+    });
+  };
+
+  const renderCoasterCard = (
+    coaster: (typeof sortedCoasters)[number],
+    onCollapse?: () => void,
+  ) => (
+    <Styled.CoasterCardContainer key={coaster.id}>
+      <CoasterCard
+        coaster={coaster}
+        rideType={rideType}
+        isEditing={isEditing(coaster.id)}
+        editForm={editForm}
+        isRanked={shouldShowRankings}
+        onEdit={() => startEditing(coaster)}
+        onRemove={() => handleRemoveCoaster(coaster.id)}
+        onCollapse={onCollapse}
+        onUnmarkNumberZero={
+          coaster.isNumberZero
+            ? () => handleUnmarkNumberZero(coaster.id)
+            : undefined
+        }
+        onFieldClick={handleFieldClick}
+        onFormChange={updateEditForm}
+        onToggleNumberZero={setEditFormNumberZero}
+        onSaveEdit={handleSaveEdit}
+        onCancelEdit={cancelEditing}
+        onParkSelection={handleParkSelection}
+        onCountrySelection={handleCountrySelection}
+        autocomplete={{
+          park: {
+            suggestions: parkAutocomplete.suggestions,
+            isLoading: parkAutocomplete.isLoading,
+            error: parkAutocomplete.error,
+            hasMinCharacters: parkAutocomplete.hasMinCharacters,
+          },
+          country: {
+            suggestions: countryAutocomplete.suggestions,
+            isLoading: countryAutocomplete.isLoading,
+            error: countryAutocomplete.error,
+            hasMinCharacters: countryAutocomplete.hasMinCharacters,
+          },
+          manufacturer: {
+            suggestions: manufacturerAutocomplete.suggestions,
+            isLoading: manufacturerAutocomplete.isLoading,
+            error: manufacturerAutocomplete.error,
+            hasMinCharacters: manufacturerAutocomplete.hasMinCharacters,
+          },
+          model: {
+            suggestions: modelAutocomplete.suggestions,
+            isLoading: modelAutocomplete.isLoading,
+            error: modelAutocomplete.error,
+            hasMinCharacters: modelAutocomplete.hasMinCharacters,
+            hasManufacturer: modelAutocomplete.hasManufacturer,
+          },
+        }}
+      />
+    </Styled.CoasterCardContainer>
+  );
 
   // Render empty state if no coasters
   if (allCoasters.length === 0) {
@@ -280,7 +351,7 @@ export default function ViewCoasters() {
           )}
           {sortedCoasters.length !== allCoasters.length && (
             <Text as="p" colour="mediumGrey" mb="small">
-              <Text colour="darkGrey">
+              <Text colour="charcoal">
                 (Showing {sortedCoasters.length} after filtering)
               </Text>
             </Text>
@@ -358,80 +429,33 @@ export default function ViewCoasters() {
           <Styled.CheckboxLabel>
             <input
               type="checkbox"
-              checked={isSimplifiedView}
-              onChange={(e) => setIsSimplifiedView(e.target.checked)}
+              checked={isInformationView}
+              onChange={(e) => setIsInformationView(e.target.checked)}
             />
-            Simple view
+            Information view
           </Styled.CheckboxLabel>
         </Styled.ViewToggle>
 
         {/* Coaster Grid */}
-        {isSimplifiedView ? (
-          <Styled.SimplifiedGrid>
-            {sortedCoasters.map((coaster) => (
-              <SimplifiedCoasterItem
-                key={coaster.id}
-                coaster={coaster}
-                isRanked={shouldShowRankings}
-              />
-            ))}
-          </Styled.SimplifiedGrid>
-        ) : (
+        {isInformationView ? (
           <Styled.CoastersGrid>
-            {sortedCoasters.map((coaster) => (
-              <Styled.CoasterCardContainer key={coaster.id}>
-                <CoasterCard
-                  coaster={coaster}
-                  rideType={rideType}
-                  isEditing={isEditing(coaster.id)}
-                  editForm={editForm}
-                  isRanked={shouldShowRankings}
-                  onEdit={() => startEditing(coaster)}
-                  onRemove={() => handleRemoveCoaster(coaster.id)}
-                  onUnmarkNumberZero={
-                    coaster.isNumberZero
-                      ? () => handleUnmarkNumberZero(coaster.id)
-                      : undefined
-                  }
-                  onFieldClick={handleFieldClick}
-                  onFormChange={updateEditForm}
-                  onToggleNumberZero={setEditFormNumberZero}
-                  onSaveEdit={handleSaveEdit}
-                  onCancelEdit={cancelEditing}
-                  onParkSelection={handleParkSelection}
-                  onCountrySelection={handleCountrySelection}
-                  autocomplete={{
-                    park: {
-                      suggestions: parkAutocomplete.suggestions,
-                      isLoading: parkAutocomplete.isLoading,
-                      error: parkAutocomplete.error,
-                      hasMinCharacters: parkAutocomplete.hasMinCharacters,
-                    },
-                    country: {
-                      suggestions: countryAutocomplete.suggestions,
-                      isLoading: countryAutocomplete.isLoading,
-                      error: countryAutocomplete.error,
-                      hasMinCharacters: countryAutocomplete.hasMinCharacters,
-                    },
-                    manufacturer: {
-                      suggestions: manufacturerAutocomplete.suggestions,
-                      isLoading: manufacturerAutocomplete.isLoading,
-                      error: manufacturerAutocomplete.error,
-                      hasMinCharacters:
-                        manufacturerAutocomplete.hasMinCharacters,
-                    },
-                    model: {
-                      suggestions: modelAutocomplete.suggestions,
-                      isLoading: modelAutocomplete.isLoading,
-                      error: modelAutocomplete.error,
-                      hasMinCharacters: modelAutocomplete.hasMinCharacters,
-                      hasManufacturer: modelAutocomplete.hasManufacturer,
-                    },
-                  }}
-                />
-              </Styled.CoasterCardContainer>
-            ))}
+            {sortedCoasters.map((coaster) => renderCoasterCard(coaster))}
           </Styled.CoastersGrid>
+        ) : (
+          <Styled.SimplifiedGrid>
+            {sortedCoasters.map((coaster) =>
+              expandedCoasterIds.has(coaster.id) ? (
+                renderCoasterCard(coaster, () => toggleExpanded(coaster.id))
+              ) : (
+                <SimplifiedCoasterItem
+                  key={coaster.id}
+                  coaster={coaster}
+                  isRanked={shouldShowRankings}
+                  onExpand={() => toggleExpanded(coaster.id)}
+                />
+              ),
+            )}
+          </Styled.SimplifiedGrid>
         )}
 
         <div>

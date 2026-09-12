@@ -67,7 +67,7 @@ export const CheckboxLabel = styled.label`
 const baseFormControlStyles = css`
   border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.fine};
-  background-color: ${colours.white};
+  background-color: ${colours.surface};
   box-sizing: border-box;
   min-height: ${spacing.tapTarget};
   width: 100%;
@@ -84,12 +84,12 @@ const baseFormControlStyles = css`
 
   &:focus {
     outline: none;
-    border-color: ${colours.blue};
+    border-color: ${colours.accentText};
     box-shadow: 0 0 0 ${spacing.mini} ${colours.shadowLight};
   }
 
   &:required {
-    border-left: ${spacing.fine} solid ${colours.blue};
+    border-left: ${spacing.fine} solid ${colours.accentText};
   }
 `
 

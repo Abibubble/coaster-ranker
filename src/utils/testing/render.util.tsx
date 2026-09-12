@@ -2,9 +2,10 @@ import { render, RenderOptions } from "@testing-library/react";
 import React, { ReactElement } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { DataProvider } from "../../contexts/DataContext";
+import { ThemeProvider } from "../../contexts/ThemeContext";
 
 /**
- * Custom render function that includes DataProvider and Router
+ * Custom render function that includes ThemeProvider, DataProvider and Router
  * Wraps components with necessary providers for testing
  */
 export const customRender = (
@@ -12,9 +13,11 @@ export const customRender = (
   options?: Omit<RenderOptions, "wrapper">,
 ) => {
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
-    <MemoryRouter>
-      <DataProvider>{children}</DataProvider>
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <DataProvider>{children}</DataProvider>
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   return render(ui, { wrapper: Wrapper, ...options });

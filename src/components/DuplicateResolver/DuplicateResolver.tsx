@@ -68,7 +68,7 @@ export default function DuplicateResolver({
   return (
     <Styled.DuplicateContainer>
       <Styled.DuplicateHeader>
-        <Text as="h3" colour="darkGrey" fontSize="large" mb="tiny">
+        <Text as="h3" colour="charcoal" fontSize="large" mb="tiny">
           Potential Duplicate Coasters Detected
         </Text>
         <Text as="p" colour="mediumGrey" fontSize="body">
@@ -81,7 +81,7 @@ export default function DuplicateResolver({
       {duplicates.map((duplicate, index) => (
         <Styled.DuplicateItem key={index}>
           <Styled.MatchInfo>
-            <Text bold colour="darkGrey" fontSize="body">
+            <Text bold colour="charcoal" fontSize="body">
               Match {index + 1}:{" "}
             </Text>
             <Text colour="mediumGrey" fontSize="body">
@@ -115,7 +115,7 @@ export default function DuplicateResolver({
             <Styled.DuplicateButton
               onClick={() => handleResolution("keep-new", index)}
               $isSelected={resolutions.get(index) === "keep-new"}
-              variant="success"
+              variant="warning"
             >
               Keep New Only
             </Styled.DuplicateButton>
@@ -146,7 +146,7 @@ export default function DuplicateResolver({
           >
             Confirm Choices
           </Styled.DuplicateButton>
-          <Styled.DuplicateButton onClick={onCancel} variant="disabled">
+          <Styled.DuplicateButton onClick={onCancel} variant="destructive">
             Cancel Upload
           </Styled.DuplicateButton>
         </Styled.ActionButtonsRow>

@@ -12,7 +12,7 @@ interface StyledTextProps {
 }
 
 export const StyledText = styled.span<StyledTextProps>`
-  color: ${({ $colour }) => ($colour ? colours[$colour] : colours.black)};
+  color: ${({ $colour }) => ($colour ? colours[$colour] : colours.charcoal)};
   font-size: ${({ $fontSize }) => ($fontSize ? fonts[$fontSize] : fonts.body)};
   text-align: ${({ $center }) => ($center ? 'center' : 'left')};
   margin-bottom: ${({ $mb }) => ($mb ? spacing[$mb] : '0')};

@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
 import { SimplifiedCoasterItem } from "./SimplifiedCoasterItem";
 import { Coaster } from "../../types/data";
@@ -62,5 +63,47 @@ describe("SimplifiedCoasterItem", () => {
     render(<SimplifiedCoasterItem coaster={coaster} isRanked={false} />);
     expect(screen.getByText("Steel Vengeance")).toBeInTheDocument();
     expect(screen.getByText("Cedar Point")).toBeInTheDocument();
+  });
+
+  it("renders as a plain (non-interactive) row when onExpand is not provided", () => {
+    render(<SimplifiedCoasterItem coaster={coaster} isRanked={false} />);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
+  it("renders as a focusable button and calls onExpand when clicked", async () => {
+    const user = userEvent.setup();
+    const onExpand = vi.fn();
+    render(
+      <SimplifiedCoasterItem
+        coaster={coaster}
+        isRanked={false}
+        onExpand={onExpand}
+      />,
+    );
+
+    const button = screen.getByRole("button", {
+      name: "Show full details for Steel Vengeance at Cedar Point",
+    });
+    expect(button).toHaveAttribute("aria-expanded", "false");
+
+    await user.click(button);
+    expect(onExpand).toHaveBeenCalledTimes(1);
+  });
+
+  it("supports keyboard activation when onExpand is provided", async () => {
+    const user = userEvent.setup();
+    const onExpand = vi.fn();
+    render(
+      <SimplifiedCoasterItem
+        coaster={coaster}
+        isRanked={false}
+        onExpand={onExpand}
+      />,
+    );
+
+    await user.tab();
+    expect(screen.getByRole("button")).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(onExpand).toHaveBeenCalledTimes(1);
   });
 });

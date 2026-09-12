@@ -35,7 +35,7 @@ export const NumberZeroSection = styled.div`
   text-align: left;
   background: ${colours.veryLightBlue};
   border-radius: ${spacing.tiny};
-  border-left: ${spacing.fine} solid ${colours.blue};
+  border-left: ${spacing.fine} solid ${colours.accentText};
   padding: ${spacing.small};
   margin: ${spacing.small} 0;
 
@@ -49,11 +49,81 @@ export const NumberZeroSection = styled.div`
   }
 `
 
+export const NumberZeroRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${spacing.medium};
+  flex-wrap: wrap;
+`
+
+export const NumberZeroOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing.tiny};
+  margin-bottom: ${spacing.large};
+`
+
+export const NumberZeroOption = styled.button<{ $isActive: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${spacing.small} ${spacing.medium};
+  background-color: ${({ $isActive }) =>
+    $isActive ? colours.veryLightBlue : "transparent"};
+  border: ${spacing.micro} solid
+    ${({ $isActive }) => ($isActive ? colours.accentText : colours.borderGrey)};
+  border-radius: ${spacing.tiny};
+  cursor: pointer;
+  font-size: ${fonts.medium};
+  color: ${colours.charcoal};
+  text-align: left;
+  width: 100%;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${({ $isActive }) =>
+      $isActive ? colours.veryLightBlue : colours.veryLightGrey};
+    border-color: ${colours.accentText};
+  }
+
+  &:focus {
+    outline: 2px solid ${colours.accentText};
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+`
+
+export const NumberZeroOptionLabel = styled.span`
+  display: block;
+`
+
+export const CheckIcon = styled.span`
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%236d28d9' d='M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  flex-shrink: 0;
+`
+
+export const ModalActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: ${spacing.medium};
+  padding-top: ${spacing.medium};
+  border-top: ${spacing.micro} solid ${colours.borderGrey};
+`
+
 export const RankingComplete = styled.div`
   text-align: center;
-  background: ${colours.successBg};
+  background: ${colours.veryLightBlue};
   border-radius: ${spacing.tiny};
-  border-left: ${spacing.fine} solid ${colours.lightGreen};
+  border-left: ${spacing.fine} solid ${colours.accentText};
 
   /* Mobile-first: small padding for mobile */
   padding: ${textSpacing.small};
@@ -138,7 +208,7 @@ export const EditableItem = styled.li`
   margin-bottom: ${spacing.small};
   border: 1px solid ${colours.lightGrey};
   border-radius: 6px;
-  background: ${colours.white};
+  background: ${colours.surface};
   box-shadow: 0 1px 3px ${colours.shadowLight};
   transition: border-color 0.2s ease;
 
@@ -156,12 +226,12 @@ export const EditableItem = styled.li`
   }
 
   &:hover {
-    border-color: ${colours.blue};
+    border-color: ${colours.accentText};
   }
 
   &:focus-within {
-    border-color: ${colours.blue};
-    box-shadow: 0 0 0 2px ${colours.veryLightBlue};
+    border-color: ${colours.accentText};
+    box-shadow: 0 0 0 2px color-mix(in srgb, ${colours.accentText} 20%, transparent);
   }
 `
 
@@ -222,7 +292,7 @@ export const MoveButtons = styled.div`
 export const MoveButton = styled.button`
   background: ${colours.darkGrey};
   color: ${colours.white};
-  border: 2px solid transparent;
+  border: 2px solid ${colours.borderGrey};
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
@@ -251,8 +321,8 @@ export const MoveButton = styled.button`
 
   &:focus {
     outline: none;
-    border-color: ${colours.blue};
-    box-shadow: 0 0 0 3px ${colours.veryLightBlue};
+    border-color: ${colours.accentText};
+    box-shadow: 0 0 0 3px color-mix(in srgb, ${colours.accentText} 30%, transparent);
   }
 
   &:active {
@@ -272,20 +342,20 @@ export const ViewAllLink = styled.div`
 
   /* Override Link component styling for this specific use case */
   a {
-    color: ${colours.darkBlue} !important;
+    color: ${colours.accentText} !important;
     text-decoration: underline !important;
 
     &:hover {
-      color: ${colours.darkerBlue} !important;
+      color: ${colours.accentText} !important;
       text-decoration: underline !important;
     }
 
     &:visited {
-      color: ${colours.darkBlue} !important;
+      color: ${colours.accentText} !important;
     }
 
     &:focus {
-      color: ${colours.darkerBlue} !important;
+      color: ${colours.accentText} !important;
       text-decoration: underline !important;
     }
   }

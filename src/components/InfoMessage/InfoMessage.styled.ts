@@ -12,7 +12,9 @@ export const InfoMessage = styled(Text).withConfig({
   $borderColour: string
 }>`
   background-color: ${({ $bgColour }) => $bgColour};
-  border: ${spacing.micro} solid ${({ $borderColour }) => $borderColour};
+  border-width: ${spacing.micro};
+  border-style: solid;
+  border-color: ${({ $borderColour }) => $borderColour};
   border-radius: ${spacing.fine};
   padding: ${spacing.small};
   display: flex;

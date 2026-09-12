@@ -809,5 +809,106 @@ describe("undo", () => {
       confirmSpy.mockRestore();
       vi.unstubAllGlobals();
     });
+
+    it("regression: removes the newly-chosen Number 0 from the ranking immediately, closing the gap, without needing a second change", async () => {
+      // Regression for a bug where useSimpleRanking's ranking engine (built
+      // once from the initial coaster set, only reinitialized when the *set*
+      // of ids changes) stayed stale after a Number 0 change. Replacing an
+      // EXISTING Number 0 demotes it to genuinely unranked (no rankPosition,
+      // isNumberZero: false) as a side effect, which made Rank.tsx's derived
+      // isAlreadyRanked flip false for a tick, re-firing the "mark ranking
+      // complete" effect with the stale engine's original finalRanking and
+      // silently overwriting the fresh rankPosition changes a moment later -
+      // hence needing a *second* change to "stick". A first-time Number 0
+      // assignment (no existing one to demote) doesn't trigger this at all,
+      // so the pre-existing Number 0 here is essential to the repro.
+      const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
+      seedData(
+        "coaster",
+        [
+          makeCoaster({ id: "1", name: "Alpha", rankPosition: 1 }),
+          makeCoaster({ id: "2", name: "Bravo", rankPosition: 2 }),
+          makeCoaster({ id: "3", name: "Charlie", rankPosition: 3 }),
+          makeCoaster({ id: "4", name: "Delta", isNumberZero: true }),
+        ],
+        { isRanked: true, rankedCoasters: ["1", "2", "3"] },
+      );
+      render(<Rank />);
+      await screen.findByText("Ranking Complete!");
+
+      const user = userEvent.setup();
+      await user.click(screen.getByRole("button", { name: "Change" }));
+      await user.click(
+        screen.getByRole("button", { name: /Alpha at Test Park/ }),
+      );
+
+      expect(confirmSpy).toHaveBeenCalled();
+
+      const stored = JSON.parse(
+        localStorage.getItem("coaster-ranker-data") || "{}",
+      );
+      const alpha = stored.coasters.find((c: Coaster) => c.id === "1");
+      const bravo = stored.coasters.find((c: Coaster) => c.id === "2");
+      const charlie = stored.coasters.find((c: Coaster) => c.id === "3");
+      const delta = stored.coasters.find((c: Coaster) => c.id === "4");
+
+      expect(alpha.isNumberZero).toBe(true);
+      expect(alpha.rankPosition).toBeUndefined();
+      // Bravo/Charlie close the gap Alpha left behind.
+      expect(bravo.rankPosition).toBe(1);
+      expect(charlie.rankPosition).toBe(2);
+      expect(delta.isNumberZero).toBe(false);
+
+      confirmSpy.mockRestore();
+    });
+
+    it("regression: persists a freshly-completed comparison for a re-ranked coaster even when rankingMetadata.isRanked was stuck true from an earlier incomplete state", async () => {
+      // Regression for a real corrupted-data bug: a Number 0 swap left one
+      // coaster genuinely unranked (no rankPosition) while rankingMetadata's
+      // isRanked flag stayed stuck at true from before the swap - exactly
+      // what happens if isRanked isn't recomputed when applyRankOrder
+      // touches rankedCoasters. This is the same shape of data a real user
+      // reported: an existing Number 0, one genuinely-unranked coaster, one
+      // ranked coaster, and a stale isRanked: true that only lists the
+      // ranked one. Gating "mark ranking complete" on that stale flag (as an
+      // earlier fix did) meant that even after the user completed the one
+      // needed live comparison, the result never got persisted - only the
+      // already-ranked coaster ever showed up afterward.
+      seedData(
+        "dark-ride",
+        [
+          makeCoaster({ id: "1", name: "Alpha", isNumberZero: true }),
+          makeCoaster({ id: "2", name: "Bravo" }), // genuinely unranked
+          makeCoaster({ id: "3", name: "Charlie", rankPosition: 1 }),
+        ],
+        { isRanked: true, rankedCoasters: ["3"] },
+      );
+
+      render(<Rank />);
+
+      const user = userEvent.setup();
+      const rideTypeToggle = screen.getByRole("tab", { name: /dark ride/i });
+      await user.click(rideTypeToggle);
+
+      // No Number 0 offer here - one already exists (Alpha), and the offer
+      // never appears while that's true.
+      const [chooseFirst] = await screen.findAllByRole("button", {
+        name: /^Choose .* as your favorite$/,
+      });
+      await user.click(chooseFirst);
+
+      await screen.findByText("Ranking Complete!");
+
+      const stored = JSON.parse(
+        localStorage.getItem("coaster-ranker-dark-rides") || "{}",
+      );
+      const bravo = stored.coasters.find((c: Coaster) => c.id === "2");
+      const charlie = stored.coasters.find((c: Coaster) => c.id === "3");
+
+      expect(bravo.rankPosition).toBeDefined();
+      expect(charlie.rankPosition).toBeDefined();
+      expect(stored.rankingMetadata.isRanked).toBe(true);
+      expect(stored.rankingMetadata.rankedCoasters).toHaveLength(2);
+    });
   });
 });

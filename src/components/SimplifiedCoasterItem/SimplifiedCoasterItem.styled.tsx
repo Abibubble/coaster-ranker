@@ -6,15 +6,31 @@ export const SimplifiedItem = styled.div`
   grid-template-columns: auto 1fr auto;
   gap: ${spacing.tiny};
   align-items: center;
+  width: 100%;
   padding: ${spacing.small};
-  background: ${colours.white};
+  background: ${colours.surface};
   border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.tiny};
+  font-family: inherit;
+  text-align: left;
   transition: all 0.2s ease;
 
   &:hover {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
+  }
+
+  &[type='button'] {
+    cursor: pointer;
+  }
+
+  &[type='button']:hover {
+    border-color: ${colours.accentText};
+  }
+
+  &[type='button']:focus {
+    outline: 2px solid ${colours.accentText};
+    outline-offset: 2px;
   }
 `;
 

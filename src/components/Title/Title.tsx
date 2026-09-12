@@ -10,12 +10,12 @@ interface TitleProps {
  *
  * @param children - The title text content to be displayed
  *
- * @returns A styled h1 element with centre alignment and dark grey colouring
+ * @returns A styled h1 element with centre alignment and charcoal colouring
  */
 
 export default function Title({ children }: TitleProps) {
   return (
-    <Styled.TitleText as="h1" center colour="darkGrey">
+    <Styled.TitleText as="h1" center colour="charcoal">
       {children}
     </Styled.TitleText>
   );

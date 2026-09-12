@@ -21,12 +21,12 @@ export const Input = styled.input<{ $hasError?: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${colours.blue};
-    box-shadow: 0 0 0 2px ${colours.blue}33;
+    border-color: ${colours.accentText};
+    box-shadow: 0 0 0 2px color-mix(in srgb, ${colours.accentText} 20%, transparent);
   }
 
   &:required {
-    border-left: ${spacing.fine} solid ${colours.blue};
+    border-left: ${spacing.fine} solid ${colours.accentText};
   }
 
   ${(props) =>
@@ -36,7 +36,7 @@ export const Input = styled.input<{ $hasError?: boolean }>`
 
     &:focus {
       border-color: ${colours.red};
-      box-shadow: 0 0 0 2px ${colours.red}33;
+      box-shadow: 0 0 0 2px color-mix(in srgb, ${colours.red} 20%, transparent);
     }
   `}
 `;
@@ -54,7 +54,7 @@ export const SuggestionsList = styled.ul`
   left: 0;
   right: 0;
   z-index: 1000;
-  background: white;
+  background: ${colours.surface};
   border: 1px solid ${colours.lightGrey};
   border-top: none;
   border-radius: 0 0 4px 4px;
@@ -82,7 +82,7 @@ export const SuggestionItem = styled.li<{ $isHighlighted: boolean }>`
   }
 
   &:focus {
-    outline: 2px solid ${colours.blue};
+    outline: 2px solid ${colours.accentText};
     outline-offset: -2px;
   }
 `;
@@ -105,7 +105,7 @@ export const NoResults = styled.div`
   left: 0;
   right: 0;
   z-index: 1000;
-  background: white;
+  background: ${colours.surface};
   border: 1px solid ${colours.lightGrey};
   border-top: none;
   border-radius: 0 0 4px 4px;

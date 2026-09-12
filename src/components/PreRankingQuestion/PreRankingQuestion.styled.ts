@@ -18,7 +18,7 @@ export const OverlayContainer = styled.div`
 `
 
 export const QuestionCard = styled.div`
-  background: ${colours.white};
+  background: ${colours.surface};
   border-radius: ${spacing.tiny};
   box-shadow: ${shadows.heavy};
   max-width: 500px;

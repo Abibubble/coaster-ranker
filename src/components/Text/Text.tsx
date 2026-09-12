@@ -27,7 +27,7 @@ export interface TextProps {
  * @param bold - Whether the text should be bold. Defaults to false
  * @param center - Whether the text should be centre-aligned. Defaults to false
  * @param className - Additional CSS classes to apply
- * @param colour - Text colour from the theme palette. Defaults to "black"
+ * @param colour - Text colour from the theme palette. Defaults to "charcoal"
  * @param fontSize - Font size from the theme typography scale. Defaults to "body"
  * @param htmlFor - HTML for attribute when rendering as label
  * @param id - ID attribute for the element
@@ -46,7 +46,7 @@ export function Text({
   bold = false,
   center = false,
   className,
-  colour = "black",
+  colour = "charcoal",
   fontSize = "body",
   htmlFor,
   id,

@@ -42,7 +42,7 @@ export const DownloadButton = styled.button`
   display: flex;
   align-items: center;
   width: 100%;
-  background: ${colours.white};
+  background: ${colours.surface};
   border: ${spacing.mini} solid ${colours.borderGrey};
   border-radius: ${spacing.small};
   cursor: pointer;
@@ -56,10 +56,10 @@ export const DownloadButton = styled.button`
   margin-bottom: ${spacing.small};
   background: linear-gradient(
     135deg,
-    ${colours.white} 0%,
+    ${colours.surface} 0%,
     ${colours.veryLightGrey} 100%
   );
-  border-left: ${spacing.fine} solid ${colours.blue};
+  border-left: ${spacing.fine} solid ${colours.accentText};
   animation: slideInUp 0.3s ease-out;
 
   @keyframes slideInUp {
@@ -101,17 +101,17 @@ export const DownloadButton = styled.button`
       ${colours.veryLightGrey} 0%,
       ${colours.paleGrey} 100%
     );
-    border-color: ${colours.blue};
-    border-left-color: ${colours.darkBlue};
+    border-color: ${colours.accentText};
+    border-left-color: ${colours.accentText};
     transform: translateY(-${spacing.mini});
     box-shadow: 0 4px 12px ${colours.shadowMedium};
   }
 
   &:focus {
     outline: none;
-    border-color: ${colours.blue};
-    border-left-color: ${colours.darkBlue};
-    box-shadow: 0 0 0 ${spacing.fine} rgba(0, 123, 255, 0.25);
+    border-color: ${colours.accentText};
+    border-left-color: ${colours.accentText};
+    box-shadow: 0 0 0 ${spacing.fine} color-mix(in srgb, ${colours.accentText} 25%, transparent);
   }
 
   &:active {
@@ -303,7 +303,7 @@ export const RankingOption = styled.div`
     input[type="checkbox"] {
       width: 16px;
       height: 16px;
-      accent-color: ${colours.blue};
+      accent-color: ${colours.accentText};
       min-width: 16px;
     }
   }

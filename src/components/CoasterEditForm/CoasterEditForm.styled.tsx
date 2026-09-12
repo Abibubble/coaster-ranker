@@ -82,8 +82,8 @@ export const FormInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: ${colours.blue};
-    box-shadow: 0 0 0 2px ${colours.blue}20;
+    border-color: ${colours.accentText};
+    box-shadow: 0 0 0 2px color-mix(in srgb, ${colours.accentText} 12.5%, transparent);
   }
 `;
 

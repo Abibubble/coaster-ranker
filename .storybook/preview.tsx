@@ -3,8 +3,115 @@ import React from 'react'
 import { createGlobalStyle } from 'styled-components'
 import { colours } from '../src/theme'
 
-// Global styles for Storybook
+// Global styles for Storybook — includes the same [data-theme] colour variable
+// blocks as public/index.css (kept in sync manually; see the theme plan for why
+// this isn't a shared/generated file).
 const GlobalStyle = createGlobalStyle`
+  :root,
+  [data-theme='light'] {
+    color-scheme: light;
+
+    --color-white: #fefefe;
+    --color-black: #1a1523;
+    --color-darkGrey: #332b47;
+    --color-chromeMuted: #cccccc;
+    --color-mediumGrey: #666666;
+    --color-lightGrey: #cccccc;
+    --color-veryLightGrey: #f0f0f0;
+    --color-paleGrey: #f7f5fc;
+    --color-softGrey: #edeaf7;
+    --color-borderGrey: #dcd5ec;
+    --color-slateGrey: #495057;
+    --color-charcoal: #212529;
+    --color-surface: #fefefe;
+    --color-blue: #6d28d9;
+    --color-lightBlue: #7c3aed;
+    --color-darkBlue: #5b21b6;
+    --color-darkerBlue: #4c1d95;
+    --color-veryLightBlue: #f3eefc;
+    --color-navyBlue: #2e1065;
+    --color-accentText: #6d28d9;
+    --color-green: #15803d;
+    --color-darkGreen: #0d5c2d;
+    --color-lightGreen: #16a34a;
+    --color-successGreen: #155724;
+    --color-successBg: #d4edda;
+    --color-yellow: #ffc107;
+    --color-warningYellow: #856404;
+    --color-warningBg: #fff3cd;
+    --color-orange: #fd7e14;
+    --color-red: #c81f30;
+    --color-lightRed: #fee;
+    --color-redBorder: #fcc;
+    --color-lightGreenBg: #efe;
+    --color-greenBorder: #cfc;
+    --color-errorBg: #f8d7da;
+    --color-errorText: #721c24;
+    --color-errorBorder: #f5c6cb;
+    --color-mutedGrey: #6c757d;
+    --color-darkRed: #b01c2b;
+    --color-textGrey: #777;
+    --color-shadowLight: rgba(0, 0, 0, 0.1);
+    --color-shadowMedium: rgba(0, 0, 0, 0.2);
+    --color-shadowDark: rgba(0, 0, 0, 0.4);
+
+    --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-heavy: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  [data-theme='dark'] {
+    color-scheme: dark;
+
+    --color-white: #fefefe;
+    --color-black: #1a1523;
+    --color-darkGrey: #332b47;
+    --color-chromeMuted: #cccccc;
+    --color-mediumGrey: #a89ec2;
+    --color-lightGrey: #7a6ea3;
+    --color-veryLightGrey: #302840;
+    --color-paleGrey: #17131f;
+    --color-softGrey: #2d2542;
+    --color-borderGrey: #766a9f;
+    --color-slateGrey: #beb6d2;
+    --color-charcoal: #e4dff0;
+    --color-surface: #251f30;
+    --color-blue: #6d28d9;
+    --color-lightBlue: #7c3aed;
+    --color-darkBlue: #5b21b6;
+    --color-darkerBlue: #4c1d95;
+    --color-veryLightBlue: #1a1521;
+    --color-navyBlue: #2e1065;
+    --color-accentText: #c4b5fd;
+    --color-green: #15803d;
+    --color-darkGreen: #0d5c2d;
+    --color-lightGreen: #16a34a;
+    --color-successGreen: #7ee2a8;
+    --color-successBg: #16321f;
+    --color-yellow: #ffc107;
+    --color-warningYellow: #f0c66e;
+    --color-warningBg: #3a2f0a;
+    --color-orange: #fd7e14;
+    --color-red: #c81f30;
+    --color-lightRed: #3a1519;
+    --color-redBorder: #b25058;
+    --color-lightGreenBg: #15291c;
+    --color-greenBorder: #4f9468;
+    --color-errorBg: #3a1519;
+    --color-errorText: #f3a6ab;
+    --color-errorBorder: #b25058;
+    --color-mutedGrey: #8f86a6;
+    --color-darkRed: #b01c2b;
+    --color-textGrey: #9991ae;
+    --color-shadowLight: rgba(0, 0, 0, 0.5);
+    --color-shadowMedium: rgba(0, 0, 0, 0.6);
+    --color-shadowDark: rgba(0, 0, 0, 0.8);
+
+    --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-heavy: 0 8px 16px rgba(0, 0, 0, 0.5);
+  }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
       'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

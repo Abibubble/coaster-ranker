@@ -6,6 +6,12 @@ export const FooterContainer = styled.footer`
   background-color: ${colours.black};
   padding: ${spacing.medium};
   margin-top: auto;
+
+  /* The footer and the dark-mode page background are both very dark and
+     close in lightness, so add a hairline to mark the boundary between them. */
+  html[data-theme='dark'] & {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
 `
 
 export const FooterContent = styled.div`
@@ -36,7 +42,7 @@ export const FooterLinks = styled.nav`
   }
 
   a {
-    color: ${colours.lightGrey};
+    color: ${colours.chromeMuted};
     text-decoration: none;
     font-size: ${fonts.small};
     font-weight: 400;

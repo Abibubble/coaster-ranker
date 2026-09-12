@@ -16,7 +16,8 @@ export const TabGroup = styled.div`
 `;
 
 export const TabButton = styled.button<{ $active: boolean }>`
-  background: ${({ $active }) => ($active ? colours.darkBlue : colours.white)};
+  background: ${({ $active }) =>
+    $active ? colours.darkBlue : colours.surface};
   color: ${({ $active }) => ($active ? colours.white : colours.charcoal)};
   border: ${spacing.micro} solid ${colours.lightGrey};
   border-left: none;
@@ -42,11 +43,12 @@ export const TabButton = styled.button<{ $active: boolean }>`
   &:hover {
     background: ${({ $active }) =>
       $active ? colours.darkBlue : colours.veryLightGrey};
-    color: ${({ $active }) => ($active ? colours.white : colours.darkBlue)};
+    color: ${({ $active }) =>
+      $active ? colours.white : colours.accentText};
   }
 
   &:focus {
-    outline: ${spacing.mini} solid ${colours.darkBlue};
+    outline: ${spacing.mini} solid ${colours.accentText};
     outline-offset: ${spacing.mini};
   }
 

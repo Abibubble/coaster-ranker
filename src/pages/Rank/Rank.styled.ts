@@ -59,7 +59,7 @@ export const NoDataSection = styled.section`
   padding: ${textSpacing.large} ${textSpacing.medium};
   margin: ${textSpacing.large} 0;
   background: ${colours.veryLightBlue};
-  border: ${spacing.mini} solid ${colours.lightBlue};
+  border: ${spacing.mini} solid ${colours.accentText};
   border-radius: ${spacing.small};
 
   @media (max-width: ${breakpoints.mobileSmall}) {

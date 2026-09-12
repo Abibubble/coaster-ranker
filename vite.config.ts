@@ -32,8 +32,8 @@ export default defineConfig({
         description: "An easy way to rank your coasters",
         start_url: "/coaster-ranker/",
         scope: "/coaster-ranker/",
-        theme_color: "#ffffff",
-        background_color: "#ffffff",
+        theme_color: "#1a1523",
+        background_color: "#fefefe",
         display: "standalone",
         icons: [
           {

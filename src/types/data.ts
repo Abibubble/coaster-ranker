@@ -9,6 +9,7 @@ export interface Coaster {
   originalRankPosition?: number; // Position in original upload order (for pre-ranked data)
   park: string;
   rankPosition?: number; // Current position in ranking (1 = best, higher = worse)
+  rankPositionBeforeNumberZero?: number; // Where this coaster was ranked immediately before becoming Number 0, so it can be restored there if it's later un-marked or displaced by a new Number 0
   manufacturer: string;
   model?: string;
   material?: string;

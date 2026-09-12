@@ -186,6 +186,124 @@ const getFilterSection = (): HTMLElement =>
   screen.getByRole("button", { name: /filter options/i })
     .parentElement as HTMLElement;
 
+/** Simple view (collapsed rows) is now the default, so tests that need the
+ * full CoasterCard (headings, Edit/Remove buttons, editable fields) for
+ * every coaster at once must switch to Information view first. */
+const enableInformationView = async (
+  user: ReturnType<typeof userEvent.setup>,
+) => {
+  await user.click(screen.getByRole("checkbox", { name: "Information view" }));
+};
+
+describe("ViewCoasters - simple/information view", () => {
+  it("defaults to simple view, with no per-coaster headings or Edit/Remove buttons", () => {
+    seed("coaster-ranker-data", [
+      makeCoaster({ id: "1", name: "Nemesis" }),
+      makeCoaster({ id: "2", name: "Galactica" }),
+    ]);
+
+    render(
+      <DataProvider>
+        <ViewCoasters />
+      </DataProvider>,
+    );
+
+    expect(
+      screen.getByRole("checkbox", { name: "Information view" }),
+    ).not.toBeChecked();
+    expect(screen.queryAllByRole("heading", { level: 3 })).toHaveLength(0);
+    expect(
+      screen.queryByRole("button", { name: "Edit Nemesis" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Show full details for Nemesis at Default Park",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("expands a single row to show its full details, and collapses it back on a second interaction", async () => {
+    const user = userEvent.setup();
+    seed("coaster-ranker-data", [
+      makeCoaster({ id: "1", name: "Nemesis" }),
+      makeCoaster({ id: "2", name: "Galactica" }),
+    ]);
+
+    render(
+      <DataProvider>
+        <ViewCoasters />
+      </DataProvider>,
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Show full details for Nemesis at Default Park",
+      }),
+    );
+
+    // Only Nemesis expands into the full card - Galactica stays simple.
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Nemesis" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("button", { name: "Edit Nemesis" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.queryByRole("heading", { level: 3, name: "Galactica" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Show full details for Galactica at Default Park",
+      }),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getAllByRole("button", { name: "Show less detail for Nemesis" })[0],
+    );
+
+    expect(
+      screen.queryByRole("heading", { level: 3, name: "Nemesis" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Show full details for Nemesis at Default Park",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("allows multiple rows to be expanded independently at the same time", async () => {
+    const user = userEvent.setup();
+    seed("coaster-ranker-data", [
+      makeCoaster({ id: "1", name: "Nemesis" }),
+      makeCoaster({ id: "2", name: "Galactica" }),
+    ]);
+
+    render(
+      <DataProvider>
+        <ViewCoasters />
+      </DataProvider>,
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Show full details for Nemesis at Default Park",
+      }),
+    );
+    await user.click(
+      screen.getByRole("button", {
+        name: "Show full details for Galactica at Default Park",
+      }),
+    );
+
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Nemesis" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Galactica" }),
+    ).toBeInTheDocument();
+  });
+});
+
 describe("ViewCoasters - filtering", () => {
   it("narrows the list by park and restores it when filters are cleared", async () => {
     const user = userEvent.setup();
@@ -239,6 +357,7 @@ describe("ViewCoasters - sorting and rank badges", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     expect(screen.getAllByText("#1").length).toBeGreaterThan(0);
     expect(screen.getAllByText("#2").length).toBeGreaterThan(0);
@@ -277,6 +396,7 @@ describe("ViewCoasters - sorting and rank badges", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     await user.click(screen.getByRole("button", { name: "Open sort options" }));
     expect(screen.getByText("Park Name (A-Z)")).toBeInTheDocument();
@@ -316,6 +436,7 @@ describe("ViewCoasters - editing", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     await user.click(screen.getAllByRole("button", { name: "Edit Nemesis" })[0]);
 
@@ -345,6 +466,7 @@ describe("ViewCoasters - editing", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     await user.click(screen.getAllByRole("button", { name: "Edit Nemesis" })[0]);
     // The FilterSection's "Opening Year" filter select and CoasterEditForm's
@@ -380,6 +502,7 @@ describe("ViewCoasters - editing", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     await user.click(screen.getAllByRole("button", { name: "Edit Nemesis" })[0]);
     const nameInput = screen.getByDisplayValue("Nemesis");
@@ -406,6 +529,7 @@ describe("ViewCoasters - removing", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     await user.click(
       screen.getAllByRole("button", { name: "Remove Nemesis from collection" })[0],
@@ -431,6 +555,7 @@ describe("ViewCoasters - removing", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     await user.click(
       screen.getAllByRole("button", { name: "Remove Nemesis from collection" })[0],
@@ -454,6 +579,7 @@ describe("ViewCoasters - Number 0", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     expect(screen.getAllByText("Number 0").length).toBeGreaterThan(0);
 
@@ -514,6 +640,7 @@ describe("ViewCoasters - dark-ride collection", () => {
         <ViewCoasters />
       </DataProvider>,
     );
+    await enableInformationView(user);
 
     await user.click(screen.getByRole("tab", { name: "Dark Rides" }));
     await user.click(screen.getByRole("button", { name: "Show filter options" }));

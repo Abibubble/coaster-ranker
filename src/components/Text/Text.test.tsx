@@ -26,7 +26,7 @@ describe("Text", () => {
     render(<Text>Test text</Text>);
     const element = screen.getByText("Test text");
     expect(element.tagName).toBe("SPAN");
-    expect(element).toHaveStyle(`color: ${colours.black}`);
+    expect(element).toHaveStyle(`color: ${colours.charcoal}`);
     expect(element).toHaveStyle(`font-size: ${fonts.body}`);
   });
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colours, spacing, fonts, breakpoints, shadows } from '../../theme'
+import { colours, spacing, fonts, breakpoints } from '../../theme'
 
 export const Section = styled.div`
   margin-bottom: ${spacing.medium};
@@ -106,8 +106,8 @@ export const JsonTextarea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: ${colours.blue};
-    box-shadow: ${shadows.focus};
+    border-color: ${colours.accentText};
+    box-shadow: 0 0 0 3px color-mix(in srgb, ${colours.accentText} 30%, transparent);
   }
 
   &:disabled {

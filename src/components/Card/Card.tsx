@@ -77,7 +77,7 @@ const Card = React.forwardRef<HTMLButtonElement | HTMLDivElement, CardProps>(
               <Text
                 as="h3"
                 bold
-                colour="darkGrey"
+                colour="charcoal"
                 fontSize={titleSize}
                 mb="tiny"
               >

@@ -5,7 +5,7 @@ export const ContentContainer = styled.section`
   margin: 0 auto;
   width: 100%;
   padding: 0 ${spacing.tiny};
-  background: ${colours.white};
+  background: ${colours.surface};
   display: flex;
   flex-direction: column;
   flex: 1;

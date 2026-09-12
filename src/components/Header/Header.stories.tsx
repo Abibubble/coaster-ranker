@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MemoryRouter } from 'react-router-dom'
+import { ThemeProvider } from '../../contexts/ThemeContext'
 import Header from './Header'
 
 const meta: Meta<typeof Header> = {
@@ -10,9 +11,11 @@ const meta: Meta<typeof Header> = {
   },
   decorators: [
     Story => (
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
+      <ThemeProvider>
+        <MemoryRouter>
+          <Story />
+        </MemoryRouter>
+      </ThemeProvider>
     ),
   ],
 }

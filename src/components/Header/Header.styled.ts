@@ -15,6 +15,12 @@ export const HeaderContainer = styled.header`
     min-height: ${spacing.giant};
     padding: 0 ${spacing.medium};
   }
+
+  /* The header and the dark-mode page background are both very dark and
+     close in lightness, so add a hairline to mark the boundary between them. */
+  html[data-theme='dark'] & {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
 `;
 
 export const HeaderTop = styled.div`
@@ -126,6 +132,12 @@ export const NavContainer = styled.nav<{ $isOpen: boolean }>`
     display: block;
     flex: 1;
   }
+`;
+
+export const ThemeToggleItem = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const NavLinks = styled.ul`

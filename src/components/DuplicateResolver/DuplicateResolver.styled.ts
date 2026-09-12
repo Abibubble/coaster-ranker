@@ -22,7 +22,7 @@ export const DuplicateHeader = styled.div`
 `
 
 export const DuplicateItem = styled.div`
-  background: ${colours.white};
+  background: ${colours.surface};
   border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.small};
   padding: ${textSpacing.medium};
@@ -108,7 +108,7 @@ export const ProgressInfo = styled.div`
   border-radius: ${spacing.fine};
   padding: ${textSpacing.small};
   font-size: ${fonts.body};
-  color: ${colours.darkGrey};
+  color: ${colours.charcoal};
   text-align: center;
   max-width: 400px;
   word-wrap: break-word;

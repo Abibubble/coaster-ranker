@@ -175,7 +175,7 @@ export const FileLabel = styled.label<{ $isLoading?: boolean }>`
   }
 
   &:focus {
-    outline: ${spacing.mini} solid ${colours.blue};
+    outline: ${spacing.mini} solid ${colours.accentText};
     outline-offset: ${spacing.mini};
   }
 

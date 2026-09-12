@@ -37,5 +37,6 @@ export { SortModal } from "./SortModal";
 export type { SortField, SortDirection, SortOption } from "./SortModal";
 export { StatusMessage } from "./StatusMessage";
 export { Text } from "./Text";
+export { ThemeToggle } from "./ThemeToggle";
 export { Title } from "./Title";
 export { UndoLastChoice } from "./UndoLastChoice";

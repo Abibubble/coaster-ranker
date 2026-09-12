@@ -147,27 +147,38 @@ const RankingContent: React.FC<RankingContentProps> = ({
 
   const handleAcceptNumberZero = (coaster: Coaster) => {
     if (!currentData) return;
-    const setData =
-      rideType === "coaster" ? setUploadedData : setDarkRideData;
+    const setData = rideType === "coaster" ? setUploadedData : setDarkRideData;
     setData(markCoasterAsNumberZero(currentData, coaster.id));
     markAsNumberZero(coaster.id);
   };
 
-  // Mark ranking as complete when it's truly finished (with memoized check)
+  // Mark ranking as complete exactly on the false -> true transition of
+  // isComplete, not whenever isComplete merely happens to be true. Two
+  // earlier approaches both broke:
+  // - Gating on the derived isAlreadyRanked flag re-fired this effect
+  //   whenever a Number 0 swap left some other coaster momentarily (or
+  //   permanently) unranked, overwriting fresh data with the ranking
+  //   engine's own stale idea of the final order - the engine only
+  //   reinitializes when the *set* of coaster ids changes, not individual
+  //   field values, so it has no idea a swap happened at all.
+  // - Gating on the PERSISTED isRanked flag instead broke the opposite way:
+  //   that flag can itself get stuck at true from an earlier Number 0 swap
+  //   that left a coaster genuinely unranked (see coasterOperations.ts's
+  //   applyRankOrder), which then permanently blocked this effect from ever
+  //   persisting a freshly-completed re-ranking of that coaster.
+  // Tracking the transition directly sidesteps both: a Number 0 swap never
+  // flips the engine's own isComplete (it's already true and stays true, or
+  // already false and stays false), so it can never trigger a re-fire; a
+  // genuine ranking completion is the only thing that flips it false -> true.
   const finalRankingLength = finalRanking.length;
+  const wasCompleteRef = React.useRef(isComplete);
   React.useEffect(() => {
-    if (isComplete && finalRankingLength > 0 && !isAlreadyRanked) {
-      console.log("Marking ranking as complete...");
+    const justCompleted = isComplete && !wasCompleteRef.current;
+    wasCompleteRef.current = isComplete;
+    if (justCompleted && finalRankingLength > 0) {
       markRankingComplete(finalRanking, rideType);
     }
-  }, [
-    isComplete,
-    finalRankingLength,
-    isAlreadyRanked,
-    rideType,
-    finalRanking,
-    markRankingComplete,
-  ]);
+  }, [isComplete, finalRankingLength, rideType, finalRanking, markRankingComplete]);
 
   // Save partial ranking state when navigating away or closing tab
   React.useEffect(() => {
@@ -268,8 +279,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
               Upload page
             </Link>{" "}
             to upload your {rideSingularLabel} experiences. You'll need at least
-            2 {ridePluralLabel}
-            to start ranking.
+            2 {ridePluralLabel} to start ranking.
           </Text>
         </Styled.NoDataSection>
       </MainContent>
@@ -386,9 +396,9 @@ const RankingContent: React.FC<RankingContentProps> = ({
         <Styled.RankingContainer>
           <Text as="p" mb="small">
             Some rides mean so much - nostalgia, a first-ever ride, pure
-            sentimental value - that they don't belong in a competitive
-            ranking at all. A Number 0 sits outside your ranked list
-            entirely, instead of competing for position 1, 2, 3...
+            sentimental value - that they don't belong in a competitive ranking
+            at all. A Number 0 sits outside your ranked list entirely, instead
+            of competing for position 1, 2, 3...
           </Text>
           <Text as="p" bold mb="small">
             Is {numberZeroCoaster.name} one of those for you?
@@ -400,10 +410,7 @@ const RankingContent: React.FC<RankingContentProps> = ({
           >
             Yes, this is my Number 0
           </Button>
-          <Button
-            variant="default"
-            onClick={numberZeroOffer.declineOffer}
-          >
+          <Button variant="default" onClick={numberZeroOffer.declineOffer}>
             No, rank it normally
           </Button>
         </Styled.RankingContainer>

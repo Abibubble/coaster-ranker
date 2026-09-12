@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as Styled from "./Header.styled";
-import { Link } from "../../components";
+import { Link, ThemeToggle } from "../../components";
 
 /**
  * A responsive header component with site branding and mobile navigation menu.
@@ -38,6 +38,9 @@ export default function Header() {
       <Styled.NavContainer $isOpen={isMobileMenuOpen}>
         <nav id="main-navigation" aria-label="Main navigation">
           <Styled.NavLinks>
+            <Styled.ThemeToggleItem>
+              <ThemeToggle />
+            </Styled.ThemeToggleItem>
             <li>
               <Link href="/" onClick={closeMobileMenu}>
                 Home

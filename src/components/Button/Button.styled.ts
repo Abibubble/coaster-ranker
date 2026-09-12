@@ -53,7 +53,7 @@ export const Button = styled.button<{
 
     &:focus {
       border-color: ${colours.darkBlue};
-      box-shadow: ${shadows.focus};
+      box-shadow: 0 0 0 3px color-mix(in srgb, ${colours.accentText} 30%, transparent);
     }
   `}
 
@@ -78,12 +78,12 @@ export const Button = styled.button<{
     background: ${colours.green};
 
     &:hover {
-      background: ${colours.successGreen};
+      background: ${colours.darkGreen};
     }
 
     &:focus {
-      border-color: ${colours.successGreen};
-      box-shadow: 0 0 0 3px ${colours.successBg};
+      border-color: ${colours.darkGreen};
+      box-shadow: 0 0 0 3px color-mix(in srgb, ${colours.green} 30%, transparent);
     }
   `}
 
@@ -109,7 +109,7 @@ export const Button = styled.button<{
 
     &:focus {
       border-color: ${colours.orange};
-      box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25);
+      box-shadow: 0 0 0 3px color-mix(in srgb, ${colours.yellow} 25%, transparent);
     }
   `}
 `

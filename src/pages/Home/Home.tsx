@@ -12,7 +12,7 @@ function Home() {
             coasters head-to-head to build your ultimate coaster tier list.
           </Text>
           <Styled.CTAButtonGroup>
-            <Button as="link" to="/upload" variant="success">
+            <Button as="link" to="/upload" variant="default">
               Get Started
             </Button>
             <Button as="link" to="/upload-csv" variant="default">
@@ -31,7 +31,7 @@ function Home() {
         <Styled.FeatureGrid>
           <Styled.FeatureCard>
             <Styled.FeatureContent>
-              <Text as="h3" bold fontSize="medium" colour="darkGrey" mb="small">
+              <Text as="h3" bold fontSize="medium" colour="charcoal" mb="small">
                 Privacy First
               </Text>
               <Text as="p" colour="mediumGrey" fontSize="body">
@@ -44,7 +44,7 @@ function Home() {
 
           <Styled.FeatureCard>
             <Styled.FeatureContent>
-              <Text as="h3" bold fontSize="medium" colour="darkGrey" mb="small">
+              <Text as="h3" bold fontSize="medium" colour="charcoal" mb="small">
                 Quick & Easy
               </Text>
               <Text as="p" colour="mediumGrey" fontSize="body">
@@ -57,7 +57,7 @@ function Home() {
 
           <Styled.FeatureCard>
             <Styled.FeatureContent>
-              <Text as="h3" bold fontSize="medium" colour="darkGrey" mb="small">
+              <Text as="h3" bold fontSize="medium" colour="charcoal" mb="small">
                 Export Rankings
               </Text>
               <Text as="p" colour="mediumGrey" fontSize="body">
@@ -139,7 +139,7 @@ function Home() {
             rankings. Start building your ultimate coaster tier list today!
           </Text>
           <Styled.CTAButtonGroup>
-            <Button as="link" to="/rank" variant="success">
+            <Button as="link" to="/rank" variant="default">
               Start Ranking Now
             </Button>
           </Styled.CTAButtonGroup>

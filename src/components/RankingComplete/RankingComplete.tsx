@@ -4,6 +4,7 @@ import { useData } from "../../contexts/DataContext";
 import { markCoasterAsNumberZero } from "../../utils/coasterOperations/coasterOperations";
 import { Button } from "../Button";
 import { Link } from "../Link";
+import { Modal } from "../Modal";
 import { Text } from "../Text";
 import * as Styled from "./RankingComplete.styled";
 
@@ -33,6 +34,7 @@ export default function RankingComplete({
     useData();
   const [isEditing, setIsEditing] = useState(false);
   const [coastersOrder, setCoastersOrder] = useState<Coaster[]>(rankedCoasters);
+  const [isNumberZeroModalOpen, setIsNumberZeroModalOpen] = useState(false);
 
   // Use the passed currentData, fallback to uploadedData for backwards compatibility
   const dataToUse = currentData || uploadedData;
@@ -160,20 +162,7 @@ export default function RankingComplete({
 
     setDataToUse(markCoasterAsNumberZero(dataToUse, coaster.id));
     setCoastersOrder((prev) => prev.filter((c) => c.id !== coaster.id));
-  };
-
-  const handleKeyDown = (
-    event: React.KeyboardEvent,
-    coaster: Coaster,
-    index: number,
-  ) => {
-    if (event.key === "ArrowUp" && index > 0) {
-      event.preventDefault();
-      moveCoaster(index, index - 1);
-    } else if (event.key === "ArrowDown" && index < coastersOrder.length - 1) {
-      event.preventDefault();
-      moveCoaster(index, index + 1);
-    }
+    setIsNumberZeroModalOpen(false);
   };
 
   const displayCoasters = isEditing ? coastersOrder : currentRankedCoasters;
@@ -181,10 +170,10 @@ export default function RankingComplete({
 
   return (
     <Styled.RankingComplete>
-      <Text as="h2" colour="successGreen" mb="small">
+      <Text as="h2" colour="charcoal" mb="small">
         Ranking Complete!
       </Text>
-      <Text as="p" colour="successGreen" mb="small">
+      <Text as="p" colour="charcoal" mb="small">
         Your coasters have been ranked based on your preferences!{" "}
         {displayCoasters.length > 10
           ? "Here's your top 10:"
@@ -200,23 +189,18 @@ export default function RankingComplete({
             fontSize="small"
             mb="medium"
           >
-            Use the arrow buttons or arrow keys to reorder your coasters. Press
-            Tab to navigate between items.
+            Use the arrow buttons to reorder your coasters.
           </Styled.EditInstructions>
           <ol>
             {displayCoasters.slice(0, 10).map((coaster, index) => (
               <Styled.EditableItem
                 key={coaster.id}
-                tabIndex={0}
-                onKeyDown={(event) => handleKeyDown(event, coaster, index)}
                 role="listitem"
                 aria-label={`${coaster.name} at ${coaster.park}, position ${
                   index + 1
-                } of ${
-                  displayCoasters.length
-                }. Use arrow keys or buttons to reorder.`}
+                } of ${displayCoasters.length}`}
               >
-                <Styled.Position bold colour="darkGrey">
+                <Styled.Position bold colour="charcoal">
                   {index + 1}.
                 </Styled.Position>
                 <Styled.CoasterInfo>
@@ -246,22 +230,15 @@ export default function RankingComplete({
                     ↓
                   </Styled.MoveButton>
                 </Styled.MoveButtons>
-                <Button
-                  variant="default"
-                  onClick={() => handleSetAsNumberZero(coaster)}
-                  aria-label={`Set ${coaster.name} as your Number 0, removing it from the numbered ranking`}
-                >
-                  Number 0
-                </Button>
               </Styled.EditableItem>
             ))}
           </ol>
           <Styled.ButtonContainer>
-            <Button variant="success" onClick={handleSaveChanges}>
+            <Button variant="default" onClick={handleSaveChanges}>
               Save Changes
             </Button>
-            <Button variant="disabled" onClick={handleCancelEdit}>
-              Cancel
+            <Button variant="destructive" onClick={handleCancelEdit}>
+              Discard changes
             </Button>
           </Styled.ButtonContainer>
         </Styled.EditableList>
@@ -286,22 +263,65 @@ export default function RankingComplete({
         </Styled.ResultsList>
       )}
 
-      {numberZeroCoaster && (
-        <Styled.NumberZeroSection>
-          <Text as="h3" bold colour="darkGrey" mb="tiny">
-            Your Number 0
-          </Text>
-          <Text as="p" colour="mediumGrey" fontSize="small" mb="tiny">
-            Too personally significant to rank against the rest.
-          </Text>
-          <ul>
-            <li>
-              <Text bold>{numberZeroCoaster.name}</Text> at{" "}
-              {numberZeroCoaster.park}
-            </li>
-          </ul>
-        </Styled.NumberZeroSection>
-      )}
+      <Styled.NumberZeroSection>
+        <Text as="h3" bold colour="charcoal" mb="tiny">
+          Your Number 0
+        </Text>
+        <Text as="p" colour="mediumGrey" fontSize="small" mb="tiny">
+          Too personally significant to rank against the rest.
+        </Text>
+        <Styled.NumberZeroRow>
+          {numberZeroCoaster ? (
+            <ul>
+              <li>
+                <Text bold>{numberZeroCoaster.name}</Text> at{" "}
+                {numberZeroCoaster.park}
+              </li>
+            </ul>
+          ) : (
+            <Text colour="mediumGrey" fontSize="small">
+              You haven't set one yet.
+            </Text>
+          )}
+          <Button
+            variant="default"
+            onClick={() => setIsNumberZeroModalOpen(true)}
+          >
+            {numberZeroCoaster ? "Change" : "Set Number 0"}
+          </Button>
+        </Styled.NumberZeroRow>
+      </Styled.NumberZeroSection>
+
+      <Modal
+        isOpen={isNumberZeroModalOpen}
+        onClose={() => setIsNumberZeroModalOpen(false)}
+        title="Choose your Number 0"
+        ariaLabel="Choose which coaster is too personally significant to rank"
+      >
+        <Styled.NumberZeroOptions>
+          {(dataToUse?.coasters ?? []).map((coaster) => (
+            <Styled.NumberZeroOption
+              key={coaster.id}
+              $isActive={coaster.isNumberZero ?? false}
+              onClick={() => handleSetAsNumberZero(coaster)}
+              aria-pressed={coaster.isNumberZero ?? false}
+            >
+              <Styled.NumberZeroOptionLabel>
+                {coaster.name} at {coaster.park}
+              </Styled.NumberZeroOptionLabel>
+              {coaster.isNumberZero && <Styled.CheckIcon />}
+            </Styled.NumberZeroOption>
+          ))}
+        </Styled.NumberZeroOptions>
+        <Styled.ModalActions>
+          <Button
+            variant="default"
+            onClick={() => setIsNumberZeroModalOpen(false)}
+          >
+            Close
+          </Button>
+        </Styled.ModalActions>
+      </Modal>
 
       <Text as="p" colour="mediumGrey" fontSize="small" mb="small">
         This ranking order will be used when you download your coaster

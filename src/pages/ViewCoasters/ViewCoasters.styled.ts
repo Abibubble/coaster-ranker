@@ -91,7 +91,7 @@ export const CoastersGrid = styled.div`
 `;
 
 export const CoasterCardContainer = styled.div`
-  background: ${colours.white};
+  background: ${colours.surface};
   border: ${spacing.micro} solid ${colours.borderGrey};
   border-radius: ${spacing.small};
   padding: ${spacing.medium};

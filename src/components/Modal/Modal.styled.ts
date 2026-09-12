@@ -16,7 +16,7 @@ export const Overlay = styled.div`
 `;
 
 export const Modal = styled.div`
-  background-color: white;
+  background-color: ${colours.surface};
   border-radius: ${spacing.tiny};
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   max-width: 500px;
@@ -68,7 +68,7 @@ export const CloseButton = styled.button`
   }
 
   &:focus {
-    outline: 2px solid ${colours.blue};
+    outline: 2px solid ${colours.accentText};
     outline-offset: 2px;
   }
 `;

@@ -93,7 +93,7 @@ export default function Download() {
         <Title>Download Your Collection</Title>
         <section>
           <Styled.EmptyState>
-            <Text as="h2" center colour="darkGrey" mb="small">
+            <Text as="h2" center colour="charcoal" mb="small">
               No Rides Yet
             </Text>
             <Text as="p" center colour="mediumGrey" mb="large">
@@ -122,7 +122,7 @@ export default function Download() {
 
           <Styled.Section>
             <Styled.SectionHeader>
-              <Text as="h3" colour="darkGrey" mb="tiny">
+              <Text as="h3" colour="charcoal" mb="tiny">
                 Choose what to download:
               </Text>
             </Styled.SectionHeader>
@@ -157,7 +157,7 @@ export default function Download() {
                     {currentCoasters.length === 1 ? "" : "s"}
                     {hasRankingData && " with ranking"}
                   </Text>
-                  <Text as="h3" colour="darkGrey" mb="tiny" mt="medium">
+                  <Text as="h3" colour="charcoal" mb="tiny" mt="medium">
                     Choose your format:
                   </Text>
                 </Styled.SectionHeader>
@@ -171,7 +171,7 @@ export default function Download() {
                       <Text
                         as="h4"
                         bold
-                        colour="darkGrey"
+                        colour="charcoal"
                         fontSize="large"
                         mb="fine"
                       >
@@ -197,7 +197,7 @@ export default function Download() {
                       <Text
                         as="h4"
                         bold
-                        colour="darkGrey"
+                        colour="charcoal"
                         fontSize="large"
                         mb="fine"
                       >

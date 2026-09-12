@@ -107,11 +107,11 @@ export const ClickableFieldValue = styled.button`
 
   &:hover {
     background-color: ${colours.paleGrey};
-    color: ${colours.blue};
+    color: ${colours.accentText};
   }
 
   &:focus {
-    outline: 2px solid ${colours.blue};
+    outline: 2px solid ${colours.accentText};
     outline-offset: 2px;
   }
 `;

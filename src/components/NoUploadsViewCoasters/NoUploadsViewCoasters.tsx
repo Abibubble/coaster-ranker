@@ -30,7 +30,7 @@ export const NoUploadsViewCoasters: React.FC<NoUploadsViewCoastersProps> = ({
 
       <section>
         <Styled.EmptyState>
-          <Text as="h2" center colour="darkGrey" mb="medium" fontSize="large">
+          <Text as="h2" center colour="charcoal" mb="medium" fontSize="large">
             No {ridePluralLabel} yet
           </Text>
           <Text as="p" center colour="mediumGrey" mb="large">

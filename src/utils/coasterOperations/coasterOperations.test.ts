@@ -6,6 +6,7 @@ import {
   hasAnyRanking,
   markCoasterAsNumberZero,
   removeCoaster,
+  unmarkNumberZero,
   updateCoaster,
 } from "./coasterOperations";
 
@@ -325,6 +326,95 @@ describe("markCoasterAsNumberZero", () => {
     );
     expect(byId.b).toBe(1);
     expect(byId.c).toBe(2);
+  });
+
+  it("regression: restores the previous Number 0 to the ranked position it held before it became Number 0, not to the end", () => {
+    // a: ranked 1st, becomes Number 0. b, c shift up to close the gap.
+    const currentData = makeUploadedData(
+      [
+        makeCoaster({ id: "a", rankPosition: 1 }),
+        makeCoaster({ id: "b", rankPosition: 2 }),
+        makeCoaster({ id: "c", rankPosition: 3 }),
+      ],
+      { completedComparisons: new Set(), rankedCoasters: ["a", "b", "c"], isRanked: true },
+    );
+    const afterA = markCoasterAsNumberZero(currentData, "a");
+
+    // Now pick b as the new Number 0 instead - a should return to being
+    // ranked 1st (where it was before it became Number 0), not get pushed
+    // to the end of the list.
+    const afterB = markCoasterAsNumberZero(afterA, "b");
+
+    const byId = Object.fromEntries(
+      afterB.coasters.map((c) => [c.id, { rankPosition: c.rankPosition, isNumberZero: c.isNumberZero }]),
+    );
+    expect(byId.a).toEqual({ rankPosition: 1, isNumberZero: false });
+    expect(byId.b).toEqual({ rankPosition: undefined, isNumberZero: true });
+    // c never held the flag, so it's untouched (undefined, not false) -
+    // same falsy meaning, just not an explicit assignment.
+    expect(byId.c).toEqual({ rankPosition: 2, isNumberZero: undefined });
+    expect(afterB.rankingMetadata?.rankedCoasters).toEqual(["a", "c"]);
+  });
+
+  it("puts the previous Number 0 at the end if it was accepted as Number 0 before ever being ranked", () => {
+    const currentData = makeUploadedData([
+      makeCoaster({ id: "a", isNumberZero: true }), // never had a rankPosition
+      makeCoaster({ id: "b", rankPosition: 1 }),
+      makeCoaster({ id: "c", rankPosition: 2 }),
+    ]);
+
+    const result = markCoasterAsNumberZero(currentData, "b");
+
+    const a = result.coasters.find((c) => c.id === "a")!;
+    expect(a.isNumberZero).toBe(false);
+    expect(a.rankPosition).toBe(2); // appended after c, which shifted up to 1
+    const c = result.coasters.find((c) => c.id === "c")!;
+    expect(c.rankPosition).toBe(1);
+  });
+});
+
+describe("unmarkNumberZero", () => {
+  it("is a no-op when the coaster isn't currently Number 0", () => {
+    const currentData = makeUploadedData([
+      makeCoaster({ id: "a", rankPosition: 1 }),
+    ]);
+
+    const result = unmarkNumberZero(currentData, "a");
+
+    expect(result).toBe(currentData);
+  });
+
+  it("restores the coaster to the ranked position it held before becoming Number 0", () => {
+    const currentData = makeUploadedData([
+      makeCoaster({ id: "a", rankPosition: 1 }),
+      makeCoaster({ id: "b", rankPosition: 2 }),
+      makeCoaster({ id: "c", rankPosition: 3 }),
+    ]);
+    const numberZeroed = markCoasterAsNumberZero(currentData, "b");
+
+    const result = unmarkNumberZero(numberZeroed, "b");
+
+    const byId = Object.fromEntries(
+      result.coasters.map((c) => [c.id, { rankPosition: c.rankPosition, isNumberZero: c.isNumberZero }]),
+    );
+    // a/c never held the flag, so they're untouched (undefined, not false).
+    expect(byId.a).toEqual({ rankPosition: 1, isNumberZero: undefined });
+    expect(byId.b).toEqual({ rankPosition: 2, isNumberZero: false });
+    expect(byId.c).toEqual({ rankPosition: 3, isNumberZero: undefined });
+    expect(result.rankingMetadata).toBeUndefined();
+  });
+
+  it("appends to the end when the coaster never had a rank position before becoming Number 0", () => {
+    const currentData = makeUploadedData([
+      makeCoaster({ id: "a", isNumberZero: true }),
+      makeCoaster({ id: "b", rankPosition: 1 }),
+    ]);
+
+    const result = unmarkNumberZero(currentData, "a");
+
+    const a = result.coasters.find((c) => c.id === "a")!;
+    expect(a.isNumberZero).toBe(false);
+    expect(a.rankPosition).toBe(2);
   });
 });
 

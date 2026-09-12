@@ -52,7 +52,7 @@ describe("InfoMessage", () => {
       </InfoMessage>
     );
     const element = screen.getByText("Error message").closest("p");
-    expect(element).toHaveStyle("background-color: #fee");
+    expect(element).toHaveStyle(`background-color: ${colours.lightRed}`);
   });
 
   it("applies success variant styling", () => {
@@ -62,7 +62,7 @@ describe("InfoMessage", () => {
       </InfoMessage>
     );
     const element = screen.getByText("Success message").closest("p");
-    expect(element).toHaveStyle("background-color: #efe");
+    expect(element).toHaveStyle(`background-color: ${colours.lightGreenBg}`);
   });
 
   it("applies info variant styling", () => {
@@ -72,7 +72,7 @@ describe("InfoMessage", () => {
       </InfoMessage>
     );
     const element = screen.getByText("Info message").closest("p");
-    expect(element).toHaveStyle("background-color: #fff3cd");
+    expect(element).toHaveStyle(`background-color: ${colours.warningBg}`);
   });
 
   it("applies ARIA attributes correctly", () => {
@@ -97,12 +97,25 @@ describe("InfoMessage", () => {
   });
 
   it("allows custom border color override", () => {
+    // jsdom's CSS engine doesn't resolve CSS custom properties for
+    // border-color (unlike background-color, it falls back to black), so
+    // this asserts against the generated stylesheet text rather than
+    // getComputedStyle — see the theme plan for the var()-based colour tokens.
     render(
       <InfoMessage variant="error" borderColour="green">
         <Text>Custom border message</Text>
       </InfoMessage>
     );
     const element = screen.getByText("Custom border message").closest("p");
-    expect(element).toHaveStyle(`border: 1px solid ${colours.green}`);
+    const classNames = Array.from(element?.classList ?? []);
+    const rules = Array.from(document.styleSheets).flatMap((sheet) =>
+      Array.from(sheet.cssRules ?? []),
+    );
+    const matchingRule = rules.find(
+      (cssRule) =>
+        classNames.some((name) => cssRule.cssText.includes(`.${name}`)) &&
+        cssRule.cssText.includes("border-color"),
+    );
+    expect(matchingRule?.cssText).toContain(colours.green);
   });
 });

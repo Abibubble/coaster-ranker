@@ -77,7 +77,7 @@ describe("RankingComplete - Number 0 section", () => {
     expect(screen.getByText(/Alton Towers/)).toBeInTheDocument();
   });
 
-  it("does not show the section when no coaster is a Number 0", () => {
+  it('still shows the "Your Number 0" section with a prompt to set one when no coaster is a Number 0', () => {
     const currentData: UploadedData = {
       coasters: mockCoasters,
       uploadedAt: new Date("2024-01-01"),
@@ -85,7 +85,11 @@ describe("RankingComplete - Number 0 section", () => {
     };
     render(<RankingComplete {...defaultProps} currentData={currentData} />);
 
-    expect(screen.queryByText("Your Number 0")).not.toBeInTheDocument();
+    expect(screen.getByText("Your Number 0")).toBeInTheDocument();
+    expect(screen.getByText("You haven't set one yet.")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Set Number 0" }),
+    ).toBeInTheDocument();
   });
 
   it("still shows the Number 0 section while in the editing (adjust rankings) view", async () => {

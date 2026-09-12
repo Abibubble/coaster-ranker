@@ -40,7 +40,7 @@ export const CardContainer = styled.div<{
     props.$variant === 'outlined' &&
     `
     background: transparent;
-    border: ${spacing.mini} solid ${colours.blue};
+    border: ${spacing.mini} solid ${colours.accentText};
   `}
 
   ${props =>
@@ -48,15 +48,15 @@ export const CardContainer = styled.div<{
     `
     &:hover {
       background: ${colours.softGrey};
-      border-color: ${colours.blue};
+      border-color: ${colours.accentText};
       transform: translateY(-${spacing.mini});
       box-shadow: 0 ${spacing.fine} ${spacing.small} ${colours.shadowLight};
     }
 
     &:focus {
       outline: none;
-      border-color: ${colours.blue};
-      box-shadow: 0 0 0 ${spacing.fine} rgba(0, 123, 255, 0.25);
+      border-color: ${colours.accentText};
+      box-shadow: 0 0 0 ${spacing.fine} color-mix(in srgb, ${colours.accentText} 25%, transparent);
     }
 
     &:active {

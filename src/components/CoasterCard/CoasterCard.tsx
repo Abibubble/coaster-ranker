@@ -18,6 +18,7 @@ interface CoasterCardProps {
   isRanked?: boolean;
   onEdit: () => void;
   onRemove: () => void;
+  onCollapse?: () => void;
   onUnmarkNumberZero?: () => void;
   onFieldClick: (field: string, value: string) => void;
   onFormChange?: (field: keyof EditableCoaster, value: string) => void;
@@ -63,6 +64,7 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
   isRanked,
   onEdit,
   onRemove,
+  onCollapse,
   onUnmarkNumberZero,
   onFieldClick,
   onFormChange,
@@ -127,6 +129,16 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
             </div>
           </Styled.CoasterTitle>
           <Styled.CoasterActions>
+            {onCollapse && (
+              <Button
+                variant="default"
+                onClick={onCollapse}
+                aria-label={`Show less detail for ${coaster.name}`}
+                aria-expanded={true}
+              >
+                Show less
+              </Button>
+            )}
             <Button
               variant="default"
               onClick={onEdit}
@@ -326,6 +338,16 @@ export const CoasterCard: React.FC<CoasterCardProps> = ({
               flexWrap: "wrap",
             }}
           >
+            {onCollapse && (
+              <Button
+                variant="default"
+                onClick={onCollapse}
+                aria-label={`Show less detail for ${coaster.name}`}
+                aria-expanded={true}
+              >
+                Show less
+              </Button>
+            )}
             <Button
               variant="default"
               onClick={onEdit}

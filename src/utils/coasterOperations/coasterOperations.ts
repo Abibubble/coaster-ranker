@@ -94,57 +94,152 @@ export const updateCoaster = (
   };
 };
 
-/**
- * Marks a single coaster as a Number 0 - the enthusiast convention for a
- * ride too personally/emotionally significant to rank competitively -
- * clearing the flag from every other coaster in the collection first, since
- * only one can hold it at a time.
- */
-export const markCoasterAsNumberZero = (
+/** The current ranking order (best to worst) as an array of coaster ids,
+ * derived from rankPosition - the source of truth - rather than trusting
+ * rankingMetadata.rankedCoasters, which can go stale. */
+const getRankedIdOrder = (coasters: Coaster[]): string[] =>
+  coasters
+    .filter((c) => c.rankPosition !== undefined)
+    .sort((a, b) => (a.rankPosition ?? 0) - (b.rankPosition ?? 0))
+    .map((c) => c.id);
+
+/** Inserts a coaster's id back into a ranked-id order at the position it
+ * held before it became Number 0 (clamped to the current length, in case
+ * the collection has changed size since), or at the end if it never had
+ * one - e.g. it was accepted as Number 0 before ever being ranked. */
+const insertAtRememberedPosition = (
+  rankedIds: string[],
+  coasterToRestore: Coaster,
+): string[] => {
+  const restoreIndex =
+    coasterToRestore.rankPositionBeforeNumberZero !== undefined
+      ? Math.min(
+          coasterToRestore.rankPositionBeforeNumberZero - 1,
+          rankedIds.length,
+        )
+      : rankedIds.length;
+
+  return [
+    ...rankedIds.slice(0, restoreIndex),
+    coasterToRestore.id,
+    ...rankedIds.slice(restoreIndex),
+  ];
+};
+
+const applyRankOrder = (
   currentData: UploadedData,
-  coasterId: string,
+  rankedIds: string[],
+  coasterUpdates: Record<string, Partial<Coaster>>,
 ): UploadedData => {
-  const target = currentData.coasters.find((c) => c.id === coasterId);
-  const previousRankPosition = target?.rankPosition;
+  // rankedIds is the complete, authoritative list of who should hold a rank
+  // position after this operation - anyone not in it (the coaster just
+  // becoming Number 0, or anyone who was never ranked) gets undefined, full
+  // stop. No falling back to their old rankPosition: that's exactly the bug
+  // that left a freshly-Number-0'd coaster still showing a rank.
+  const positionById = new Map(rankedIds.map((id, index) => [id, index + 1]));
 
   const updatedCoasters = currentData.coasters.map((coaster) => {
-    if (coaster.id === coasterId) {
-      return { ...coaster, isNumberZero: true, rankPosition: undefined };
-    }
-
-    // If the coaster becoming Number 0 was already ranked, close the gap by
-    // shifting everyone below it up by one - same renumbering removeCoaster
-    // already does when a ranked coaster is deleted outright.
-    const shifted =
-      previousRankPosition !== undefined &&
-      coaster.rankPosition !== undefined &&
-      coaster.rankPosition > previousRankPosition
-        ? { ...coaster, rankPosition: coaster.rankPosition - 1 }
-        : coaster;
-
-    return shifted.isNumberZero
-      ? { ...shifted, isNumberZero: false }
-      : shifted;
+    const explicitUpdate = coasterUpdates[coaster.id];
+    const rankPosition = positionById.get(coaster.id);
+    return explicitUpdate
+      ? { ...coaster, ...explicitUpdate, rankPosition }
+      : { ...coaster, rankPosition };
   });
 
-  let updatedRankingMetadata = currentData.rankingMetadata;
-  if (updatedRankingMetadata) {
-    const newRankedCoasters = updatedCoasters
-      .filter((coaster) => coaster.rankPosition !== undefined)
-      .sort((a, b) => (a.rankPosition || 0) - (b.rankPosition || 0))
-      .map((coaster) => coaster.id);
+  // A Number 0 swap can leave the ranking genuinely incomplete - e.g. a
+  // coaster with no remembered position (accepted as Number 0 before ever
+  // being ranked) still ends up in rankedIds via insertAtRememberedPosition,
+  // but if a *different* future change ever leaves someone out of rankedIds
+  // entirely, isRanked must reflect that rather than staying stuck at
+  // whatever it was before this swap - otherwise the app treats a partial
+  // ranking as finished and won't let the user re-rank the gap.
+  const rankableCount = updatedCoasters.filter(
+    (c) => !c.isPreRanked && !c.isNumberZero,
+  ).length;
 
-    updatedRankingMetadata = {
-      ...updatedRankingMetadata,
-      rankedCoasters: newRankedCoasters,
-    };
-  }
+  const updatedRankingMetadata = currentData.rankingMetadata && {
+    ...currentData.rankingMetadata,
+    rankedCoasters: rankedIds,
+    isRanked: rankableCount > 0 && rankedIds.length === rankableCount,
+  };
 
   return {
     ...currentData,
     coasters: updatedCoasters,
     rankingMetadata: updatedRankingMetadata,
   };
+};
+
+/**
+ * Marks a single coaster as a Number 0 - the enthusiast convention for a
+ * ride too personally/emotionally significant to rank competitively - and
+ * clears the flag from whichever coaster held it before (only one can hold
+ * it at a time), restoring that coaster to the ranked position it held
+ * before *it* became Number 0.
+ */
+export const markCoasterAsNumberZero = (
+  currentData: UploadedData,
+  coasterId: string,
+): UploadedData => {
+  const target = currentData.coasters.find((c) => c.id === coasterId);
+  if (!target) return currentData;
+
+  // Normally at most one other coaster can hold the flag, but stay
+  // defensive against imported/merged data that already has more than one:
+  // clear all of them, restoring only the first to its remembered position
+  // (there's no principled way to restore more than one at once).
+  const otherNumberZeros = currentData.coasters.filter(
+    (c) => c.isNumberZero && c.id !== coasterId,
+  );
+  const [previousNumberZero, ...extraNumberZeros] = otherNumberZeros;
+
+  let rankedIds = getRankedIdOrder(currentData.coasters).filter(
+    (id) => id !== coasterId,
+  );
+  if (previousNumberZero) {
+    rankedIds = insertAtRememberedPosition(rankedIds, previousNumberZero);
+  }
+
+  return applyRankOrder(currentData, rankedIds, {
+    [coasterId]: {
+      isNumberZero: true,
+      rankPositionBeforeNumberZero: target.rankPosition,
+    },
+    ...(previousNumberZero && {
+      [previousNumberZero.id]: {
+        isNumberZero: false,
+        rankPositionBeforeNumberZero: undefined,
+      },
+    }),
+    ...Object.fromEntries(
+      extraNumberZeros.map((c) => [c.id, { isNumberZero: false }]),
+    ),
+  });
+};
+
+/**
+ * Clears a coaster's Number 0 status and restores it to the ranked position
+ * it held immediately before it became Number 0 (or the end of the ranking
+ * if it never had one).
+ */
+export const unmarkNumberZero = (
+  currentData: UploadedData,
+  coasterId: string,
+): UploadedData => {
+  const target = currentData.coasters.find((c) => c.id === coasterId);
+  if (!target || !target.isNumberZero) return currentData;
+
+  const rankedIds = insertAtRememberedPosition(
+    getRankedIdOrder(currentData.coasters),
+    target,
+  );
+
+  return applyRankOrder(currentData, rankedIds, {
+    [coasterId]: {
+      isNumberZero: false,
+      rankPositionBeforeNumberZero: undefined,
+    },
+  });
 };
 
 /**
