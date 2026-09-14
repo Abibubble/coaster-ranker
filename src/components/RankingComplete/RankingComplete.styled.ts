@@ -201,15 +201,21 @@ export const EditableList = styled.div`
   }
 `
 
-export const EditableItem = styled.li`
+export const EditableItem = styled.li<{ $isDragging?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
   margin-bottom: ${spacing.small};
   border: 1px solid ${colours.lightGrey};
   border-radius: 6px;
   background: ${colours.surface};
-  box-shadow: 0 1px 3px ${colours.shadowLight};
+  box-shadow: ${({ $isDragging }) =>
+    $isDragging
+      ? `0 4px 12px ${colours.shadowMedium}`
+      : `0 1px 3px ${colours.shadowLight}`};
+  opacity: ${({ $isDragging }) => ($isDragging ? 0.6 : 1)};
+  z-index: ${({ $isDragging }) => ($isDragging ? 2 : 0)};
   transition: border-color 0.2s ease;
 
   /* Mobile-first: smaller padding */
@@ -232,6 +238,45 @@ export const EditableItem = styled.li`
   &:focus-within {
     border-color: ${colours.accentText};
     box-shadow: 0 0 0 2px color-mix(in srgb, ${colours.accentText} 20%, transparent);
+  }
+`
+
+export const DragHandle = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: ${colours.darkGrey};
+  color: ${colours.white};
+  border: 2px solid ${colours.borderGrey};
+  border-radius: 6px;
+  cursor: grab;
+  touch-action: none;
+  line-height: 1;
+
+  /* Mobile-first: larger touch target */
+  width: ${spacing.tapTarget};
+  height: ${spacing.tapTarget};
+  font-size: 18px;
+  margin-right: ${spacing.tiny};
+
+  @media (min-width: ${breakpoints.mobileMedium}) {
+    margin-right: ${spacing.small};
+  }
+
+  &:hover {
+    background: ${colours.blue};
+    border-color: ${colours.darkBlue};
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${colours.accentText};
+    box-shadow: 0 0 0 3px color-mix(in srgb, ${colours.accentText} 30%, transparent);
+  }
+
+  &:active {
+    cursor: grabbing;
   }
 `
 

@@ -1,4 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { useBlocker } from "react-router-dom";
+import {
+  Announcements,
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Coaster, UploadedData, RideType } from "../../types/data";
 import { useData } from "../../contexts/DataContext";
 import { markCoasterAsNumberZero } from "../../utils/coasterOperations/coasterOperations";
@@ -13,6 +31,95 @@ interface RankingCompleteProps {
   onRankAgain: () => void;
   currentData?: UploadedData | null;
   rideType?: RideType;
+}
+
+// The number of extra rows revealed by "Show more": the first click reveals up
+// to 100 rows, every click after that reveals up to 100 more.
+const SHOW_MORE_CHUNK = 100;
+
+const getNextVisibleCount = (currentCount: number, total: number) => {
+  if (currentCount < SHOW_MORE_CHUNK) {
+    return Math.min(SHOW_MORE_CHUNK, total);
+  }
+  return Math.min(currentCount + SHOW_MORE_CHUNK, total);
+};
+
+const sameCoasterOrder = (a: Coaster[], b: Coaster[]) =>
+  a.length === b.length && a.every((coaster, index) => coaster.id === b[index]?.id);
+
+interface SortableEditableItemProps {
+  coaster: Coaster;
+  index: number;
+  total: number;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+}
+
+function SortableEditableItem({
+  coaster,
+  index,
+  total,
+  onMoveUp,
+  onMoveDown,
+}: SortableEditableItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: coaster.id });
+
+  // 2.3.3 Animation from Interactions is AAA, not AA, but skipping the slide
+  // animation for reduced-motion users is a cheap courtesy while we're here.
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition: prefersReducedMotion ? undefined : transition,
+  };
+
+  return (
+    <Styled.EditableItem
+      ref={setNodeRef}
+      style={style}
+      $isDragging={isDragging}
+      role="listitem"
+      aria-label={`${coaster.name} at ${coaster.park}, position ${
+        index + 1
+      } of ${total}`}
+    >
+      <Styled.DragHandle
+        {...attributes}
+        {...listeners}
+        type="button"
+        aria-label={`Drag to reorder ${coaster.name}`}
+        title={`Drag to reorder ${coaster.name}`}
+      >
+        ⠿
+      </Styled.DragHandle>
+      <Styled.Position bold colour="charcoal">
+        {index + 1}.
+      </Styled.Position>
+      <Styled.CoasterInfo>
+        <Text bold>{coaster.name}</Text> at {coaster.park}
+      </Styled.CoasterInfo>
+      <Styled.MoveButtons>
+        <Styled.MoveButton
+          onClick={onMoveUp}
+          aria-label={`Move ${coaster.name} up one position`}
+          title={`Move ${coaster.name} up one position`}
+        >
+          ↑
+        </Styled.MoveButton>
+        <Styled.MoveButton
+          onClick={onMoveDown}
+          aria-label={`Move ${coaster.name} down one position`}
+          title={`Move ${coaster.name} down one position`}
+        >
+          ↓
+        </Styled.MoveButton>
+      </Styled.MoveButtons>
+    </Styled.EditableItem>
+  );
 }
 
 /**
@@ -35,6 +142,12 @@ export default function RankingComplete({
   const [isEditing, setIsEditing] = useState(false);
   const [coastersOrder, setCoastersOrder] = useState<Coaster[]>(rankedCoasters);
   const [isNumberZeroModalOpen, setIsNumberZeroModalOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(10);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   // Use the passed currentData, fallback to uploadedData for backwards compatibility
   const dataToUse = currentData || uploadedData;
@@ -93,14 +206,40 @@ export default function RankingComplete({
     }
   }, [contextDataHash, isEditing, coastersOrder.length, dataToUse]);
 
+  const hasUnsavedChanges =
+    isEditing && !sameCoasterOrder(coastersOrder, currentRankedCoasters);
+
+  // Blocks in-app navigation (e.g. clicking a header link) while there are
+  // unsaved ranking changes; a real browser navigation away (tab close,
+  // refresh, typing a URL) isn't covered by this and needs beforeunload below.
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      hasUnsavedChanges && currentLocation.pathname !== nextLocation.pathname,
+  );
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return undefined;
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () =>
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
   const handleEditClick = () => {
     setIsEditing(true);
     setCoastersOrder([...currentRankedCoasters]);
+    setVisibleCount(10);
   };
 
   const handleCancelEdit = () => {
     setIsEditing(false);
     setCoastersOrder([...currentRankedCoasters]);
+    setVisibleCount(10);
   };
 
   const handleSaveChanges = () => {
@@ -134,6 +273,7 @@ export default function RankingComplete({
       setDataToUse(updatedData);
     }
     setIsEditing(false);
+    setVisibleCount(10);
   };
 
   const moveCoaster = (fromIndex: number, toIndex: number) => {
@@ -141,6 +281,42 @@ export default function RankingComplete({
     const [movedCoaster] = newOrder.splice(fromIndex, 1);
     newOrder.splice(toIndex, 0, movedCoaster);
     setCoastersOrder(newOrder);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = coastersOrder.findIndex((c) => c.id === active.id);
+    const newIndex = coastersOrder.findIndex((c) => c.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    moveCoaster(oldIndex, newIndex);
+  };
+
+  const announcements: Announcements = {
+    onDragStart({ active }) {
+      const coaster = coastersOrder.find((c) => c.id === active.id);
+      return `Picked up ${coaster?.name ?? "coaster"}. Use the arrow keys to move it, space bar to drop it in its new position, or escape to cancel.`;
+    },
+    onDragOver({ active, over }) {
+      if (!over) return undefined;
+      const coaster = coastersOrder.find((c) => c.id === active.id);
+      const overIndex = coastersOrder.findIndex((c) => c.id === over.id);
+      return `${coaster?.name ?? "Coaster"} is now in position ${overIndex + 1} of ${coastersOrder.length}.`;
+    },
+    onDragEnd({ active, over }) {
+      const coaster = coastersOrder.find((c) => c.id === active.id);
+      if (!over) {
+        return `${coaster?.name ?? "Coaster"} was dropped.`;
+      }
+      const overIndex = coastersOrder.findIndex((c) => c.id === over.id);
+      return `${coaster?.name ?? "Coaster"} was moved to position ${overIndex + 1} of ${coastersOrder.length}.`;
+    },
+    onDragCancel({ active }) {
+      const coaster = coastersOrder.find((c) => c.id === active.id);
+      return `Reordering ${coaster?.name ?? "coaster"} was cancelled.`;
+    },
   };
 
   // An immediate action, not batched into "Save Changes" - warns about (and
@@ -167,6 +343,13 @@ export default function RankingComplete({
 
   const displayCoasters = isEditing ? coastersOrder : currentRankedCoasters;
   const numberZeroCoaster = dataToUse?.coasters.find((c) => c.isNumberZero);
+  const visibleCoasters = displayCoasters.slice(0, visibleCount);
+  const visibleIds = visibleCoasters.map((coaster) => coaster.id);
+  const nextVisibleCount = getNextVisibleCount(
+    visibleCount,
+    coastersOrder.length,
+  );
+  const showMoreCount = nextVisibleCount - visibleCount;
 
   return (
     <Styled.RankingComplete>
@@ -189,50 +372,53 @@ export default function RankingComplete({
             fontSize="small"
             mb="medium"
           >
-            Use the arrow buttons to reorder your coasters.
+            Drag a coaster using its handle, or use the arrow buttons, to
+            reorder your coasters.
           </Styled.EditInstructions>
-          <ol>
-            {displayCoasters.slice(0, 10).map((coaster, index) => (
-              <Styled.EditableItem
-                key={coaster.id}
-                role="listitem"
-                aria-label={`${coaster.name} at ${coaster.park}, position ${
-                  index + 1
-                } of ${displayCoasters.length}`}
-              >
-                <Styled.Position bold colour="charcoal">
-                  {index + 1}.
-                </Styled.Position>
-                <Styled.CoasterInfo>
-                  <Text bold>{coaster.name}</Text> at {coaster.park}
-                </Styled.CoasterInfo>
-                <Styled.MoveButtons>
-                  <Styled.MoveButton
-                    onClick={() => {
+          <DndContext
+            id="ranking-reorder"
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            accessibility={{ announcements }}
+          >
+            <SortableContext
+              items={visibleIds}
+              strategy={verticalListSortingStrategy}
+            >
+              <ol>
+                {visibleCoasters.map((coaster, index) => (
+                  <SortableEditableItem
+                    key={coaster.id}
+                    coaster={coaster}
+                    index={index}
+                    total={displayCoasters.length}
+                    onMoveUp={() => {
                       if (index > 0) {
                         moveCoaster(index, index - 1);
                       }
                     }}
-                    aria-label={`Move ${coaster.name} up one position`}
-                    title={`Move ${coaster.name} up one position`}
-                  >
-                    ↑
-                  </Styled.MoveButton>
-                  <Styled.MoveButton
-                    onClick={() => {
-                      if (index < displayCoasters.length - 1) {
+                    onMoveDown={() => {
+                      if (index < visibleCoasters.length - 1) {
                         moveCoaster(index, index + 1);
                       }
                     }}
-                    aria-label={`Move ${coaster.name} down one position`}
-                    title={`Move ${coaster.name} down one position`}
-                  >
-                    ↓
-                  </Styled.MoveButton>
-                </Styled.MoveButtons>
-              </Styled.EditableItem>
-            ))}
-          </ol>
+                  />
+                ))}
+              </ol>
+            </SortableContext>
+          </DndContext>
+          {visibleCount < coastersOrder.length && (
+            <Styled.ButtonContainer>
+              <Button
+                variant="default"
+                onClick={() => setVisibleCount(nextVisibleCount)}
+              >
+                Show {showMoreCount} more ({visibleCount} of{" "}
+                {coastersOrder.length})
+              </Button>
+            </Styled.ButtonContainer>
+          )}
           <Styled.ButtonContainer>
             <Button variant="default" onClick={handleSaveChanges}>
               Save Changes
@@ -321,6 +507,48 @@ export default function RankingComplete({
             Close
           </Button>
         </Styled.ModalActions>
+      </Modal>
+
+      <Modal
+        isOpen={blocker.state === "blocked"}
+        onClose={() => {
+          if (blocker.state === "blocked") blocker.reset();
+        }}
+        title="Unsaved ranking changes"
+        ariaLabel="You have unsaved ranking changes. Save or discard them before leaving this page."
+      >
+        <Text as="p" mb="medium">
+          You have unsaved changes to your ranking order. Save or discard them
+          before leaving this page.
+        </Text>
+        <Styled.ButtonContainer>
+          <Button
+            variant="default"
+            onClick={() => {
+              handleSaveChanges();
+              if (blocker.state === "blocked") blocker.proceed();
+            }}
+          >
+            Save Changes
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              handleCancelEdit();
+              if (blocker.state === "blocked") blocker.proceed();
+            }}
+          >
+            Discard changes
+          </Button>
+          <Button
+            variant="default"
+            onClick={() => {
+              if (blocker.state === "blocked") blocker.reset();
+            }}
+          >
+            Keep editing
+          </Button>
+        </Styled.ButtonContainer>
       </Modal>
 
       <Text as="p" colour="mediumGrey" fontSize="small" mb="small">

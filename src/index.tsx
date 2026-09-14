@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import "@fontsource/atkinson-hyperlegible/400.css";
 import "@fontsource/atkinson-hyperlegible/400-italic.css";
 import "@fontsource/atkinson-hyperlegible/700.css";
@@ -22,10 +22,41 @@ import { DataProvider } from "./contexts/DataContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { useScrollToTop } from "./hooks";
 
-function ScrollToTop() {
+function RootLayout() {
   useScrollToTop();
-  return null;
+  return (
+    <>
+      <SkipLink />
+      <Header />
+      <main id="main-content">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
 }
+
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <RootLayout />,
+      children: [
+        { index: true, element: <Home /> },
+        { path: "accessibility", element: <Accessibility /> },
+        { path: "download", element: <Download /> },
+        { path: "privacy-policy", element: <PrivacyPolicy /> },
+        { path: "rank", element: <Rank /> },
+        { path: "upload", element: <Upload /> },
+        { path: "upload-csv", element: <UploadCSV /> },
+        { path: "upload-json", element: <UploadJSON /> },
+        { path: "upload-manual", element: <UploadManual /> },
+        { path: "view-coasters", element: <ViewCoasters /> },
+      ],
+    },
+  ],
+  { basename: "/coaster-ranker" },
+);
 
 const rootElement = document.getElementById("root");
 if (!rootElement) throw new Error("Failed to find the root element");
@@ -35,26 +66,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider>
       <DataProvider>
-        <Router basename="/coaster-ranker">
-          <ScrollToTop />
-          <SkipLink />
-          <Header />
-          <main id="main-content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/accessibility" element={<Accessibility />} />
-              <Route path="/download" element={<Download />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/rank" element={<Rank />} />
-              <Route path="/upload" element={<Upload />} />
-              <Route path="/upload-csv" element={<UploadCSV />} />
-              <Route path="/upload-json" element={<UploadJSON />} />
-              <Route path="/upload-manual" element={<UploadManual />} />
-              <Route path="/view-coasters" element={<ViewCoasters />} />
-            </Routes>
-          </main>
-          <Footer />
-        </Router>
+        <RouterProvider router={router} />
       </DataProvider>
     </ThemeProvider>
   </React.StrictMode>,

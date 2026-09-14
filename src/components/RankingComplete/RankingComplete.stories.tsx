@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import RankingComplete from "./RankingComplete";
 import { Coaster } from "../../types/data";
 import { DataProvider } from "../../contexts/DataContext";
@@ -40,15 +40,25 @@ const meta: Meta<typeof RankingComplete> = {
     onRankAgain: { action: "rank again clicked" },
   },
   decorators: [
-    (Story) => (
-      <BrowserRouter>
-        <DataProvider>
-          <div style={{ minHeight: "400px", width: "100%", maxWidth: "600px" }}>
-            <Story />
-          </div>
-        </DataProvider>
-      </BrowserRouter>
-    ),
+    (Story) => {
+      // RankingComplete uses useBlocker, which requires a data router.
+      const router = createMemoryRouter([
+        {
+          path: "*",
+          element: (
+            <DataProvider>
+              <div
+                style={{ minHeight: "400px", width: "100%", maxWidth: "600px" }}
+              >
+                <Story />
+              </div>
+            </DataProvider>
+          ),
+        },
+      ]);
+
+      return <RouterProvider router={router} />;
+    },
   ],
 };
 

@@ -72,7 +72,7 @@ describe("Accessibility Page", () => {
     render(<Accessibility />);
 
     expect(
-      screen.getByText("Learn more About web accessibility")
+      screen.getByText("Learn more about web accessibility")
     ).toBeInTheDocument();
 
     const waiLink = screen.getByRole("link", {
