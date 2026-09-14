@@ -249,14 +249,30 @@ export default function UploadManual() {
     baseData: typeof currentData = currentData,
   ) => {
     const existingCoasters = baseData?.coasters || [];
+    const existingRankingMetadata = baseData?.rankingMetadata || {
+      completedComparisons: new Set<string>(),
+      rankedCoasters: [],
+      isRanked: false,
+    };
+
+    // A previously-complete ranking can't still be considered complete once
+    // an unranked (and not pre-ranked or Number 0) coaster is added -
+    // otherwise the ranking screens and the "ranking complete" screen
+    // disagree about whether ranking is finished, and the latter briefly
+    // shows its stale, shorter list instead of waiting for the new coaster
+    // to be ranked too.
+    const isNewCoasterUnranked =
+      !coasterToAdd.isPreRanked &&
+      !coasterToAdd.isNumberZero &&
+      coasterToAdd.rankPosition === undefined;
+
     const updatedData = {
       coasters: [...existingCoasters, coasterToAdd],
       uploadedAt: baseData?.uploadedAt || new Date(),
       filename: baseData?.filename || "manual-entry",
-      rankingMetadata: baseData?.rankingMetadata || {
-        completedComparisons: new Set<string>(),
-        rankedCoasters: [],
-        isRanked: false,
+      rankingMetadata: {
+        ...existingRankingMetadata,
+        isRanked: existingRankingMetadata.isRanked && !isNewCoasterUnranked,
       },
     };
 

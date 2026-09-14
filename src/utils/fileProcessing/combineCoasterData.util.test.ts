@@ -175,6 +175,53 @@ describe("combineCoasterData", () => {
     );
   });
 
+  it("regression: no longer claims isRanked when an unranked coaster is added to an already-fully-ranked collection", () => {
+    const existingData = makeUploadedData({
+      coasters: [
+        makeCoaster({ id: "existing-1", name: "Steel Vengeance", rankPosition: 1 }),
+        makeCoaster({ id: "existing-2", name: "Fury 325", rankPosition: 2 }),
+      ],
+      rankingMetadata: {
+        completedComparisons: new Set(),
+        rankedCoasters: ["existing-1", "existing-2"],
+        isRanked: true,
+      },
+    });
+    const newCoasters = [makeCoaster({ id: "new-1", name: "Nemesis" })];
+
+    const result = combineCoasterData({
+      newCoasters,
+      filename: "new.csv",
+      existingData,
+    });
+
+    expect(result.combinedData.rankingMetadata?.isRanked).toBe(false);
+  });
+
+  it("keeps isRanked true when the newly added coaster already carries its own ranking data", () => {
+    const existingData = makeUploadedData({
+      coasters: [
+        makeCoaster({ id: "existing-1", name: "Steel Vengeance", rankPosition: 1 }),
+      ],
+      rankingMetadata: {
+        completedComparisons: new Set(),
+        rankedCoasters: ["existing-1"],
+        isRanked: true,
+      },
+    });
+    const newCoasters = [
+      makeCoaster({ id: "new-1", name: "Nemesis", rankPosition: 2 }),
+    ];
+
+    const result = combineCoasterData({
+      newCoasters,
+      filename: "new.csv",
+      existingData,
+    });
+
+    expect(result.combinedData.rankingMetadata?.isRanked).toBe(true);
+  });
+
   it("combines dark-ride coasters the same way as coasters", () => {
     const newCoasters = [
       makeCoaster({ id: "a", name: "Haunted Mansion", type: "dark-ride" }),

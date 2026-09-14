@@ -54,6 +54,11 @@ const getStoredCoasters = (key: string): any[] => {
   return raw ? JSON.parse(raw).coasters : [];
 };
 
+const getStoredRankingMetadata = (key: string) => {
+  const raw = localStorage.getItem(key);
+  return raw ? JSON.parse(raw).rankingMetadata : undefined;
+};
+
 describe("UploadManual", () => {
   it("has no accessibility violations", async () => {
     const { container } = render(<MockedUploadManual />);
@@ -118,6 +123,56 @@ describe("UploadManual - form submission", () => {
     const stored = getStoredCoasters("coaster-ranker-data");
     expect(stored).toHaveLength(1);
     expect(stored[0].name).toBe("Nemesis");
+  });
+
+  it("regression: adding a new coaster to an already-fully-ranked collection stops claiming isRanked", async () => {
+    localStorage.setItem(
+      "coaster-ranker-data",
+      JSON.stringify({
+        coasters: [
+          {
+            id: "existing-1",
+            name: "Steel Vengeance",
+            park: "Cedar Point",
+            manufacturer: "RMC",
+            country: "United States",
+            type: "coaster",
+            rankPosition: 1,
+          },
+        ],
+        uploadedAt: new Date(),
+        filename: "coasters.csv",
+        rankingMetadata: {
+          completedComparisons: [],
+          rankedCoasters: ["existing-1"],
+          isRanked: true,
+        },
+      }),
+    );
+
+    const user = userEvent.setup();
+    render(<MockedUploadManual />);
+
+    await fillRequiredFields(user, {
+      name: "Nemesis",
+      park: "Alton Towers",
+      manufacturer: "B&M",
+      country: "United Kingdom",
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /add coaster to collection/i }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("status")).toHaveTextContent(
+        /successfully added/i,
+      );
+    });
+
+    expect(
+      getStoredRankingMetadata("coaster-ranker-data").isRanked,
+    ).toBe(false);
   });
 
   it("regression: stores a valid opening year as a number, and ignores an implausible one (issue #44)", async () => {

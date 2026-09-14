@@ -83,6 +83,19 @@ export function combineCoasterData(
     }
   }
 
+  // A previously-complete ranking can't still be considered complete once
+  // coasters without a position (i.e. not yet ranked, and not pre-ranked or
+  // a Number 0) are merged in - otherwise the ranking screens and the
+  // "ranking complete" screen disagree about whether ranking is finished,
+  // and the latter briefly displays its stale, shorter list of already-
+  // ranked coasters instead of waiting for the new ones to be ranked too.
+  const hasUnrankedRankableCoasters = coastersWithUniqueIds.some(
+    (coaster) =>
+      !coaster.isPreRanked &&
+      !coaster.isNumberZero &&
+      coaster.rankPosition === undefined,
+  );
+
   const combinedData: UploadedData = {
     coasters: coastersWithUniqueIds,
     uploadedAt: new Date(),
@@ -90,7 +103,9 @@ export function combineCoasterData(
     rankingMetadata: {
       completedComparisons: existingRankingMetadata.completedComparisons,
       rankedCoasters,
-      isRanked: existingRankingMetadata.isRanked || hasCoastersWithRankingData,
+      isRanked:
+        (existingRankingMetadata.isRanked || hasCoastersWithRankingData) &&
+        !hasUnrankedRankableCoasters,
       hasPreRankedCoasters:
         existingRankingMetadata.hasPreRankedCoasters || hasAnyPreRankedData,
       preRankedGroups: hasAnyPreRankedData
